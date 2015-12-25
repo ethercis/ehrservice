@@ -20,7 +20,7 @@ set JOOQ_LIB=C:\Development\JOOQ\jOOQ-lib
 set JOOQ_VERSION=3.5.3
 
 @rem set PG_JDBC=C:\PostgreSQL\pgJDBC\postgresql-9.3-1100.jdbc4.jar
-set PG_JDBC=C:\PostgreSQL\pgJDBC\postgresql-9.4-1201.jdbc41.jar
+set PG_JDBC=C:\PostgreSQL\pgJDBC\postgresql-9.4-1204.jdbc42.jar
 
 set JOOQ_CONFIG_PATH=C:\Development\eCIS\ehrservice\ehrdao\resources\library.xml
 
