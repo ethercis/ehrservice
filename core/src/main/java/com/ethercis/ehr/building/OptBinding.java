@@ -24,6 +24,7 @@ import com.ethercis.ehr.encode.wrappers.element.ChoiceElementWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
@@ -50,7 +51,6 @@ import org.openehr.rm.support.identification.TerminologyID;
 import org.openehr.rm.support.terminology.TerminologyService;
 import org.openehr.schemas.v1.*;
 import org.openehr.schemas.v1.impl.CCODEREFERENCEImpl;
-import org.openehr.terminology.SimpleTerminologyService;
 
 import java.util.*;
 
@@ -635,7 +635,7 @@ public class OptBinding extends RmBinding {
             DvMultimedia thumbnail = null;
             DvURI uri = new DvURI("www.iana.org");
             //byte[] data = new byte[0];
-            TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+            TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
             DvMultimedia dm = new DvMultimedia(charset, language, alternateText,
                     mediaType, compressionAlgorithm, null,
                     integrityCheckAlgorithm, thumbnail, uri, null, terminologyService);
@@ -717,7 +717,12 @@ public class OptBinding extends RmBinding {
                         new ItemTree("at0001", new DvText("tree"), null));
             }
 
-        } else if("INSTRUCTION".equals(rmTypeName)) {
+        } else if ("ISM_TRANSITION".equals(rmTypeName)){
+			//do not assume a default for careflow_step
+			if (valueMap.containsKey(CAREFLOW_STEP))
+				valueMap.put(CAREFLOW_STEP, new DvCodedText("DUMMY", "local", "0000"));
+		}
+		else if("INSTRUCTION".equals(rmTypeName)) {
 
             if( ! valueMap.containsKey(NARRATIVE)) {
                 valueMap.put(NARRATIVE, new DvText("instruction narrative"));
@@ -806,6 +811,18 @@ public class OptBinding extends RmBinding {
 		} else if ("CLUSTER".equals(rmTypeName)) {
 			if (ccobj instanceof CARCHETYPEROOT)
 				addItermStructureValues(valueMap, (CARCHETYPEROOT) ccobj);
+		}
+		else if ("INTERVAL_EVENT".equals(rmTypeName)){
+			if (!valueMap.containsKey(ARCHETYPE_NODE_ID))
+				valueMap.put(ARCHETYPE_NODE_ID, "at0000");
+			if (!valueMap.containsKey(NAME))
+				valueMap.put(NAME, "interval_event_name");
+			if (!valueMap.containsKey(TEMPLATE_ID))
+				valueMap.put(TEMPLATE_ID, "template_id");
+			if (!valueMap.containsKey(TIME))
+				valueMap.put(TIME, new DvDateTime(new DateTime(0L).toString()));
+			if (!valueMap.containsKey(WIDTH))
+				valueMap.put(WIDTH, new DvDuration(DEFAULT_DURATION));
 		}
 		else {
             if (!(rmTypeName.equals("CLUSTER") ||

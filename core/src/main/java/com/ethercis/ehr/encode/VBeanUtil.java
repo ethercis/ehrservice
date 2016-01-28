@@ -181,6 +181,28 @@ public class VBeanUtil {
 		}
 
 	}
+
+	public static Object getInstance(Class instrClazz, Map<String, Object> attributes){
+		Method instantiator;
+		try {
+			instantiator = instrClazz.getDeclaredMethod("getInstance", new Class[] {Map.class});
+		} catch (SecurityException e) {
+			return null;
+		} catch (NoSuchMethodException e) {
+			return null;
+		}
+
+		try {
+			return instantiator.invoke(null, attributes);
+		} catch (IllegalArgumentException e) {
+			return null;
+		} catch (IllegalAccessException e) {
+			return null;
+		} catch (InvocationTargetException e) {
+			return null;
+		}
+
+	}
 	
 	/**
 	 * utility to consistently set the value map for a datavalue

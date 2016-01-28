@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.building.util;
 
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.joda.time.DateTime;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.EventContext;
@@ -24,28 +25,27 @@ import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.PartyRef;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
 
 /**
  * Created by Christian Chevalley on 4/21/2015.
  */
 public class ContextHelper {
 
-    public static EventContext createDummyContext(){
+    public static EventContext createDummyContext() throws Exception {
         PartyRef partyRef = new PartyRef(new HierObjectID("ref"), CompositionAttributesHelper.DEMOGRAPHIC, CompositionAttributesHelper.PARTY);
         PartyIdentified healthcareFacility = new PartyIdentified(partyRef, "FACILITY", null);
         DateTime timenow = DateTime.now();
         DvCodedText concept = new DvCodedText("Other Care", "openehr", "238");
-        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+        TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
         return new org.openehr.rm.composition.EventContext(healthcareFacility, new DvDateTime(timenow.toString()), null, null, "TEST LAB", concept, null, terminologyService);
     }
 
-    public static EventContext createNullContext(){
+    public static EventContext createNullContext() throws Exception {
         PartyRef partyRef = new PartyRef(new HierObjectID("ref"), "null", "null");
         PartyIdentified healthcareFacility = new PartyIdentified(partyRef, "null", null);
 //        DateTime timenow = DateTime.now();
         DvCodedText concept = new DvCodedText("null", "openehr", "238");
-        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+        TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
         return new org.openehr.rm.composition.EventContext(healthcareFacility, new DvDateTime(new DateTime(0L).toString()), null, null, null, concept, null, terminologyService);
     }
 }

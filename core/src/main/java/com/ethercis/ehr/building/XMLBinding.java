@@ -23,6 +23,7 @@ import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
@@ -39,7 +40,6 @@ import org.openehr.rm.support.measurement.MeasurementService;
 import org.openehr.rm.support.measurement.SimpleMeasurementService;
 import org.openehr.rm.support.terminology.TerminologyService;
 import org.openehr.schemas.v1.*;
-import org.openehr.terminology.SimpleTerminologyService;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -63,7 +63,12 @@ public class XMLBinding {
 	}
 
 	public XMLBinding() {
-		TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+		TerminologyService terminologyService;
+		try {
+			terminologyService = TerminologyServiceWrapper.getInstance();
+		} catch (Exception e){
+			throw new IllegalArgumentException("Could not instantiate terminology service:"+e);
+		}
 		MeasurementService measurementService = SimpleMeasurementService.getInstance();
 		CodePhrase charset = new CodePhrase("IANA_character-sets","UTF-8");
 		CodePhrase lang = new CodePhrase("ISO_639-1", "en"); //defaulted to English
@@ -316,7 +321,12 @@ public class XMLBinding {
 
 	public Object bindToRM(Object object) throws Exception {
 		log.debug("binding fragment:"+object.toString());
-		
+
+//		if (object instanceof LOCATABLE && ((LOCATABLE)object).isNil()) {
+//			log.debug("skipping nil fragment:"+object);
+//			return null;
+//		}
+//
 		Method[] methods = object.getClass().getMethods();
 		Object value;
 		Map<String, Object> valueMap = new HashMap<String, Object>();
@@ -361,9 +371,19 @@ public class XMLBinding {
 					}
 
 				} else if (isXMLBindingClass(value)) {
-					value = bindToRM(value);
+					//ignore nil locatable
+					if (value instanceof LOCATABLE)
+						if  (!((LOCATABLE)value).isNil())
+							value = bindToRM(value);
+						else {
+							log.debug("ignoring nil value:" + value);
+							value = null;
+						}
+					else
+						value = bindToRM(value);
 				}
-				valueMap.put(attribute, value);
+				if (value != null)
+					valueMap.put(attribute, value);
 			}
 		}
 

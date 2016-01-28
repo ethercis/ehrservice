@@ -29,12 +29,16 @@ import org.openehr.rm.composition.content.entry.*;
 import org.openehr.rm.composition.content.navigation.Section;
 import org.openehr.rm.datastructure.history.Event;
 import org.openehr.rm.datastructure.history.History;
+import org.openehr.rm.datastructure.history.IntervalEvent;
 import org.openehr.rm.datastructure.itemstructure.*;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datastructure.itemstructure.representation.Item;
+import org.openehr.rm.datatypes.basic.DataValue;
+import org.openehr.rm.datatypes.quantity.DvInterval;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.integration.GenericEntry;
+import org.openehr.schemas.v1.LOCATABLE;
 
 import java.util.*;
 
@@ -69,13 +73,15 @@ public class CompositionSerializer {
 	static final String TAG_STATE = "/state";
 	static final String TAG_DESCRIPTION = "/description";
 	public static final String TAG_TIME = "/time";
+	public static final String TAG_WIDTH = "/width";
+	public static final String TAG_MATH_FUNCTION = "/math_function";
 	static final String TAG_INSTRUCTION="/instruction";
 	public static final String TAG_NARRATIVE = "/narrative";
 	public static final String TAG_ITEMS="/items";
     static final String TAG_OTHER_CONTEXT = "/context/other_context";
 	public static final String TAG_ACTIVITIES="/activities";
 	public static final String TAG_VALUE="/value";
-	static final String TAG_EVENTS="/events";
+	public static final String TAG_EVENTS="/events";
 	public static final String TAG_ORIGIN="/origin";
 	static final String TAG_SUMMARY="/summary";
 	public static final String TAG_TIMING="/timing";
@@ -101,6 +107,8 @@ public class CompositionSerializer {
     public static final String TAG_CLASS = "/$CLASS$";
     public static final String TAG_NAME =  "/name";
 	public static final String TAG_DEFINING_CODE =  "/defining_code";
+
+	public static final String INNER_CLASS_LIST = "$INNER_CLASS_LIST$";
 
 	
 	static String TAG_ACTION_ARCHETYPE_ID="/action_archetype_id";
@@ -164,8 +172,19 @@ public class CompositionSerializer {
 		case PATH: 
 			if (node == null)
 				return prefix;
-			else
-				return prefix+"["+node.getArchetypeNodeId()+"]";
+			else {
+				String path = prefix + "[" + node.getArchetypeNodeId() + "]";
+				if (path.contains("[openEHR-") || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS) || path.contains(CompositionSerializer.TAG_EVENTS)){
+					//expand name in key
+					String name = node.getName().getValue();
+
+					if (name != null)
+						path = path+" and name/value='"+name+"']";
+//            else
+//                log.warn("Ignoring entry/item name:"+name);
+				}
+				return path;
+			}
 		
 		case NAMED:
         case EXPANDED:
@@ -627,6 +646,17 @@ public class CompositionSerializer {
 				Map<String, Object> subtree = newPathMap();
 				log.debug(itemStack.pathStackDump()+TAG_TIME+"["+event.getArchetypeNodeId()+"]="+event.getTime());
 
+				if (event instanceof IntervalEvent){
+					IntervalEvent intervalEvent = (IntervalEvent)event;
+					if (intervalEvent.getWidth() != null)
+						encodeNodeAttribute(subtree, TAG_WIDTH, intervalEvent.getWidth(), event.getName().getValue());
+					if (intervalEvent.getMathFunction() != null)
+						encodeNodeAttribute(subtree, TAG_MATH_FUNCTION, intervalEvent.getMathFunction(), event.getName().getValue());
+//					if (intervalEvent.getSampleCount() != null)
+//						encodeNodeAttribute(subtree, TAG_MATH_FUNCTION, intervalEvent.getMathFunction(), event.getName().getValue());
+				}
+
+
 				if (event.getTime() != null)
 					encodeNodeAttribute(subtree, TAG_TIME, event.getTime(), event.getName().getValue());
 				if (event.getData() != null)
@@ -742,6 +772,30 @@ public class CompositionSerializer {
 
 	}
 
+	/**
+	 * extrapolate composite class name such as DvInterval<DvCount>
+	 * @param dataValue
+	 * @return
+	 */
+	private String getCompositeClassName(DataValue dataValue){
+		String classname = dataValue.getClass().getSimpleName();
+
+		switch (classname){
+			case "DvInterval":
+				//get the classname of lower/upper
+				DvInterval interval = (DvInterval)dataValue;
+				String lowerClassName = interval.getLower().getClass().getSimpleName();
+				String upperClassName = interval.getUpper().getClass().getSimpleName();
+
+				if (!lowerClassName.equals(upperClassName))
+					throw new IllegalArgumentException("Lower and Upper classnames do not match:"+lowerClassName+" vs."+upperClassName);
+
+				return classname+"<"+lowerClassName+">";
+			default:
+				return classname;
+		}
+	}
+
     private Map<String, Object> setElementAttributesMap(Element element) throws Exception {
         Map<String, Object>ltree = newPathMap();
 
@@ -757,7 +811,8 @@ public class CompositionSerializer {
 					putObject(valuemap, TAG_DEFINING_CODE, dvCodedText.getDefiningCode());
 			}
 
-            putObject(valuemap, TAG_CLASS, element.getValue().getClass().getSimpleName());
+			putObject(valuemap, TAG_CLASS, getCompositeClassName(element.getValue()));
+//            putObject(valuemap, TAG_CLASS, element.getValue().getClass().getSimpleName());
             //assign the actual object to the value (instead of its field equivalent...)
             putObject(valuemap, TAG_VALUE, element.getValue());
 //
@@ -800,7 +855,8 @@ public class CompositionSerializer {
 			itemStack.popStacks();
 		} else if (item instanceof ElementWrapper){
             if (allElements || ((ElementWrapper)item).dirtyBitSet()) {
-				itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", null);
+				//TODO: add coded name item.getName().getValue()
+				itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", tag.equals(TAG_ITEMS) ? item.getName().getValue() : null);
 				retmap = setElementAttributesMap(((ElementWrapper) item).getAdaptedElement());
 				itemStack.popStacks();
 			}

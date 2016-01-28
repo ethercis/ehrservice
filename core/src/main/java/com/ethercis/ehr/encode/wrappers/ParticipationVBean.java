@@ -18,6 +18,7 @@ package com.ethercis.ehr.encode.wrappers;
 
 import com.ethercis.ehr.building.util.CompositionAttributesHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.joda.time.DateTime;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
@@ -29,7 +30,8 @@ import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.GenericID;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.PartyRef;
-import org.openehr.terminology.SimpleTerminologyService;
+import org.openehr.rm.support.terminology.TerminologyService;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +102,13 @@ public class ParticipationVBean implements I_VBeanWrapper {
         PartyIdentified partyIdentified= new PartyIdentifiedVBean().parse(values[1], defaults);
         DvCodedText mode = new DvCodedText(valueMode, modeCodes[0], modeCodes[1]);
         DvText function = new DvText(values[0]);
-        Participation participation = new Participation(partyIdentified, function, mode, null, SimpleTerminologyService.getInstance());
+        TerminologyService terminologyService;
+        try {
+            terminologyService = TerminologyServiceWrapper.getInstance();
+        } catch (Exception e){
+            throw new IllegalArgumentException("Could not instantiate terminology service:"+e);
+        }
+        Participation participation = new Participation(partyIdentified, function, mode, null, terminologyService);
         return participation;
     }
 
@@ -120,10 +128,7 @@ public class ParticipationVBean implements I_VBeanWrapper {
             Map performerIdentified = (Map)valueMap.get("performer");
             String performerName = (String)performerIdentified.get("name");
             Map performerExternalRef = (Map)performerIdentified.get("externalRef");
-            String performerIdScheme = (String)((Map)performerExternalRef.get("id")).get("scheme");
-            String performerIdValue = (String)((Map)performerExternalRef.get("id")).get("value");
-            String performerNameSpace = (String)(performerExternalRef.get("namespace"));
-            String performerType = (String)(performerExternalRef.get("type"));
+
 
             Map modeAttibutes = (Map)valueMap.get("mode");
             String modeDefiningCodeTerminologyId = (String)(((Map)((Map)modeAttibutes.get("definingCode")).get("terminologyId")).get("value"));
@@ -131,10 +136,27 @@ public class ParticipationVBean implements I_VBeanWrapper {
             String modeValue = (String)(modeAttibutes.get("value"));
 
             //ready to generate a new Participation
-            PartyIdentified partyIdentified= new PartyIdentified(new PartyRef(new GenericID(performerIdValue, performerIdScheme), performerNameSpace, performerType), performerName, null);
+            PartyIdentified partyIdentified;
+            if (performerExternalRef != null) {
+                String performerIdScheme = (String) ((Map) performerExternalRef.get("id")).get("scheme");
+                String performerIdValue = (String) ((Map) performerExternalRef.get("id")).get("value");
+                String performerNameSpace = (String) (performerExternalRef.get("namespace"));
+                String performerType = (String) (performerExternalRef.get("type"));
+                partyIdentified = new PartyIdentified(new PartyRef(new GenericID(performerIdValue, performerIdScheme), performerNameSpace, performerType), performerName, null);
+            }
+            else
+                partyIdentified = new PartyIdentified(null, performerName, null);
+
+
             DvCodedText mode = new DvCodedText(modeValue, modeDefiningCodeTerminologyId, modeDefiningCodeString);
             DvText function = new DvText(functionValue);
-            Participation participation = new Participation(partyIdentified, function, mode, null, SimpleTerminologyService.getInstance());
+            TerminologyService terminologyService;
+            try {
+                terminologyService = TerminologyServiceWrapper.getInstance();
+            } catch (Exception e){
+                throw new IllegalArgumentException("Could not instantiate terminology service:"+e);
+            }
+            Participation participation = new Participation(partyIdentified, function, mode, null, terminologyService);
 
             return participation;
 
@@ -147,11 +169,17 @@ public class ParticipationVBean implements I_VBeanWrapper {
         List<DvIdentifier> identifiers = new ArrayList<>();
         identifiers.add(new DvIdentifier("NHS-UK", "NHS-UK", "999999-1234", "2.16.840.1.113883.2.1.4.3"));
         PartyIdentified performer = new PartyIdentified(partyRef, "HERR DOKTOR", null);
+        TerminologyService terminologyService;
+        try {
+            terminologyService = TerminologyServiceWrapper.getInstance();
+        } catch (Exception e){
+            throw new IllegalArgumentException("Could not instantiate terminology service:"+e);
+        }
         Participation participation = new Participation(performer,
                 new DvText("doctor"),
                 new DvCodedText("telephone", "openehr", "204"),
                 new DvInterval<>(new DvDateTime(DateTime.now().toString()), null),
-                SimpleTerminologyService.getInstance());
+                terminologyService);
         return participation;
     }
 }

@@ -25,6 +25,7 @@ import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import com.ethercis.ehr.encode.wrappers.element.AnyElementWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ChoiceElementWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.util.LocatableHelper;
 import org.apache.commons.lang.ArrayUtils;
@@ -48,7 +49,6 @@ import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.support.identification.UIDBasedID;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -171,7 +171,7 @@ public class PathValue implements I_PathValue {
         //at this stage, all values have been parsed
         EventContext eventContext = null;
         if (hasContext) {
-            TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+            TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
             eventContext = new EventContext(healthCareFacility,
                     (startTime != null) ? startTime : new DvDateTime(new DateTime(0L).toString()),
                     (endTime != null) ? endTime : new DvDateTime(DateTime.now().toString()),
@@ -540,7 +540,7 @@ public class PathValue implements I_PathValue {
                 LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, locatablePath);
                 if (parent != null) {
                     Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
-                    LocatableHelper.insertChildInList(parent.getNode(), cloned, parent.getInsertionPath());
+                    LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), null);
                 }
                 itemAtPath = locatable.itemAtPath(locatablePath);
 

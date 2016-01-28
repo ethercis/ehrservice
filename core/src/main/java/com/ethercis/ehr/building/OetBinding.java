@@ -23,6 +23,7 @@ import com.ethercis.ehr.encode.wrappers.*;
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import com.ethercis.ehr.encode.wrappers.cprimitives.*;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.*;
@@ -50,7 +51,7 @@ import org.openehr.rm.datatypes.uri.DvURI;
 import org.openehr.rm.support.identification.TemplateID;
 import org.openehr.rm.support.identification.TerminologyID;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
+
 
 import java.util.*;
 
@@ -286,7 +287,7 @@ public class OetBinding extends RmBinding {
             DvMultimedia thumbnail = null;
             DvURI uri = new DvURI("www.iana.org");
             //byte[] data = new byte[0];
-            TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+            TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
             DvMultimedia dm = new DvMultimedia(charset, language, alternateText,
                     mediaType, compressionAlgorithm, null,
                     integrityCheckAlgorithm, thumbnail, uri, null, terminologyService);

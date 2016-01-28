@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import junit.framework.TestCase;
 import openEHR.v1.template.TEMPLATE;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -196,15 +197,15 @@ public class ContentBuilderTest extends TestCase {
 
 
     static String[] documentList = {
+
             "IDCR Lab Order RAW1.xml" ,
             "IDCR Procedures List_1 RAW.xml",
             "IDCR Problem List.v1.xml",
             "Vital_signs_TEST.xml",
-
-            "IDCR-LabReportRAW1.xml"
-            /*
+            "IDCR-LabReportRAW1.xml",
             "RIPPLE_conformanceTesting_RAW.xml"
-            */
+
+
     };
 
     String path = "\\Development\\Dropbox\\eCIS_Development\\samples\\";
@@ -258,6 +259,10 @@ public class ContentBuilderTest extends TestCase {
             String jsonString = gson.toJson(testRetMap);
 
             System.out.println(jsonString);
+
+            //storeComposition a temp file and write the exported XML into: C:\Users\<current_user>\AppData\Local\Temp
+            File tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_", ".xml");
+            FileUtils.writeStringToFile(tempfile, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + new String(exportXml));
         }
 
     }

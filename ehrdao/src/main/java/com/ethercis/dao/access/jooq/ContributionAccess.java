@@ -157,7 +157,10 @@ public class ContributionAccess extends DataAccess implements I_ContributionAcce
             String defaultUser = System.getProperty("user.name");
             //check for that user in the DB
             java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-            committerId = I_PartyIdentifiedAccess.getOrCreatePartyByExternalRef(this, defaultUser, UUID.randomUUID().toString(), System.getProperty("host.name"), localMachine.getCanonicalHostName(), "PARTY");
+            String scheme = System.getProperty("host.name");
+            if (scheme == null)
+                scheme = "local";
+            committerId = I_PartyIdentifiedAccess.getOrCreatePartyByExternalRef(this, defaultUser, UUID.randomUUID().toString(), scheme, localMachine.getCanonicalHostName(), "PARTY");
         }
         setCommitter(committerId);
 

@@ -17,9 +17,13 @@
 package com.ethercis.ehr.util;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.VBeanUtil;
+import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
+import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.datastructure.history.History;
 import org.openehr.rm.datastructure.history.PointEvent;
+import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datatypes.text.DvText;
 
 import java.io.IOException;
@@ -50,15 +54,47 @@ public class LocatableHelper {
     }
 
     public static void insertHistoryEvent(History history, PointEvent event){
-        insertChildInList(history, event, "/events");
+        insertCloneInList(history, event, "/events", null);
     }
 
-    public  static void insertChildInList(Locatable parent, Locatable child, String insertionPath){
+    private static void findLastNodeIdInSibblings(String lastNodeId, List<Locatable> siblings){
+
+        for (Object sibling: siblings){
+
+            if (sibling instanceof Locatable){
+                String nodeId = ((Locatable)sibling).getArchetypeNodeId();
+                if (!nodeId.contains("openEHR")) {
+                    Integer last = Integer.parseInt(lastNodeId.substring(2));
+                    Integer current = Integer.parseInt(nodeId.substring(2));
+
+                    if (current > last)
+                        lastNodeId = "at" + String.format("%04d", current);
+                }
+                else {
+                    //check if it contains a '#'
+                    if (nodeId.contains("#")){
+                        ;
+                    }
+                }
+            }
+
+        }
+    }
+
+    private static String extractLastAtPath(String itemPath){
+        if (itemPath.contains("[at"))
+            return itemPath.substring(itemPath.lastIndexOf("[")+1, itemPath.lastIndexOf("]"));
+        else
+            return "at0000";
+
+    }
+
+    public  static void insertCloneInList(Locatable parent, Locatable clone, String insertionPath, String itemPath){
         //get the list of sibling at insertionPath
         Object objectList = parent.itemAtPath(insertionPath);
 
-        if (child.getArchetypeNodeId().contains("openEHR")){ //no need to go further...
-            parent.addChild(insertionPath, child);
+        if (clone.getArchetypeNodeId().contains("openEHR")){ //no need to go further...
+            parent.addChild(insertionPath, clone);
             return;
         }
 
@@ -71,49 +107,31 @@ public class LocatableHelper {
         } else
             siblings = null;
 
-        String lastNodeId = "at0000";
+        String lastNodeId = itemPath == null ? "at0000" : extractLastAtPath(itemPath);
 
-        if (siblings == null)
-            lastNodeId = "at0000";
-        else {
-            for (Object sibling: siblings){
-
-                if (sibling instanceof Locatable){
-                    String nodeId = ((Locatable)sibling).getArchetypeNodeId();
-                    if (!nodeId.contains("openEHR")) {
-                        Integer last = Integer.parseInt(lastNodeId.substring(2));
-                        Integer current = Integer.parseInt(nodeId.substring(2));
-
-                        if (current > last)
-                            lastNodeId = "at" + String.format("%04d", current);
-                    }
-                    else {
-                        //check if it contains a '#'
-                        if (nodeId.contains("#")){
-                            ;
-                        }
-                    }
-                }
-
-            }
+        if (siblings != null) {
             //do no increment the at00xy expression for /items or /activities since they are differentiated by names!
-            if (!insertionPath.contains(CompositionSerializer.TAG_ACTIVITIES) && !insertionPath.contains(CompositionSerializer.TAG_ITEMS))
+            if (!insertionPath.contains(CompositionSerializer.TAG_ACTIVITIES) && !insertionPath.contains(CompositionSerializer.TAG_ITEMS) && !insertionPath.contains(CompositionSerializer.TAG_EVENTS)) {
+                findLastNodeIdInSibblings(lastNodeId, siblings);
                 lastNodeId = LocatableHelper.incrementPathNodeId(lastNodeId);
-            if (insertionPath.contains(CompositionSerializer.TAG_ACTIVITIES) || insertionPath.contains(CompositionSerializer.TAG_ITEMS)){
+            }
+            else {
                 if (!lastNodeId.contains("name")){
-                    if (!child.getName().getValue().contains("#"))
+                    if (!clone.getName().getValue().contains("#"))
                         lastNodeId = LocatableHelper.incrementPathNodeId(lastNodeId);
                     else{
-                        //TODO:should add a counter and increment it...
+                        lastNodeId = extractLastAtPath(itemPath);
                     }
-
                 }
+                else
+                    lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(" and name/value"));
+
             }
         }
 
-        child.set("/archetypeNodeId", lastNodeId);
+        clone.set("/archetypeNodeId", lastNodeId);
 
-        parent.addChild(insertionPath, child);
+        parent.addChild(insertionPath, clone);
     }
 
     static public class NodeItem {
@@ -194,7 +212,50 @@ public class LocatableHelper {
         return name;
     }
 
+    public static String siblingPath(String unresolvedPath){
+        //if the last path is qualified with a name/value, check if a similar item exists
+
+        List<String> segments = Locatable.dividePathIntoSegments(unresolvedPath);
+        String last = segments.get(segments.size() - 1);
+        if (last.contains(" and name/value=")){
+            last = last.substring(0, last.indexOf(" and name/value="))+"]";
+        }
+
+        StringBuffer tentativePath = new StringBuffer();
+        for (int i = 0; i < segments.size() - 1; i++ ){
+            tentativePath.append(segments.get(i)+"/");
+        }
+        tentativePath.append(last);
+
+        return tentativePath.toString();
+    }
+
+    public static Locatable siblingAtPath(Locatable locatable, String unresolvedPath) {
+        //if the last path is qualified with a name/value, check if a similar item exists
+
+        List<String> segments = Locatable.dividePathIntoSegments(unresolvedPath);
+        String last = segments.get(segments.size() - 1);
+        if (last.contains(" and name/value=")){
+            last = last.substring(0, last.indexOf(" and name/value="))+"]";
+        }
+
+        StringBuffer tentativePath = new StringBuffer();
+        for (int i = 0; i < segments.size() - 1; i++ ){
+            tentativePath.append(segments.get(i)+"/");
+        }
+        tentativePath.append(last);
+
+        Object sibling = locatable.itemAtPath(tentativePath.toString());
+
+        if (sibling != null )
+            return (Locatable)sibling;
+
+        return null;
+
+    }
+
     public static NodeItem backtrackItemAtPath(Locatable locatable, String unresolvedPath) {
+
 
         //find first parent existing for this unresolved path
         String parentPath = Locatable.parentPath(unresolvedPath);
@@ -228,12 +289,22 @@ public class LocatableHelper {
                Object item = getter.invoke(node, null);
 
                if (item instanceof List){
-                   Object toClone = ((List)item).get(0);
-                   Locatable cloned = clone((Locatable) toClone);
-                   String name = indentifyName(childPath);
-                   if (name != null)
-                        cloned.setName(new DvText(name));
-                   return cloned;
+                   List<Locatable> itemList = (List)item;
+                   if (itemList.size() > 0) {
+                       Object toClone = itemList.get(0);
+                       Locatable cloned = clone((Locatable) toClone);
+                       String name = indentifyName(childPath);
+                       if (name != null)
+                           cloned.setName(new DvText(name));
+                       return cloned;
+                   }
+                   else { //just create a simple ElementWrapper as the insertion point
+                       Element element = new Element("at0000", "place_holder", new DvText("place_holder"));
+                       I_VBeanWrapper wrapped = (I_VBeanWrapper) VBeanUtil.wrapObject(new DvText("place_holder"));
+                       ElementWrapper elementWrapper = new ElementWrapper(element, null);
+                       elementWrapper.setWrappedValue(wrapped);
+                       return elementWrapper;
+                   }
                }
                else
                    throw new IllegalArgumentException("Ttem cannot be replicated since it is not an ItemList:"+item);

@@ -18,12 +18,12 @@ package com.ethercis.ehr.encode.wrappers;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import com.google.gson.internal.LinkedTreeMap;
 import org.openehr.rm.datatypes.encapsulated.DvMultimedia;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.uri.DvURI;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -152,7 +152,12 @@ public class DvMultimediaVBean extends DataValueAdapter implements I_VBeanWrappe
                     throw new IllegalArgumentException("uri type is not recognized:"+uriEncoded.toString());
 
             }
-            TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+            TerminologyService terminologyService;
+            try {
+                terminologyService = TerminologyServiceWrapper.getInstance();
+            } catch (Exception e){
+                throw new IllegalArgumentException("Could not instantiate terminology service:"+e);
+            }
 
             return new DvMultimedia(charSet, language, alternateText, mediaType, compressionAlgorithm, null, integrityCheckAlgorithm, thumbnail, uri, null, terminologyService);
         }
@@ -179,7 +184,13 @@ public class DvMultimediaVBean extends DataValueAdapter implements I_VBeanWrappe
         DvMultimedia thumbnail = null;
         DvURI uri = new DvURI("www.iana.org");
         //byte[] data = new byte[0];
-        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+        TerminologyService terminologyService;
+        try {
+            terminologyService = TerminologyServiceWrapper.getInstance();
+        } catch (Exception e){
+            throw new IllegalArgumentException("Could not instantiate terminology service:"+e);
+        }
+
         DvMultimedia dm = new DvMultimedia(charset, language, alternateText,
                 mediaType, compressionAlgorithm, null,
                 integrityCheckAlgorithm, thumbnail, uri, null, terminologyService);

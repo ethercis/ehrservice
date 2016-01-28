@@ -289,6 +289,7 @@ public class ContributionAccessTest extends AccessTestCase {
 //
 //        assertNotNull(contributionAccess);
 
+//        InputStream is = new FileInputStream(new File("/Development/Dropbox/eCIS_Development/samples/RIPPLE_conformanceTesting_RAW.xml"));
         InputStream is = new FileInputStream(new File("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1.xml"));
 //        InputStream is = new FileInputStream(new File("/Development/Dropbox/eCIS_Development/samples/IDCR - Generic MDT RAW XML.xml"));
         I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, null);

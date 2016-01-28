@@ -27,6 +27,7 @@ import com.ethercis.ehr.util.MapInspector;
 import com.ethercis.ehr.util.RMDataSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlOptions;
 import org.openehr.build.SystemValue;
@@ -35,6 +36,7 @@ import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.content.entry.*;
 import org.openehr.rm.datastructure.history.History;
+import org.openehr.rm.datastructure.history.IntervalEvent;
 import org.openehr.rm.datastructure.history.PointEvent;
 import org.openehr.rm.datastructure.itemstructure.ItemStructure;
 import org.openehr.rm.datastructure.itemstructure.representation.Item;
@@ -42,6 +44,7 @@ import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.encapsulated.DvParsable;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
@@ -136,6 +139,63 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     }
 
+    private DvText getNewName(Map<String, Object> definition){
+        String name = (String) definition.get(CompositionSerializer.TAG_NAME);
+        CodePhrase codePhrase = null;
+        if (definition.containsKey(CompositionSerializer.TAG_DEFINING_CODE)) { //DvCodedText for name
+            Map definingCodeMap = (LinkedTreeMap) definition.get(CompositionSerializer.TAG_DEFINING_CODE);
+            String terminologyId = (String) ((Map) definingCodeMap.get("terminologyId")).get("value");
+            String codeString = (String) definingCodeMap.get("codeString");
+            codePhrase = new CodePhrase(terminologyId, codeString);
+        }
+        DvText newName;
+        if (codePhrase != null)
+            newName = new DvCodedText(name, codePhrase);
+        else //DvText
+            newName = new DvText(name);
+
+        return newName;
+    }
+
+    private Object insertCloneInPath(Locatable locatable, Map<String, Object> definition, String path) throws Exception {
+        log.debug("Item could not be located, cloning required:" + path);
+
+        //check for potential sibling
+        String siblingPath = LocatableHelper.siblingPath(path);
+        Locatable sibling = (Locatable) locatable.itemAtPath(siblingPath);
+
+        if (sibling != null){
+            LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
+            Locatable cloned = LocatableHelper.clone(sibling);
+            DvText newName = getNewName(definition);
+            cloned.setName(newName);
+            LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), path);
+            log.debug("Inserted sibling at path:" + path);
+        }
+        else {
+            LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
+            if (parent != null) {
+                Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
+                //get its name
+//                DvText newName = getNewName(definition);
+//                cloned.setName(newName);
+                LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), parent.getChildPath());
+            }
+        }
+        //reference the newly created child
+        Object itemAtPath;
+
+        if (sibling != null)
+            itemAtPath = locatable.itemAtPath(path);
+        else //completion
+            itemAtPath = insertCloneInPath(locatable, definition, path);
+
+        if (itemAtPath == null) //something really wrong here...
+            throw new IllegalArgumentException("INTERNAL: failed to successfully clone child structure at:"+path);
+
+        return itemAtPath;
+    }
+
     protected void assignValuesFromStack(Composition composition, ArrayDeque<Map<String, Object>> stack) throws Exception {
 
         //traverse the queue
@@ -154,6 +214,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             if (lastTag.matches(I_PathValue.PARTICIPATION_REGEXP) ||
                     lastTag.equals(CompositionSerializer.TAG_TIMING) ||
                     lastTag.equals(CompositionSerializer.TAG_TIME) ||
+                    lastTag.equals(CompositionSerializer.TAG_WIDTH) ||
+                    lastTag.equals(CompositionSerializer.TAG_MATH_FUNCTION) ||
                     lastTag.equals(CompositionSerializer.TAG_NARRATIVE) ||
                     lastTag.equals(I_PathValue.ORIGIN_TAG)){
                 path = path.substring(0, path.lastIndexOf("/"));
@@ -170,16 +232,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             //HACK! if an itemAtPath is already there with dirtyBit == true, just clone the element for this path
 //            if (itemAtPath == null || (itemAtPath instanceof ElementWrapper && ((ElementWrapper)itemAtPath).dirtyBitSet())) {
             if (itemAtPath == null) {
-                log.debug("Item could not be located, cloning required:" + path);
-                LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(composition, path);
-                if (parent != null){
-                    Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
-                    LocatableHelper.insertChildInList(parent.getNode(), cloned, parent.getInsertionPath());
-                }
-                //reference the newly created child
-                itemAtPath = composition.itemAtPath(path);
-                if (itemAtPath == null) //something really wrong here...
-                    throw new IllegalArgumentException("INTERNAL: failed to successfully clone child structure at:"+path);
+                itemAtPath = insertCloneInPath(composition, definition, path);
             }
 
             if (itemAtPath instanceof ElementWrapper) {
@@ -192,23 +245,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                 if (object instanceof DvParsable) {
                     activity.setTiming((DvParsable) object);
                 }
-            }
-            else if (itemAtPath instanceof Entry){
-                if (object instanceof Participation){
-                    Entry entry = ((Entry)itemAtPath);
-                    entry.addOtherParticipation((Participation) object);
-                } else if (object instanceof HierObjectID) {
-                    ((Entry) itemAtPath).setUid((HierObjectID) object);
-                } else if (lastTag.equals(CompositionSerializer.TAG_WORKFLOW_ID)) {
-                    ((Entry) itemAtPath).setWorkflowId((ObjectRef) object);
-                }
+
             } else if (itemAtPath instanceof Instruction) {
                 if (lastTag.equals(CompositionSerializer.TAG_NARRATIVE)) {
                     ((Instruction) itemAtPath).setNarrative((DvText) object);
-                }
-            } else if (itemAtPath instanceof CareEntry) {
-                if (lastTag.equals(CompositionSerializer.TAG_GUIDELINE_ID)) {
-                    ((CareEntry) itemAtPath).setGuidelineId((ObjectRef) object);
                 }
             }
             else if (itemAtPath instanceof Action) {
@@ -225,7 +265,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             else if (itemAtPath instanceof PointEvent){
                 if (object instanceof DvDateTime){ //set origin
                     PointEvent originePE = (PointEvent)itemAtPath;
-                    originePE.setTime((DvDateTime)object);
+                    originePE.setTime((DvDateTime) object);
                     log.debug("point event time:" + ((PointEvent) itemAtPath).getTime());
                 }
             }
@@ -245,6 +285,22 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                         throw new IllegalArgumentException("Invalid tag in ISMTransition:"+lastTag);
                 }
             }
+            else if (itemAtPath instanceof IntervalEvent){
+                IntervalEvent intervalEvent = (IntervalEvent)itemAtPath;
+                switch (lastTag){
+                    case CompositionSerializer.TAG_TIME:
+                        intervalEvent.setTime((DvDateTime) object);
+                        break;
+                    case CompositionSerializer.TAG_WIDTH:
+                        intervalEvent.setWidth((DvDuration) object);
+                        break;
+                    case CompositionSerializer.TAG_MATH_FUNCTION:
+                        intervalEvent.setMathFunction((DvCodedText) object);
+                        break;
+                    default:
+                        log.warn("Unhandled Tag in IntervalEvent"+lastTag);
+                }
+            }
             else if (itemAtPath instanceof InstructionDetails){ //a node attribute (f.e. ism_transition)
                 InstructionDetails instructionDetails = (InstructionDetails)itemAtPath;
                 switch (lastTag){
@@ -258,8 +314,27 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                         throw new IllegalArgumentException("Invalid tag in InstructionDetails:"+lastTag);
                 }
             }
-            else
-                log.debug("Unhandled value in stack:"+path);
+            else {
+                log.warn("Unhandled value in stack:" + path);
+            }
+
+            //more decoration for Entry...
+            if (itemAtPath instanceof Entry) {
+                if (object instanceof Participation) {
+                    Entry entry = ((Entry) itemAtPath);
+                    entry.addOtherParticipation((Participation) object);
+                } else if (object instanceof HierObjectID) {
+                    ((Entry) itemAtPath).setUid((HierObjectID) object);
+                } else if (lastTag.equals(CompositionSerializer.TAG_WORKFLOW_ID)) {
+                    ((Entry) itemAtPath).setWorkflowId((ObjectRef) object);
+                }
+            }
+
+            if (itemAtPath instanceof CareEntry) {
+                if (lastTag.equals(CompositionSerializer.TAG_GUIDELINE_ID)) {
+                    ((CareEntry) itemAtPath).setGuidelineId((ObjectRef) object);
+                }
+            }
 
         }
     }
@@ -278,25 +353,18 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
             if (object == null) continue; //no assignment
 
-            path = path.substring("/items[at0001]".length()); //strip the prefix since it is the root
+            path = path.substring(path.indexOf("]")+1); //strip the prefix since it is the root
 
             Object itemAtPath = itemStructure.itemAtPath(path);
 
             if (itemAtPath == null) {
-                log.debug("Item could not be located, cloning required:" + path);
-                LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(itemStructure, path);
-                if (parent != null){
-                    Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
-                    LocatableHelper.insertChildInList(parent.getNode(), cloned, parent.getInsertionPath());
-                }
-                //reference the newly created child
-                itemAtPath = itemStructure.itemAtPath(path);
-                if (itemAtPath == null) //something really wrong here...
-                    throw new IllegalArgumentException("INTERNAL: failed to successfully clone child structure at:"+path);
+                itemAtPath = insertCloneInPath(itemStructure, definition, path);
             }
 
-            if (itemAtPath instanceof ElementWrapper)
-                assignElementWrapper((ElementWrapper)itemAtPath, object, path);
+            if (itemAtPath instanceof ElementWrapper) {
+                assignElementWrapper((ElementWrapper) itemAtPath, object, path);
+                setItemAttributes(((ElementWrapper) itemAtPath).getAdaptedElement(), definition);
+            }
             else if (itemAtPath instanceof Activity){
                 Activity activity = (Activity)itemAtPath;
                 if (object instanceof DvParsable) {

@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.building;
 
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.openehr.build.SystemValue;
@@ -27,7 +28,6 @@ import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.PartyRef;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,12 +99,12 @@ public interface I_RmBinding {
      * build a default Event Context
      * @return
      */
-    public static EventContext makeDefaultEventContext(){
+    public static EventContext makeDefaultEventContext() throws Exception {
         PartyRef partyRef = new PartyRef(new HierObjectID("ref"), "NHS-UK",  "party");
         org.openehr.rm.common.generic.PartyIdentified healthcareFacility = new org.openehr.rm.common.generic.PartyIdentified(partyRef, DEFAULT_FACILITY, null);
         DateTime timenow = new DateTime(0L);
         DvCodedText concept = new DvCodedText("other care", new CodePhrase("openehr", "238"));
-        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+        TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
         return new EventContext(healthcareFacility, new DvDateTime(timenow.toString()), null, null, "$SYSTEM$", concept, null, terminologyService);
     }
 

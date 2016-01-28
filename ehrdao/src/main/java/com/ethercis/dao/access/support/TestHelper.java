@@ -20,6 +20,7 @@ import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.ehr.building.util.CompositionAttributesHelper;
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.dao.access.util.ContributionDef;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.openehr.rm.common.generic.Participation;
@@ -33,7 +34,7 @@ import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.PartyRef;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,13 +124,13 @@ public class TestHelper {
         PartyIdentified healthcareFacility = new PartyIdentified(partyRef, "FACILITY", identifiers);
         DateTime timenow = DateTime.now();
         DvCodedText concept = new DvCodedText("primary medical care", "openehr", "228");
-        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+        TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
         PartyIdentified performer = new PartyIdentified(partyRef, "HERR DOKTOR", null);
         Participation participation = new Participation(performer,
                 new DvText("doctor"),
                 new DvCodedText("telephone", "openehr", "204"),
                 new DvInterval<DvDateTime>(new DvDateTime(DateTime.now().toString()), null),
-                SimpleTerminologyService.getInstance());
+                TerminologyServiceWrapper.getInstance());
         List<Participation> participations = new ArrayList<>();
         participations.add(participation);
         return new org.openehr.rm.composition.EventContext(healthcareFacility, new DvDateTime(timenow.toString()), null, participations, "TEST LAB", concept, null, terminologyService);

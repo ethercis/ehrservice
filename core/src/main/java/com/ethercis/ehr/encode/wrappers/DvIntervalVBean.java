@@ -28,6 +28,7 @@ import org.openehr.rm.datatypes.quantity.DvQuantity;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -109,9 +110,33 @@ public class DvIntervalVBean extends DataValueAdapter implements I_VBeanWrapper 
 
         if (value instanceof Map) {
             Map<String, Object> valueMap = (Map) value;
-            DvInterval<DvQuantity> dvInterval;
+//            DvInterval<DvQuantity> dvInterval;
             //do some "guess" of the type of the Interval (since it is a specialization of DvOrdered...)
+            //get the classname of the inner class
+            String innerClassName = attributes.containsKey(CompositionSerializer.INNER_CLASS_LIST) ?
+                    ((List<String>)attributes.get(CompositionSerializer.INNER_CLASS_LIST)).get(0) :
+                    "DvQuantity"; //default it to DvQuantity...
+
+            //get the instrumentalized class corresponding to the classname
+            Class clazz = VBeanUtil.findInstrumentalizedClass(innerClassName);
+
+            if (clazz == null)
+                throw new IllegalArgumentException("Could not find an instrument for class:"+innerClassName);
+
+            LinkedTreeMap attributeMap = new LinkedTreeMap();
+
             LinkedTreeMap lowerValueMap = ((LinkedTreeMap) ((LinkedTreeMap) valueMap.get("interval")).get("lower"));
+
+            attributeMap.put(CompositionSerializer.TAG_VALUE, lowerValueMap);
+            DvOrdered lower = (DvOrdered)VBeanUtil.getInstance(clazz, attributeMap);
+
+            LinkedTreeMap upperValueMap = ((LinkedTreeMap) ((LinkedTreeMap) valueMap.get("interval")).get("upper"));
+
+            attributeMap.put(CompositionSerializer.TAG_VALUE, upperValueMap);
+            DvOrdered upper = (DvOrdered)VBeanUtil.getInstance(clazz, attributeMap);
+
+            return new DvInterval(lower, upper);
+            /*
             if (lowerValueMap.containsKey("magnitude")){ //assumes DvInterval<DvQuantity>
                 Map lowerMap = new HashMap<String, Object>();
                 lowerMap.put(CompositionSerializer.TAG_VALUE, lowerValueMap);
@@ -120,7 +145,7 @@ public class DvIntervalVBean extends DataValueAdapter implements I_VBeanWrapper 
                 //dito for the upper values
                 LinkedTreeMap upperValueMap = ((LinkedTreeMap) ((LinkedTreeMap) valueMap.get("interval")).get("upper"));
                 Map upperMap = new HashMap<String, Object>();
-                upperMap.put(CompositionSerializer.TAG_VALUE, lowerValueMap);
+                upperMap.put(CompositionSerializer.TAG_VALUE, upperValueMap);
                 DvQuantity upperQuantity = DvQuantityVBean.getInstance(upperMap);
 
                 return new DvInterval(lowerQuantity, upperQuantity);
@@ -133,6 +158,7 @@ public class DvIntervalVBean extends DataValueAdapter implements I_VBeanWrapper 
             else {
                 log.warn("Could not identify Interval type:"+valueMap);
             }
+            */
         }
         throw new IllegalArgumentException("Could not get instance");
     }

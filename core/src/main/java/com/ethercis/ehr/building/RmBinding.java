@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.building;
 
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.openehr.am.template.TermMap;
 import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.SystemValue;
@@ -30,7 +31,6 @@ import org.openehr.rm.support.measurement.MeasurementService;
 import org.openehr.rm.support.measurement.SimpleMeasurementService;
 import org.openehr.rm.support.terminology.TerminologyAccess;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +59,17 @@ public abstract class RmBinding implements I_RmBinding {
     protected static final String FORMALISM = "formalism";
     protected static final String CHOICE = "$choice$";
     protected static final String ANY = "$any$";
+
+    //used for INTERVAL_EVENT
+    protected static final String DATA="data";
+    protected static final String ARCHETYPE_NODE_ID="archetype_node_id";
+    protected static final String NAME="name";
+    protected static final String MATH_FUNCTION="math_function";
+    protected static final String STATE="state";
+    protected static final String WIDTH="width";
+
+    //ISM_TRANSITION
+    protected static final String CAREFLOW_STEP="careflow_step";
 
     // default values
     protected static final String ID = "id";
@@ -91,7 +102,7 @@ public abstract class RmBinding implements I_RmBinding {
             DefaultedMap<SystemValue, Object> parameters = new DefaultedMap<>();
             parameters.putAll(map);
             systemValues.put(SystemValue.MEASUREMENT_SERVICE, parameters.get(SystemValue.MEASUREMENT_SERVICE, SimpleMeasurementService.getInstance()));
-            systemValues.put(SystemValue.TERMINOLOGY_SERVICE, parameters.get(SystemValue.TERMINOLOGY_SERVICE, SimpleTerminologyService.getInstance()));
+            systemValues.put(SystemValue.TERMINOLOGY_SERVICE, parameters.get(SystemValue.TERMINOLOGY_SERVICE, TerminologyServiceWrapper.getInstance()));
             terminologyService = (TerminologyService) systemValues.get(SystemValue.TERMINOLOGY_SERVICE);
             measurementService = (MeasurementService) systemValues.get(SystemValue.MEASUREMENT_SERVICE);
             openEHRTerminology = terminologyService.terminology(TerminologyService.OPENEHR);
@@ -108,7 +119,7 @@ public abstract class RmBinding implements I_RmBinding {
         } else { //use defaults
             measurementService = SimpleMeasurementService.getInstance();
             systemValues.put(SystemValue.MEASUREMENT_SERVICE, measurementService);
-            terminologyService = SimpleTerminologyService.getInstance();
+            terminologyService = TerminologyServiceWrapper.getInstance();
             openEHRTerminology = terminologyService.terminology(TerminologyService.OPENEHR);
             systemValues.put(SystemValue.TERMINOLOGY_SERVICE, terminologyService);
             systemValues.put(SystemValue.LANGUAGE, I_RmBinding.makeCodePhrase(DEFAULT_LANGUAGE));

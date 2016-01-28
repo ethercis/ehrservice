@@ -23,6 +23,7 @@ import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.dao.jooq.tables.records.*;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
@@ -46,7 +47,7 @@ import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.ObjectID;
 import org.openehr.rm.support.identification.PartyRef;
 import org.openehr.rm.support.terminology.TerminologyService;
-import org.openehr.terminology.SimpleTerminologyService;
+
 import org.postgresql.util.PGobject;
 
 import java.sql.*;
@@ -342,7 +343,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
     @Override
     public EventContext mapRmEventContext(){
 
-        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+        TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
 
         //get the facility entry
         PartyIdentifiedRecord partyIdentifiedRecord = context.fetchOne(PARTY_IDENTIFIED, PARTY_IDENTIFIED.ID.eq(eventContextRecord.getFacility()));
@@ -432,7 +433,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
         if (eventContextHistoryRecord == null) return null; //no matching version for this composition
 
 
-        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+        TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
 
         //get the facility entry
         PartyIdentified healthCareFacility = null;

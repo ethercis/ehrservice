@@ -17,7 +17,13 @@
 
 package com.ethercis.ehr.building.filter;
 
+import org.apache.commons.collections.ListUtils;
+import org.openehr.rm.composition.content.entry.ISMTransition;
 import org.openehr.schemas.v1.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by christian on 11/27/2015.
@@ -272,6 +278,15 @@ public class FilterOutNil {
         
         if (history.sizeOfEventsArray() == 1 && history.getEventsArray(0).isNil())
             return null;
+
+        List<EVENT> eventList = new ArrayList<EVENT>();
+
+        for (EVENT event: history.getEventsArray()) {
+            if (!event.isNil())
+                eventList.add(event);
+        }
+        EVENT[] events = eventList.toArray(new EVENT[0]);
+        history.setEventsArray(events);
         
         if (history.isSetSummary() && history.getSummary().isNil())
             history.unsetSummary();
@@ -298,7 +313,7 @@ public class FilterOutNil {
 
         for (int i = instruction.sizeOfActivitiesArray() - 1; i >= 0; i--){
             ACTIVITY activity = instruction.getActivitiesArray(i);
-            if (activity.isNil()) {
+            if (activity.isNil() || activity.getDescription().isNil()) {
                 instruction.removeActivities(i);
             }
         }
@@ -360,6 +375,17 @@ public class FilterOutNil {
         if (action.isSetGuidelineId() && action.getGuidelineId().isNil()){
             action.unsetGuidelineId();
         }
+        if (action.getIsmTransition() != null){
+            ISMTRANSITION ismTransition = action.getIsmTransition();
+            if (ismTransition.isSetCareflowStep()){
+                //check for DUMMY entry
+                DVCODEDTEXT careflow = ismTransition.getCareflowStep();
+                if (careflow.getValue().equals("DUMMY"))
+                    ismTransition.unsetCareflowStep();
+            }
+        }
+
+
         return action;
     }
 
@@ -378,6 +404,15 @@ public class FilterOutNil {
         }
 
         return activity;
+    }
+
+    public static EVENT filter(EVENT event){
+
+        //more cosmetic
+        if (event.isNil())
+            return null;
+
+        return event;
     }
     
     public static SECTION filter(SECTION section){

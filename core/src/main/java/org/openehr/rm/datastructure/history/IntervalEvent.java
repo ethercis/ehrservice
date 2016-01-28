@@ -130,15 +130,15 @@ public final class IntervalEvent<T extends ItemStructure> extends Event<T> {
 	IntervalEvent() {
 	}
 	
-	void setMathFunction(DvCodedText mathFunction) {
+	public void setMathFunction(DvCodedText mathFunction) {
 		this.mathFunction = mathFunction;
 	}
 
-	void setSampleCount(int sampleCount) {
+	public void setSampleCount(int sampleCount) {
 		this.sampleCount = sampleCount;
 	}
 
-	void setWidth(DvDuration width) {
+	public void setWidth(DvDuration width) {
 		this.width = width;
 	}
 	// POJO end
@@ -160,7 +160,8 @@ public final class IntervalEvent<T extends ItemStructure> extends Event<T> {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
+
 	/* fields */
 	private DvDuration width;
 	private DvCodedText mathFunction;

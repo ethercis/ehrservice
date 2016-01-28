@@ -99,11 +99,17 @@ public class MapInspector {
             Object object = map.get(CompositionSerializer.TAG_VALUE);
             if (object instanceof Participation) {
                 Participation participation = (Participation) object;
+
                 retMap.put(path + I_PathValue.PARTICIPATION_FUNCTION_SUBTAG, participation.getFunction().getValue());
                 PartyIdentified performer = (PartyIdentified) participation.getPerformer();
-                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, performer.getName());
-                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, performer.getExternalRef().getId().getValue());
-                retMap.put(path + I_PathValue.PARTICIPATION_MODE_SUBTAG, participation.getMode().toString());
+                if (performer!=null) {
+                    retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, performer.getName());
+                    if (performer.getExternalRef() != null)
+                        retMap.put(path + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, performer.getExternalRef().getId().getValue());
+                }
+                if (participation.getMode() != null)
+                     retMap.put(path + I_PathValue.PARTICIPATION_MODE_SUBTAG, participation.getMode().toString());
+
 
             }
             else if (object instanceof DvParsable)
@@ -136,6 +142,32 @@ public class MapInspector {
         return retMap;
     }
 
+    /**
+     * utility to list classnames when inner classes are specified
+     * @param className
+     * @return
+     */
+
+    public static List<String> listInnnerClasses(String className){
+        List<String> classList = new ArrayList<>();
+        extractInnerClass(classList, className);
+        return classList;
+    }
+
+    private static void extractInnerClass(List<String> classList, String className){
+
+        if (!className.contains("<")) {
+            classList.add(className);
+            return;
+        }
+
+        String outerClass = className.substring(0, className.indexOf("<"));
+        classList.add(outerClass);
+
+        String innerClassName = className.substring(className.indexOf("<")+1, className.lastIndexOf(">"));
+        extractInnerClass(classList, innerClassName);
+    }
+
     private void generateObject(Map<String, Object> attributes) throws Exception {
 
         if (attributes.containsKey(TAG_OBJECT) && attributes.get(TAG_OBJECT) != null) //the object may have been supplied depending on the context
@@ -150,7 +182,14 @@ public class MapInspector {
             throw new IllegalArgumentException("NULL class name found for attributes:"+attributes);
         }
 
-        className += "VBean";
+        if (className.contains("<")){
+            List<String> classList = listInnnerClasses(className);
+            className = classList.get(0)+"VBean";
+            //by convention we pass the list of inner classes to the getInstance() method of the ValueBean
+            attributes.put(CompositionSerializer.INNER_CLASS_LIST, classList.subList(1, classList.size()));
+        }
+        else
+            className += "VBean";
 
         Class clazz = Class.forName("com.ethercis.ehr.encode.wrappers."+className);
         Method method = clazz.getDeclaredMethod("getInstance", Map.class);

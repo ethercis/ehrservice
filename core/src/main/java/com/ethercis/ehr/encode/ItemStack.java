@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode;
 
 import org.apache.log4j.Logger;
+import org.openehr.rm.datatypes.text.DvText;
 
 import java.util.Stack;
 
@@ -38,7 +39,7 @@ public class ItemStack {
     public void pushStacks(String path, String name){
         //specify name/value for path in the format /something[openEHR-EHR-blablah...] for disambiguation
         log.debug("-- PUSH PATH:" + path +"::"+name);
-        if (path.contains("[openEHR-") || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS)){
+        if (path.contains("[openEHR-") || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS) || path.contains(CompositionSerializer.TAG_EVENTS)){
             //add name in path
 //            if (!name.contains("'"))
             if (name != null)
