@@ -1,5 +1,7 @@
 package com.ethercis.ehr.building;
 
+import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.DvDateTimeAdapter;
 import com.ethercis.ehr.keyvalues.EcisFlattener;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
@@ -16,13 +18,20 @@ import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.Flattener;
 import org.openehr.am.template.FlattenerNew;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.datastructure.itemstructure.ItemList;
+import org.openehr.rm.datastructure.itemstructure.ItemStructure;
+import org.openehr.rm.datastructure.itemstructure.ItemTree;
+import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -57,6 +66,66 @@ public class ContentBuilderTest extends TestCase {
         Composition composition = contentBuilder.generateNewComposition();
 
         assertNotNull(composition);
+    }
+
+    @Test
+    public void testOPTGenerateLocatable() throws Exception {
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "ECIS EVALUATION TEST");
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "person anonymised parent");
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "action test");
+
+        Locatable generated = contentBuilder.generate();
+
+        assertNotNull(generated);
+
+        byte[] exportXml = contentBuilder.exportCanonicalXML(generated, true, true);
+
+        assertNotNull(exportXml);
+
+        InputStream is = new FileInputStream(new File("/Development/Dropbox/eCIS_Development/samples/other_details.xml"));
+        Locatable itemStructure = I_ContentBuilder.parseOtherDetailsXml(is);
+
+        System.out.println("====================================================================================");
+        System.out.println(new String(exportXml));
+
+
+
+        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        Map<String, Object>retmap = inspector.processItem(CompositionSerializer.TAG_OTHER_DETAILS, generated);
+
+        //insert the template id
+        retmap.put("$TEMPLATE_ID$", "person anonymised parent");
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+        Gson gson = builder.setPrettyPrinting().create();
+        String mapjson = gson.toJson(retmap);
+
+        System.out.println("====================================================================================");
+        System.out.println(mapjson);
+
+        //use an anonymous contentbuilder
+
+        //retrieve the template id from the serialized map
+        Map structured = gson.fromJson(mapjson, Map.class);
+
+        contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, (String)structured.get("$TEMPLATE_ID$"));
+
+        //rebuild it from json
+        //get the archetype node id and name from the first line of the map
+//        String otherDetailsHeader = mapjson.substring(mapjson.indexOf("/other_details["), mapjson.indexOf("]")+1).replace("\\u003d", "=").replace("\\u0027", "'");
+//        String[] segments = otherDetailsHeader.split(" and name/value");
+//        String archetypeNodeId = segments[0].substring("/other_details[".length());
+//        String name = segments[1].substring(1, segments[1].lastIndexOf("'"));
+        Locatable locatable = contentBuilder.buildLocatableFromJson(mapjson);
+
+        assertNotNull(locatable);
+
+        String xml = new String(contentBuilder.exportCanonicalXML(locatable, true));
+
+        System.out.println("REBUILT ====================================================================================");
+        System.out.println(xml);
+
     }
 
     @Test

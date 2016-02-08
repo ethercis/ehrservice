@@ -19,7 +19,9 @@ package com.ethercis.ehr.building;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import openEHR.v1.template.TEMPLATE;
 import org.openehr.build.SystemValue;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.datastructure.itemstructure.ItemStructure;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 import java.io.InputStream;
@@ -96,7 +98,15 @@ public interface I_ContentBuilder {
 
     public Composition generateNewComposition() throws Exception;
 
+    public Locatable generate() throws Exception;
+
     void setEntryData(Composition composition) throws Exception;
+
+    byte[] exportCanonicalXML(Locatable locatable, boolean prettyPrint) throws Exception;
+
+    byte[] exportCanonicalXML(Composition composition, boolean prettyPrint, boolean anyElement) throws Exception;
+
+    byte[] exportCanonicalXML(Locatable locatable, boolean prettyPrint, boolean anyElement) throws Exception;
 
     Composition buildCompositionFromJson(String jsonData) throws Exception;
 
@@ -109,10 +119,14 @@ public interface I_ContentBuilder {
     byte[] exportCanonicalXML(Composition composition, boolean prettyPrint) throws Exception;
 
     static byte[] exportCanonicalXML(Composition composition) throws Exception {
-        return ContentBuilder.canonicalExporter(composition, true);
+        return ContentBuilder.canonicalExporter(composition, true, false);
     }
 
+    Locatable buildLocatableFromJson(String jsonData) throws Exception;
+
     void bindOtherContextFromJson(Composition composition, String jsonData) throws Exception;
+
+    void bindItemStructureFromJson(ItemStructure itemStructure, String jsonData) throws Exception;
 
     String getEntry();
 
@@ -123,4 +137,8 @@ public interface I_ContentBuilder {
     Composition getComposition();
 
     public void setCompositionParameters(Map<SystemValue, Object> values);
+
+    public static Locatable parseOtherDetailsXml(InputStream inputStream) throws Exception {
+        return ContentBuilder.parseOtherDetailsXML(inputStream);
+    }
 }

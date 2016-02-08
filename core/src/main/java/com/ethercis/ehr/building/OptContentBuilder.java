@@ -18,6 +18,7 @@ package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import org.openehr.build.SystemValue;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
@@ -71,6 +72,35 @@ public class OptContentBuilder extends ContentBuilder {
         }
         else
             throw new IllegalArgumentException("Retrieved object from template is not a valid composition (template id:"+templateId+")");
+
+    }
+
+    @Override
+    public Locatable generate() throws Exception {
+
+        if (knowledge.cacheContainsLocatable(templateId)){
+            return retrieveCache(templateId);
+        }
+
+        if (operationaltemplate == null) {
+            Object template = knowledge.retrieveTemplate(templateId);
+            if (template instanceof OPERATIONALTEMPLATE)
+                operationaltemplate = (OPERATIONALTEMPLATE)template;
+            else
+                throw new IllegalArgumentException("Cached template for id:"+templateId+", is not an operational template");
+        }
+
+        if (operationaltemplate == null)
+            throw new IllegalArgumentException("Could not retrieve operational template:"+templateId);
+
+        OptBinding optBinding = (values == null ? new OptBinding() : new OptBinding(values));
+        Object generated =  optBinding.generate(operationaltemplate);
+
+        if (!(generated instanceof Locatable))
+            throw new IllegalArgumentException("Generated object is not a Locatable");
+
+        return (Locatable)generated;
+
 
     }
 

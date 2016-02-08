@@ -6,11 +6,20 @@ import com.ethercis.dao.access.jooq.PartyIdentifiedAccess;
 import com.ethercis.dao.access.support.AccessTestCase;
 import com.ethercis.dao.access.support.RmObjectHelper;
 import com.ethercis.dao.access.support.TestHelper;
+import com.ethercis.dao.jooq.tables.*;
+import com.ethercis.ehr.building.I_ContentBuilder;
 import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.datastructure.itemstructure.ItemStructure;
+import org.openehr.schemas.v1.ITEMSTRUCTURE;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.System;
 import java.util.Map;
 import java.util.UUID;
 
@@ -176,6 +185,52 @@ public class EhrAccessTest extends AccessTestCase {
         compositionAccess.update();
 
         //delete Ehr
+        ehrAccess.delete();
+
+        ehrAccess = I_EhrAccess.retrieveInstance(testDomainAccess, ehrId);
+
+        assertNull(ehrAccess);
+
+        I_SystemAccess.delete(testDomainAccess, systemId);
+        I_PartyIdentifiedAccess.retrieveInstance(testDomainAccess, patientId).delete();
+        I_PartyIdentifiedAccess.retrieveInstance(testDomainAccess, committerId).delete();
+    }
+
+    /**
+     * test other details in ehr status
+     * @throws Exception
+     */
+    public void testCUD_4() throws Exception {
+        String otherDetailsTemplateId = "person anonymised parent";
+        UUID systemId = TestHelper.createDummySystem(testDomainAccess);
+        UUID patientId = TestHelper.createDummyPatient(testDomainAccess);
+        UUID committerId = TestHelper.createDummyCommitter(testDomainAccess);
+
+        InputStream is = new FileInputStream(new File("/Development/Dropbox/eCIS_Development/samples/other_details.xml"));
+
+
+        I_EhrAccess ehrAccess = I_EhrAccess.getInstance(testDomainAccess,
+                patientId,
+                systemId,
+                null,
+                null);
+
+        Locatable otherDetails = I_ContentBuilder.parseOtherDetailsXml(is);
+
+        ehrAccess.setOtherDetails(otherDetails, otherDetailsTemplateId);
+        UUID ehrId = ehrAccess.commit();
+
+        //check if deleting ehr effectively delete the contribution and its version record
+
+        ehrAccess = I_EhrAccess.retrieveInstance(testDomainAccess, ehrId);
+
+        //display the retrieved other_details
+        String exportedXml = ehrAccess.exportOtherDetailsXml();
+        if (exportedXml != null) {
+            System.out.println(exportedXml);
+        }
+
+         //delete Ehr
         ehrAccess.delete();
 
         ehrAccess = I_EhrAccess.retrieveInstance(testDomainAccess, ehrId);

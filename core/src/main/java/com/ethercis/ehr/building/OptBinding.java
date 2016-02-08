@@ -99,7 +99,7 @@ public class OptBinding extends RmBinding {
 		}
 	}
 
-	private void addItermStructureValues(Map<String, Object> valueMap, CARCHETYPEROOT archetypeRoot) throws Exception {
+	private void addItemStructureValues(Map<String, Object> valueMap, CARCHETYPEROOT archetypeRoot) throws Exception {
 
 		if (!valueMap.containsKey("archetype_details")) {
 			ArchetypeID arId = new ArchetypeID(archetypeRoot.getArchetypeId().getValue());
@@ -806,11 +806,11 @@ public class OptBinding extends RmBinding {
 			if (list != null && list.isEmpty()) {
 				valueMap.remove("items");
 			}
-			addItermStructureValues(valueMap, (CARCHETYPEROOT) ccobj);
+			addItemStructureValues(valueMap, (CARCHETYPEROOT) ccobj);
 
 		} else if ("CLUSTER".equals(rmTypeName)) {
 			if (ccobj instanceof CARCHETYPEROOT)
-				addItermStructureValues(valueMap, (CARCHETYPEROOT) ccobj);
+				addItemStructureValues(valueMap, (CARCHETYPEROOT) ccobj);
 		}
 		else if ("INTERVAL_EVENT".equals(rmTypeName)){
 			if (!valueMap.containsKey(ARCHETYPE_NODE_ID))

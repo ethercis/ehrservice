@@ -18,7 +18,10 @@ package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.EhrAccess;
 import com.ethercis.dao.access.util.ContributionDef;
+import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.datastructure.itemstructure.ItemStructure;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,6 +48,8 @@ public interface I_EhrAccess extends I_SimpleCRUD<I_EhrAccess, UUID > {
     public static I_EhrAccess getInstance(I_DomainAccess domain, UUID partyId, UUID systemId, UUID directoryId, UUID accessId) throws Exception {
         return new EhrAccess(domain.getContext(), partyId, systemId, directoryId, accessId);
     }
+
+    public static final String TAG_TEMPLATE_ID = "$TEMPLATE_ID$"; //used to serialize template id in json structure
 
     void setModifiable(Boolean modifiable);
 
@@ -189,4 +194,21 @@ public interface I_EhrAccess extends I_SimpleCRUD<I_EhrAccess, UUID > {
     UUID getDirectoryId();
 
     UUID getAccessId();
+
+    void setContributionAccess(I_ContributionAccess contributionAccess);
+
+    void setOtherDetails(Locatable otherDetails, String templateId);
+
+    Locatable getOtherDetails();
+
+    String getOtherDetailsTemplateId();
+
+    /**
+     * utility to export other_details as canonical xml
+     * @return
+     * @throws Exception
+     */
+    String exportOtherDetailsXml() throws Exception;
+
+    boolean isSetOtherDetails();
 }

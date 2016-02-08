@@ -23,11 +23,24 @@ import com.ethercis.dao.jooq.enums.ContributionDataType;
 import com.ethercis.dao.jooq.tables.records.EhrRecord;
 import com.ethercis.dao.jooq.tables.records.IdentifierRecord;
 import com.ethercis.dao.jooq.tables.records.StatusRecord;
+import com.ethercis.ehr.building.I_ContentBuilder;
+import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
 import org.jooq.Record;
+import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.datastructure.itemstructure.ItemStructure;
+import org.openehr.rm.datastructure.itemstructure.ItemTree;
+import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.postgresql.util.PGobject;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -43,10 +56,15 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
     private StatusRecord statusRecord = null;
     private static boolean isNew = false;
 
+    //holds the non serialized archetyped other_details structure
+    private Locatable otherDetails = null;
+    private String otherDetailsTemplateId;
+
     private I_ContributionAccess contributionAccess = null; //locally referenced contribution associated to ehr transactions
 
     //set this variable to change the identification  mode in status
     private PARTY_MODE party_identifier = PARTY_MODE.EXTERNAL_REF;
+
 
     public enum PARTY_MODE {IDENTIFIER, EXTERNAL_REF}
 
@@ -96,6 +114,17 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         contributionAccess.setState(ContributionDef.ContributionState.COMPLETE);
     }
 
+    private String serializeOtherDetails() throws Exception {
+        CompositionSerializer serializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        Map<String, Object>retmap = serializer.processItem(CompositionSerializer.TAG_OTHER_DETAILS, otherDetails);
+        //the template id is encoded into the json structure
+        retmap.put(TAG_TEMPLATE_ID, otherDetailsTemplateId);
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+        Gson gson = builder.setPrettyPrinting().create();
+        return gson.toJson(retmap);
+    }
+
     @Override
     public void setAccess(UUID access) {
         ehrRecord.setAccess(access);
@@ -129,8 +158,37 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         ehrRecord.store();
 
         if (isNew && statusRecord != null) {
+            String sql = "INSERT INTO ehr.status (ehr_id, is_queryable, is_modifiable, party, other_details, sys_transaction) " +
+                    "VALUES (?, ?, ?, ?, ?::jsonb, ?)" +
+                    " RETURNING id";
+
             statusRecord.setSysTransaction(transactionTime);
-            statusRecord.store();
+
+            Connection connection = context.configuration().connectionProvider().acquire();
+            PreparedStatement insertStatement = connection.prepareStatement(sql);
+            insertStatement.setObject(1, ehrRecord.getId());
+            insertStatement.setBoolean(2, statusRecord.getIsQueryable());
+            insertStatement.setBoolean(3, statusRecord.getIsModifiable());
+            insertStatement.setObject(4, statusRecord.getParty());
+
+            if (otherDetails != null) {
+                insertStatement.setObject(5, serializeOtherDetails());
+            }
+            else
+                insertStatement.setObject(5, null);
+
+            insertStatement.setTimestamp(6, statusRecord.getSysTransaction());
+            ResultSet resultSet = insertStatement.executeQuery();
+
+            String retval  = null;
+
+            if (resultSet != null && resultSet.next()){
+                retval = resultSet.getString(1);
+            }
+
+            if (retval == null)
+                throw new IllegalArgumentException("Could not store Ehr Status");
+//            statusRecord.store();
         }
 
         return ehrRecord.getId();
@@ -166,8 +224,30 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         boolean result = false;
 
         if (force || statusRecord.changed()){
+            String sql = "UPDATE ehr.status SET " +
+                    "is_queryable = ?, " +
+                    "is_modifiable = ?," +
+                    "party = ?, " +
+                    "other_details = ?::jsonb, " +
+                    "sys_transaction = ? " +
+                    "WHERE id = ? ";
+
             statusRecord.setSysTransaction(transactionTime);
-            result |= statusRecord.update() > 0;
+            Connection connection = context.configuration().connectionProvider().acquire();
+            PreparedStatement updateStatement = connection.prepareStatement(sql);
+            updateStatement.setBoolean(1, statusRecord.getIsQueryable());
+            updateStatement.setBoolean(2, statusRecord.getIsModifiable());
+            updateStatement.setObject(3, statusRecord.getParty());
+
+            if (otherDetails != null) {
+                updateStatement.setObject(4, serializeOtherDetails());
+            }
+
+            updateStatement.setTimestamp(5, statusRecord.getSysTransaction());
+            updateStatement.setObject(6, statusRecord.getId());
+
+//            result |= statusRecord.update() > 0;
+            result |= updateStatement.execute();
         }
 
         if (force || ehrRecord.changed()){
@@ -404,6 +484,31 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         ehrAccess.ehrRecord = (EhrRecord)record;
         //retrieveInstanceByNamedSubject the corresponding status
         ehrAccess.statusRecord = context.fetchOne(STATUS, STATUS.EHR_ID.eq(ehrRecord.getId()));
+
+        //rebuild otherDetails
+        if (ehrAccess.statusRecord.getOtherDetails() != null){
+            String serialized = ((PGobject) ehrAccess.statusRecord.getOtherDetails()).getValue();
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+
+            Map structured = gson.fromJson(serialized, Map.class);
+
+            if (!structured.containsKey(I_EhrAccess.TAG_TEMPLATE_ID))
+                throw new IllegalArgumentException("Serialized other details does not contain its template Id");
+
+            ehrAccess.otherDetailsTemplateId = (String)structured.get(I_EhrAccess.TAG_TEMPLATE_ID);
+
+            //identify the template name
+            I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, domainAccess.getKnowledgeManager(), ehrAccess.otherDetailsTemplateId);
+            Locatable locatable = contentBuilder.buildLocatableFromJson(serialized);
+
+            if (locatable instanceof ItemStructure)
+                ehrAccess.otherDetails = (ItemStructure)locatable;
+            else
+                throw new IllegalArgumentException("Retrieved structure in other details is not an ItemStructure");
+        }
+
         ehrAccess.isNew = false;
 
         //retrieve the current contribution for this ehr
@@ -557,11 +662,48 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         return ehrRecord.getAccess();
     }
 
+    @Override
     public void setContributionAccess(I_ContributionAccess contributionAccess) {
         this.contributionAccess = contributionAccess;
+    }
+    
+    @Override
+    public void setOtherDetails(Locatable otherDetails, String templateId){
+        this.otherDetailsTemplateId = templateId;
+        this.otherDetails = otherDetails;
+    }
+
+    @Override
+    public Locatable getOtherDetails(){
+        return otherDetails;
+    }
+
+    @Override
+    public String getOtherDetailsTemplateId() {
+        return otherDetailsTemplateId;
     }
 
     public I_ContributionAccess getContributionAccess() {
         return contributionAccess;
+    }
+
+    @Override
+    public String exportOtherDetailsXml() throws Exception {
+        if (otherDetails != null) {
+            I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(getKnowledgeManager(), otherDetailsTemplateId);
+            String xml = new String(contentBuilder.exportCanonicalXML(otherDetails, true));
+            //cosmetic
+            xml = xml.replaceAll("frag:fragment", "items");
+            xml = xml.replace("xmlns:frag=\"http://www.openuri.org/fragment\"", "");
+            return xml;
+
+        }
+        else
+            return null;
+    }
+
+    @Override
+    public boolean isSetOtherDetails(){
+        return otherDetails != null;
     }
 }

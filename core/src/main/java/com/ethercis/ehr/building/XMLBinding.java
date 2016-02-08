@@ -54,6 +54,7 @@ import java.util.*;
  */
 public class XMLBinding {
 	Logger log = Logger.getLogger(XMLBinding.class);
+	boolean anyElement = false;
 	
 	public XMLBinding(Map<SystemValue, Object> values) {
 		if (values == null) {
@@ -63,6 +64,12 @@ public class XMLBinding {
 	}
 
 	public XMLBinding() {
+		this(false);
+	}
+
+
+	public XMLBinding(boolean anyElement) {
+		this.anyElement = anyElement;
 		TerminologyService terminologyService;
 		try {
 			terminologyService = TerminologyServiceWrapper.getInstance();
@@ -99,7 +106,7 @@ public class XMLBinding {
         //take the wrapped item element for an ElementWrapper
         if (obj instanceof ElementWrapper){
             ElementWrapper wrapper = (ElementWrapper) obj;
-            if (wrapper.dirtyBitSet())
+            if (anyElement || wrapper.dirtyBitSet())
                 obj = wrapper.getAdaptedElement();
             else
                 return null;

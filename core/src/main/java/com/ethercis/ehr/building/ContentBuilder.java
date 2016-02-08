@@ -29,6 +29,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -51,10 +53,11 @@ import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.LocatableRef;
 import org.openehr.rm.support.identification.ObjectRef;
-import org.openehr.schemas.v1.COMPOSITION;
-import org.openehr.schemas.v1.CompositionDocument;
+import org.openehr.schemas.v1.*;
 import org.openehr.schemas.v1.impl.COMPOSITIONImpl;
+import org.openehr.schemas.v1.impl.ITEMTREEImpl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -498,13 +501,30 @@ public abstract class ContentBuilder implements I_ContentBuilder{
      */
     @Override
     public byte[] exportCanonicalXML(Composition composition, boolean prettyPrint) throws Exception {
-        return canonicalExporter(composition, prettyPrint);
+        return canonicalExporter(composition, prettyPrint, false);
     }
+
+    @Override
+    public byte[] exportCanonicalXML(Composition composition, boolean prettyPrint, boolean anyElement) throws Exception {
+        return canonicalExporter(composition, prettyPrint, anyElement);
+    }
+
+    @Override
+    public byte[] exportCanonicalXML(Locatable locatable, boolean prettyPrint) throws Exception {
+        return canonicalExporter(locatable, prettyPrint, false);
+    }
+
+    @Override
+    public byte[] exportCanonicalXML(Locatable locatable, boolean prettyPrint, boolean anyElement) throws Exception {
+        return canonicalExporter(locatable, prettyPrint, anyElement);
+    }
+
 
     public static final String SCHEMA_XSI = "http://www.w3.org/2001/XMLSchema-instance";
     public static final String SCHEMA_OPENEHR_ORG_V1 = "http://schemas.openehr.org/v1";
 
-    public static byte[] canonicalExporter(Composition composition, boolean prettyPrint){
+
+    public static byte[] canonicalExporter(Composition composition, boolean prettyPrint, boolean anyElement){
         byte[] data = null;
         //generate an XML representation of the current composition
         if (composition == null){
@@ -515,7 +535,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //            XStream xStream = new XStream();
 //            String xml = xStream.toXML(composition); // this does not marshal consistently with XmlBeans...
 
-            XMLBinding xmlBinding = new XMLBinding();
+            XMLBinding xmlBinding = new XMLBinding(anyElement);
             Object object = xmlBinding.bindToXML(composition, true);
 
             if (!(object instanceof COMPOSITIONImpl))
@@ -555,6 +575,94 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         return data;
     }
 
+
+    private static SchemaType implyClass(LOCATABLE anItem){
+        String archetypeNodeId = anItem.getArchetypeNodeId();
+        String rmClassName = archetypeNodeId.substring("openEHR-EHR-".length(), archetypeNodeId.indexOf("."));
+
+        switch (rmClassName){
+            case "ITEM_TREE":
+                return ITEMTREE.type;
+            case "ITEM_SINGLE":
+                return ITEMSINGLE.type;
+            case "ITEM_TABLE":
+                return ITEMTABLE.type;
+            case "ITEM_LIST":
+                return ITEMLIST.type;
+            case "CLUSTER":
+                return CLUSTER.type;
+            case "ELEMENT":
+                return ELEMENT.type;
+            default:
+                throw new IllegalArgumentException("Could not imply class:"+rmClassName);
+        }
+    }
+
+    public static Locatable parseOtherDetailsXML(InputStream otherDetailsXmlStream) throws Exception {
+        ItemsDocument items =  ItemsDocument.Factory.parse(otherDetailsXmlStream);
+        XMLBinding binding = new XMLBinding();
+        LOCATABLE locatable = items.getItems();
+        SchemaType itemType = implyClass(locatable);
+        Object rmObj = binding.bindToRM(locatable.changeType(itemType));
+        if (rmObj instanceof Locatable)
+            return (Locatable)rmObj;
+        else
+            throw new IllegalArgumentException("Generated object is not a Locatable:"+rmObj);
+    }
+
+
+    public static byte[] canonicalExporter(Locatable locatable, boolean prettyPrint, boolean anyElement){
+        byte[] data = null;
+        //generate an XML representation of the current composition
+        if (locatable == null){
+            throw new IllegalArgumentException("No locatable given (locatable == null)");
+        }
+
+        try {
+//            XStream xStream = new XStream();
+//            String xml = xStream.toXML(composition); // this does not marshal consistently with XmlBeans...
+
+            XMLBinding xmlBinding = new XMLBinding(anyElement);
+            Object object = xmlBinding.bindToXML(locatable, false);
+
+            XmlOptions xmlOptions = new XmlOptions();
+            xmlOptions.setUseDefaultNamespace();
+            HashMap<String, String> uriToPrefixMap = new HashMap<String, String>();
+//		    uriToPrefixMap.put(SCHEMA_XSI, "xsi");
+            uriToPrefixMap.put("", SCHEMA_OPENEHR_ORG_V1);
+            xmlOptions.setLoadSubstituteNamespaces(uriToPrefixMap);
+            xmlOptions.setSaveAggressiveNamespaces();
+            xmlOptions.setSaveNamespacesFirst();
+            xmlOptions.setSaveOuter();
+
+            if (prettyPrint) {
+                xmlOptions.setSavePrettyPrint();
+                xmlOptions.setSavePrettyPrintIndent(4);
+            }
+
+            xmlOptions.setDocumentType(CompositionDocument.type);
+
+            xmlOptions.setSaveUseOpenFrag();
+
+            if (object != null) {
+                String xml = ((LOCATABLE) object).xmlText(xmlOptions);
+
+                try {
+                    data = xml.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            else //empty object...
+                return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+
     protected MapInspector getMapInspector(String jsonData) throws Exception {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
@@ -569,6 +677,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         return inspector;
     }
 
+    @Override
     public Composition buildCompositionFromJson(String jsonData) throws Exception {
         MapInspector inspector = getMapInspector(jsonData);
 
@@ -590,11 +699,41 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     }
 
     @Override
+    public Locatable buildLocatableFromJson(String jsonData) throws Exception {
+        MapInspector inspector = getMapInspector(jsonData);
+
+        //TODO: use a cache mechanism for generated composition
+        //time measured is about 250 ms to generate the composition and 15ms to set the values...
+        long start = System.nanoTime();
+        Locatable newLocatable = this.generate(); //will use the corresponding class instance generator
+        long end = System.nanoTime();
+
+        log.debug("generate locatable [ms]:"+(end - start)/1000000);
+
+        start = System.nanoTime();
+        if (newLocatable instanceof ItemStructure)
+            assignValuesFromStack((ItemStructure)newLocatable, (ArrayDeque) inspector.getStack());
+        else
+            throw new IllegalArgumentException("Could not handle locatable:"+newLocatable);
+        end = System.nanoTime();
+
+        log.debug("set values [ms]:"+(end - start)/1000000);
+
+        return newLocatable;
+    }
+
+    @Override
     public void bindOtherContextFromJson(Composition composition, String jsonData) throws Exception {
         if (jsonData == null || composition == null)
             return;
         MapInspector inspector = getMapInspector(jsonData);
         assignValuesFromStack(composition.getContext().getOtherContext(), (ArrayDeque) inspector.getStack());
+    }
+
+    @Override
+    public void bindItemStructureFromJson(ItemStructure itemStructure, String jsonData) throws Exception {
+        MapInspector inspector = getMapInspector(jsonData);
+        assignValuesFromStack(itemStructure, (ArrayDeque) inspector.getStack());
     }
 
     protected void storeCache(String id, Composition composition) throws Exception {

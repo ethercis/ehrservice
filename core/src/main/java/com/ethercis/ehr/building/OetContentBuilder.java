@@ -21,6 +21,7 @@ import openEHR.v1.template.TEMPLATE;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.FlattenerNew;
 import org.openehr.build.SystemValue;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 
 import java.util.Map;
@@ -70,6 +71,11 @@ public class OetContentBuilder extends ContentBuilder {
         }
 
         return newComposition;
+    }
+
+    @Override
+    public Locatable generate() throws Exception {
+        throw new IllegalArgumentException("Not implemented");
     }
 
 }
