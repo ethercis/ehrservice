@@ -22,6 +22,7 @@ import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.EventContext;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.DvCodedText;
+import org.openehr.rm.support.identification.GenericID;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.PartyRef;
 import org.openehr.rm.support.terminology.TerminologyService;
@@ -32,7 +33,8 @@ import org.openehr.rm.support.terminology.TerminologyService;
 public class ContextHelper {
 
     public static EventContext createDummyContext() throws Exception {
-        PartyRef partyRef = new PartyRef(new HierObjectID("ref"), CompositionAttributesHelper.DEMOGRAPHIC, CompositionAttributesHelper.PARTY);
+//        PartyRef partyRef = new PartyRef(new HierObjectID("ref"), CompositionAttributesHelper.DEMOGRAPHIC, CompositionAttributesHelper.PARTY);
+        PartyRef partyRef = new PartyRef(new GenericID("123456-123", "ETHERCIS-SCHEME"), CompositionAttributesHelper.DEMOGRAPHIC, CompositionAttributesHelper.PARTY);
         PartyIdentified healthcareFacility = new PartyIdentified(partyRef, "FACILITY", null);
         DateTime timenow = DateTime.now();
         DvCodedText concept = new DvCodedText("Other Care", "openehr", "238");

@@ -19,6 +19,7 @@ package com.ethercis.ehr.keyvalues;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.util.MapInspector;
 import org.apache.commons.collections4.iterators.PeekingIterator;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
@@ -39,6 +40,20 @@ public class EcisFlattener implements I_EcisFlattener {
         Map<String, Object>retmap = inspector.process(composition);
 
         return generateEcisFlat(composition, retmap);
+    }
+
+    public static Map<String, String> renderFlat(Locatable locatable) throws Exception {
+        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, Object>retmap = inspector.processItem(locatable);
+
+        return generateEcisFlat(retmap);
+    }
+
+    public static Map<String, String> renderFlat(Locatable locatable, boolean allElements, CompositionSerializer.WalkerOutputMode mode) throws Exception {
+        CompositionSerializer inspector = new CompositionSerializer(mode, allElements);
+        Map<String, Object>retmap = inspector.processItem(locatable);
+
+        return generateEcisFlat(retmap);
     }
 
     public static Map<String, String> renderFlat(Composition composition, boolean allElements, CompositionSerializer.WalkerOutputMode mode) throws Exception {
@@ -155,4 +170,12 @@ public class EcisFlattener implements I_EcisFlattener {
 
     }
 
+    private static Map<String, String> generateEcisFlat(Map<String, Object> locatableMap) throws Exception {
+        MapInspector mapInspector = new MapInspector();
+        mapInspector.inspect(locatableMap);
+        Map<String, String> flatten = mapInspector.getStackFlatten();
+
+        return vacuum(flatten);
+//        return flatten;
+    }
 }

@@ -20,6 +20,7 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.openehr.rm.datatypes.quantity.DvInterval;
+import org.openehr.rm.datatypes.quantity.DvQuantified;
 import org.openehr.rm.datatypes.quantity.DvQuantity;
 import org.openehr.rm.support.basic.Interval;
 
@@ -124,6 +125,12 @@ public class DvQuantityVBean extends DataValueAdapter implements I_VBeanWrapper 
     }
 
     public static DvQuantity generate(){
-        return new DvQuantity(0D);
+        DvQuantity dvQuantity = new DvQuantity("kg", 0D, 0);
+        return dvQuantity;
+    }
+
+    public static DvQuantity increment(DvQuantity quantity){
+        DvQuantified<DvQuantity> newQuantity = new DvQuantity(1D);
+        return (DvQuantity)quantity.add(newQuantity);
     }
 }

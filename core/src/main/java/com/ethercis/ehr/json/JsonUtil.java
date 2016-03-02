@@ -16,6 +16,8 @@
  */
 package com.ethercis.ehr.json;
 
+import com.ethercis.ehr.encode.JodaPeriodAdapter;
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -25,6 +27,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.ValueNode;
+import org.joda.time.Period;
 import org.jooq.tools.json.JSONValue;
 import org.jooq.tools.json.ParseException;
 import org.openehr.rm.composition.Composition;
@@ -48,8 +51,12 @@ public class JsonUtil {
 	 * @return
 	 */
 	public static String toJsonString(Object c) {
-		Gson json = new GsonBuilder().setPrettyPrinting().create();
-		return json.toJson(c);		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		Converters.registerDateTime(gsonBuilder);
+		Converters.registerDuration(gsonBuilder);
+		gsonBuilder.registerTypeAdapter(Period.class, new JodaPeriodAdapter());
+		Gson json = gsonBuilder.setPrettyPrinting().create();
+		return json.toJson(c);
 	}
 
     private static String serializeComposition(Composition composition) throws IOException {

@@ -16,9 +16,11 @@
  */
 package com.ethercis.ehr.keyvalues;
 
+import com.ethercis.ehr.building.ContentBuilder;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.FieldUtil;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.*;
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
@@ -28,6 +30,7 @@ import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.util.LocatableHelper;
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
@@ -47,6 +50,7 @@ import org.openehr.rm.datatypes.encapsulated.DvParsable;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
+import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.UIDBasedID;
 import org.openehr.rm.support.terminology.TerminologyService;
 
@@ -491,17 +495,105 @@ public class PathValue implements I_PathValue {
                 DvParsable dvParsable = new DvParsable(value, "*");
                 activity.setTiming(dvParsable);
                 break;
+            case ACTIVITY_ARCHETYPE_ID:
+                activity.setActionArchetypeId(value);
+                break;
             default:
                 log.warn("ACTIVITY attribute is not handled:"+attribute);
 
         }
     }
 
+
+    private DataValue assignElementValue(ElementWrapper elementWrapper, String valueToParse) throws Exception {
+
+        I_VBeanWrapper adapted = null;
+        DataValue parsed;
+
+        if (elementWrapper instanceof ChoiceElementWrapper) {
+            adapted = ((ChoiceElementWrapper) elementWrapper).getAdaptedValue(valueToParse);
+            parsed = (DataValue)adapted.getAdaptee();
+        }
+        else if (elementWrapper instanceof AnyElementWrapper) {
+            adapted = ((AnyElementWrapper) elementWrapper).getAdaptedValue(valueToParse);
+            parsed = (DataValue)adapted.getAdaptee();
+        }
+        else {
+            adapted = ElementWrapper.getAdaptedValue(elementWrapper);
+            if (adapted instanceof DvCodedTextVBean)
+                parsed = (DataValue) adapted.parse(valueToParse, defaultTerminologyLocal);
+            else
+                parsed = (DataValue) adapted.parse(valueToParse);
+        }
+
+        if (adapted == null || parsed == null)
+            throw new IllegalArgumentException("Could not identify an adapted value for element:"+elementWrapper);
+
+        DataValueConstraints constraints = elementWrapper.getConstraints();
+
+        if (constraints != null && !constraints.validate(parsed)) {
+            String description = constraints.getDescription();
+            String nodeId = elementWrapper.getAdaptedElement().getArchetypeNodeId();
+            String name = elementWrapper.getAdaptedElement().getName().getValue();
+            throw new IllegalArgumentException("Parsed value for [" + nodeId + "," + name + "]" + ", '" + description + "' is not valid, found: " + parsed.toString());
+        }
+        return parsed;
+    }
+
+    private DataValue assignElementValue(ElementWrapper elementWrapper, Map<String, String> attributeSet) throws Exception {
+
+        I_VBeanWrapper adapted = null;
+        DataValue parsed;
+
+        if ((attributeSet.size() == 1 || (attributeSet.size() == 2 && attributeSet.containsKey("name"))) && attributeSet.containsKey("value")){ //single value can be parsed
+            return assignElementValue(elementWrapper, attributeSet.get("value"));
+        }
+
+//        if (elementWrapper instanceof ChoiceElementWrapper) {
+//            adapted = ((ChoiceElementWrapper) elementWrapper).getAdaptedValue(valueToParse);
+//            parsed = (DataValue)adapted.getAdaptee();
+//        }
+//        else if (elementWrapper instanceof AnyElementWrapper) {
+//            adapted = ((AnyElementWrapper) elementWrapper).getAdaptedValue(valueToParse);
+//            parsed = (DataValue)adapted.getAdaptee();
+//        }
+//        else {
+        adapted = ElementWrapper.getAdaptedValue(elementWrapper);
+        //generate a corresponding dummy adapted dummy element
+        Class adaptedClass = adapted.getClass();
+        Method generateDummy = adaptedClass.getDeclaredMethod("generate", null);
+        Map<String, Object> valueMap = FieldUtil.getAttributes(generateDummy.invoke(null, null));
+
+        Class adaptedElementValueClass = elementWrapper.getAdaptedElement().getValue().getClass();
+        parsed = (DataValue)PathValue.decodeValue(adaptedElementValueClass.getSimpleName(), FieldUtil.flatten(valueMap), attributeSet);
+//        }
+
+        if (adapted == null || parsed == null)
+            throw new IllegalArgumentException("Could not identify an adapted value for element:"+elementWrapper);
+
+        DataValueConstraints constraints = elementWrapper.getConstraints();
+
+        if (constraints != null && !constraints.validate(parsed)) {
+            String description = constraints.getDescription();
+            String nodeId = elementWrapper.getAdaptedElement().getArchetypeNodeId();
+            String name = elementWrapper.getAdaptedElement().getName().getValue();
+            throw new IllegalArgumentException("Parsed value for [" + nodeId + "," + name + "]" + ", '" + description + "' is not valid, found: " + parsed.toString());
+        }
+        return parsed;
+    }
+
     public boolean assignItemStructure(String filterTag, Locatable locatable, Map<String, String> pathValues) throws Exception {
 
         boolean modified = false;
 
-        for (final String path: pathValues.keySet()) {
+        SortedMap<String, String> sortedMap = new TreeMap<>();
+        sortedMap.putAll(pathValues);
+        String[] keySetArray = sortedMap.keySet().toArray(new String[]{});
+        Map<String, String> attributeSet = null;
+
+        for (int pathIterator = 0; pathIterator < sortedMap.keySet().size(); pathIterator++) {
+
+            String path = keySetArray[pathIterator];
 
             if (path != null && !path.startsWith(filterTag))
                 continue;
@@ -513,6 +605,27 @@ public class PathValue implements I_PathValue {
             String attribute = null;
             String attributeKey = null;
             String locatablePath = path;
+
+            //identify if this path consists of composite attributes: ex. <path...>[at00xy]|attribute1
+            if (locatablePath.contains("]|")){
+                attributeSet = new HashMap<>();
+                String[] segments = path.split("\\]\\|");
+                locatablePath = segments[0]+"]";
+                attribute = segments[1];
+                attributeSet.put(attribute, sortedMap.get(path));
+
+                //if composite value set get the map of attributes with their value
+                int j = pathIterator + 1; //look ahead
+                while (j < keySetArray.length && keySetArray[j].contains(locatablePath) && keySetArray[j].contains("]|")) {
+                    //grab the next attribute for this path
+                    segments = keySetArray[j].split("\\]\\|");
+                    locatablePath = segments[0] + "]";
+                    attribute = segments[1];
+                    attributeSet.put(attribute, sortedMap.get(keySetArray[j]));
+                    j++;
+                }
+                pathIterator = j-1; //skip what has been processed.
+            }
 
             if (ArrayUtils.contains(ENTRY_TAGS, lastTag) || ArrayUtils.contains(INSTRUCTION_TAGS, lastTag) || ArrayUtils.contains(ACTIVITY_TAGS, lastTag)){
                 attributeKey = path;
@@ -528,69 +641,76 @@ public class PathValue implements I_PathValue {
                 }
             }
 
-            if (filterTag.startsWith(OTHER_CONTEXT_TAG)){
-                locatablePath = path.substring(path.indexOf("]")+1); //should be in the form: /context/other_context[at0001]/... strip the prefix
+            if (filterTag.startsWith(OTHER_CONTEXT_TAG) || filterTag.startsWith(CompositionSerializer.TAG_ITEMS)){
+                locatablePath = locatablePath.substring(filterTag.length()); //should be in the form: /context/other_context[at0001]/... strip the prefix
             }
 
 
             Object itemAtPath = locatable.itemAtPath(locatablePath);
 
-            if (itemAtPath == null) {
-                log.debug("Item could not be located, cloning required:" + locatablePath);
-                LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, locatablePath);
-                if (parent != null) {
-                    Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
-                    LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), null);
+//            if (itemAtPath == null) {
+//                log.debug("Item could not be located, cloning required:" + locatablePath);
+//                LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, locatablePath);
+//                if (parent != null) {
+//                    Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
+//                    LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), null);
+//                }
+//                itemAtPath = locatable.itemAtPath(locatablePath);
+//
+//                if (itemAtPath == null)
+//                    throw new InternalError("Oops, could not clone item at:" + locatablePath);
+//
+//            }
+
+
+
+            if (itemAtPath == null){
+                //build a definition based on the provided path...
+                String lastPathSegment = locatablePath.substring(locatablePath.lastIndexOf("[")+1, locatablePath.lastIndexOf("]"));
+                Map<String, Object> definition = new HashMap<>();
+                if (lastPathSegment.contains("and name/value=")){
+                    String name = lastPathSegment.substring(lastPathSegment.indexOf("'")+1, lastPathSegment.lastIndexOf("'"));
+                    if (!name.contains("|")){
+                        //assume simple string name
+                        definition.put(CompositionSerializer.TAG_NAME, name);
+                    }
+                    else { //assume coded text
+                        DvCodedText dvCodedText = new DvCodedText("1","local","1").parse(name);
+                        definition.put(CompositionSerializer.TAG_NAME, dvCodedText.getValue());
+                        Map<String, Object> definingCodeMap = new LinkedTreeMap<>();
+                        Map<String, String> terminologyIdMap = new HashMap<>();
+                        terminologyIdMap.put("value", dvCodedText.getTerminologyId());
+                        definingCodeMap.put("terminologyId", terminologyIdMap);
+                        definingCodeMap.put("codeString", dvCodedText.getCode());
+
+                        definition.put(CompositionSerializer.TAG_DEFINING_CODE, definingCodeMap);
+                    }
                 }
-                itemAtPath = locatable.itemAtPath(locatablePath);
-
-                if (itemAtPath == null)
-                    throw new InternalError("Oops, could not clone item at:" + locatablePath);
-
+//                definition.put(CompositionSerializer.TAG_NAME, "");
+                itemAtPath = ContentBuilder.insertCloneInPath(locatable, definition, locatablePath);
             }
 
-            String valueToParse = pathValues.get(path);
-            DataValue parsed = null;
+            String valueToParse = null;
+            if (attributeSet == null)
+                valueToParse = sortedMap.get(path);
 
             if (itemAtPath instanceof ElementWrapper) {
-                ElementWrapper elementWrapper = (ElementWrapper) itemAtPath;
-                I_VBeanWrapper adapted = null;
-
-                if (elementWrapper instanceof ChoiceElementWrapper) {
-                    adapted = ((ChoiceElementWrapper) elementWrapper).getAdaptedValue(valueToParse);
-                    parsed = (DataValue)adapted.getAdaptee();
+                DataValue parsed = null;
+                if (valueToParse != null){
+                    parsed = assignElementValue((ElementWrapper)itemAtPath, valueToParse);
+                } else if (attributeSet != null){
+                    parsed = assignElementValue((ElementWrapper)itemAtPath, attributeSet);
                 }
-                else if (elementWrapper instanceof AnyElementWrapper) {
-                    adapted = ((AnyElementWrapper) elementWrapper).getAdaptedValue(valueToParse);
-                    parsed = (DataValue)adapted.getAdaptee();
-                }
-                else {
-                    adapted = ElementWrapper.getAdaptedValue(elementWrapper);
-                    if (adapted instanceof DvCodedTextVBean)
-                        parsed = (DataValue) adapted.parse(valueToParse, defaultTerminologyLocal);
-                    else
-                        parsed = (DataValue) adapted.parse(valueToParse);
-                }
+                else
+                    throw new IllegalArgumentException("Cannot generate any parsed value...");
 
-                if (adapted == null || parsed == null)
-                    throw new IllegalArgumentException("Could not identify an adapted value for element:"+path);
-
-                elementWrapper.getAdaptedElement().setValue(parsed);
-
-                DataValueConstraints constraints = elementWrapper.getConstraints();
-
-                if (constraints != null && !constraints.validate(parsed)) {
-                    String description = constraints.getDescription();
-                    String nodeId = elementWrapper.getAdaptedElement().getArchetypeNodeId();
-                    String name = elementWrapper.getAdaptedElement().getName().getValue();
-                    throw new IllegalArgumentException("Parsed value for [" + nodeId + "," + name + "]" + ", '" + description + "' is not valid, found: " + parsed.toString());
-                }
-                elementWrapper.setDirtyBit(true);
+                ((ElementWrapper)itemAtPath).getAdaptedElement().setValue(parsed);
+                ((ElementWrapper)itemAtPath).setDirtyBit(true);
             } else if (itemAtPath instanceof Activity) {
-                assignActivityAttribute((Activity) itemAtPath, attribute, pathValues.get(attributeKey));
+                assignActivityAttribute((Activity) itemAtPath, attribute, sortedMap.get(attributeKey));
             }
             else if (itemAtPath instanceof Entry){
-                assignEntryAttribute(pathValues, (Entry) itemAtPath, path, attribute, pathValues.get(attributeKey));
+                assignEntryAttribute(sortedMap, (Entry) itemAtPath, path, attribute, sortedMap.get(attributeKey));
             }
             else {
                 log.warn("Unhandled path value:"+path);

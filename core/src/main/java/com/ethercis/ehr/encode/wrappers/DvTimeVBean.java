@@ -18,6 +18,8 @@ package com.ethercis.ehr.encode.wrappers;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
+import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
 import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 
 import java.util.HashMap;
@@ -67,5 +69,10 @@ public class DvTimeVBean extends DataValueAdapter implements I_VBeanWrapper {
 
     public static DvTime generate(){
         return new DvTime(1, null);
+    }
+
+    public static DvTime increment(DvTime date) {
+        DvDuration duration = new DvDuration("PT1H"); //one hour
+        return date.add(duration); //increment by one day
     }
 }

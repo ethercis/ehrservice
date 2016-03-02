@@ -20,7 +20,9 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,5 +76,10 @@ public class DvDateTimeVBean extends DataValueAdapter implements I_VBeanWrapper 
 
     public static DvDateTime generate(){
         return new DvDateTime(new DateTime(0L).toString());
+    }
+
+    public static DvDateTime increment(DvDateTime date) {
+        DvDuration duration = new DvDuration("P1D"); //one day
+        return date.add(duration); //increment by one day
     }
 }

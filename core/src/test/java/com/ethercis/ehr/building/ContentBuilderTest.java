@@ -1,40 +1,56 @@
 package com.ethercis.ehr.building;
 
+import com.ethercis.ehr.building.util.CompositionAttributesHelper;
+import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.json.FlatJsonUtil;
+import com.ethercis.ehr.json.JsonUtil;
 import com.ethercis.ehr.keyvalues.EcisFlattener;
+import com.ethercis.ehr.keyvalues.PathValue;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
+import com.ethercis.ehr.util.FlatJsonCompositionConverter;
+import com.ethercis.ehr.util.I_FlatJsonCompositionConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.marand.thinkehr.jsonlib.CompositionConverter;
+import com.marand.thinkehr.jsonlib.impl.CompositionConverterImpl;
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import junit.framework.TestCase;
 import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlOptions;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.Flattener;
 import org.openehr.am.template.FlattenerNew;
+import org.openehr.jaxb.am.Template;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.composition.EventContext;
 import org.openehr.rm.datastructure.itemstructure.ItemList;
 import org.openehr.rm.datastructure.itemstructure.ItemStructure;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.support.identification.ObjectVersionID;
+import org.openehr.schemas.v1.COMPOSITION;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import javax.xml.bind.*;
+import javax.xml.namespace.QName;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import static com.ethercis.ehr.building.util.CompositionAttributesHelper.*;
 
 public class ContentBuilderTest extends TestCase {
     //	ClusterController controller;
@@ -361,5 +377,313 @@ public class ContentBuilderTest extends TestCase {
 
     }
 
+    @Test
+    public void testOPTGenerateLocatable2() throws Exception {
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "ECIS EVALUATION TEST");
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "Weird Types 1");
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "action test");
 
+        Object generated = contentBuilder.generate();
+
+        assertNotNull(generated);
+
+        if (generated instanceof Composition) {
+            EventContext context = ContextHelper.createDummyContext();
+            PartyIdentified partyIdentified = createComposer("Composer", "ETHERCIS", "1234-5678");
+
+            ((Composition) generated).setContext(context);
+            ((Composition) generated).setComposer(partyIdentified);
+            ((Composition) generated).setUid(new ObjectVersionID(UUID.randomUUID()+"::example.ethercis.com::1"));
+
+            byte[] exportXml = contentBuilder.exportCanonicalXML((Composition)generated, true, true);
+
+            assertNotNull(exportXml);
+
+            System.out.println(new String(exportXml));
+
+            Map<String, String> testRetMap = EcisFlattener.renderFlat((Composition)generated, true, CompositionSerializer.WalkerOutputMode.PATH);
+
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+            String jsonString = gson.toJson(testRetMap);
+
+            System.out.println(jsonString);
+        } else if (generated instanceof Locatable){
+
+            byte[] exportXml = contentBuilder.exportCanonicalXML((Locatable)generated, true, true);
+
+            assertNotNull(exportXml);
+
+            System.out.println(new String(exportXml));
+
+            Map<String, String> testRetMap = EcisFlattener.renderFlat((Locatable)generated, true, CompositionSerializer.WalkerOutputMode.PATH);
+
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+            String jsonString = gson.toJson(testRetMap);
+
+            System.out.println(jsonString);
+
+        }
+    }
+
+    private Map setQueryBody(){
+        Map<String, String> kvPairs = new HashMap<>();
+
+//        kvPairs.put("/context/health_care_facility|name", "Northumbria Community NHS");
+//        kvPairs.put("/context/health_care_facility|identifier", "999999-345");
+//        kvPairs.put("/context/start_time", "2015-09-28T10:18:17.352+07:00");
+//        kvPairs.put("/context/end_time", "2015-09-28T11:18:17.352+07:00");
+//        kvPairs.put("/context/participation|function", "Oncologist");
+//        kvPairs.put("/context/participation|name", "Dr. Marcus Johnson");
+//        kvPairs.put("/context/participation|identifier", "1345678");
+//        kvPairs.put("/context/participation|mode", "openehr::216|face-to-face communication|");
+//        kvPairs.put("/context/location", "local");
+//        kvPairs.put("/context/setting", "openehr::227|emergency care|");
+//        kvPairs.put("/composer|identifier", "1345678");
+//        kvPairs.put("/composer|name", "Dr. Marcus Johnson");
+//        kvPairs.put("/category", "openehr::433|event|");
+//        kvPairs.put("/territory", "FR");
+//        kvPairs.put("/language", "fr");
+//
+//        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:0", "Nurse|1345678::Jessica|openehr::216|face-to-face communication|");
+//        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:1", "Assistant|1345678::2.16.840.1.113883.2.1.4.3::NHS-UK::ANY::D. Mabuse|openehr::216|face-to-face communication|");
+//        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001]/action_archetype_id", "ZZZZZZZ\\.medication\\.v1");
+
+//        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001 and name/value='Name of medication']/timing", "before sleep");
+//        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001 and name/value='Name of medication']" +
+//                "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "aspirin");
+//        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001 and name/value='Name of medication #2']/timing", "lunch");
+//        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001 and name/value='Name of medication #2']" +
+//                "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "Atorvastatin");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001 and name/value='SNOMED-CT::365761000|Sodium|']/timing", "lunch");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001 and name/value='SNOMED-CT::365761000|Sodium|']" +
+                "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "Sodium");
+
+//        GsonBuilder builder = new GsonBuilder();
+//        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        return kvPairs;
+    }
+
+    //test composition building with the above kv
+    @Test
+    public void testBuildFromJson2() throws Exception {
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        String templateId = "prescription";
+
+        TEMPLATE prescription = knowledge.retrieveOpenehrTemplate(templateId);
+
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OET, knowledge, templateId);
+
+//        content.setEntryData(composition);
+        PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
+
+        Composition newComposition = pathValue.assign(setQueryBody());
+
+        assertNotNull(newComposition);
+
+        Map<String, String> testRetMap = EcisFlattener.renderFlat(newComposition, false, CompositionSerializer.WalkerOutputMode.PATH);
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        String jsonString = gson.toJson(testRetMap);
+
+        System.out.println(jsonString);
+    }
+
+    private Map setQueryBodyWeirdTypes() {
+        Map<String, String> kvPairs = new HashMap<>();
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0001 and name/value='DvIntervalCount']", "0::1");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0002 and name/value='DvIntervalQuantity']", "0,kg::1,kg");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0003 and name/value='DvIntervalDateTime']", "1970-01-01T07:00:00.000+07:00::1970-01-02T07:00:00,000+07:00");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0004 and name/value='DvIntervalDateOnly']", "1970-01-01::1970-01-02");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0005 and name/value='DvIntervalTimeOnly']", "01::02");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0006 and name/value='ParsableHtml']", "text value");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0007 and name/value='URI']|name", "URI");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0007 and name/value='URI']|value", "http://www.ethercis.com/");
+////        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|name", "Proportion");
+////        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|value", "1,1,0");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|name", "Proportion");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|numerator", "1");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|denominator", "2");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|type", "FRACTION");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|precision", "0");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0009 and name/value='Ordinal']|name", "Ordinal");
+//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0009 and name/value='Ordinal']|value", "-1|openehr::at0010|one|");
+
+        return kvPairs;
+    }
+
+    @Test
+    public void testBuildFromJsonWeirdTypes() throws Exception {
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        String templateId = "Weird Types 1";
+
+        TEMPLATE weirdTypes = knowledge.retrieveOpenehrTemplate(templateId);
+
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
+        Object generated = contentBuilder.generate();
+
+//        content.setEntryData(composition);
+        PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
+
+        pathValue.assignItemStructure("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']", (Locatable)generated, setQueryBodyWeirdTypes());
+
+        assertNotNull(generated);
+
+        Map<String, String> testRetMap = EcisFlattener.renderFlat((Locatable)generated, false, CompositionSerializer.WalkerOutputMode.PATH);
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        String jsonString = gson.toJson(testRetMap);
+
+        System.out.println(jsonString);
+    }
+
+    @Test
+    public void testThinkEhrLib() throws Exception {
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        JAXBContext context = JAXBContext.newInstance("org.openehr.jaxb.rm:org.openehr.jaxb.am");
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        unmarshaller.setSchema(null); // disable schema validation
+        JAXBContext unmarshalContext = JAXBContext.newInstance(org.openehr.jaxb.rm.Composition.class);
+        Marshaller marshaller = unmarshalContext.createMarshaller();
+        marshaller.setSchema(null);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+//        NamespacePrefixMapper mapper = new NamespacePrefixMapper() {
+//            public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
+//                if ("http://schemas.openehr.org/v1".equals(namespaceUri) && !requirePrefix)
+//                    return "";
+//                return "ns";
+//            }
+//        };
+//        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", mapper);
+
+        StringWriter stringWriter = new StringWriter();
+
+
+        String templateId = "RIPPLE - Conformance Test template";
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+
+        Composition generated = (Composition)contentBuilder.generate();
+
+        EventContext compositionContext = ContextHelper.createDummyContext();
+        PartyIdentified partyIdentified = createComposer("Composer", "ETHERCIS", "1234-5678");
+
+        generated.setContext(compositionContext);
+        generated.setComposer(partyIdentified);
+        generated.setUid(new ObjectVersionID(UUID.randomUUID() + "::example.ethercis.com::1"));
+
+        byte[] exportXml = contentBuilder.exportCanonicalXML(generated, true, true);
+
+        String xmlized = new String(exportXml);
+
+        JAXBElement jaxbElement = (JAXBElement) unmarshaller.unmarshal(new StringReader(xmlized));
+        org.openehr.jaxb.rm.Composition jaxbComposition = (org.openehr.jaxb.rm.Composition)jaxbElement.getValue();
+
+        XmlOptions xmlOptions = new XmlOptions().setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1","template"));
+        String templateXml = ((OPERATIONALTEMPLATE)knowledge.retrieveTemplate(templateId)).xmlText(xmlOptions);
+
+        //get the template
+        jaxbElement = (JAXBElement) unmarshaller.unmarshal(new StringReader(templateXml));
+        Template jaxbTemplate = (Template)jaxbElement.getValue();
+
+        CompositionConverter converter = new CompositionConverterImpl();
+        Map<String, Object> map = converter.fromComposition(jaxbTemplate, jaxbComposition);
+
+        assertNotNull(map);
+        map.put("ctx/language", "en");
+        map.put("ctx/territory", "GB");
+//        map.put("ctx/composer_name", "Silvia Blake");
+//        map.put("ctx/time", "2016-02-22T12:57:20.706Z");
+//        map.put("ctx/id_namespace", "HOSPITAL-NS");
+//        map.put("ctx/id_scheme", "HOSPITAL-NS");
+
+        String outMap = JsonUtil.toJsonString(map);
+
+        //rebuild from map
+        org.openehr.jaxb.rm.Composition newComposition = converter.toComposition(jaxbTemplate, map);
+        //convert it into an internal composition
+        marshaller.marshal(new JAXBElement<>( new QName("http://schemas.openehr.org/v1", "composition"),
+                org.openehr.jaxb.rm.Composition.class, null, newComposition), stringWriter);
+        byte[] bytes = stringWriter.getBuffer().toString().getBytes();
+
+        Composition lastComposition = contentBuilder.importCanonicalXML(new ByteArrayInputStream(bytes));
+        assertNotNull(lastComposition);
+
+    }
+
+    @Test
+    public void testThinkEhrLib2() throws Exception {
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+
+        String document = documentList[5];
+        System.out.println("=============================================="+document);
+        String documentPath = path + document;
+        InputStream is = new FileInputStream(new File(documentPath));
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "");
+        Composition composition = content.importCanonicalXML(is);
+        assertNotNull(composition);
+
+        String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
+        Map<String, Object> map = jsonCompositionConverter.fromComposition(templateId, composition);
+
+        assertNotNull(map);
+        map.put("ctx/language", "en");
+        map.put("ctx/territory", "GB");
+//        map.put("ctx/composer_name", "Silvia Blake");
+//        map.put("ctx/time", "2016-02-22T12:57:20.706Z");
+//        map.put("ctx/id_namespace", "HOSPITAL-NS");
+//        map.put("ctx/id_scheme", "HOSPITAL-NS");
+
+        String outMap = JsonUtil.toJsonString(map);
+
+        //for REST API testing
+        File tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_FLATJSON", ".json");
+        FileUtils.writeStringToFile(tempfile, outMap);
+
+        //rebuild from string map
+        Map newMap = FlatJsonUtil.inputStream2Map(new StringReader(outMap));
+
+
+        Composition lastComposition = jsonCompositionConverter.toComposition(templateId, newMap);
+        assertNotNull(lastComposition);
+
+        //storeComposition a temp file and write the exported XML into: C:\Users\<current_user>\AppData\Local\Temp
+        byte[] exportXml = content.exportCanonicalXML(lastComposition, true);
+        tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_ThinkEhrTest", ".xml");
+        FileUtils.writeStringToFile(tempfile, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + new String(exportXml));
+
+        System.out.println("-------> Test result written in:"+tempfile.getAbsolutePath());
+
+    }
+
+    @Test
+    public void testThinkEhrLib3() throws Exception {
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+
+        //get a flat json test file
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR Lab Order RAW1_FLATJSON.json");
+        Map map = FlatJsonUtil.inputStream2Map(fileReader);
+        //rebuild from map
+
+        Composition lastComposition = jsonCompositionConverter.toComposition("IDCR - Laboratory Order.v0", map);
+        assertNotNull(lastComposition);
+
+//        //storeComposition a temp file and write the exported XML into: C:\Users\<current_user>\AppData\Local\Temp
+//        byte[] exportXml = content.exportCanonicalXML(lastComposition, true);
+//        tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_ThinkEhrTest", ".xml");
+//        FileUtils.writeStringToFile(tempfile, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + new String(exportXml));
+//
+//        System.out.println("-------> Test result written in:"+tempfile.getAbsolutePath());
+
+    }
 }

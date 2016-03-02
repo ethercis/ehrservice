@@ -48,7 +48,8 @@ public class DvParsableVBean extends DataValueAdapter implements I_VBeanWrapper 
 
     @Override
     public DvParsable parse(String value, String... defaults) {
-        adaptee = ((DvParsable)adaptee).parse(value);
+//        adaptee = ((DvParsable)adaptee).parse(value);
+        adaptee = new DvParsable(value, "formalism");
         return (DvParsable)adaptee;
     }
 

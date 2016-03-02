@@ -19,6 +19,7 @@ package com.ethercis.ehr.encode.wrappers;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import org.openehr.rm.datatypes.quantity.DvCount;
+import org.openehr.rm.datatypes.quantity.DvQuantified;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,5 +72,10 @@ public class DvCountVBean extends DataValueAdapter implements I_VBeanWrapper {
 
     public static DvCount generate(){
         return new DvCount(0);
+    }
+
+    public static DvCount increment(DvCount count) {
+        DvQuantified<DvCount> newCount = new DvCount(1);
+        return (DvCount) count.add(newCount);
     }
 }

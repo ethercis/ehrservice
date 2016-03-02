@@ -92,7 +92,15 @@ public class DvIntervalVBean extends DataValueAdapter implements I_VBeanWrapper 
         String range[] = value.split("::");
         if (range.length < 2)
             throw new IllegalArgumentException("Invalid DvInterval range passed, should be in format: <lower>::<upper>, was:"+value);
-        adaptee = new DvInterval(evaluateIntervalValue(range[0]), evaluateIntervalValue(range[1]));
+        //at this stage we know what classes constitute the interval range
+//        Class rangeClass = ((DvInterval)this.getAdaptee()).getLower().getClass();
+        //we can simply parse with the corresponding object instance
+        DvOrdered lower = (DvOrdered) ((DvInterval)this.getAdaptee()).getLower().parse(range[0]);
+        DvOrdered upper = (DvOrdered) ((DvInterval)this.getAdaptee()).getUpper().parse(range[1]);
+
+//        adaptee = new DvInterval(evaluateIntervalValue(range[0]), evaluateIntervalValue(range[1]));
+        adaptee = new DvInterval(lower, upper);
+
         return (DvInterval<DvOrdered<?>>) adaptee;
     }
     ///value={interval=
@@ -170,10 +178,13 @@ public class DvIntervalVBean extends DataValueAdapter implements I_VBeanWrapper 
     public static DvInterval createQualifiedInterval(Class orderedClass){
         try {
             Class instrumentalizedClass = VBeanUtil.findInstrumentalizedClass(orderedClass.getSimpleName());
-            Method method = instrumentalizedClass.getMethod("generate", null);
-            Object orderedObject = method.invoke(null, null);
+            Method generator = instrumentalizedClass.getMethod("generate", null);
+            Object orderedObject = generator.invoke(null, null);
+            //find increment method to ensure lower < upper
+            Method incrementor = instrumentalizedClass.getMethod("increment", new Class[]{orderedClass});
+
             if (orderedObject instanceof DvOrdered){
-                return new DvInterval((DvOrdered)orderedObject, (DvOrdered)orderedObject);
+                return new DvInterval((DvOrdered)orderedObject, (DvOrdered)incrementor.invoke(null, orderedObject));
             }
             else
                 throw new IllegalArgumentException("Invalid ordered type in interval:"+orderedClass.getName());

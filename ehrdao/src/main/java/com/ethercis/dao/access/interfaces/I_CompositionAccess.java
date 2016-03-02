@@ -74,6 +74,8 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
 
     Boolean update(Timestamp timestamp, UUID committerId, UUID systemId, ContributionDef.ContributionState state, I_ConceptAccess.ContributionChangeType contributionChangeType, String description) throws Exception;
 
+    Boolean update(Timestamp timestamp, UUID committerId, UUID systemId, ContributionDef.ContributionState state, I_ConceptAccess.ContributionChangeType contributionChangeType, String description, Boolean force) throws Exception;
+
     Boolean update(UUID committerId, UUID systemId, ContributionDef.ContributionState state, I_ConceptAccess.ContributionChangeType contributionChangeType, String description, Boolean force) throws Exception;
 
     Integer delete(UUID committerId, UUID systemId, String description) throws Exception;

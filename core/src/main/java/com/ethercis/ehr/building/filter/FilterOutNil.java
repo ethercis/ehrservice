@@ -384,6 +384,9 @@ public class FilterOutNil {
                     ismTransition.unsetCareflowStep();
             }
         }
+        if (action.getDescription() != null && ((ITEMSTRUCTURE)action.getDescription()).isNil()){
+            action.setDescription(null);
+        }
 
 
         return action;

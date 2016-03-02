@@ -308,18 +308,24 @@ public abstract class Locatable extends Pathable implements Settable, Cloneable 
     		}
     		archetypeNodeId = expression.substring(0, index).trim();
     		name = expression.substring(expression.indexOf("'") + 1,
-    				expression.lastIndexOf("'"));    		
+    				expression.lastIndexOf("'"));
+
+			//check if name is a coded text (DvCodedText), if so get value only
+			//f.ex. 'SNOMED-CT::365761000|Sodium|'
+			if (name.contains("::") && name.contains("|")){
+				name = name.substring(name.indexOf("|")+1, name.lastIndexOf("|"));
+			}
     	// just name, ['standing']	
     	} else if (expression.startsWith("'") && expression.endsWith("'")) {
     		name = expression.substring(1, expression.length() - 1);
-    	
+
     	// archetyped root node id or at-coded node
     	// [at0006] or [openEHR-EHR-OBSERVATION.laboratory-lipids.v1]	
     	} else {
     		archetypeNodeId = expression;
     	}
-    	
-    	Iterable collection = null;
+
+		Iterable collection = null;
     	if(object instanceof Iterable) {
     		collection = (Iterable) object;
     	} else {

@@ -117,8 +117,9 @@ public class LocatableHelper {
             }
             else {
                 if (!lastNodeId.contains("name")){
-                    if (!clone.getName().getValue().contains("#"))
-                        lastNodeId = LocatableHelper.incrementPathNodeId(lastNodeId);
+                    if (!clone.getName().getValue().contains("#")) {
+//                        lastNodeId = LocatableHelper.incrementPathNodeId(lastNodeId);
+                    }
                     else{
                         lastNodeId = extractLastAtPath(itemPath);
                     }

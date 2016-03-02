@@ -142,7 +142,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     }
 
-    private DvText getNewName(Map<String, Object> definition){
+    private static DvText getNewName(Map<String, Object> definition){
         String name = (String) definition.get(CompositionSerializer.TAG_NAME);
         CodePhrase codePhrase = null;
         if (definition.containsKey(CompositionSerializer.TAG_DEFINING_CODE)) { //DvCodedText for name
@@ -160,7 +160,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         return newName;
     }
 
-    private Object insertCloneInPath(Locatable locatable, Map<String, Object> definition, String path) throws Exception {
+    public static Object insertCloneInPath(Locatable locatable, Map<String, Object> definition, String path) throws Exception {
         log.debug("Item could not be located, cloning required:" + path);
 
         //check for potential sibling
@@ -170,8 +170,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         if (sibling != null){
             LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
             Locatable cloned = LocatableHelper.clone(sibling);
-            DvText newName = getNewName(definition);
-            cloned.setName(newName);
+            if (definition.containsKey(CompositionSerializer.TAG_NAME)) {
+                DvText newName = getNewName(definition);
+                cloned.setName(newName);
+            }
             LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), path);
             log.debug("Inserted sibling at path:" + path);
         }
@@ -184,14 +186,19 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //                cloned.setName(newName);
                 LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), parent.getChildPath());
             }
+//            sibling = (Locatable) locatable.itemAtPath(siblingPath);
         }
         //reference the newly created child
-        Object itemAtPath;
+        Object itemAtPath = locatable.itemAtPath(path);
 
-        if (sibling != null)
-            itemAtPath = locatable.itemAtPath(path);
-        else //completion
-            itemAtPath = insertCloneInPath(locatable, definition, path);
+        if (itemAtPath == null && sibling == null){
+            itemAtPath = insertCloneInPath(locatable, definition, path); //deeper...
+        }
+
+//        if (sibling != null)
+//            itemAtPath = locatable.itemAtPath(path);
+//        else //completion
+//            itemAtPath = insertCloneInPath(locatable, definition, path);
 
         if (itemAtPath == null) //something really wrong here...
             throw new IllegalArgumentException("INTERNAL: failed to successfully clone child structure at:"+path);

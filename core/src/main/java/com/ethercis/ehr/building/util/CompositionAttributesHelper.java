@@ -18,6 +18,7 @@ package com.ethercis.ehr.building.util;
 
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.datatypes.basic.DvIdentifier;
+import org.openehr.rm.support.identification.GenericID;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.PartyRef;
 
@@ -34,7 +35,8 @@ public class CompositionAttributesHelper {
     public static final String PARTY = "PARTY";
 
     public static PartyIdentified createComposer(String name, String issuer, String idcode){
-        PartyRef partyRef = new PartyRef(new HierObjectID("ref"), DEMOGRAPHIC, PARTY);
+//        PartyRef partyRef = new PartyRef(new HierObjectID("ref"), DEMOGRAPHIC, PARTY);
+        PartyRef partyRef = new PartyRef(new GenericID(idcode, "ETHERCIS-TEST"), DEMOGRAPHIC, PARTY);
         List<DvIdentifier> identifiers = new ArrayList<>();
         identifiers.add(new DvIdentifier(issuer, "dummy", idcode, "dummy"));
         return new PartyIdentified(partyRef, name, identifiers);

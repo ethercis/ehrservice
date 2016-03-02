@@ -16,9 +16,12 @@
  */
 package com.ethercis.ehr.json;
 
+import com.ethercis.ehr.encode.JodaPeriodAdapter;
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
+import org.joda.time.Period;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -52,6 +55,9 @@ public class FlatJsonUtil {
 
     public static Map inputStream2Map(Reader reader){
         GsonBuilder gsonBuilder = new GsonBuilder();
+        Converters.registerDateTime(gsonBuilder);
+        Converters.registerDuration(gsonBuilder);
+        gsonBuilder.registerTypeAdapter(Period.class, new JodaPeriodAdapter());
         Gson gson = gsonBuilder.create();
 
         return gson.fromJson(reader, Map.class);

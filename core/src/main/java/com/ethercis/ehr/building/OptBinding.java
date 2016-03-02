@@ -622,7 +622,8 @@ public class OptBinding extends RmBinding {
 				Class orderedClass = builder.retrieveRMType(dvOrderedTypeName);
 				log.debug("Found dvOrdered in interval:" + dvOrderedTypeName);
 				DvInterval interval = DvIntervalVBean.createQualifiedInterval(orderedClass);
-				valueMap.put(VALUE, interval);
+//				valueMap.put(VALUE, interval);
+				return interval;
 			}
 		} else if("DV_MULTIMEDIA".equals(rmTypeName)) {
             CodePhrase charset = new CodePhrase("IANA_character-sets", "UTF-8");

@@ -314,7 +314,9 @@ public class XMLBinding {
 
 			}
 			else if (xmlObj instanceof CAREENTRY){
-				((CAREENTRY)xmlObj).getArchetypeDetails().unsetTemplateId();
+				if (((CAREENTRY)xmlObj).getArchetypeDetails().isSetTemplateId()) {
+					((CAREENTRY) xmlObj).getArchetypeDetails().unsetTemplateId();
+				}
 			}
 
 			return FilterOutNil.filter(xmlObj);

@@ -394,6 +394,12 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
     }
 
     @Override
+    public Boolean update(Timestamp timestamp, UUID committerId, UUID systemId, ContributionDef.ContributionState state, I_ConceptAccess.ContributionChangeType contributionChangeType, String description, Boolean force) throws Exception {
+        contributionAccess.update(timestamp, committerId, systemId, null, state, contributionChangeType, description);
+        return update(timestamp, force);
+    }
+
+    @Override
     public Boolean update(UUID committerId, UUID systemId, ContributionDef.ContributionState state, I_ConceptAccess.ContributionChangeType contributionChangeType, String description, Boolean force) throws Exception {
         Timestamp timestamp = new Timestamp(DateTime.now().getMillis());
         contributionAccess.update(timestamp, committerId, systemId, null, state, contributionChangeType, description);

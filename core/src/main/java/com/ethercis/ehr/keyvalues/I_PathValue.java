@@ -82,16 +82,17 @@ public interface I_PathValue {
 
     //Activity
     public static final String ACTIVITY_TIMING = "/timing";
+    public static final String ACTIVITY_ARCHETYPE_ID = "/action_archetype_id";
 
-    public static final String[] ACTIVITY_TAGS = {ACTIVITY_TIMING};
+    public static final String[] ACTIVITY_TAGS = {ACTIVITY_TIMING, ACTIVITY_ARCHETYPE_ID};
 
-    public static final String CONCEPT_TERMINOLOGY_PROP = "default.eflat.terminology.concept";
-    public static final String TERRITORY_TERMINOLOGY_PROP = "default.eflat.terminology.territory";
-    public static final String LANGUAGE_TERMINOLOGY_PROP = "default.eflat.terminology.language";
-    public static final String LOCAL_TERMINOLOGY_PROP = "default.eflat.terminology.local";
-    public static final String PARTY_NAMESPACE_PROP = "default.eflat.party.namespace";
-    public static final String PARTY_SCHEME_PROP = "default.eflat.party.scheme";
-    public static final String PARTY_CATEGORY_PROP = "default.eflat.party.category";
+    public static final String CONCEPT_TERMINOLOGY_PROP = "default.terminology.concept";
+    public static final String TERRITORY_TERMINOLOGY_PROP = "default.terminology.territory";
+    public static final String LANGUAGE_TERMINOLOGY_PROP = "default.terminology.language";
+    public static final String LOCAL_TERMINOLOGY_PROP = "default.terminology.local";
+    public static final String PARTY_NAMESPACE_PROP = "default.party.namespace";
+    public static final String PARTY_SCHEME_PROP = "default.party.scheme";
+    public static final String PARTY_CATEGORY_PROP = "default.party.category";
 
     public static final String DEFAULT_LOCAL_TERMINOLOGY = "local";
     public static final String DEFAULT_TERRITORY_TERMINOLOGY = "ISO_3166-1";
