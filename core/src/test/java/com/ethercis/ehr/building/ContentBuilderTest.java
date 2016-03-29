@@ -12,6 +12,7 @@ import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
 import com.ethercis.ehr.util.FlatJsonCompositionConverter;
 import com.ethercis.ehr.util.I_FlatJsonCompositionConverter;
+import com.ethercis.ehr.util.MapInspector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.marand.thinkehr.jsonlib.CompositionConverter;
@@ -353,14 +354,24 @@ public class ContentBuilderTest extends TestCase {
     }
 
     public void testBuildFromJson() throws Exception {
+        String templateId = "IDCR - Laboratory Order.v0";
         Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
-        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
-        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "IDCR Problem List.v1");
+//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
+        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
+//        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "IDCR Problem List.v1");
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
 
         Composition newComposition = content.buildCompositionFromJson(sb.toString());
 
         assertNotNull(newComposition);
+
+        //=================== FLAT JSON ==========================
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+        Map<String, Object> map = jsonCompositionConverter.fromComposition(templateId, newComposition);
+
+        assertNotNull(map);
+        //==========================================================================================
 
         String xml = new String(content.exportCanonicalXML(newComposition, true));
 
@@ -632,6 +643,13 @@ public class ContentBuilderTest extends TestCase {
         Composition composition = content.importCanonicalXML(is);
         assertNotNull(composition);
 
+        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, Object>retmap = inspector.process(composition);
+        String stringified = CompositionSerializer.jsonMapToString(retmap);
+        File tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_RAWJSON", ".json");
+        FileUtils.writeStringToFile(tempfile, stringified);
+
+
         String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
         Map<String, Object> map = jsonCompositionConverter.fromComposition(templateId, composition);
 
@@ -646,7 +664,7 @@ public class ContentBuilderTest extends TestCase {
         String outMap = JsonUtil.toJsonString(map);
 
         //for REST API testing
-        File tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_FLATJSON", ".json");
+        tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_FLATJSON", ".json");
         FileUtils.writeStringToFile(tempfile, outMap);
 
         //rebuild from string map
@@ -671,19 +689,111 @@ public class ContentBuilderTest extends TestCase {
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR Lab Order RAW1_FLATJSON.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR_adverse_reaction_listv1.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
+        //hack map for Marand's library
+//        map.put("ctx/language", "en");
+//        map.put("ctx/territory", "GB");
         //rebuild from map
 
         Composition lastComposition = jsonCompositionConverter.toComposition("IDCR - Laboratory Order.v0", map);
+//        Composition lastComposition = jsonCompositionConverter.toComposition("IDCR - Adverse Reaction List.v1", map);
         assertNotNull(lastComposition);
 
-//        //storeComposition a temp file and write the exported XML into: C:\Users\<current_user>\AppData\Local\Temp
-//        byte[] exportXml = content.exportCanonicalXML(lastComposition, true);
-//        tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_ThinkEhrTest", ".xml");
-//        FileUtils.writeStringToFile(tempfile, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + new String(exportXml));
-//
-//        System.out.println("-------> Test result written in:"+tempfile.getAbsolutePath());
+        //we serialize the composition
+        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        Map<String, Object>retmap = inspector.process(lastComposition);
+        String stringMap = CompositionSerializer.jsonMapToString(retmap);
+
+        assertNotNull(stringMap);
+
+        //storeComposition a temp file and write the exported XML into: C:\Users\<current_user>\AppData\Local\Temp
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "");
+        byte[] exportXml = content.exportCanonicalXML(lastComposition, true, false);
+        System.out.println(new String(exportXml));
+
+    }
+
+    @Test
+    public void testContainmentMetaData() throws Exception {
+//        String fileId = "RIPPLE_conformanceTesting_RAW";
+//        String templateId = "RIPPLE - Conformance Test template";
+        String fileId = "IDCR-LabReportRAW1";
+        String templateId = "IDCR - Laboratory Test Report.v0";
+
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+
+        //get a flat json test file
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/"+fileId+"_FLATJSON.json");
+        Map map = FlatJsonUtil.inputStream2Map(fileReader);
+        //rebuild from map
+
+        Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
+        assertNotNull(lastComposition);
+
+        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, Object>retmap = inspector.process(lastComposition);
+        Map<String, String> ltreeMap = inspector.getLtreeMap();
+
+        FileWriter fileWriter = new FileWriter("/Development/Dropbox/eCIS_Development/samples/"+fileId+"_CONTAINS.txt");
+
+        for (Map.Entry entry: ltreeMap.entrySet()){
+            fileWriter.write(inspector.getTreeRootArchetype()+"."+entry.getKey().toString()); //labels
+            fileWriter.write(",");
+            fileWriter.write(entry.getValue().toString()); //path
+            fileWriter.write("\n");
+            fileWriter.flush();
+        }
+
+//        MapInspector mapInspector = new MapInspector();
+//        mapInspector.inspect(retmap);
+//        ArrayDeque<Map<String, Object>> stack = (ArrayDeque)mapInspector.getStack();
+
+    }
+
+    @Test
+    public void testThinkEhrLibFaulty() throws Exception {
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+
+//        String document = "faulty_jaxb_itemtree.xml";
+        String document = "unmarshal_pb.xml";
+        System.out.println("=============================================="+document);
+        String documentPath = "C:\\Development\\Dropbox\\eCIS_Development\\test\\" + document;
+        InputStream is = new FileInputStream(new File(documentPath));
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "");
+        Composition composition = content.importCanonicalXML(is);
+        assertNotNull(composition);
+
+        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, Object>retmap = inspector.process(composition);
+        String stringified = CompositionSerializer.jsonMapToString(retmap);
+        File tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_RAWJSON", ".json");
+        FileUtils.writeStringToFile(tempfile, stringified);
+
+
+        String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
+        Map<String, Object> map = jsonCompositionConverter.fromComposition(templateId, composition);
+
+        assertNotNull(map);
+
+        map.put("ctx/language", "en");
+        map.put("ctx/territory", "GB");
+//        map.put("ctx/composer_name", "Silvia Blake");
+//        map.put("ctx/time", "2016-02-22T12:57:20.706Z");
+//        map.put("ctx/id_namespace", "HOSPITAL-NS");
+//        map.put("ctx/id_scheme", "HOSPITAL-NS");
+
+        String outMap = JsonUtil.toJsonString(map);
+
+        //for REST API testing
+        tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_FLATJSON", ".json");
+        FileUtils.writeStringToFile(tempfile, outMap);
+
+        //rebuild from string map
+        Map newMap = FlatJsonUtil.inputStream2Map(new StringReader(outMap));
 
     }
 }

@@ -133,6 +133,18 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
         return CompositionAccess.hasPreviousVersion(domainAccess, compositionId);
     }
 
+    /**
+     * retrieve the number of versions for this composition or 1 if no history present
+     * @param domainAccess
+     * @param compositionId
+     * @return
+     * @throws Exception
+     */
+
+    static Integer getLastVersionNumber(I_DomainAccess domainAccess, UUID compositionId) throws Exception {
+        return CompositionAccess.getLastVersionNumber(domainAccess, compositionId);
+    }
+
 //	public Composition getLatestComposition(int patientId, String archetypeId);
 //
 //	public List<Composition> getCompositions(String systemId, int patientId);
@@ -279,6 +291,8 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
     I_ContributionAccess getContributionAccess();
 
     void setContributionAccess(I_ContributionAccess contributionAccess);
+
+    Integer getVersion();
 
 //    void setCommitted(boolean b);
 }

@@ -386,6 +386,7 @@ public class FilterOutNil {
         }
         if (action.getDescription() != null && ((ITEMSTRUCTURE)action.getDescription()).isNil()){
             action.setDescription(null);
+            action.setNil();
         }
 
 

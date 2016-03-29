@@ -336,15 +336,24 @@ public class ContributionAccessTest extends AccessTestCase {
 
         //do some (insignificant) update...
         retrieved.update(true);
+        retrieved.update(true);
+        retrieved.update(true);
 
-        //retrieve the previous version
-        I_CompositionAccess retrievedPrevious = I_CompositionAccess.retrieveCompositionVersion((I_DomainAccess) compositionAccess, uuid, 1);
+        //find the last version number
+        Integer version = I_CompositionAccess.getLastVersionNumber((I_DomainAccess)compositionAccess, uuid);
+
+        assertEquals((Integer)4, version);
+
+        //retrieve the first version
+        I_CompositionAccess retrievedPrevious = I_CompositionAccess.retrieveCompositionVersion((I_DomainAccess) compositionAccess, uuid, 2);
 
         System.out.println(retrievedPrevious.getContributionAccess().getChangeTypeLitteral());
 
         uuid = retrievedPrevious.getId();
 
         assertNotNull(uuid);
+
+        Composition retrievedPreviousVersion = retrievedPrevious.getContent().get(0).getComposition();
 
 
         //do an explicit delete

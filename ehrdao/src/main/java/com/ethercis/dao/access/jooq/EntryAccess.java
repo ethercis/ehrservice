@@ -27,6 +27,7 @@ import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.*;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.SQLDataType;
 import org.jooq.tools.json.JSONObject;
@@ -223,7 +224,11 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 
             for (EntryRecord record: entryRecords){
                 //set the record UID in the composition
-                values.put(SystemValue.UID, new ObjectVersionID(record.getId().toString(), domainAccess.getServerNodeId(), DEFAULT_VERSION));
+                //set the current version number as the count of historical record + 1
+                Integer version = I_CompositionAccess.getLastVersionNumber(domainAccess, compositionAccess.getId());
+                values.put(SystemValue.UID,
+                        new ObjectVersionID(compositionAccess.getId().toString(),domainAccess.getServerNodeId(), ""+version));
+
                 I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(values, domainAccess.getKnowledgeManager(), record.getTemplateId());
 //                EntryAccess entry = new EntryAccess();
                 entryAccess.entryRecord = record;
@@ -273,7 +278,8 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 
             for (EntryHistoryRecord record: entryHistoryRecords){
                 //set the record UID in the composition
-                values.put(SystemValue.UID, new ObjectVersionID(record.getId().toString(), domainAccess.getServerNodeId(), ""+version));
+                UUID compositionId = compositionHistoryAccess.getId();
+                values.put(SystemValue.UID, new ObjectVersionID(compositionId.toString(), domainAccess.getServerNodeId(), ""+version));
                 I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(values, domainAccess.getKnowledgeManager(), record.getTemplateId());
 //                EntryAccess entry = new EntryAccess();
                 entryAccess.entryRecord = null;
@@ -451,7 +457,15 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
     }
 
     public static Map<String, Object> queryJSON(I_DomainAccess domainAccess, String queryString) throws Exception {
-        Result<Record> records = domainAccess.getContext().fetch(queryString);
+        Result<Record> records;
+        try {
+            records = domainAccess.getContext().fetch(queryString);
+        } catch (DataAccessException e) {
+            String message = e.getCause().getMessage();
+            throw new IllegalArgumentException("SQL exception:"+message.replaceAll("\n", ","));
+
+        }
+
         Map<String, Object> resultMap = new HashMap<>();
 
         resultMap.put("executedSQL", queryString);

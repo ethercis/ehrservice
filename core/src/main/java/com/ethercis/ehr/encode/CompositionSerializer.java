@@ -17,6 +17,8 @@
 package com.ethercis.ehr.encode;
 
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.map.MultiValueMap;
@@ -37,6 +39,7 @@ import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.quantity.DvInterval;
+import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.integration.GenericEntry;
 import org.openehr.schemas.v1.LOCATABLE;
@@ -53,6 +56,8 @@ import java.util.*;
  */
 public class CompositionSerializer {
 
+
+
 	public enum WalkerOutputMode {
 		PATH,
 		NAMED,
@@ -62,6 +67,9 @@ public class CompositionSerializer {
 	private static Logger log = Logger.getLogger(CompositionSerializer.class);
 
 	private Map<String, Object> ctree;
+
+	private String treeRootClass;
+	private String treeRootArchetype;
 
 	private final WalkerOutputMode tag_mode; //default
     private final boolean allElements; //default
@@ -81,6 +89,7 @@ public class CompositionSerializer {
 	public static final String TAG_ITEMS="/items";
     static final String TAG_OTHER_CONTEXT = "/context/other_context";
 	public static final String TAG_ACTIVITIES="/activities";
+	public static final String TAG_ACTIVITY="/activity";
 	public static final String TAG_VALUE="/value";
 	public static final String TAG_EVENTS="/events";
 	public static final String TAG_ORIGIN="/origin";
@@ -244,9 +253,16 @@ public class CompositionSerializer {
      */
 	private void encodeNodeAttribute(Map<String, Object> map, String tag, Object value, String name) throws Exception {
 		Map<String, Object> valuemap = newPathMap();
-        putObject(valuemap, TAG_NAME, name);
-        putObject(valuemap, TAG_CLASS, value.getClass().getSimpleName());
-        putObject(valuemap, TAG_VALUE, value);
+		//CHC: 160317 make name optional ex: timing
+		if (name != null)
+        	putObject(valuemap, TAG_NAME, name);
+
+
+		//CHC: 160317 make value optional ex. simple name for activity
+		if (value != null) {
+			putObject(valuemap, TAG_CLASS, value.getClass().getSimpleName());
+			putObject(valuemap, TAG_VALUE, value);
+		}
 		encodePathItem(valuemap, tag);
 
 		putObject(map, tag, valuemap);
@@ -288,6 +304,12 @@ public class CompositionSerializer {
 		log.debug(ltree.toString());
 
         itemStack.popStacks();
+
+		//store locally the tree root
+		String path = (String) ctree.keySet().toArray()[0];
+		treeRootArchetype = ItemStack.normalizeLabel(path);
+		treeRootClass = ItemStack.getLabelType(path);
+
 		return ctree;
 	}
 
@@ -493,10 +515,19 @@ public class CompositionSerializer {
 
 			if (instruction.getActivities() != null) {
 
+//				for (Activity act : instruction.getActivities()) {
+//                    itemStack.pushStacks(TAG_ACTIVITIES + "[" + act.getArchetypeNodeId() + "]", act.getName().getValue());
+//					putObject(ltree, getNodeTag(TAG_ACTIVITIES, act, ltree.getClass()), traverse(act, TAG_DESCRIPTION));
+//				}
+				Map<String, Object> activities = newMultiMap();
 				for (Activity act : instruction.getActivities()) {
-                    itemStack.pushStacks(TAG_ACTIVITIES + "[" + act.getArchetypeNodeId() + "]", act.getName().getValue());
-					putObject(ltree, getNodeTag(TAG_ACTIVITIES, act, ltree.getClass()), traverse(act, TAG_DESCRIPTION));
+//					itemStack.pushStacks(TAG_ACTIVITY + "[" + act.getArchetypeNodeId() + "]", act.getName().getValue());
+					putObject(activities, getNodeTag(TAG_ACTIVITY, act, activities.getClass()), traverse(act, TAG_DESCRIPTION));
+//					itemStack.popStacks();
 				}
+
+				putObject(ltree, TAG_ACTIVITIES, activities);
+
 			}
 			retmap = ltree;
 
@@ -610,15 +641,19 @@ public class CompositionSerializer {
 		Map<String, Object>ltree = newPathMap();
 
         if (act.getTiming() != null) {
-            encodeNodeAttribute(ltree, TAG_TIMING, act.getTiming(), act.getName().getValue());
+			//CHC: 160317 do not pass a name for time
+            encodeNodeAttribute(ltree, TAG_TIMING, act.getTiming(), null);
         }
+
+		//CHC: 160317 add explicit name for activity
+		encodeNodeAttribute(ltree, TAG_NAME, null, act.getName().getValue());
 
         itemStack.pushStacks(tag + "[" + act.getDescription().getArchetypeNodeId() + "]", act.getDescription().getName().getValue());
 //        pushPathStack(tag + "[" + act.getDescription().getArchetypeNodeId() + "]");
 //        pushNamedStack(act.getName().getValue());
 
 		log.debug(itemStack.pathStackDump()+TAG_DESCRIPTION+"["+act.getArchetypeNodeId()+"]="+act.getDescription().toString());
-		putObject(ltree, getNodeTag(TAG_DESCRIPTION, act.getDescription(), ltree.getClass()), traverse(act.getDescription(), null)); //don't add a /data in path for description (don't ask me why...)
+		putObject(ltree, getNodeTag(TAG_DESCRIPTION, act.getDescription(), ltree.getClass()), traverse(act.getDescription(), TAG_DESCRIPTION)); //don't add a /data in path for description (don't ask me why...)
 
 
 		if (act.getActionArchetypeId() != null) putObject(ltree, TAG_ACTION_ARCHETYPE_ID, act.getActionArchetypeId().trim());
@@ -752,38 +787,40 @@ public class CompositionSerializer {
 			ItemList list = (ItemList) item;
 			if (list.getItems() != null) {
 
-				for (Element e : list.getItems()) {
+				for (Element element : list.getItems()) {
 					if (ltree.containsKey(getNodeTag(TAG_ITEMS,item, ltree.getClass())))
 						log.warn("ItemList: Overwriting entry for key:"+TAG_ITEMS+"["+item.getArchetypeNodeId()+"]");
-					compactEntry(ltree, getNodeTag(TAG_ITEMS, e, ltree.getClass()), traverse(e, TAG_ITEMS));
+					compactEntry(ltree, getNodeTag(TAG_ITEMS, element, ltree.getClass()), traverse(element, TAG_ITEMS));
 				}
 			}
 			retmap = ltree;
 
 		} else if (item instanceof ItemTree) {
-			Map<String, Object>ltree = newPathMap();
+//CHC:160317			Map<String, Object>ltree = newPathMap();
+			Map<String, Object>ltree = newMultiMap();
 
 			ItemTree tree = (ItemTree) item;
 			if (tree.getItems() != null) {
 
-				for (Item i : tree.getItems()) {
+				for (Item subItem : tree.getItems()) {
 					if (ltree.containsKey(getNodeTag(TAG_ITEMS,item, ltree.getClass())))
 						log.warn("ItemTree: Overwriting entry for key:"+TAG_ITEMS+"["+item.getArchetypeNodeId()+"]");
-					compactEntry(ltree, getNodeTag(TAG_ITEMS, i, ltree.getClass()), traverse(i, TAG_ITEMS));
+					compactEntry(ltree, getNodeTag(TAG_ITEMS, subItem, ltree.getClass()), traverse(subItem, TAG_ITEMS));
 				}
 			}
 			retmap = ltree;
 
 		} else if (item instanceof ItemTable) {
-			Map<String, Object>ltree = newPathMap();
+//CHC:160317			Map<String, Object>ltree = newPathMap();
+			Map<String, Object>ltree = newMultiMap();
 
 			ItemTable table = (ItemTable) item;
 			if (table.getRows() != null) {
 
-				for (Item i : table.getRows()) {
+				for (Item subItem : table.getRows()) {
 					if (ltree.containsKey(getNodeTag(TAG_ITEMS, item, ltree.getClass())))
 						log.warn("ItemTable: Overwriting entry for key:"+TAG_ITEMS+"["+item.getArchetypeNodeId()+"]");
-					compactEntry(ltree, getNodeTag(TAG_ITEMS, i, ltree.getClass()), traverse(i, TAG_ITEMS));
+					compactEntry(ltree, getNodeTag(TAG_ITEMS, subItem, ltree.getClass()), traverse(subItem, TAG_ITEMS));
 				}
 			}
 			retmap = ltree;
@@ -904,4 +941,32 @@ public class CompositionSerializer {
 		return retmap;
 	}
 
+	public Map<String, String> getLtreeMap(){
+		return itemStack.getLtreeMap();
+	}
+
+	public String getTreeRootArchetype() {
+		return treeRootArchetype;
+	}
+
+	public String getTreeRootClass() {
+		return treeRootClass;
+	}
+
+	public static String jsonMapToString(Map map){
+		GsonBuilder builder = new GsonBuilder();
+
+		//register TypeAdapters for all known datatypes we can serialize/parse...
+//		adapter.setBuilderAdapters(builder);
+//		builder.registerTypeAdapter(DataValue.class, adapter);
+//
+		builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+//		builder.registerTypeAdapter(DvQuantity.class, adapter);
+//		builder.registerTypeAdapter(DvText.class, adapter);
+
+		Gson gson = builder.setPrettyPrinting().create();
+		String mapjson = gson.toJson(map);
+
+		return mapjson;
+	}
 }

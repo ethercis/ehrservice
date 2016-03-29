@@ -34,5 +34,9 @@ public interface I_FlatJsonCompositionConverter {
 
     Map<String, Object> fromComposition(String templateId, Composition composition) throws Exception;
 
+    Map<String, Object> fromComposition(String templateId, Composition composition, boolean allElements) throws Exception;
+
     Map<String, Object> fromComposition(OPERATIONALTEMPLATE operationaltemplate, Composition composition)  throws Exception;
+
+    Map<String, Object> fromComposition(OPERATIONALTEMPLATE operationaltemplate, Composition composition, boolean allElements)  throws Exception;
 }

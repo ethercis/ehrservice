@@ -19,6 +19,7 @@ package com.ethercis.ehr.util;
 
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.marand.thinkehr.jsonlib.CompositionConversionException;
 import com.marand.thinkehr.jsonlib.CompositionConverter;
 import com.marand.thinkehr.jsonlib.impl.CompositionConverterImpl;
 import org.apache.xmlbeans.XmlOptions;
@@ -101,7 +102,13 @@ public class FlatJsonCompositionConverter implements I_FlatJsonCompositionConver
         String templateId = operationaltemplate.getTemplateId().getValue();
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
 
-        org.openehr.jaxb.rm.Composition newComposition = converter.toComposition(jaxbTemplate, flatJsonMap);
+        org.openehr.jaxb.rm.Composition newComposition;
+        try {
+            newComposition = converter.toComposition(jaxbTemplate, flatJsonMap);
+        } catch (CompositionConversionException e){
+            throw new IllegalArgumentException("Could not convert JSON map:"+e.getCause());
+        }
+
         //convert it into an RM composition
         marshaller.marshal(new JAXBElement<>( new QName("http://schemas.openehr.org/v1", "composition"),
                 org.openehr.jaxb.rm.Composition.class, null, newComposition), stringWriter);
@@ -114,13 +121,33 @@ public class FlatJsonCompositionConverter implements I_FlatJsonCompositionConver
     @Override
     public Map<String, Object> fromComposition(String templateId, Composition composition) throws Exception {
         //get the template from the cache
+        Object cachedTemplate = knowledge.retrieveTemplate(templateId);
+
+        if (cachedTemplate instanceof OPERATIONALTEMPLATE) {
+
+            OPERATIONALTEMPLATE operationaltemplate = ((OPERATIONALTEMPLATE) knowledge.retrieveTemplate(templateId));
+
+            return fromComposition(operationaltemplate, composition, false);
+        }
+        else
+            throw new IllegalArgumentException("Template id does not match a valid operational template:"+templateId);
+    }
+
+    @Override
+    public Map<String, Object> fromComposition(String templateId, Composition composition, boolean allElements) throws Exception {
+        //get the template from the cache
         OPERATIONALTEMPLATE operationaltemplate = ((OPERATIONALTEMPLATE)knowledge.retrieveTemplate(templateId));
 
-        return fromComposition(operationaltemplate, composition);
+        return fromComposition(operationaltemplate, composition, allElements);
     }
 
     @Override
     public Map<String, Object> fromComposition(OPERATIONALTEMPLATE operationaltemplate, Composition composition)  throws Exception  {
+        return fromComposition(operationaltemplate, composition, false);
+    }
+
+    @Override
+    public Map<String, Object> fromComposition(OPERATIONALTEMPLATE operationaltemplate, Composition composition, boolean allElements)  throws Exception  {
         //get the unmarshalled template
         XmlOptions xmlOptions = new XmlOptions().setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1","template"));
         String templateXml = operationaltemplate.xmlText(xmlOptions);
@@ -130,7 +157,11 @@ public class FlatJsonCompositionConverter implements I_FlatJsonCompositionConver
         //get the unmarshalled composition
         String templateId = operationaltemplate.getTemplateId().getValue();
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
-        byte[] exportXml = contentBuilder.exportCanonicalXML(composition, true, true);
+        //we create a composition with all possible elements
+        byte[] exportXml = contentBuilder.exportCanonicalXML(composition, true, allElements);
+        if (exportXml == null)
+            throw new IllegalArgumentException("Could not export composition under canonical XML");
+
         String xmlized = new String(exportXml);
         jaxbElement = (JAXBElement) unmarshaller.unmarshal(new StringReader(xmlized));
         org.openehr.jaxb.rm.Composition jaxbComposition = (org.openehr.jaxb.rm.Composition)jaxbElement.getValue();

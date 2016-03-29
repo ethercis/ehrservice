@@ -26,15 +26,13 @@ import com.ethercis.ehr.util.EhrException;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.common.generic.PartyProxy;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.EventContext;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.*;
 
 import static com.ethercis.dao.jooq.Tables.*;
@@ -51,6 +49,8 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 
     private I_ContributionAccess contributionAccess = null; //locally referenced contribution associated to this composition
     private Composition composition;
+
+    private static Integer version = 1; //default current version, no history
 
     List<I_EntryAccess> content = new ArrayList<>();
     //CHC: 9/9/15 this flag has been removed since we now use temporal tables with history
@@ -370,14 +370,14 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
     public Boolean update() throws Exception {
         Timestamp timestamp = new Timestamp(DateTime.now().getMillis());
         contributionAccess.update(timestamp, null, null, null, null, I_ConceptAccess.ContributionChangeType.modification, null);
-        return update(new Timestamp(DateTime.now().getMillis()));
+        return update(timestamp);
     }
 
     @Override
     public Boolean update(Boolean force) throws Exception {
         Timestamp timestamp = new Timestamp(DateTime.now().getMillis());
         contributionAccess.update(timestamp, null, null, null, null, I_ConceptAccess.ContributionChangeType.modification, null);
-        return update(new Timestamp(DateTime.now().getMillis()), force);
+        return update(timestamp, force);
     }
 
     @Override
@@ -437,11 +437,15 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
      * @return
      */
     public static I_CompositionAccess retrieveCompositionVersion(I_DomainAccess domainAccess, UUID id, int version) throws Exception {
+
+        if (version  < 1)
+            throw new IllegalArgumentException("Version number must be > 0  please check your code");
+
         String versionQuery =
-                "select in_contribution, ehr_id, language, territory, composer, sys_transaction from \n" +
-                "  (select ROW_NUMBER() OVER (ORDER BY sys_transaction DESC ) AS rowId, * from ehr.composition_history " +
+                "select row_id, in_contribution, ehr_id, language, territory, composer, sys_transaction from \n" +
+                "  (select ROW_NUMBER() OVER (ORDER BY sys_transaction ASC ) AS row_id, * from ehr.composition_history " +
                         "WHERE id = ?) \n" +
-                "    AS Version WHERE rowId = ?;";
+                "    AS Version WHERE row_id = ?;";
 
         Connection connection = domainAccess.getContext().configuration().connectionProvider().acquire();
         PreparedStatement preparedStatement = connection.prepareStatement(versionQuery);
@@ -474,6 +478,18 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 
         return compositionHistoryAccess;
     }
+
+
+    public static Integer getLastVersionNumber(I_DomainAccess domainAccess, UUID compositionId) throws Exception {
+
+        if (!hasPreviousVersion(domainAccess, compositionId))
+            return 1;
+
+        Integer versionCount = domainAccess.getContext().fetchCount(COMPOSITION_HISTORY, COMPOSITION_HISTORY.ID.eq(compositionId));
+
+        return versionCount + 1;
+    }
+
 
     public static boolean hasPreviousVersion(I_DomainAccess domainAccess, UUID compositionId){
         return domainAccess.getContext().fetchExists(COMPOSITION_HISTORY, COMPOSITION_HISTORY.ID.eq(compositionId));
@@ -553,6 +569,11 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
     @Override
     public void setContributionAccess(I_ContributionAccess contributionAccess) {
         this.contributionAccess = contributionAccess;
+    }
+
+    @Override
+    public Integer getVersion(){
+        return version;
     }
 
 

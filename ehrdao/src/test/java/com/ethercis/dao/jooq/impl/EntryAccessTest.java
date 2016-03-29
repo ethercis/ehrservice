@@ -73,7 +73,7 @@ public class EntryAccessTest extends AccessTestCase {
                 "                                at0001, [events], \n" +
                 "                                  at0002, 0, \n" +
                 "                                     /time, /value, value}' AS event_time\n" +
-                "  from ethercis.ehr.entry \n" +
+                "  ,from ethercis.ehr.entry \n" +
                 "\n" +
                 "  where template_id LIKE 'section  observation test.oet'\n" +
                 "                    and entry.entry #>>  '{openEHR-EHR-COMPOSITION.section_observation_test.v2,\n" +

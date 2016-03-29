@@ -17,9 +17,10 @@
 package com.ethercis.ehr.encode;
 
 import org.apache.log4j.Logger;
-import org.openehr.rm.datatypes.text.DvText;
 
+import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
 
 /**
 * ETHERCIS Project ehrservice
@@ -27,34 +28,111 @@ import java.util.Stack;
 */
 public class ItemStack {
     private Logger log = Logger.getLogger(ItemStack.class);
+
+    private static final String archetypePrefix = "[openEHR-";
+    private static final String namedItemPrefix = " and name/value='";
+    private static final String namedItemSuffix = "']";
+
     //contains the ADL path to an element
     private Stack<String> pathStack = new Stack<String>();
     //contains the named path to an element (used to bind Flat JSON)
     private Stack<String> namedStack = new Stack<String>();
 
+
+    //used to resolve and index containments
+    private class ContainmentStruct {
+        private String label;
+        private String fullPath; //full path
+        public ContainmentStruct(String archetype, String path){
+            this.label = archetype;
+            this.fullPath = path;
+        }
+        public String getLabel() {return label;}
+        public String getFullPath() {return fullPath;}
+    }
+
+    private Stack<ContainmentStruct> containmentStack = new Stack<ContainmentStruct>();
+
+    private Map<String, String> ltreeMap = new TreeMap<>();
+
+    public Map<String, String> getLtreeMap() {
+        return ltreeMap;
+    }
+
     private int floorPathStack = 0;
     private int floorNamedStack = 0;
 
+    //replace all dots by underscore and keep only the archetype name part
+    public static String normalizeLabel(String path){
+        String label = path.substring(path.indexOf("[")+1);
+        int namedIndex = label.indexOf(namedItemPrefix);
+        if (namedIndex >= 0)
+            label = label.substring(0, namedIndex);
+
+        //replace all dots by underscores since it is used as delimiter in a dotted labels expression for ltree
+        //only A-Za-z0-9_ are allowed to express a label
+        label = label.replaceAll("\\.", "_").replaceAll("\\-", "_");
+        return label;
+    }
+
+    public static String getLabelType(String path){
+        String label = path.substring(1, path.indexOf("["));
+        return label;
+    }
+
+    private boolean isArchetypeSlot(String path){
+        return path.contains(archetypePrefix);
+    }
+
+    private void flushContainmentMap(){
+        //get the last element on stack
+        ContainmentStruct containmentStruct = containmentStack.lastElement();
+//        System.out.println(containmentStruct.getLabel() + "-->" + containmentStruct.getFullPath());
+        if (ltreeMap.containsKey(containmentStruct.getLabel()))
+            log.warn("ltree map already contain key:"+containmentStruct.getLabel());
+        else
+            ltreeMap.put(containmentStruct.getLabel(), containmentStruct.getFullPath());
+    }
 
     public void pushStacks(String path, String name){
         //specify name/value for path in the format /something[openEHR-EHR-blablah...] for disambiguation
         log.debug("-- PUSH PATH:" + path +"::"+name);
-        if (path.contains("[openEHR-") || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS) || path.contains(CompositionSerializer.TAG_EVENTS)){
+        if (path.contains(archetypePrefix) || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS) || path.contains(CompositionSerializer.TAG_EVENTS)){
             //add name in path
 //            if (!name.contains("'"))
             if (name != null)
-                path = path.substring(0, path.indexOf("]"))+" and name/value='"+name+"']";
+                path = path.substring(0, path.indexOf("]"))+namedItemPrefix+name+namedItemSuffix;
 //            else
 //                log.warn("Ignoring entry/item name:"+name);
         }
         pushStack(pathStack, path);
         pushStack(namedStack, name);
+        if (isArchetypeSlot(path)) {
+
+            String label = normalizeLabel(path);
+            //get the previous label if any
+            String previousLabel = null;
+
+            if (!containmentStack.isEmpty()) {
+                previousLabel = containmentStack.lastElement().getLabel();
+            }
+            if (previousLabel != null){
+                label = previousLabel+"."+label;
+            }
+            ContainmentStruct containmentStruct = new ContainmentStruct(label, pathStackDump());
+            containmentStack.push(containmentStruct);
+        }
+
 //        pushNamedStack(name);
     }
 
     public void popStacks(){
         log.debug("-- POP PATH:"+ (pathStack.isEmpty() ? "*empty*":pathStack.lastElement()));
-        popStack(pathStack);
+        String path = popStack(pathStack);
+        if (path != null && isArchetypeSlot(path)) {
+            flushContainmentMap();
+            containmentStack.pop();
+        }
         popStack(namedStack);
     }
 
@@ -65,12 +143,14 @@ public class ItemStack {
 //		log.debug("FLOOR:"+floorPathStack+"->"+s);
     }
 
-    private void popStack(Stack stack){
+    private String popStack(Stack stack){
         if (!stack.empty()){
-            stack.pop();
+            String path = (String)stack.pop();
             floorPathStack--;
+            return path;
 //			log.debug("FLOOR:"+floorPathStack);
         }
+        return null;
     }
 
 //    private void pushNamedStack(String s){

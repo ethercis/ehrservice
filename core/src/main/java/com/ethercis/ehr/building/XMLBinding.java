@@ -238,7 +238,10 @@ public class XMLBinding {
 
 //							array[1] = bindToXML(value);
                             array[1] = returnObject;
-							setterMethod.invoke(xmlObj, array);
+							if (setterMethod.getName().equals("setContentArray"))
+								setterMethod.invoke(xmlObj, new Integer(i), returnObject);
+							else
+								setterMethod.invoke(xmlObj, array);
 						}
 					}
 

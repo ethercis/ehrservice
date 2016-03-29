@@ -191,8 +191,16 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         //reference the newly created child
         Object itemAtPath = locatable.itemAtPath(path);
 
+        //TODO: set a termination to avoid endless loop...
+        //TODO: fail on /content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value='Laboratory test tracker']/ism_transition
         if (itemAtPath == null && sibling == null){
-            itemAtPath = insertCloneInPath(locatable, definition, path); //deeper...
+
+            if (sibling == null && locatable.getParent() == null){
+                    //end of recursion (potentially not found)
+                    log.warn("Recursion aborted, no more parent for locatable...:"+path);
+            }
+            else
+                itemAtPath = insertCloneInPath(locatable, definition, path); //deeper...
         }
 
 //        if (sibling != null)
