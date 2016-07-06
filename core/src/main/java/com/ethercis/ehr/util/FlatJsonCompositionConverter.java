@@ -90,6 +90,10 @@ public class FlatJsonCompositionConverter implements I_FlatJsonCompositionConver
 
     @Override
     public Composition toComposition(OPERATIONALTEMPLATE operationaltemplate, Map<String, Object> flatJsonMap) throws Exception {
+
+        if (operationaltemplate == null)
+            throw new IllegalArgumentException("No template found...");
+
         StringWriter stringWriter = new StringWriter();
 
         //get the unmarshalled template

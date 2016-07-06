@@ -18,8 +18,8 @@ package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.CompositionAccess;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.dao.jooq.tables.records.CompositionRecord;
-import com.ethercis.dao.jooq.tables.records.TerritoryRecord;
+import com.ethercis.jooq.pg.tables.records.CompositionRecord;
+import com.ethercis.jooq.pg.tables.records.TerritoryRecord;
 import com.ethercis.ehr.util.EhrException;
 import org.joda.time.DateTime;
 import org.jooq.Result;
@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.LANGUAGE;
-import static com.ethercis.dao.jooq.Tables.TERRITORY;
+import static com.ethercis.jooq.pg.Tables.LANGUAGE;
+import static com.ethercis.jooq.pg.Tables.TERRITORY;
 
 /**
  * Composition Access Layer Interface<br>
@@ -107,7 +107,7 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
      * @param domainAccess SQL context, knowledge
      * @param compositionRecord a valid CompositionRecord
      * @return the interface
-     * @see com.ethercis.dao.jooq.tables.records.CompositionRecord
+     * @see com.ethercis.jooq.pg.tables.records.CompositionRecord
      */
     static I_CompositionAccess getInstance(I_DomainAccess domainAccess, CompositionRecord compositionRecord) {
         return new CompositionAccess(domainAccess, compositionRecord);

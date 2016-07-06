@@ -80,11 +80,15 @@ public interface I_ContentBuilder {
     static I_ContentBuilder getInstance(Map<SystemValue, Object> values, I_KnowledgeCache knowledgeCache, String templateId) throws Exception {
         Object template = knowledgeCache.retrieveTemplate(templateId);
 
+        if (template == null)
+            throw new IllegalArgumentException("Could not retrieve a template matching id:"+templateId);
+
         if (template != null){
             if (template instanceof OPERATIONALTEMPLATE)
                 return new OptContentBuilder((OPERATIONALTEMPLATE)template, values, knowledgeCache, templateId);
-            else if (template instanceof TEMPLATE)
-                return new OetContentBuilder((TEMPLATE)template, values, knowledgeCache, templateId);
+            else if (template instanceof TEMPLATE) {
+                return new OetContentBuilder((TEMPLATE) template, values, knowledgeCache, templateId);
+            }
         }
 
         //get the file extension
@@ -135,6 +139,10 @@ public interface I_ContentBuilder {
     void setTemplateId(String templateId);
 
     Composition getComposition();
+
+    String getRootArchetypeId();
+
+    Map<String, String> getLtreeMap();
 
     public void setCompositionParameters(Map<SystemValue, Object> values);
 

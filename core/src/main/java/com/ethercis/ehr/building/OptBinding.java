@@ -686,13 +686,13 @@ public class OptBinding extends RmBinding {
 		} else if ("HISTORY".equals(rmTypeName)) {
 
 			if (!valueMap.containsKey(ORIGIN)) {
-				valueMap.put(ORIGIN, new DvDateTime());
+				valueMap.put(ORIGIN, new DvDateTime(DEFAULT_DATE_TIME));
 			}
 
 		} else if ("EVENT".equals(rmTypeName) || "POINT_EVENT".equals(rmTypeName)) {
 
 			if (!valueMap.containsKey(TIME)) {
-				valueMap.put(TIME, new DvDateTime());
+				valueMap.put(TIME, new DvDateTime(DEFAULT_DATE_TIME));
 			}
 
 		} else if ("OBSERVATION".equals(rmTypeName)) {
@@ -711,33 +711,32 @@ public class OptBinding extends RmBinding {
 
             addEntryValues(valueMap, (CARCHETYPEROOT) ccobj);
             if( ! valueMap.containsKey(TIME)) {
-                valueMap.put(TIME, new DvDateTime());
+                valueMap.put(TIME, new DvDateTime(DEFAULT_DATE_TIME));
             }
             if(valueMap.get(DESCRIPTION) == null) {
-                valueMap.put(DESCRIPTION,
-                        new ItemTree("at0001", new DvText("tree"), null));
+                valueMap.put(DESCRIPTION, new ItemTree(DEFAULT_NODE_ID, new DvText(DEFAULT_DESCRIPTION_NAME), null));
             }
 
         } else if ("ISM_TRANSITION".equals(rmTypeName)){
 			//do not assume a default for careflow_step
-			if (valueMap.containsKey(CAREFLOW_STEP))
-				valueMap.put(CAREFLOW_STEP, new DvCodedText("DUMMY", "local", "0000"));
+			if (!valueMap.containsKey(CAREFLOW_STEP))
+				valueMap.put(CAREFLOW_STEP, new DvCodedText(DEFAULT_CAREFLOW_STEP, "local", "0000"));
 		}
 		else if("INSTRUCTION".equals(rmTypeName)) {
 
             if( ! valueMap.containsKey(NARRATIVE)) {
-                valueMap.put(NARRATIVE, new DvText("instruction narrative"));
+                valueMap.put(NARRATIVE, new DvText(DEFAULT_NARRATIVE));
             }
             addEntryValues(valueMap, (CARCHETYPEROOT) ccobj);
 
         } else if("ACTIVITY".equals(rmTypeName)) {
 
             if( ! valueMap.containsKey(TIMING)) {
-                valueMap.put(TIMING, new DvParsable("activity timing", "txt"));
+                valueMap.put(TIMING, new DvParsable(DEFAULT_TIMING_SCHEME, DEFAULT_TIMING_FORMALISM));
             }
 
             if ( ! valueMap.containsKey(ACTION_ARCHETYPE_ID)){
-                valueMap.put(ACTION_ARCHETYPE_ID, "/.*/");
+                valueMap.put(ACTION_ARCHETYPE_ID, DEFAULT_ACTION_ARCHETYPE_ID);
             }
 
 		} else if ("COMPOSITION".equals(rmTypeName)) {

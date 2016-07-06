@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.ENTRY;
+import static com.ethercis.jooq.pg.Tables.ENTRY;
 
 /**
  * Entry (Composition Content) access layer
@@ -197,5 +197,16 @@ public interface I_EntryAccess extends I_SimpleCRUD<I_EntryAccess, UUID> {
      */
     public static Map<String, Object> queryJSON(I_DomainAccess domainAccess, String query) throws Exception {
         return EntryAccess.queryJSON(domainAccess, query);
+    }
+
+    /**
+     * perform an arbitrary AQL query on entries and return the result set as a JSON string
+     * @param domainAccess SQL access
+     * @param query a valid SQL queryJSON string
+     * @return a JSON formatted result set
+     * @throws Exception
+     */
+    public static Map<String, Object> queryAqlJson(I_DomainAccess domainAccess, String query) throws Exception {
+        return EntryAccess.queryAqlJson(domainAccess, query);
     }
 }

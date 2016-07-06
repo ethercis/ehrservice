@@ -100,4 +100,31 @@ public class EntryAccessTest extends AccessTestCase {
         System.out.println(bodyContent);
     }
 
+    @Test
+    public void testAqlQuery() throws Exception {
+        //more fun...
+
+        String query = "SELECT c/uid/value,"+
+                "c/name/value,"+
+                "eval/data[at0001]/items[at0002]/value AS problem,\n" +
+                "eval/data[at0001]/items[at0002]/defining_code/code_string AS code,\n" +
+                "eval/data[at0001]/items[at0002]/defining_code/terminology_id/name AS code,\n" +
+                "eval/data[at0001]/items[at0009]/value AS description,\n"+
+                "eval/data[at0001]/items[at0077]/value AS onset,\n"+
+                "eval/data[at0001] AS struct\n"+
+                "FROM EHR e  \n" +
+                "CONTAINS COMPOSITION c \n" +
+                "CONTAINS EVALUATION eval [openEHR-EHR-EVALUATION.problem-diagnosis.v1]" +
+                "WHERE c/uid/value = '08fd487b-765a-41b4-9501-334d48dc2b00::test::1'";
+
+        //perform the query
+        Map<String, Object> map = I_EntryAccess.queryAqlJson(testDomainAccess, query);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        new org.codehaus.jackson.map.ObjectMapper().writer().writeValue(byteArrayOutputStream, map);
+        String bodyContent = byteArrayOutputStream.toString();
+
+        System.out.println(bodyContent);
+    }
+
 }

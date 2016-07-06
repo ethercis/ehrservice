@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!-- configuration to generate POJOs from the DB using jOOQ Generation Tool
+<!-- configuration to generate POJOs fromBinder the DB using jOOQ Generation Tool
      See http://www.jooq.org/doc/3.5/manual/code-generation/codegen-configuration/ for details
 -->
 <configuration>
@@ -12,7 +12,7 @@
 	</jdbc>
 	<generator>
 		<database>
-			<!-- The database dialect from jooq-meta. Available dialects are named 
+			<!-- The database dialect fromBinder jooq-meta. Available dialects are named
 				org.util.[database].[database]Database. Known values are: org.jooq.util.ase.ASEDatabase 
 				(to be used with Sybase ASE) org.jooq.util.cubrid.CUBRIDDatabase org.jooq.util.db2.DB2Database 
 				org.jooq.util.derby.DerbyDatabase org.jooq.util.h2.H2Database org.jooq.util.hsqldb.HSQLDBDatabase 
@@ -21,15 +21,15 @@
 				org.jooq.util.sqlserver.SQLServerDatabase org.jooq.util.sybase.SybaseDatabase 
 				(to be used with Sybase SQL Anywhere) You can also provide your own org.jooq.util.Database 
 				implementation here, if your database is currently not supported or if you 
-				wish to read the database schema from a file, such as a Hibernate .hbm.xml 
+				wish to read the database schema fromBinder a file, such as a Hibernate .hbm.xml
 				file -->
 			<name>org.jooq.util.postgres.PostgresDatabase</name>
-			<!-- All elements that are generated from your schema (A Java regular 
+			<!-- All elements that are generated fromBinder your schema (A Java regular
 				expression. Use the pipe to separate several expressions) Watch out for case-sensitivity. 
 				Depending on your database, this might be important! You can storeComposition case-insensitive
 				regular expressions using this syntax: (?i:expr) -->
 			<includes>.*</includes>
-			<!-- All elements that are excluded from your schema (A Java regular expression. 
+			<!-- All elements that are excluded fromBinder your schema (A Java regular expression.
 				Use the pipe to separate several expressions). Excludes match before includes -->
 			<excludes></excludes>
 			<!-- The schema that is used locally as a source for meta information. 
@@ -48,7 +48,7 @@
 				multiple schemas, e.g. org.jooq.your.packagename.schema1 org.jooq.your.packagename.schema2 -->
 			<packageName>com.ethercis.dao.jooq</packageName>
 			<!-- The destination directory of your generated classes -->
-			<directory>../src</directory>
+			<directory>../src/main/java</directory>
 		</target>
 	</generator>
 </configuration>

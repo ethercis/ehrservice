@@ -76,6 +76,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     private Deque<Map<String, Object>> stack;
     protected I_KnowledgeCache knowledge;
     static Logger log = Logger.getLogger(ContentBuilder.class);
+    private String rootArchetypeId;
+    private Map<String, String> ltreeMap;
 
     //public static final String TAG_OBJECT =  "/$OBJECT$";
 
@@ -102,6 +104,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         */
         this.composition = composition;
         this.entry = gson.toJson(retMap);
+        this.rootArchetypeId = inspector.getTreeRootArchetype();
+        this.ltreeMap = inspector.getLtreeMap();
     }
 
 //    public String setEntryData(Object entry) throws Exception {
@@ -181,9 +185,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
             if (parent != null) {
                 Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
-                //get its name
-//                DvText newName = getNewName(definition);
-//                cloned.setName(newName);
+                LocatableHelper.adjustChildrenNames(cloned, parent.getChildPath(), path);
                 LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), parent.getChildPath());
             }
 //            sibling = (Locatable) locatable.itemAtPath(siblingPath);
@@ -209,7 +211,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //            itemAtPath = insertCloneInPath(locatable, definition, path);
 
         if (itemAtPath == null) //something really wrong here...
-            throw new IllegalArgumentException("INTERNAL: failed to successfully clone child structure at:"+path);
+            throw new IllegalArgumentException("Unhandled path in template:"+path+" with definition:"+definition+", possible cause is out of synch template and persisted data (composition id: "+locatable.getName()+")");
 
         return itemAtPath;
     }
@@ -218,9 +220,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
         //traverse the queue
         for (Map<String, Object> definition: stack){
-            String path = (String)definition.get(CompositionSerializer.TAG_PATH);
+            if (definition.containsKey("/meta")) continue; //ignore the meta entry (not used to build only for querying
 
             //get path from the /content part only
+            String path = (String)definition.get(CompositionSerializer.TAG_PATH);
+
             path = path.substring(path.indexOf(CompositionSerializer.TAG_CONTENT));
 
             Object object = definition.get(MapInspector.TAG_OBJECT);
@@ -244,9 +248,21 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             else if (path.contains(CompositionSerializer.TAG_INSTRUCTION_DETAILS)){
                 path = path.substring(0, path.indexOf(CompositionSerializer.TAG_INSTRUCTION_DETAILS)+CompositionSerializer.TAG_INSTRUCTION_DETAILS.length());
             }
+            else if (path.contains(CompositionSerializer.TAG_UID)){ //instruction!
+                path = path.substring(0, path.indexOf(CompositionSerializer.TAG_UID));
+            }
+
 
             Object itemAtPath = composition.itemAtPath(path);
 
+            //check if this can be resolved without name/value in nodeId predicate...
+            /* Potentially not required anymore...
+            if (itemAtPath == null && !LocatableHelper.hasDefinedOccurence(path)){
+                String simplifiedPath = LocatableHelper.simplifyPath(path);
+                itemAtPath = composition.itemAtPath(simplifiedPath);
+            }
+
+            */
             //HACK! if an itemAtPath is already there with dirtyBit == true, just clone the element for this path
 //            if (itemAtPath == null || (itemAtPath instanceof ElementWrapper && ((ElementWrapper)itemAtPath).dirtyBitSet())) {
             if (itemAtPath == null) {
@@ -267,6 +283,9 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             } else if (itemAtPath instanceof Instruction) {
                 if (lastTag.equals(CompositionSerializer.TAG_NARRATIVE)) {
                     ((Instruction) itemAtPath).setNarrative((DvText) object);
+                }
+                else if (lastTag.equals(CompositionSerializer.TAG_UID)) {
+                    ((Instruction) itemAtPath).setUid((HierObjectID) object);
                 }
             }
             else if (itemAtPath instanceof Action) {
@@ -786,6 +805,16 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     @Override
     public Composition getComposition() {
         return composition;
+    }
+
+    @Override
+    public String getRootArchetypeId() {
+        return rootArchetypeId;
+    }
+
+    @Override
+    public Map<String, String> getLtreeMap() {
+        return ltreeMap;
     }
 
     public void setCompositionParameters(Map<SystemValue, Object> values){

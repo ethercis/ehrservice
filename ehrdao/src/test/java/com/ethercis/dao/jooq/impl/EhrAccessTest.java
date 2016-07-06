@@ -6,7 +6,6 @@ import com.ethercis.dao.access.jooq.PartyIdentifiedAccess;
 import com.ethercis.dao.access.support.AccessTestCase;
 import com.ethercis.dao.access.support.RmObjectHelper;
 import com.ethercis.dao.access.support.TestHelper;
-import com.ethercis.dao.jooq.tables.*;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import junit.framework.Assert;
 import org.joda.time.DateTime;

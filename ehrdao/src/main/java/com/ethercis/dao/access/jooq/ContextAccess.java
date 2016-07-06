@@ -20,7 +20,7 @@ import com.ethercis.dao.access.interfaces.I_ContextAccess;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_PartyIdentifiedAccess;
 import com.ethercis.dao.access.support.DataAccess;
-import com.ethercis.dao.jooq.tables.records.*;
+import com.ethercis.jooq.pg.tables.records.*;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
@@ -53,7 +53,7 @@ import org.postgresql.util.PGobject;
 import java.sql.*;
 import java.util.*;
 
-import static com.ethercis.dao.jooq.Tables.*;
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Created by Christian Chevalley on 4/9/2015.

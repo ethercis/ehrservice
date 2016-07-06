@@ -41,6 +41,7 @@ public class OetContentBuilder extends ContentBuilder {
     public OetContentBuilder(TEMPLATE template, Map<SystemValue, Object> values, I_KnowledgeCache knowledge, String templateId) throws Exception {
         super(values, knowledge, templateId);
         this.template = template;
+        log.warn("USING openEHR TEMPLATE for templateId:"+templateId);
     }
 
 

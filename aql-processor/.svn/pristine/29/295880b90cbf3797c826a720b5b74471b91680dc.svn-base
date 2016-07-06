@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.ethercis.aql.definition;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * Contains the parameters of an element in a FROM clause
+ * <p>
+ * The FROM clause is generally associated to an EHR definition
+ * </p>
+ * Created by christian on 5/2/2016.
+ */
+public class FromDefinition {
+
+    public static class EhrPredicate {
+        String field;
+        String value;
+        String identifier;
+
+        public EhrPredicate(String field, String  value){
+            this.field = field;
+            this.value = value;
+        }
+
+        public void setIdentifier(String identifier) {
+            this.identifier = identifier;
+        }
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        public String getField() {
+            return field;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String toString(){
+            return "EHR::"+getIdentifier()+"::"+getIdentifier()+"::"+getValue();
+        }
+    }
+
+    private boolean isEHR = false;
+    private String identifier;
+
+
+
+    private List<EhrPredicate> fromEhrPredicates = new ArrayList<>();
+
+    public void add(String identifier, String value){
+        fromEhrPredicates.add(new EhrPredicate(identifier, value));
+    }
+
+    public void setIsEHR(boolean isEHR) {
+        this.isEHR = isEHR;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public boolean isEHR() {
+        return isEHR;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
+     * aasumes ehr_id/value has been given
+     * @return
+     */
+    public String toString(){
+
+        StringBuffer stringBuffer = new StringBuffer();
+
+        for (EhrPredicate predicate: fromEhrPredicates){
+            stringBuffer.append(predicate+" ");
+        }
+        return stringBuffer.toString();
+    }
+
+    public List<EhrPredicate> getEhrPredicates(){
+        return fromEhrPredicates;
+    }
+}

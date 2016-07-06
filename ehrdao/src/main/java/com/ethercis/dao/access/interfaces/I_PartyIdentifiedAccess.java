@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.IDENTIFIER;
-import static com.ethercis.dao.jooq.Tables.PARTY_IDENTIFIED;
+import static com.ethercis.jooq.pg.Tables.IDENTIFIER;
+import static com.ethercis.jooq.pg.Tables.PARTY_IDENTIFIED;
 
 /**
  * Party Identified access layer

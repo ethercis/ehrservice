@@ -58,8 +58,10 @@ public class MapInspector {
         //recursion termination
         if (!(stack.isEmpty())){ //build object for the preceding class...
             Map<String, Object> current = stack.getFirst();
-            log.debug("Building object for class " + current.get(CompositionSerializer.TAG_CLASS));
-            generateObject(current);
+            if (!current.containsKey("/meta")) {
+                log.debug("Building object for class " + current.get(CompositionSerializer.TAG_CLASS));
+                generateObject(current);
+            }
         }
     }
 
@@ -282,22 +284,42 @@ public class MapInspector {
                     log.debug(key + "=" + value);
                 }
             }
+//            else if (key.equals(CompositionSerializer.TAG_VALUE)){ //simplest case, pass the whole /value map
+//                Map<String, Object> valueMap = new HashMap<>();
+//                valueMap.put(CompositionSerializer.TAG_VALUE, value);
+//                generateObject(valueMap);
+//                stack.push(valueMap);
+//            }
             else if (value instanceof Map){
                 if (key.equals(CompositionSerializer.TAG_VALUE)){ //a map of values...
-                    if (!((Map) value).containsKey(CompositionSerializer.TAG_CLASS)){
+                    Map<String, Object> valueMap = ((Map) value);
+                    Map<String, Object> attributes = new HashMap<>();
+                    //add the original
+//                    ((Map)value).put(CompositionSerializer.TAG_VALUE, value);
+                    if (!valueMap.containsKey(CompositionSerializer.TAG_VALUE) /*&& valueMap.containsKey("value")*/){
+                        //and interpreted.
+                        Map<String, Object> valueAttributes = new HashMap<>();
+//                        valueAttributes.put("value", valueMap.get("value"));
+                        valueAttributes.putAll(valueMap);
+                        valueMap.put(CompositionSerializer.TAG_VALUE, valueAttributes);
+//                        valueMap.remove("value");
+                    }
+
+                    if (!valueMap.containsKey(CompositionSerializer.TAG_CLASS)){
                         //ensure the object can be rebuilt...
-                        ((Map) value).put(CompositionSerializer.TAG_CLASS, map.get(CompositionSerializer.TAG_CLASS));
+                        valueMap.put(CompositionSerializer.TAG_CLASS, map.get(CompositionSerializer.TAG_CLASS));
                     }
                     if (!((Map) value).containsKey(CompositionSerializer.TAG_PATH)){
                         //and interpreted.
-                        ((Map) value).put(CompositionSerializer.TAG_PATH, map.get(CompositionSerializer.TAG_PATH));
+                        valueMap.put(CompositionSerializer.TAG_PATH, map.get(CompositionSerializer.TAG_PATH));
                     }
-                    if (!((Map) value).containsKey(CompositionSerializer.TAG_NAME)){
+                    if (!valueMap.containsKey(CompositionSerializer.TAG_NAME)){
                         //and interpreted.
-                        ((Map) value).put(CompositionSerializer.TAG_NAME, map.get(CompositionSerializer.TAG_NAME));
+                        valueMap.put(CompositionSerializer.TAG_NAME, map.get(CompositionSerializer.TAG_NAME));
                     }
-                    generateObject((Map<String, Object>) value);
-                    stack.push((Map<String, Object>) value);
+
+                    generateObject(valueMap);
+                    stack.push(valueMap);
 //                    return;
 //                    Map<String, Object> current = stack.getFirst();
 ////                    log.debug("Building object for class" + current.get(CompWalker.TAG_CLASS));
@@ -356,9 +378,18 @@ public class MapInspector {
                 log.debug(key + "=" + value);
             }
             else if (value instanceof DataValue){
-                Map<String, Object> current = stack.getFirst();
-                log.debug("Building object for class" + current.get(CompositionSerializer.TAG_CLASS));
-                current.put(TAG_OBJECT, value);
+                if (stack.isEmpty()){
+                    stack.push(map);
+                }
+                else {
+                    Map<String, Object> current = stack.getFirst();
+                    log.debug("Building object for class" + current.get(CompositionSerializer.TAG_CLASS));
+                    try {
+                        current.put(TAG_OBJECT, value);
+                    } catch (IllegalArgumentException e) { //predicate reject it, object is already in the map...
+
+                    }
+                }
             }
             else {
                 if (!isElementMetaData(key) && !(value instanceof Participation))

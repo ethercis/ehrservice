@@ -89,7 +89,7 @@ public class ItemStack {
         ContainmentStruct containmentStruct = containmentStack.lastElement();
 //        System.out.println(containmentStruct.getLabel() + "-->" + containmentStruct.getFullPath());
         if (ltreeMap.containsKey(containmentStruct.getLabel()))
-            log.warn("ltree map already contain key:"+containmentStruct.getLabel());
+            log.warn("CONTAINMENT: ltree map already contain key:"+containmentStruct.getLabel());
         else
             ltreeMap.put(containmentStruct.getLabel(), containmentStruct.getFullPath());
     }

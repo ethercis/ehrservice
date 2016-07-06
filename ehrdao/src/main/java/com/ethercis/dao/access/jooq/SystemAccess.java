@@ -19,7 +19,7 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_SystemAccess;
 import com.ethercis.dao.access.support.DataAccess;
-import com.ethercis.dao.jooq.tables.records.SystemRecord;
+import com.ethercis.jooq.pg.tables.records.SystemRecord;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
@@ -32,7 +32,7 @@ import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.SYSTEM;
+import static com.ethercis.jooq.pg.Tables.SYSTEM;
 
 /**
  * Created by Christian Chevalley on 4/20/2015.

@@ -1378,9 +1378,9 @@
   <Concept Language="en" ConceptID="663" Rubric="Search" />
   <Concept Language="en" ConceptID="664" Rubric="Network error" />
   <Concept Language="en" ConceptID="665" Rubric="Please enter your search parameter" />
-  <Concept Language="en" ConceptID="666" Rubric="Open existing Archetype from Web" />
+  <Concept Language="en" ConceptID="666" Rubric="Open existing Archetype fromBinder Web" />
   <Concept Language="en" ConceptID="667" Rubric="Tools" />
-  <Concept Language="en" ConceptID="668" Rubric="Select one unit from the left and one from the right:" />
+  <Concept Language="en" ConceptID="668" Rubric="Select one unit fromBinder the left and one fromBinder the right:" />
   <Concept Language="en" ConceptID="669" Rubric="Use specialisations too?" />
   <Concept Language="en" ConceptID="670" Rubric="Time Fraction" />
   <Concept Language="en" ConceptID="671" Rubric="No embedded archetype matches at {0}" />
@@ -6314,7 +6314,7 @@
   <TerminologyIdentifiers VSAB="HCPT03" SourceName="HCPCS Version of Current Procedural Terminology(CPT), 2003" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="HHC96" SourceName="Home Health Care Classification, 1996" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="HL7_1998-2002" SourceName="Health Level Seven Vocabulary, 1998-2002" Authority="UMLS2003AA" />
-  <TerminologyIdentifiers VSAB="HLREL_1998" SourceName="ICPC2E-ICD10 relationships from Dr. Henk Lamberts, 1998" Authority="UMLS2003AA" />
+  <TerminologyIdentifiers VSAB="HLREL_1998" SourceName="ICPC2E-ICD10 relationships fromBinder Dr. Henk Lamberts, 1998" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="HPC99" SourceName="Health Product Comparison System, 1999" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="ICD10AM_2000" SourceName="ICD-10, Australian Modification, 2000" Authority="UMLS2003AA" Hl7Oid="2.16.840.1.113883.6.135" />
   <TerminologyIdentifiers VSAB="ICD10_1998" SourceName="ICD-10, 1998" Authority="UMLS2003AA" Hl7Oid="2.16.840.1.113883.6.3" />
@@ -6357,7 +6357,7 @@
   <TerminologyIdentifiers VSAB="PPAC98" SourceName="Pharmacy Practice Activity Classification , 1998" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="PSY2001" SourceName="Thesaurus of Psychological Index Terms, 2001" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="QMR96" SourceName="Quick Medical Reference (QMR), 1996" Authority="UMLS2003AA" />
-  <TerminologyIdentifiers VSAB="RAM99" SourceName="QMR clinically related terms from Randolph A. Miller, 1999" Authority="UMLS2003AA" />
+  <TerminologyIdentifiers VSAB="RAM99" SourceName="QMR clinically related terms fromBinder Randolph A. Miller, 1999" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="RCD99" SourceName="Clinical Terms Version 3 (CTV3) (Read Codes), 1999" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="RCDSY_1999" SourceName="Read thesaurus, Synthesized Terms, 1999" Authority="UMLS2003AA" />
   <TerminologyIdentifiers VSAB="RXNORM_03AA" SourceName="RXNORM Drug terminology 2003" Authority="UMLS2003AA" />

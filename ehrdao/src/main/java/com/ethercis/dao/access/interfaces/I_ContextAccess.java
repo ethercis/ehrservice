@@ -22,7 +22,7 @@ import org.openehr.rm.composition.EventContext;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.EVENT_CONTEXT;
+import static com.ethercis.jooq.pg.Tables.EVENT_CONTEXT;
 
 /**
  * Event Context access layer

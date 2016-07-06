@@ -19,8 +19,8 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.dao.jooq.enums.ContributionDataType;
-import com.ethercis.dao.jooq.tables.records.CompositionRecord;
+import com.ethercis.jooq.pg.enums.ContributionDataType;
+import com.ethercis.jooq.pg.tables.records.CompositionRecord;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.util.EhrException;
 import org.apache.log4j.Logger;
@@ -35,7 +35,7 @@ import org.openehr.rm.composition.EventContext;
 import java.sql.*;
 import java.util.*;
 
-import static com.ethercis.dao.jooq.Tables.*;
+import static com.ethercis.jooq.pg.Tables.*;
 /**
  * Created by Christian Chevalley on 4/2/2015.
  */

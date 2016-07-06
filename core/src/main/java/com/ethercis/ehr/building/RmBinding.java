@@ -43,6 +43,7 @@ import java.util.Map;
  */
 public abstract class RmBinding implements I_RmBinding {
 
+    //field identifiers
     protected static final String VALUE = "value";
     protected static final String NULL_FLAVOUR = "null_flavour";
     protected static final String NARRATIVE = "narrative";
@@ -70,6 +71,7 @@ public abstract class RmBinding implements I_RmBinding {
 
     //ISM_TRANSITION
     protected static final String CAREFLOW_STEP="careflow_step";
+    protected static final String CURRENT_STATE="current_state";
 
     // default values
     protected static final String ID = "id";
@@ -77,19 +79,26 @@ public abstract class RmBinding implements I_RmBinding {
     protected static final String ISSUER = "issuer";
     protected static final String TYPE = "type";
 
-    protected static final String DEFAULT_DATE = "2013-01-01";
-    protected static final String DEFAULT_TIME = "10:00:00";
-    protected static final String DEFAULT_DATE_TIME = "2010-01-01T10:00:00";
-    protected static final String DEFAULT_DURATION = "PT1H";
-    protected static final String DEFAULT_TEXT = "text value";
-    protected static final String DEFAULT_CODED_TEXT = "coded text value";
-    protected static final String DEFAULT_COUNT = "1";
-    protected static final String DEFAULT_URI = "http://www.ethercis.com/";
-    protected static final String DEFAULT_ID = "1";
-    protected static final String DEFAULT_ISSUER = "1";
-    protected static final String DEFAULT_ASSIGNER = "1";
-    protected static final String DEFAULT_TYPE = "1";
-    
+    public static final String DEFAULT_DATE = "1900-01-01";
+    public static final String DEFAULT_TIME = "00:00:00";
+    public static final String DEFAULT_DATE_TIME = "1900-01-01T00:00:00";
+    public static final String DEFAULT_DURATION = "PT0S";
+    public static final String DEFAULT_TEXT = "DEFAULT_TEXT_VALUE";
+    public static final String DEFAULT_CODED_TEXT = "DEFAULT_CODED_TEXT_VALUE";
+    public static final String DEFAULT_COUNT = "1";
+    public static final String DEFAULT_URI = "http://www.DEFAULTURI.com/";
+    public static final String DEFAULT_ID = "DEFAULT_ID";
+    public static final String DEFAULT_ISSUER = "DEFAULT_ISSUER";
+    public static final String DEFAULT_ASSIGNER = "DEFAULT_ASSIGNER";
+    public static final String DEFAULT_TYPE = "DEFAULT_TYPE";
+    public static final String DEFAULT_NARRATIVE = "DEFAULT_NARRATIVE";
+    public static final String DEFAULT_TIMING_SCHEME = "DEFAULT_TIMING";
+    public static final String DEFAULT_TIMING_FORMALISM = "DEFAULT_FORMALISM";
+    public static final String DEFAULT_ACTION_ARCHETYPE_ID = "/.*/";
+    public static final String DEFAULT_DESCRIPTION_NAME = "DEFAULT_DESCRIPTION_STUCT";
+    public static final String DEFAULT_NODE_ID = "at0000";
+    public static final String DEFAULT_CAREFLOW_STEP = "DEFAULT_CAREFLOW_STEP";
+
     protected Map<SystemValue,Object> systemValues = new HashMap<>();
     protected MeasurementService measurementService;
     protected TerminologyService terminologyService;

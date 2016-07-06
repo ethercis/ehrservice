@@ -19,7 +19,7 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_StatusAccess;
 import com.ethercis.dao.access.support.DataAccess;
-import com.ethercis.dao.jooq.tables.records.StatusRecord;
+import com.ethercis.jooq.pg.tables.records.StatusRecord;
 import org.apache.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -27,8 +27,8 @@ import org.jooq.Record;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.PARTY_IDENTIFIED;
-import static com.ethercis.dao.jooq.Tables.STATUS;
+import static com.ethercis.jooq.pg.Tables.PARTY_IDENTIFIED;
+import static com.ethercis.jooq.pg.Tables.STATUS;
 
 /**
  * Created by Christian Chevalley on 4/20/2015.

@@ -16,9 +16,9 @@
  */
 package com.ethercis.dao.access.support;
 
-import com.ethercis.dao.jooq.tables.records.ConceptRecord;
-import com.ethercis.dao.jooq.tables.records.LanguageRecord;
-import com.ethercis.dao.jooq.tables.records.TerritoryRecord;
+import com.ethercis.jooq.pg.tables.records.ConceptRecord;
+import com.ethercis.jooq.pg.tables.records.LanguageRecord;
+import com.ethercis.jooq.pg.tables.records.TerritoryRecord;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
 import org.jooq.DSLContext;
@@ -37,7 +37,7 @@ import java.util.Hashtable;
 import java.util.UUID;
 import java.util.Vector;
 
-import static com.ethercis.dao.jooq.Tables.*;
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Utility class to read from terminology.xml and inject the data into tables Language, Concept and Territory

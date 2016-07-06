@@ -28,8 +28,6 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.ValueNode;
 import org.joda.time.Period;
-import org.jooq.tools.json.JSONValue;
-import org.jooq.tools.json.ParseException;
 import org.openehr.rm.composition.Composition;
 
 import java.io.IOException;
@@ -59,29 +57,29 @@ public class JsonUtil {
 		return json.toJson(c);
 	}
 
-    private static String serializeComposition(Composition composition) throws IOException {
-//        Map<String, Object> map = new HashMap<>();
-//        map.put(JsonWriter.PRETTY_PRINT, "true");
-////        String output = JsonWriter.objectToJson(composition, map);
-//        String output = JsonWriter.objectToJson(composition);
-
-        return JSONValue.toJSONString(composition);
-
-    }
+//    private static String serializeComposition(Composition composition) throws IOException {
+////        Map<String, Object> map = new HashMap<>();
+////        map.put(JsonWriter.PRETTY_PRINT, "true");
+//////        String output = JsonWriter.objectToJson(composition, map);
+////        String output = JsonWriter.objectToJson(composition);
+//
+//        return JSONValue.toJSONString(composition);
+//
+//    }
 
 
     /**
-     * IT IS NOT WORKING AS IT SEEMS THERE ARE ISSUES WITH SOME CONSTRUCTORS (ex. TemplateID)
+     * THIS IS NOT WORKING AS IT SEEMS THERE ARE ISSUES WITH SOME CONSTRUCTORS (ex. TemplateID)
      * @param jsonString
      * @return
      */
-    private static Composition deserializeComposition(String jsonString) throws ParseException {
-        //and back
-
-        Composition retrieved = (Composition) JSONValue.parseWithException(jsonString);
-
-        return retrieved;
-    }
+//    private static Composition deserializeComposition(String jsonString) throws ParseException {
+//        //and back
+//
+//        Composition retrieved = (Composition) JSONValue.parseWithException(jsonString);
+//
+//        return retrieved;
+//    }
 
 	public static JsonElement toJson(Object c) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();

@@ -1,0 +1,3349 @@
+// Generated from C:/Development/eCIS/ehrservice/aql-processor/src/main/resources\Aql.g4 by ANTLR 4.5.1
+package com.ethercis.aql.parser;
+import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+import java.util.List;
+
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+public class AqlParser extends Parser {
+	static { RuntimeMetaData.checkVersion("4.5.1", RuntimeMetaData.VERSION); }
+
+	protected static final DFA[] _decisionToDFA;
+	protected static final PredictionContextCache _sharedContextCache =
+		new PredictionContextCache();
+	public static final int
+		T__0=1, BooleanOperator=2, WS=3, SELECT=4, TOP=5, FORWARD=6, BACKWARD=7, 
+		AS=8, CONTAINS=9, WHERE=10, ORDERBY=11, FROM=12, DESCENDING=13, ASCENDING=14, 
+		DESC=15, ASC=16, EHR=17, AND=18, OR=19, XOR=20, NOT=21, IN=22, MATCHES=23, 
+		EXISTS=24, VERSION=25, VERSIONED_OBJECT=26, ALL_VERSIONS=27, QUOTE=28, 
+		BOOLEAN=29, NODEID=30, IDENTIFIER=31, INTEGER=32, FLOAT=33, DATE=34, PARAMETER=35, 
+		UNIQUEID=36, ARCHETYPE_PREDICATE=37, ARCHETYPEID=38, COMPARABLEOPERATOR=39, 
+		URIVALUE=40, REGEXPATTERN=41, STRING=42, SLASH=43, COMMA=44, SEMICOLON=45, 
+		OPEN_BRACKET=46, CLOSE_BRACKET=47, OPEN_PARENTHESIS=48, CLOSE_PARENTHESIS=49, 
+		OPEN_CURLY=50, CLOSE_CURLY=51, ContainsOr=52;
+	public static final int
+		RULE_query = 0, RULE_queryExpr = 1, RULE_selectBinder = 2, RULE_topExpr = 3, 
+		RULE_where = 4, RULE_orderBy = 5, RULE_orderBySeq = 6, RULE_orderByExpr = 7, 
+		RULE_selectExpr = 8, RULE_identifiedPathSeq = 9, RULE_fromBinder = 10, 
+		RULE_fromEHR = 11, RULE_fromExpr = 12, RULE_containsExpression = 13, RULE_containExpressionBool = 14, 
+		RULE_contains = 15, RULE_identifiedExpr = 16, RULE_identifiedExprAnd = 17, 
+		RULE_identifiedEquality = 18, RULE_identifiedOperand = 19, RULE_identifiedPath = 20, 
+		RULE_predicate = 21, RULE_nodePredicate = 22, RULE_nodePredicateOr = 23, 
+		RULE_nodePredicateAnd = 24, RULE_nodePredicateComparable = 25, RULE_nodePredicateRegEx = 26, 
+		RULE_matchesOperand = 27, RULE_valueListItems = 28, RULE_versionpredicate = 29, 
+		RULE_versionpredicateOptions = 30, RULE_standardPredicate = 31, RULE_predicateExpr = 32, 
+		RULE_predicateOr = 33, RULE_predicateAnd = 34, RULE_predicateEquality = 35, 
+		RULE_predicateOperand = 36, RULE_operand = 37, RULE_objectPath = 38, RULE_pathPart = 39, 
+		RULE_classExpr = 40, RULE_simpleClassExpr = 41, RULE_archetypedClassExpr = 42, 
+		RULE_versionedClassExpr = 43, RULE_versionClassExpr = 44;
+	public static final String[] ruleNames = {
+		"query", "queryExpr", "selectBinder", "topExpr", "where", "orderBy", "orderBySeq", 
+		"orderByExpr", "selectExpr", "identifiedPathSeq", "fromBinder", "fromEHR", 
+		"fromExpr", "containsExpression", "containExpressionBool", "contains", 
+		"identifiedExpr", "identifiedExprAnd", "identifiedEquality", "identifiedOperand", 
+		"identifiedPath", "predicate", "nodePredicate", "nodePredicateOr", "nodePredicateAnd", 
+		"nodePredicateComparable", "nodePredicateRegEx", "matchesOperand", "valueListItems", 
+		"versionpredicate", "versionpredicateOptions", "standardPredicate", "predicateExpr", 
+		"predicateOr", "predicateAnd", "predicateEquality", "predicateOperand", 
+		"operand", "objectPath", "pathPart", "classExpr", "simpleClassExpr", "archetypedClassExpr", 
+		"versionedClassExpr", "versionClassExpr"
+	};
+
+	private static final String[] _LITERAL_NAMES = {
+		null, "'latest_version'", null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, "'EHR'", null, null, null, null, 
+		null, null, null, "'VERSION'", "'VERSIONED_OBJECT'", "'all_versions'", 
+		"'''", null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, "'/'", "','", "';'", "'['", "']'", "'('", "')'", "'{'", 
+		"'}'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, "BooleanOperator", "WS", "SELECT", "TOP", "FORWARD", "BACKWARD", 
+		"AS", "CONTAINS", "WHERE", "ORDERBY", "FROM", "DESCENDING", "ASCENDING", 
+		"DESC", "ASC", "EHR", "AND", "OR", "XOR", "NOT", "IN", "MATCHES", "EXISTS", 
+		"VERSION", "VERSIONED_OBJECT", "ALL_VERSIONS", "QUOTE", "BOOLEAN", "NODEID", 
+		"IDENTIFIER", "INTEGER", "FLOAT", "DATE", "PARAMETER", "UNIQUEID", "ARCHETYPE_PREDICATE", 
+		"ARCHETYPEID", "COMPARABLEOPERATOR", "URIVALUE", "REGEXPATTERN", "STRING", 
+		"SLASH", "COMMA", "SEMICOLON", "OPEN_BRACKET", "CLOSE_BRACKET", "OPEN_PARENTHESIS", 
+		"CLOSE_PARENTHESIS", "OPEN_CURLY", "CLOSE_CURLY", "ContainsOr"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
+
+	@Override
+	public String getGrammarFileName() { return "Aql.g4"; }
+
+	@Override
+	public String[] getRuleNames() { return ruleNames; }
+
+	@Override
+	public String getSerializedATN() { return _serializedATN; }
+
+	@Override
+	public ATN getATN() { return _ATN; }
+
+	public AqlParser(TokenStream input) {
+		super(input);
+		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
+	}
+	public static class QueryContext extends ParserRuleContext {
+		public QueryExprContext queryExpr() {
+			return getRuleContext(QueryExprContext.class,0);
+		}
+		public QueryContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_query; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterQuery(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitQuery(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitQuery(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final QueryContext query() throws RecognitionException {
+		QueryContext _localctx = new QueryContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_query);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(90);
+			queryExpr();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class QueryExprContext extends ParserRuleContext {
+		public SelectBinderContext selectBinder() {
+			return getRuleContext(SelectBinderContext.class,0);
+		}
+		public FromBinderContext fromBinder() {
+			return getRuleContext(FromBinderContext.class,0);
+		}
+		public TerminalNode EOF() { return getToken(AqlParser.EOF, 0); }
+		public WhereContext where() {
+			return getRuleContext(WhereContext.class,0);
+		}
+		public OrderByContext orderBy() {
+			return getRuleContext(OrderByContext.class,0);
+		}
+		public QueryExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_queryExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterQueryExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitQueryExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitQueryExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final QueryExprContext queryExpr() throws RecognitionException {
+		QueryExprContext _localctx = new QueryExprContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_queryExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(92);
+			selectBinder();
+			setState(93);
+			fromBinder();
+			setState(95);
+			_la = _input.LA(1);
+			if (_la==WHERE) {
+				{
+				setState(94);
+				where();
+				}
+			}
+
+			setState(98);
+			_la = _input.LA(1);
+			if (_la==ORDERBY) {
+				{
+				setState(97);
+				orderBy();
+				}
+			}
+
+			setState(100);
+			match(EOF);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class SelectBinderContext extends ParserRuleContext {
+		public TerminalNode SELECT() { return getToken(AqlParser.SELECT, 0); }
+		public SelectExprContext selectExpr() {
+			return getRuleContext(SelectExprContext.class,0);
+		}
+		public TopExprContext topExpr() {
+			return getRuleContext(TopExprContext.class,0);
+		}
+		public SelectBinderContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_selectBinder; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterSelectBinder(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitSelectBinder(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitSelectBinder(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final SelectBinderContext selectBinder() throws RecognitionException {
+		SelectBinderContext _localctx = new SelectBinderContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_selectBinder);
+		try {
+			setState(108);
+			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(102);
+				match(SELECT);
+				setState(103);
+				selectExpr();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(104);
+				match(SELECT);
+				setState(105);
+				topExpr();
+				setState(106);
+				selectExpr();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class TopExprContext extends ParserRuleContext {
+		public TerminalNode TOP() { return getToken(AqlParser.TOP, 0); }
+		public TerminalNode INTEGER() { return getToken(AqlParser.INTEGER, 0); }
+		public TerminalNode BACKWARD() { return getToken(AqlParser.BACKWARD, 0); }
+		public TerminalNode FORWARD() { return getToken(AqlParser.FORWARD, 0); }
+		public TopExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_topExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterTopExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitTopExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitTopExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final TopExprContext topExpr() throws RecognitionException {
+		TopExprContext _localctx = new TopExprContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_topExpr);
+		try {
+			setState(118);
+			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(110);
+				match(TOP);
+				setState(111);
+				match(INTEGER);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(112);
+				match(TOP);
+				setState(113);
+				match(INTEGER);
+				setState(114);
+				match(BACKWARD);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(115);
+				match(TOP);
+				setState(116);
+				match(INTEGER);
+				setState(117);
+				match(FORWARD);
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class WhereContext extends ParserRuleContext {
+		public TerminalNode WHERE() { return getToken(AqlParser.WHERE, 0); }
+		public IdentifiedExprContext identifiedExpr() {
+			return getRuleContext(IdentifiedExprContext.class,0);
+		}
+		public WhereContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_where; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterWhere(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitWhere(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitWhere(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final WhereContext where() throws RecognitionException {
+		WhereContext _localctx = new WhereContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_where);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(120);
+			match(WHERE);
+			setState(121);
+			identifiedExpr();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class OrderByContext extends ParserRuleContext {
+		public TerminalNode ORDERBY() { return getToken(AqlParser.ORDERBY, 0); }
+		public OrderBySeqContext orderBySeq() {
+			return getRuleContext(OrderBySeqContext.class,0);
+		}
+		public OrderByContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_orderBy; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterOrderBy(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitOrderBy(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitOrderBy(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final OrderByContext orderBy() throws RecognitionException {
+		OrderByContext _localctx = new OrderByContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_orderBy);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(123);
+			match(ORDERBY);
+			setState(124);
+			orderBySeq();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class OrderBySeqContext extends ParserRuleContext {
+		public OrderByExprContext orderByExpr() {
+			return getRuleContext(OrderByExprContext.class,0);
+		}
+		public TerminalNode COMMA() { return getToken(AqlParser.COMMA, 0); }
+		public OrderBySeqContext orderBySeq() {
+			return getRuleContext(OrderBySeqContext.class,0);
+		}
+		public OrderBySeqContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_orderBySeq; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterOrderBySeq(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitOrderBySeq(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitOrderBySeq(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final OrderBySeqContext orderBySeq() throws RecognitionException {
+		OrderBySeqContext _localctx = new OrderBySeqContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_orderBySeq);
+		try {
+			setState(131);
+			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(126);
+				orderByExpr();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(127);
+				orderByExpr();
+				setState(128);
+				match(COMMA);
+				setState(129);
+				orderBySeq();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class OrderByExprContext extends ParserRuleContext {
+		public IdentifiedPathContext identifiedPath() {
+			return getRuleContext(IdentifiedPathContext.class,0);
+		}
+		public TerminalNode DESCENDING() { return getToken(AqlParser.DESCENDING, 0); }
+		public TerminalNode ASCENDING() { return getToken(AqlParser.ASCENDING, 0); }
+		public TerminalNode DESC() { return getToken(AqlParser.DESC, 0); }
+		public TerminalNode ASC() { return getToken(AqlParser.ASC, 0); }
+		public OrderByExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_orderByExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterOrderByExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitOrderByExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitOrderByExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final OrderByExprContext orderByExpr() throws RecognitionException {
+		OrderByExprContext _localctx = new OrderByExprContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_orderByExpr);
+		try {
+			setState(146);
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(133);
+				identifiedPath();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(134);
+				identifiedPath();
+				setState(135);
+				match(DESCENDING);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(137);
+				identifiedPath();
+				setState(138);
+				match(ASCENDING);
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(140);
+				identifiedPath();
+				setState(141);
+				match(DESC);
+				}
+				break;
+			case 5:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(143);
+				identifiedPath();
+				setState(144);
+				match(ASC);
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class SelectExprContext extends ParserRuleContext {
+		public IdentifiedPathSeqContext identifiedPathSeq() {
+			return getRuleContext(IdentifiedPathSeqContext.class,0);
+		}
+		public SelectExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_selectExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterSelectExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitSelectExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitSelectExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final SelectExprContext selectExpr() throws RecognitionException {
+		SelectExprContext _localctx = new SelectExprContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_selectExpr);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(148);
+			identifiedPathSeq();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class IdentifiedPathSeqContext extends ParserRuleContext {
+		public IdentifiedPathContext identifiedPath() {
+			return getRuleContext(IdentifiedPathContext.class,0);
+		}
+		public TerminalNode AS() { return getToken(AqlParser.AS, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(AqlParser.IDENTIFIER, 0); }
+		public TerminalNode COMMA() { return getToken(AqlParser.COMMA, 0); }
+		public IdentifiedPathSeqContext identifiedPathSeq() {
+			return getRuleContext(IdentifiedPathSeqContext.class,0);
+		}
+		public IdentifiedPathSeqContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_identifiedPathSeq; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterIdentifiedPathSeq(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitIdentifiedPathSeq(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitIdentifiedPathSeq(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final IdentifiedPathSeqContext identifiedPathSeq() throws RecognitionException {
+		IdentifiedPathSeqContext _localctx = new IdentifiedPathSeqContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_identifiedPathSeq);
+		try {
+			setState(165);
+			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(150);
+				identifiedPath();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(151);
+				identifiedPath();
+				setState(152);
+				match(AS);
+				setState(153);
+				match(IDENTIFIER);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(155);
+				identifiedPath();
+				setState(156);
+				match(COMMA);
+				setState(157);
+				identifiedPathSeq();
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(159);
+				identifiedPath();
+				setState(160);
+				match(AS);
+				setState(161);
+				match(IDENTIFIER);
+				setState(162);
+				match(COMMA);
+				setState(163);
+				identifiedPathSeq();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class FromBinderContext extends ParserRuleContext {
+		public TerminalNode FROM() { return getToken(AqlParser.FROM, 0); }
+		public FromExprContext fromExpr() {
+			return getRuleContext(FromExprContext.class,0);
+		}
+		public FromEHRContext fromEHR() {
+			return getRuleContext(FromEHRContext.class,0);
+		}
+		public TerminalNode CONTAINS() { return getToken(AqlParser.CONTAINS, 0); }
+		public ContainsExpressionContext containsExpression() {
+			return getRuleContext(ContainsExpressionContext.class,0);
+		}
+		public TerminalNode ContainsOr() { return getToken(AqlParser.ContainsOr, 0); }
+		public FromBinderContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_fromBinder; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterFromBinder(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitFromBinder(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitFromBinder(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final FromBinderContext fromBinder() throws RecognitionException {
+		FromBinderContext _localctx = new FromBinderContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_fromBinder);
+		int _la;
+		try {
+			setState(177);
+			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(167);
+				match(FROM);
+				setState(168);
+				fromExpr();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(169);
+				match(FROM);
+				setState(170);
+				fromEHR();
+				setState(173);
+				_la = _input.LA(1);
+				if (_la==CONTAINS) {
+					{
+					setState(171);
+					match(CONTAINS);
+					setState(172);
+					containsExpression();
+					}
+				}
+
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(175);
+				match(FROM);
+				setState(176);
+				match(ContainsOr);
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class FromEHRContext extends ParserRuleContext {
+		public TerminalNode EHR() { return getToken(AqlParser.EHR, 0); }
+		public StandardPredicateContext standardPredicate() {
+			return getRuleContext(StandardPredicateContext.class,0);
+		}
+		public TerminalNode IDENTIFIER() { return getToken(AqlParser.IDENTIFIER, 0); }
+		public FromEHRContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_fromEHR; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterFromEHR(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitFromEHR(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitFromEHR(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final FromEHRContext fromEHR() throws RecognitionException {
+		FromEHRContext _localctx = new FromEHRContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_fromEHR);
+		try {
+			setState(186);
+			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(179);
+				match(EHR);
+				setState(180);
+				standardPredicate();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(181);
+				match(EHR);
+				setState(182);
+				match(IDENTIFIER);
+				setState(183);
+				standardPredicate();
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(184);
+				match(EHR);
+				setState(185);
+				match(IDENTIFIER);
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class FromExprContext extends ParserRuleContext {
+		public ContainsExpressionContext containsExpression() {
+			return getRuleContext(ContainsExpressionContext.class,0);
+		}
+		public FromExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_fromExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterFromExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitFromExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitFromExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final FromExprContext fromExpr() throws RecognitionException {
+		FromExprContext _localctx = new FromExprContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_fromExpr);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(188);
+			containsExpression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ContainsExpressionContext extends ParserRuleContext {
+		public ContainExpressionBoolContext containExpressionBool() {
+			return getRuleContext(ContainExpressionBoolContext.class,0);
+		}
+		public TerminalNode BooleanOperator() { return getToken(AqlParser.BooleanOperator, 0); }
+		public ContainsExpressionContext containsExpression() {
+			return getRuleContext(ContainsExpressionContext.class,0);
+		}
+		public ContainsExpressionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_containsExpression; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterContainsExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitContainsExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitContainsExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ContainsExpressionContext containsExpression() throws RecognitionException {
+		ContainsExpressionContext _localctx = new ContainsExpressionContext(_ctx, getState());
+		enterRule(_localctx, 26, RULE_containsExpression);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(190);
+			containExpressionBool();
+			setState(193);
+			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+			case 1:
+				{
+				setState(191);
+				match(BooleanOperator);
+				setState(192);
+				containsExpression();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ContainExpressionBoolContext extends ParserRuleContext {
+		public ContainsContext contains() {
+			return getRuleContext(ContainsContext.class,0);
+		}
+		public TerminalNode OPEN_PARENTHESIS() { return getToken(AqlParser.OPEN_PARENTHESIS, 0); }
+		public ContainsExpressionContext containsExpression() {
+			return getRuleContext(ContainsExpressionContext.class,0);
+		}
+		public TerminalNode CLOSE_PARENTHESIS() { return getToken(AqlParser.CLOSE_PARENTHESIS, 0); }
+		public ContainExpressionBoolContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_containExpressionBool; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterContainExpressionBool(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitContainExpressionBool(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitContainExpressionBool(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ContainExpressionBoolContext containExpressionBool() throws RecognitionException {
+		ContainExpressionBoolContext _localctx = new ContainExpressionBoolContext(_ctx, getState());
+		enterRule(_localctx, 28, RULE_containExpressionBool);
+		try {
+			setState(200);
+			switch (_input.LA(1)) {
+			case VERSION:
+			case VERSIONED_OBJECT:
+			case IDENTIFIER:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(195);
+				contains();
+				}
+				break;
+			case OPEN_PARENTHESIS:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(196);
+				match(OPEN_PARENTHESIS);
+				setState(197);
+				containsExpression();
+				setState(198);
+				match(CLOSE_PARENTHESIS);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ContainsContext extends ParserRuleContext {
+		public SimpleClassExprContext simpleClassExpr() {
+			return getRuleContext(SimpleClassExprContext.class,0);
+		}
+		public TerminalNode CONTAINS() { return getToken(AqlParser.CONTAINS, 0); }
+		public ContainsExpressionContext containsExpression() {
+			return getRuleContext(ContainsExpressionContext.class,0);
+		}
+		public ContainsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_contains; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterContains(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitContains(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitContains(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ContainsContext contains() throws RecognitionException {
+		ContainsContext _localctx = new ContainsContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_contains);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(202);
+			simpleClassExpr();
+			setState(205);
+			_la = _input.LA(1);
+			if (_la==CONTAINS) {
+				{
+				setState(203);
+				match(CONTAINS);
+				setState(204);
+				containsExpression();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class IdentifiedExprContext extends ParserRuleContext {
+		public List<IdentifiedExprAndContext> identifiedExprAnd() {
+			return getRuleContexts(IdentifiedExprAndContext.class);
+		}
+		public IdentifiedExprAndContext identifiedExprAnd(int i) {
+			return getRuleContext(IdentifiedExprAndContext.class,i);
+		}
+		public List<TerminalNode> OR() { return getTokens(AqlParser.OR); }
+		public TerminalNode OR(int i) {
+			return getToken(AqlParser.OR, i);
+		}
+		public List<TerminalNode> XOR() { return getTokens(AqlParser.XOR); }
+		public TerminalNode XOR(int i) {
+			return getToken(AqlParser.XOR, i);
+		}
+		public IdentifiedExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_identifiedExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterIdentifiedExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitIdentifiedExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitIdentifiedExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final IdentifiedExprContext identifiedExpr() throws RecognitionException {
+		IdentifiedExprContext _localctx = new IdentifiedExprContext(_ctx, getState());
+		enterRule(_localctx, 32, RULE_identifiedExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(207);
+			identifiedExprAnd();
+			setState(212);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==OR || _la==XOR) {
+				{
+				{
+				setState(208);
+				_la = _input.LA(1);
+				if ( !(_la==OR || _la==XOR) ) {
+				_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
+				setState(209);
+				identifiedExprAnd();
+				}
+				}
+				setState(214);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class IdentifiedExprAndContext extends ParserRuleContext {
+		public List<IdentifiedEqualityContext> identifiedEquality() {
+			return getRuleContexts(IdentifiedEqualityContext.class);
+		}
+		public IdentifiedEqualityContext identifiedEquality(int i) {
+			return getRuleContext(IdentifiedEqualityContext.class,i);
+		}
+		public List<TerminalNode> AND() { return getTokens(AqlParser.AND); }
+		public TerminalNode AND(int i) {
+			return getToken(AqlParser.AND, i);
+		}
+		public IdentifiedExprAndContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_identifiedExprAnd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterIdentifiedExprAnd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitIdentifiedExprAnd(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitIdentifiedExprAnd(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final IdentifiedExprAndContext identifiedExprAnd() throws RecognitionException {
+		IdentifiedExprAndContext _localctx = new IdentifiedExprAndContext(_ctx, getState());
+		enterRule(_localctx, 34, RULE_identifiedExprAnd);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(215);
+			identifiedEquality();
+			setState(220);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==AND) {
+				{
+				{
+				setState(216);
+				match(AND);
+				setState(217);
+				identifiedEquality();
+				}
+				}
+				setState(222);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class IdentifiedEqualityContext extends ParserRuleContext {
+		public List<IdentifiedOperandContext> identifiedOperand() {
+			return getRuleContexts(IdentifiedOperandContext.class);
+		}
+		public IdentifiedOperandContext identifiedOperand(int i) {
+			return getRuleContext(IdentifiedOperandContext.class,i);
+		}
+		public TerminalNode COMPARABLEOPERATOR() { return getToken(AqlParser.COMPARABLEOPERATOR, 0); }
+		public TerminalNode MATCHES() { return getToken(AqlParser.MATCHES, 0); }
+		public TerminalNode OPEN_CURLY() { return getToken(AqlParser.OPEN_CURLY, 0); }
+		public MatchesOperandContext matchesOperand() {
+			return getRuleContext(MatchesOperandContext.class,0);
+		}
+		public TerminalNode CLOSE_CURLY() { return getToken(AqlParser.CLOSE_CURLY, 0); }
+		public TerminalNode REGEXPATTERN() { return getToken(AqlParser.REGEXPATTERN, 0); }
+		public TerminalNode NOT() { return getToken(AqlParser.NOT, 0); }
+		public IdentifiedEqualityContext identifiedEquality() {
+			return getRuleContext(IdentifiedEqualityContext.class,0);
+		}
+		public TerminalNode IN() { return getToken(AqlParser.IN, 0); }
+		public TerminalNode OPEN_PARENTHESIS() { return getToken(AqlParser.OPEN_PARENTHESIS, 0); }
+		public QueryExprContext queryExpr() {
+			return getRuleContext(QueryExprContext.class,0);
+		}
+		public TerminalNode CLOSE_PARENTHESIS() { return getToken(AqlParser.CLOSE_PARENTHESIS, 0); }
+		public TerminalNode EXISTS() { return getToken(AqlParser.EXISTS, 0); }
+		public IdentifiedPathContext identifiedPath() {
+			return getRuleContext(IdentifiedPathContext.class,0);
+		}
+		public IdentifiedEqualityContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_identifiedEquality; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterIdentifiedEquality(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitIdentifiedEquality(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitIdentifiedEquality(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final IdentifiedEqualityContext identifiedEquality() throws RecognitionException {
+		IdentifiedEqualityContext _localctx = new IdentifiedEqualityContext(_ctx, getState());
+		enterRule(_localctx, 36, RULE_identifiedEquality);
+		try {
+			setState(247);
+			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(223);
+				identifiedOperand();
+				setState(224);
+				match(COMPARABLEOPERATOR);
+				setState(225);
+				identifiedOperand();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(227);
+				identifiedOperand();
+				setState(228);
+				match(MATCHES);
+				setState(229);
+				match(OPEN_CURLY);
+				setState(230);
+				matchesOperand();
+				setState(231);
+				match(CLOSE_CURLY);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(233);
+				identifiedOperand();
+				setState(234);
+				match(MATCHES);
+				setState(235);
+				match(REGEXPATTERN);
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(237);
+				match(NOT);
+				setState(238);
+				identifiedEquality();
+				}
+				break;
+			case 5:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(239);
+				match(NOT);
+				setState(240);
+				match(IN);
+				setState(241);
+				match(OPEN_PARENTHESIS);
+				setState(242);
+				queryExpr();
+				setState(243);
+				match(CLOSE_PARENTHESIS);
+				}
+				break;
+			case 6:
+				enterOuterAlt(_localctx, 6);
+				{
+				setState(245);
+				match(EXISTS);
+				setState(246);
+				identifiedPath();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class IdentifiedOperandContext extends ParserRuleContext {
+		public OperandContext operand() {
+			return getRuleContext(OperandContext.class,0);
+		}
+		public IdentifiedPathContext identifiedPath() {
+			return getRuleContext(IdentifiedPathContext.class,0);
+		}
+		public IdentifiedOperandContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_identifiedOperand; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterIdentifiedOperand(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitIdentifiedOperand(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitIdentifiedOperand(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final IdentifiedOperandContext identifiedOperand() throws RecognitionException {
+		IdentifiedOperandContext _localctx = new IdentifiedOperandContext(_ctx, getState());
+		enterRule(_localctx, 38, RULE_identifiedOperand);
+		try {
+			setState(251);
+			switch (_input.LA(1)) {
+			case BOOLEAN:
+			case INTEGER:
+			case FLOAT:
+			case DATE:
+			case PARAMETER:
+			case STRING:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(249);
+				operand();
+				}
+				break;
+			case IDENTIFIER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(250);
+				identifiedPath();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class IdentifiedPathContext extends ParserRuleContext {
+		public TerminalNode IDENTIFIER() { return getToken(AqlParser.IDENTIFIER, 0); }
+		public PredicateContext predicate() {
+			return getRuleContext(PredicateContext.class,0);
+		}
+		public TerminalNode SLASH() { return getToken(AqlParser.SLASH, 0); }
+		public ObjectPathContext objectPath() {
+			return getRuleContext(ObjectPathContext.class,0);
+		}
+		public IdentifiedPathContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_identifiedPath; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterIdentifiedPath(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitIdentifiedPath(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitIdentifiedPath(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final IdentifiedPathContext identifiedPath() throws RecognitionException {
+		IdentifiedPathContext _localctx = new IdentifiedPathContext(_ctx, getState());
+		enterRule(_localctx, 40, RULE_identifiedPath);
+		try {
+			setState(264);
+			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(253);
+				match(IDENTIFIER);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(254);
+				match(IDENTIFIER);
+				setState(255);
+				predicate();
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(256);
+				match(IDENTIFIER);
+				setState(257);
+				match(SLASH);
+				setState(258);
+				objectPath();
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(259);
+				match(IDENTIFIER);
+				setState(260);
+				predicate();
+				setState(261);
+				match(SLASH);
+				setState(262);
+				objectPath();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PredicateContext extends ParserRuleContext {
+		public NodePredicateContext nodePredicate() {
+			return getRuleContext(NodePredicateContext.class,0);
+		}
+		public PredicateContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_predicate; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterPredicate(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitPredicate(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitPredicate(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PredicateContext predicate() throws RecognitionException {
+		PredicateContext _localctx = new PredicateContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_predicate);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(266);
+			nodePredicate();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class NodePredicateContext extends ParserRuleContext {
+		public TerminalNode OPEN_BRACKET() { return getToken(AqlParser.OPEN_BRACKET, 0); }
+		public NodePredicateOrContext nodePredicateOr() {
+			return getRuleContext(NodePredicateOrContext.class,0);
+		}
+		public TerminalNode CLOSE_BRACKET() { return getToken(AqlParser.CLOSE_BRACKET, 0); }
+		public NodePredicateContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_nodePredicate; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterNodePredicate(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitNodePredicate(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitNodePredicate(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NodePredicateContext nodePredicate() throws RecognitionException {
+		NodePredicateContext _localctx = new NodePredicateContext(_ctx, getState());
+		enterRule(_localctx, 44, RULE_nodePredicate);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(268);
+			match(OPEN_BRACKET);
+			setState(269);
+			nodePredicateOr(0);
+			setState(270);
+			match(CLOSE_BRACKET);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class NodePredicateOrContext extends ParserRuleContext {
+		public NodePredicateAndContext nodePredicateAnd() {
+			return getRuleContext(NodePredicateAndContext.class,0);
+		}
+		public NodePredicateOrContext nodePredicateOr() {
+			return getRuleContext(NodePredicateOrContext.class,0);
+		}
+		public TerminalNode OR() { return getToken(AqlParser.OR, 0); }
+		public NodePredicateOrContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_nodePredicateOr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterNodePredicateOr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitNodePredicateOr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitNodePredicateOr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NodePredicateOrContext nodePredicateOr() throws RecognitionException {
+		return nodePredicateOr(0);
+	}
+
+	private NodePredicateOrContext nodePredicateOr(int _p) throws RecognitionException {
+		ParserRuleContext _parentctx = _ctx;
+		int _parentState = getState();
+		NodePredicateOrContext _localctx = new NodePredicateOrContext(_ctx, _parentState);
+		NodePredicateOrContext _prevctx = _localctx;
+		int _startState = 46;
+		enterRecursionRule(_localctx, 46, RULE_nodePredicateOr, _p);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(273);
+			nodePredicateAnd(0);
+			}
+			_ctx.stop = _input.LT(-1);
+			setState(280);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,18,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					if ( _parseListeners!=null ) triggerExitRuleEvent();
+					_prevctx = _localctx;
+					{
+					{
+					_localctx = new NodePredicateOrContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_nodePredicateOr);
+					setState(275);
+					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
+					setState(276);
+					match(OR);
+					setState(277);
+					nodePredicateAnd(0);
+					}
+					} 
+				}
+				setState(282);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,18,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			unrollRecursionContexts(_parentctx);
+		}
+		return _localctx;
+	}
+
+	public static class NodePredicateAndContext extends ParserRuleContext {
+		public NodePredicateComparableContext nodePredicateComparable() {
+			return getRuleContext(NodePredicateComparableContext.class,0);
+		}
+		public NodePredicateAndContext nodePredicateAnd() {
+			return getRuleContext(NodePredicateAndContext.class,0);
+		}
+		public TerminalNode AND() { return getToken(AqlParser.AND, 0); }
+		public NodePredicateAndContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_nodePredicateAnd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterNodePredicateAnd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitNodePredicateAnd(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitNodePredicateAnd(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NodePredicateAndContext nodePredicateAnd() throws RecognitionException {
+		return nodePredicateAnd(0);
+	}
+
+	private NodePredicateAndContext nodePredicateAnd(int _p) throws RecognitionException {
+		ParserRuleContext _parentctx = _ctx;
+		int _parentState = getState();
+		NodePredicateAndContext _localctx = new NodePredicateAndContext(_ctx, _parentState);
+		NodePredicateAndContext _prevctx = _localctx;
+		int _startState = 48;
+		enterRecursionRule(_localctx, 48, RULE_nodePredicateAnd, _p);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(284);
+			nodePredicateComparable();
+			}
+			_ctx.stop = _input.LT(-1);
+			setState(291);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					if ( _parseListeners!=null ) triggerExitRuleEvent();
+					_prevctx = _localctx;
+					{
+					{
+					_localctx = new NodePredicateAndContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_nodePredicateAnd);
+					setState(286);
+					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
+					setState(287);
+					match(AND);
+					setState(288);
+					nodePredicateComparable();
+					}
+					} 
+				}
+				setState(293);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			unrollRecursionContexts(_parentctx);
+		}
+		return _localctx;
+	}
+
+	public static class NodePredicateComparableContext extends ParserRuleContext {
+		public List<PredicateOperandContext> predicateOperand() {
+			return getRuleContexts(PredicateOperandContext.class);
+		}
+		public PredicateOperandContext predicateOperand(int i) {
+			return getRuleContext(PredicateOperandContext.class,i);
+		}
+		public TerminalNode COMPARABLEOPERATOR() { return getToken(AqlParser.COMPARABLEOPERATOR, 0); }
+		public TerminalNode NODEID() { return getToken(AqlParser.NODEID, 0); }
+		public TerminalNode COMMA() { return getToken(AqlParser.COMMA, 0); }
+		public TerminalNode STRING() { return getToken(AqlParser.STRING, 0); }
+		public TerminalNode PARAMETER() { return getToken(AqlParser.PARAMETER, 0); }
+		public NodePredicateRegExContext nodePredicateRegEx() {
+			return getRuleContext(NodePredicateRegExContext.class,0);
+		}
+		public TerminalNode ARCHETYPEID() { return getToken(AqlParser.ARCHETYPEID, 0); }
+		public NodePredicateComparableContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_nodePredicateComparable; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterNodePredicateComparable(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitNodePredicateComparable(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitNodePredicateComparable(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NodePredicateComparableContext nodePredicateComparable() throws RecognitionException {
+		NodePredicateComparableContext _localctx = new NodePredicateComparableContext(_ctx, getState());
+		enterRule(_localctx, 50, RULE_nodePredicateComparable);
+		try {
+			setState(313);
+			switch ( getInterpreter().adaptivePredict(_input,20,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(294);
+				predicateOperand();
+				setState(295);
+				match(COMPARABLEOPERATOR);
+				setState(296);
+				predicateOperand();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(298);
+				match(NODEID);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(299);
+				match(NODEID);
+				setState(300);
+				match(COMMA);
+				setState(301);
+				match(STRING);
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(302);
+				match(NODEID);
+				setState(303);
+				match(COMMA);
+				setState(304);
+				match(PARAMETER);
+				}
+				break;
+			case 5:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(305);
+				nodePredicateRegEx();
+				}
+				break;
+			case 6:
+				enterOuterAlt(_localctx, 6);
+				{
+				setState(306);
+				match(ARCHETYPEID);
+				}
+				break;
+			case 7:
+				enterOuterAlt(_localctx, 7);
+				{
+				setState(307);
+				match(ARCHETYPEID);
+				setState(308);
+				match(COMMA);
+				setState(309);
+				match(STRING);
+				}
+				break;
+			case 8:
+				enterOuterAlt(_localctx, 8);
+				{
+				setState(310);
+				match(ARCHETYPEID);
+				setState(311);
+				match(COMMA);
+				setState(312);
+				match(PARAMETER);
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class NodePredicateRegExContext extends ParserRuleContext {
+		public TerminalNode REGEXPATTERN() { return getToken(AqlParser.REGEXPATTERN, 0); }
+		public PredicateOperandContext predicateOperand() {
+			return getRuleContext(PredicateOperandContext.class,0);
+		}
+		public TerminalNode MATCHES() { return getToken(AqlParser.MATCHES, 0); }
+		public NodePredicateRegExContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_nodePredicateRegEx; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterNodePredicateRegEx(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitNodePredicateRegEx(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitNodePredicateRegEx(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NodePredicateRegExContext nodePredicateRegEx() throws RecognitionException {
+		NodePredicateRegExContext _localctx = new NodePredicateRegExContext(_ctx, getState());
+		enterRule(_localctx, 52, RULE_nodePredicateRegEx);
+		try {
+			setState(320);
+			switch (_input.LA(1)) {
+			case REGEXPATTERN:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(315);
+				match(REGEXPATTERN);
+				}
+				break;
+			case BOOLEAN:
+			case IDENTIFIER:
+			case INTEGER:
+			case FLOAT:
+			case DATE:
+			case PARAMETER:
+			case STRING:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(316);
+				predicateOperand();
+				setState(317);
+				match(MATCHES);
+				setState(318);
+				match(REGEXPATTERN);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class MatchesOperandContext extends ParserRuleContext {
+		public ValueListItemsContext valueListItems() {
+			return getRuleContext(ValueListItemsContext.class,0);
+		}
+		public TerminalNode URIVALUE() { return getToken(AqlParser.URIVALUE, 0); }
+		public MatchesOperandContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_matchesOperand; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterMatchesOperand(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitMatchesOperand(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitMatchesOperand(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final MatchesOperandContext matchesOperand() throws RecognitionException {
+		MatchesOperandContext _localctx = new MatchesOperandContext(_ctx, getState());
+		enterRule(_localctx, 54, RULE_matchesOperand);
+		try {
+			setState(324);
+			switch (_input.LA(1)) {
+			case BOOLEAN:
+			case INTEGER:
+			case FLOAT:
+			case DATE:
+			case PARAMETER:
+			case STRING:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(322);
+				valueListItems();
+				}
+				break;
+			case URIVALUE:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(323);
+				match(URIVALUE);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ValueListItemsContext extends ParserRuleContext {
+		public OperandContext operand() {
+			return getRuleContext(OperandContext.class,0);
+		}
+		public TerminalNode COMMA() { return getToken(AqlParser.COMMA, 0); }
+		public ValueListItemsContext valueListItems() {
+			return getRuleContext(ValueListItemsContext.class,0);
+		}
+		public ValueListItemsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_valueListItems; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterValueListItems(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitValueListItems(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitValueListItems(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ValueListItemsContext valueListItems() throws RecognitionException {
+		ValueListItemsContext _localctx = new ValueListItemsContext(_ctx, getState());
+		enterRule(_localctx, 56, RULE_valueListItems);
+		try {
+			setState(331);
+			switch ( getInterpreter().adaptivePredict(_input,23,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(326);
+				operand();
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(327);
+				operand();
+				setState(328);
+				match(COMMA);
+				setState(329);
+				valueListItems();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VersionpredicateContext extends ParserRuleContext {
+		public TerminalNode OPEN_BRACKET() { return getToken(AqlParser.OPEN_BRACKET, 0); }
+		public VersionpredicateOptionsContext versionpredicateOptions() {
+			return getRuleContext(VersionpredicateOptionsContext.class,0);
+		}
+		public TerminalNode CLOSE_BRACKET() { return getToken(AqlParser.CLOSE_BRACKET, 0); }
+		public VersionpredicateContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_versionpredicate; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterVersionpredicate(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitVersionpredicate(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitVersionpredicate(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final VersionpredicateContext versionpredicate() throws RecognitionException {
+		VersionpredicateContext _localctx = new VersionpredicateContext(_ctx, getState());
+		enterRule(_localctx, 58, RULE_versionpredicate);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(333);
+			match(OPEN_BRACKET);
+			setState(334);
+			versionpredicateOptions();
+			setState(335);
+			match(CLOSE_BRACKET);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VersionpredicateOptionsContext extends ParserRuleContext {
+		public TerminalNode ALL_VERSIONS() { return getToken(AqlParser.ALL_VERSIONS, 0); }
+		public VersionpredicateOptionsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_versionpredicateOptions; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterVersionpredicateOptions(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitVersionpredicateOptions(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitVersionpredicateOptions(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final VersionpredicateOptionsContext versionpredicateOptions() throws RecognitionException {
+		VersionpredicateOptionsContext _localctx = new VersionpredicateOptionsContext(_ctx, getState());
+		enterRule(_localctx, 60, RULE_versionpredicateOptions);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(337);
+			_la = _input.LA(1);
+			if ( !(_la==T__0 || _la==ALL_VERSIONS) ) {
+			_errHandler.recoverInline(this);
+			} else {
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class StandardPredicateContext extends ParserRuleContext {
+		public TerminalNode OPEN_BRACKET() { return getToken(AqlParser.OPEN_BRACKET, 0); }
+		public PredicateExprContext predicateExpr() {
+			return getRuleContext(PredicateExprContext.class,0);
+		}
+		public TerminalNode CLOSE_BRACKET() { return getToken(AqlParser.CLOSE_BRACKET, 0); }
+		public StandardPredicateContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_standardPredicate; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterStandardPredicate(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitStandardPredicate(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitStandardPredicate(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final StandardPredicateContext standardPredicate() throws RecognitionException {
+		StandardPredicateContext _localctx = new StandardPredicateContext(_ctx, getState());
+		enterRule(_localctx, 62, RULE_standardPredicate);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(339);
+			match(OPEN_BRACKET);
+			setState(340);
+			predicateExpr();
+			setState(341);
+			match(CLOSE_BRACKET);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PredicateExprContext extends ParserRuleContext {
+		public PredicateOrContext predicateOr() {
+			return getRuleContext(PredicateOrContext.class,0);
+		}
+		public PredicateExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_predicateExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterPredicateExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitPredicateExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitPredicateExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PredicateExprContext predicateExpr() throws RecognitionException {
+		PredicateExprContext _localctx = new PredicateExprContext(_ctx, getState());
+		enterRule(_localctx, 64, RULE_predicateExpr);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(343);
+			predicateOr();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PredicateOrContext extends ParserRuleContext {
+		public List<PredicateAndContext> predicateAnd() {
+			return getRuleContexts(PredicateAndContext.class);
+		}
+		public PredicateAndContext predicateAnd(int i) {
+			return getRuleContext(PredicateAndContext.class,i);
+		}
+		public List<TerminalNode> OR() { return getTokens(AqlParser.OR); }
+		public TerminalNode OR(int i) {
+			return getToken(AqlParser.OR, i);
+		}
+		public PredicateOrContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_predicateOr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterPredicateOr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitPredicateOr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitPredicateOr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PredicateOrContext predicateOr() throws RecognitionException {
+		PredicateOrContext _localctx = new PredicateOrContext(_ctx, getState());
+		enterRule(_localctx, 66, RULE_predicateOr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(345);
+			predicateAnd();
+			setState(350);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==OR) {
+				{
+				{
+				setState(346);
+				match(OR);
+				setState(347);
+				predicateAnd();
+				}
+				}
+				setState(352);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PredicateAndContext extends ParserRuleContext {
+		public List<PredicateEqualityContext> predicateEquality() {
+			return getRuleContexts(PredicateEqualityContext.class);
+		}
+		public PredicateEqualityContext predicateEquality(int i) {
+			return getRuleContext(PredicateEqualityContext.class,i);
+		}
+		public List<TerminalNode> AND() { return getTokens(AqlParser.AND); }
+		public TerminalNode AND(int i) {
+			return getToken(AqlParser.AND, i);
+		}
+		public PredicateAndContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_predicateAnd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterPredicateAnd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitPredicateAnd(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitPredicateAnd(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PredicateAndContext predicateAnd() throws RecognitionException {
+		PredicateAndContext _localctx = new PredicateAndContext(_ctx, getState());
+		enterRule(_localctx, 68, RULE_predicateAnd);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(353);
+			predicateEquality();
+			setState(358);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==AND) {
+				{
+				{
+				setState(354);
+				match(AND);
+				setState(355);
+				predicateEquality();
+				}
+				}
+				setState(360);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PredicateEqualityContext extends ParserRuleContext {
+		public List<PredicateOperandContext> predicateOperand() {
+			return getRuleContexts(PredicateOperandContext.class);
+		}
+		public PredicateOperandContext predicateOperand(int i) {
+			return getRuleContext(PredicateOperandContext.class,i);
+		}
+		public TerminalNode COMPARABLEOPERATOR() { return getToken(AqlParser.COMPARABLEOPERATOR, 0); }
+		public PredicateEqualityContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_predicateEquality; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterPredicateEquality(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitPredicateEquality(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitPredicateEquality(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PredicateEqualityContext predicateEquality() throws RecognitionException {
+		PredicateEqualityContext _localctx = new PredicateEqualityContext(_ctx, getState());
+		enterRule(_localctx, 70, RULE_predicateEquality);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(361);
+			predicateOperand();
+			setState(362);
+			match(COMPARABLEOPERATOR);
+			setState(363);
+			predicateOperand();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PredicateOperandContext extends ParserRuleContext {
+		public ObjectPathContext objectPath() {
+			return getRuleContext(ObjectPathContext.class,0);
+		}
+		public OperandContext operand() {
+			return getRuleContext(OperandContext.class,0);
+		}
+		public PredicateOperandContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_predicateOperand; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterPredicateOperand(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitPredicateOperand(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitPredicateOperand(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PredicateOperandContext predicateOperand() throws RecognitionException {
+		PredicateOperandContext _localctx = new PredicateOperandContext(_ctx, getState());
+		enterRule(_localctx, 72, RULE_predicateOperand);
+		try {
+			setState(367);
+			switch (_input.LA(1)) {
+			case IDENTIFIER:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(365);
+				objectPath();
+				}
+				break;
+			case BOOLEAN:
+			case INTEGER:
+			case FLOAT:
+			case DATE:
+			case PARAMETER:
+			case STRING:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(366);
+				operand();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class OperandContext extends ParserRuleContext {
+		public TerminalNode STRING() { return getToken(AqlParser.STRING, 0); }
+		public TerminalNode INTEGER() { return getToken(AqlParser.INTEGER, 0); }
+		public TerminalNode FLOAT() { return getToken(AqlParser.FLOAT, 0); }
+		public TerminalNode DATE() { return getToken(AqlParser.DATE, 0); }
+		public TerminalNode PARAMETER() { return getToken(AqlParser.PARAMETER, 0); }
+		public TerminalNode BOOLEAN() { return getToken(AqlParser.BOOLEAN, 0); }
+		public OperandContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_operand; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterOperand(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitOperand(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitOperand(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final OperandContext operand() throws RecognitionException {
+		OperandContext _localctx = new OperandContext(_ctx, getState());
+		enterRule(_localctx, 74, RULE_operand);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(369);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << INTEGER) | (1L << FLOAT) | (1L << DATE) | (1L << PARAMETER) | (1L << STRING))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			} else {
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ObjectPathContext extends ParserRuleContext {
+		public List<PathPartContext> pathPart() {
+			return getRuleContexts(PathPartContext.class);
+		}
+		public PathPartContext pathPart(int i) {
+			return getRuleContext(PathPartContext.class,i);
+		}
+		public List<TerminalNode> SLASH() { return getTokens(AqlParser.SLASH); }
+		public TerminalNode SLASH(int i) {
+			return getToken(AqlParser.SLASH, i);
+		}
+		public ObjectPathContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_objectPath; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterObjectPath(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitObjectPath(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitObjectPath(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ObjectPathContext objectPath() throws RecognitionException {
+		ObjectPathContext _localctx = new ObjectPathContext(_ctx, getState());
+		enterRule(_localctx, 76, RULE_objectPath);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(371);
+			pathPart();
+			setState(376);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					{
+					{
+					setState(372);
+					match(SLASH);
+					setState(373);
+					pathPart();
+					}
+					} 
+				}
+				setState(378);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PathPartContext extends ParserRuleContext {
+		public TerminalNode IDENTIFIER() { return getToken(AqlParser.IDENTIFIER, 0); }
+		public PredicateContext predicate() {
+			return getRuleContext(PredicateContext.class,0);
+		}
+		public PathPartContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_pathPart; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterPathPart(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitPathPart(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitPathPart(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PathPartContext pathPart() throws RecognitionException {
+		PathPartContext _localctx = new PathPartContext(_ctx, getState());
+		enterRule(_localctx, 78, RULE_pathPart);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(379);
+			match(IDENTIFIER);
+			setState(381);
+			switch ( getInterpreter().adaptivePredict(_input,28,_ctx) ) {
+			case 1:
+				{
+				setState(380);
+				predicate();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ClassExprContext extends ParserRuleContext {
+		public TerminalNode OPEN_PARENTHESIS() { return getToken(AqlParser.OPEN_PARENTHESIS, 0); }
+		public SimpleClassExprContext simpleClassExpr() {
+			return getRuleContext(SimpleClassExprContext.class,0);
+		}
+		public TerminalNode CLOSE_PARENTHESIS() { return getToken(AqlParser.CLOSE_PARENTHESIS, 0); }
+		public ClassExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_classExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterClassExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitClassExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitClassExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ClassExprContext classExpr() throws RecognitionException {
+		ClassExprContext _localctx = new ClassExprContext(_ctx, getState());
+		enterRule(_localctx, 80, RULE_classExpr);
+		try {
+			setState(388);
+			switch (_input.LA(1)) {
+			case OPEN_PARENTHESIS:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(383);
+				match(OPEN_PARENTHESIS);
+				setState(384);
+				simpleClassExpr();
+				setState(385);
+				match(CLOSE_PARENTHESIS);
+				}
+				break;
+			case VERSION:
+			case VERSIONED_OBJECT:
+			case IDENTIFIER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(387);
+				simpleClassExpr();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class SimpleClassExprContext extends ParserRuleContext {
+		public List<TerminalNode> IDENTIFIER() { return getTokens(AqlParser.IDENTIFIER); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(AqlParser.IDENTIFIER, i);
+		}
+		public ArchetypedClassExprContext archetypedClassExpr() {
+			return getRuleContext(ArchetypedClassExprContext.class,0);
+		}
+		public VersionedClassExprContext versionedClassExpr() {
+			return getRuleContext(VersionedClassExprContext.class,0);
+		}
+		public VersionClassExprContext versionClassExpr() {
+			return getRuleContext(VersionClassExprContext.class,0);
+		}
+		public SimpleClassExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_simpleClassExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterSimpleClassExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitSimpleClassExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitSimpleClassExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final SimpleClassExprContext simpleClassExpr() throws RecognitionException {
+		SimpleClassExprContext _localctx = new SimpleClassExprContext(_ctx, getState());
+		enterRule(_localctx, 82, RULE_simpleClassExpr);
+		int _la;
+		try {
+			setState(397);
+			switch ( getInterpreter().adaptivePredict(_input,31,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(390);
+				match(IDENTIFIER);
+				setState(392);
+				_la = _input.LA(1);
+				if (_la==IDENTIFIER) {
+					{
+					setState(391);
+					match(IDENTIFIER);
+					}
+				}
+
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(394);
+				archetypedClassExpr();
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(395);
+				versionedClassExpr();
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(396);
+				versionClassExpr();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ArchetypedClassExprContext extends ParserRuleContext {
+		public List<TerminalNode> IDENTIFIER() { return getTokens(AqlParser.IDENTIFIER); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(AqlParser.IDENTIFIER, i);
+		}
+		public TerminalNode ARCHETYPE_PREDICATE() { return getToken(AqlParser.ARCHETYPE_PREDICATE, 0); }
+		public ArchetypedClassExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_archetypedClassExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterArchetypedClassExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitArchetypedClassExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitArchetypedClassExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ArchetypedClassExprContext archetypedClassExpr() throws RecognitionException {
+		ArchetypedClassExprContext _localctx = new ArchetypedClassExprContext(_ctx, getState());
+		enterRule(_localctx, 84, RULE_archetypedClassExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(399);
+			match(IDENTIFIER);
+			setState(401);
+			_la = _input.LA(1);
+			if (_la==IDENTIFIER) {
+				{
+				setState(400);
+				match(IDENTIFIER);
+				}
+			}
+
+			setState(404);
+			_la = _input.LA(1);
+			if (_la==ARCHETYPE_PREDICATE) {
+				{
+				setState(403);
+				match(ARCHETYPE_PREDICATE);
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VersionedClassExprContext extends ParserRuleContext {
+		public TerminalNode VERSIONED_OBJECT() { return getToken(AqlParser.VERSIONED_OBJECT, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(AqlParser.IDENTIFIER, 0); }
+		public StandardPredicateContext standardPredicate() {
+			return getRuleContext(StandardPredicateContext.class,0);
+		}
+		public VersionedClassExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_versionedClassExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterVersionedClassExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitVersionedClassExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitVersionedClassExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final VersionedClassExprContext versionedClassExpr() throws RecognitionException {
+		VersionedClassExprContext _localctx = new VersionedClassExprContext(_ctx, getState());
+		enterRule(_localctx, 86, RULE_versionedClassExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(406);
+			match(VERSIONED_OBJECT);
+			setState(408);
+			_la = _input.LA(1);
+			if (_la==IDENTIFIER) {
+				{
+				setState(407);
+				match(IDENTIFIER);
+				}
+			}
+
+			setState(411);
+			_la = _input.LA(1);
+			if (_la==OPEN_BRACKET) {
+				{
+				setState(410);
+				standardPredicate();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VersionClassExprContext extends ParserRuleContext {
+		public TerminalNode VERSION() { return getToken(AqlParser.VERSION, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(AqlParser.IDENTIFIER, 0); }
+		public StandardPredicateContext standardPredicate() {
+			return getRuleContext(StandardPredicateContext.class,0);
+		}
+		public VersionpredicateContext versionpredicate() {
+			return getRuleContext(VersionpredicateContext.class,0);
+		}
+		public VersionClassExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_versionClassExpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).enterVersionClassExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AqlListener ) ((AqlListener)listener).exitVersionClassExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AqlVisitor ) return ((AqlVisitor<? extends T>)visitor).visitVersionClassExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final VersionClassExprContext versionClassExpr() throws RecognitionException {
+		VersionClassExprContext _localctx = new VersionClassExprContext(_ctx, getState());
+		enterRule(_localctx, 88, RULE_versionClassExpr);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(413);
+			match(VERSION);
+			setState(415);
+			_la = _input.LA(1);
+			if (_la==IDENTIFIER) {
+				{
+				setState(414);
+				match(IDENTIFIER);
+				}
+			}
+
+			setState(419);
+			switch ( getInterpreter().adaptivePredict(_input,37,_ctx) ) {
+			case 1:
+				{
+				setState(417);
+				standardPredicate();
+				}
+				break;
+			case 2:
+				{
+				setState(418);
+				versionpredicate();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
+		switch (ruleIndex) {
+		case 23:
+			return nodePredicateOr_sempred((NodePredicateOrContext)_localctx, predIndex);
+		case 24:
+			return nodePredicateAnd_sempred((NodePredicateAndContext)_localctx, predIndex);
+		}
+		return true;
+	}
+	private boolean nodePredicateOr_sempred(NodePredicateOrContext _localctx, int predIndex) {
+		switch (predIndex) {
+		case 0:
+			return precpred(_ctx, 1);
+		}
+		return true;
+	}
+	private boolean nodePredicateAnd_sempred(NodePredicateAndContext _localctx, int predIndex) {
+		switch (predIndex) {
+		case 1:
+			return precpred(_ctx, 1);
+		}
+		return true;
+	}
+
+	public static final String _serializedATN =
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\66\u01a8\4\2\t\2"+
+		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
+		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
+		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\4 \t \4!"+
+		"\t!\4\"\t\"\4#\t#\4$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4"+
+		",\t,\4-\t-\4.\t.\3\2\3\2\3\3\3\3\3\3\5\3b\n\3\3\3\5\3e\n\3\3\3\3\3\3\4"+
+		"\3\4\3\4\3\4\3\4\3\4\5\4o\n\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5y\n\5"+
+		"\3\6\3\6\3\6\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\5\b\u0086\n\b\3\t\3\t\3\t"+
+		"\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u0095\n\t\3\n\3\n\3\13\3"+
+		"\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5"+
+		"\13\u00a8\n\13\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00b0\n\f\3\f\3\f\5\f\u00b4"+
+		"\n\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r\u00bd\n\r\3\16\3\16\3\17\3\17\3\17"+
+		"\5\17\u00c4\n\17\3\20\3\20\3\20\3\20\3\20\5\20\u00cb\n\20\3\21\3\21\3"+
+		"\21\5\21\u00d0\n\21\3\22\3\22\3\22\7\22\u00d5\n\22\f\22\16\22\u00d8\13"+
+		"\22\3\23\3\23\3\23\7\23\u00dd\n\23\f\23\16\23\u00e0\13\23\3\24\3\24\3"+
+		"\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3"+
+		"\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\5\24\u00fa\n\24\3\25\3\25\5\25"+
+		"\u00fe\n\25\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\5\26"+
+		"\u010b\n\26\3\27\3\27\3\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31\3\31"+
+		"\7\31\u0119\n\31\f\31\16\31\u011c\13\31\3\32\3\32\3\32\3\32\3\32\3\32"+
+		"\7\32\u0124\n\32\f\32\16\32\u0127\13\32\3\33\3\33\3\33\3\33\3\33\3\33"+
+		"\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\5\33"+
+		"\u013c\n\33\3\34\3\34\3\34\3\34\3\34\5\34\u0143\n\34\3\35\3\35\5\35\u0147"+
+		"\n\35\3\36\3\36\3\36\3\36\3\36\5\36\u014e\n\36\3\37\3\37\3\37\3\37\3 "+
+		"\3 \3!\3!\3!\3!\3\"\3\"\3#\3#\3#\7#\u015f\n#\f#\16#\u0162\13#\3$\3$\3"+
+		"$\7$\u0167\n$\f$\16$\u016a\13$\3%\3%\3%\3%\3&\3&\5&\u0172\n&\3\'\3\'\3"+
+		"(\3(\3(\7(\u0179\n(\f(\16(\u017c\13(\3)\3)\5)\u0180\n)\3*\3*\3*\3*\3*"+
+		"\5*\u0187\n*\3+\3+\5+\u018b\n+\3+\3+\3+\5+\u0190\n+\3,\3,\5,\u0194\n,"+
+		"\3,\5,\u0197\n,\3-\3-\5-\u019b\n-\3-\5-\u019e\n-\3.\3.\5.\u01a2\n.\3."+
+		"\3.\5.\u01a6\n.\3.\2\4\60\62/\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 "+
+		"\"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\2\5\3\2\25\26\4\2\3\3\35\35\5\2"+
+		"\37\37\"%,,\u01b7\2\\\3\2\2\2\4^\3\2\2\2\6n\3\2\2\2\bx\3\2\2\2\nz\3\2"+
+		"\2\2\f}\3\2\2\2\16\u0085\3\2\2\2\20\u0094\3\2\2\2\22\u0096\3\2\2\2\24"+
+		"\u00a7\3\2\2\2\26\u00b3\3\2\2\2\30\u00bc\3\2\2\2\32\u00be\3\2\2\2\34\u00c0"+
+		"\3\2\2\2\36\u00ca\3\2\2\2 \u00cc\3\2\2\2\"\u00d1\3\2\2\2$\u00d9\3\2\2"+
+		"\2&\u00f9\3\2\2\2(\u00fd\3\2\2\2*\u010a\3\2\2\2,\u010c\3\2\2\2.\u010e"+
+		"\3\2\2\2\60\u0112\3\2\2\2\62\u011d\3\2\2\2\64\u013b\3\2\2\2\66\u0142\3"+
+		"\2\2\28\u0146\3\2\2\2:\u014d\3\2\2\2<\u014f\3\2\2\2>\u0153\3\2\2\2@\u0155"+
+		"\3\2\2\2B\u0159\3\2\2\2D\u015b\3\2\2\2F\u0163\3\2\2\2H\u016b\3\2\2\2J"+
+		"\u0171\3\2\2\2L\u0173\3\2\2\2N\u0175\3\2\2\2P\u017d\3\2\2\2R\u0186\3\2"+
+		"\2\2T\u018f\3\2\2\2V\u0191\3\2\2\2X\u0198\3\2\2\2Z\u019f\3\2\2\2\\]\5"+
+		"\4\3\2]\3\3\2\2\2^_\5\6\4\2_a\5\26\f\2`b\5\n\6\2a`\3\2\2\2ab\3\2\2\2b"+
+		"d\3\2\2\2ce\5\f\7\2dc\3\2\2\2de\3\2\2\2ef\3\2\2\2fg\7\2\2\3g\5\3\2\2\2"+
+		"hi\7\6\2\2io\5\22\n\2jk\7\6\2\2kl\5\b\5\2lm\5\22\n\2mo\3\2\2\2nh\3\2\2"+
+		"\2nj\3\2\2\2o\7\3\2\2\2pq\7\7\2\2qy\7\"\2\2rs\7\7\2\2st\7\"\2\2ty\7\t"+
+		"\2\2uv\7\7\2\2vw\7\"\2\2wy\7\b\2\2xp\3\2\2\2xr\3\2\2\2xu\3\2\2\2y\t\3"+
+		"\2\2\2z{\7\f\2\2{|\5\"\22\2|\13\3\2\2\2}~\7\r\2\2~\177\5\16\b\2\177\r"+
+		"\3\2\2\2\u0080\u0086\5\20\t\2\u0081\u0082\5\20\t\2\u0082\u0083\7.\2\2"+
+		"\u0083\u0084\5\16\b\2\u0084\u0086\3\2\2\2\u0085\u0080\3\2\2\2\u0085\u0081"+
+		"\3\2\2\2\u0086\17\3\2\2\2\u0087\u0095\5*\26\2\u0088\u0089\5*\26\2\u0089"+
+		"\u008a\7\17\2\2\u008a\u0095\3\2\2\2\u008b\u008c\5*\26\2\u008c\u008d\7"+
+		"\20\2\2\u008d\u0095\3\2\2\2\u008e\u008f\5*\26\2\u008f\u0090\7\21\2\2\u0090"+
+		"\u0095\3\2\2\2\u0091\u0092\5*\26\2\u0092\u0093\7\22\2\2\u0093\u0095\3"+
+		"\2\2\2\u0094\u0087\3\2\2\2\u0094\u0088\3\2\2\2\u0094\u008b\3\2\2\2\u0094"+
+		"\u008e\3\2\2\2\u0094\u0091\3\2\2\2\u0095\21\3\2\2\2\u0096\u0097\5\24\13"+
+		"\2\u0097\23\3\2\2\2\u0098\u00a8\5*\26\2\u0099\u009a\5*\26\2\u009a\u009b"+
+		"\7\n\2\2\u009b\u009c\7!\2\2\u009c\u00a8\3\2\2\2\u009d\u009e\5*\26\2\u009e"+
+		"\u009f\7.\2\2\u009f\u00a0\5\24\13\2\u00a0\u00a8\3\2\2\2\u00a1\u00a2\5"+
+		"*\26\2\u00a2\u00a3\7\n\2\2\u00a3\u00a4\7!\2\2\u00a4\u00a5\7.\2\2\u00a5"+
+		"\u00a6\5\24\13\2\u00a6\u00a8\3\2\2\2\u00a7\u0098\3\2\2\2\u00a7\u0099\3"+
+		"\2\2\2\u00a7\u009d\3\2\2\2\u00a7\u00a1\3\2\2\2\u00a8\25\3\2\2\2\u00a9"+
+		"\u00aa\7\16\2\2\u00aa\u00b4\5\32\16\2\u00ab\u00ac\7\16\2\2\u00ac\u00af"+
+		"\5\30\r\2\u00ad\u00ae\7\13\2\2\u00ae\u00b0\5\34\17\2\u00af\u00ad\3\2\2"+
+		"\2\u00af\u00b0\3\2\2\2\u00b0\u00b4\3\2\2\2\u00b1\u00b2\7\16\2\2\u00b2"+
+		"\u00b4\7\66\2\2\u00b3\u00a9\3\2\2\2\u00b3\u00ab\3\2\2\2\u00b3\u00b1\3"+
+		"\2\2\2\u00b4\27\3\2\2\2\u00b5\u00b6\7\23\2\2\u00b6\u00bd\5@!\2\u00b7\u00b8"+
+		"\7\23\2\2\u00b8\u00b9\7!\2\2\u00b9\u00bd\5@!\2\u00ba\u00bb\7\23\2\2\u00bb"+
+		"\u00bd\7!\2\2\u00bc\u00b5\3\2\2\2\u00bc\u00b7\3\2\2\2\u00bc\u00ba\3\2"+
+		"\2\2\u00bd\31\3\2\2\2\u00be\u00bf\5\34\17\2\u00bf\33\3\2\2\2\u00c0\u00c3"+
+		"\5\36\20\2\u00c1\u00c2\7\4\2\2\u00c2\u00c4\5\34\17\2\u00c3\u00c1\3\2\2"+
+		"\2\u00c3\u00c4\3\2\2\2\u00c4\35\3\2\2\2\u00c5\u00cb\5 \21\2\u00c6\u00c7"+
+		"\7\62\2\2\u00c7\u00c8\5\34\17\2\u00c8\u00c9\7\63\2\2\u00c9\u00cb\3\2\2"+
+		"\2\u00ca\u00c5\3\2\2\2\u00ca\u00c6\3\2\2\2\u00cb\37\3\2\2\2\u00cc\u00cf"+
+		"\5T+\2\u00cd\u00ce\7\13\2\2\u00ce\u00d0\5\34\17\2\u00cf\u00cd\3\2\2\2"+
+		"\u00cf\u00d0\3\2\2\2\u00d0!\3\2\2\2\u00d1\u00d6\5$\23\2\u00d2\u00d3\t"+
+		"\2\2\2\u00d3\u00d5\5$\23\2\u00d4\u00d2\3\2\2\2\u00d5\u00d8\3\2\2\2\u00d6"+
+		"\u00d4\3\2\2\2\u00d6\u00d7\3\2\2\2\u00d7#\3\2\2\2\u00d8\u00d6\3\2\2\2"+
+		"\u00d9\u00de\5&\24\2\u00da\u00db\7\24\2\2\u00db\u00dd\5&\24\2\u00dc\u00da"+
+		"\3\2\2\2\u00dd\u00e0\3\2\2\2\u00de\u00dc\3\2\2\2\u00de\u00df\3\2\2\2\u00df"+
+		"%\3\2\2\2\u00e0\u00de\3\2\2\2\u00e1\u00e2\5(\25\2\u00e2\u00e3\7)\2\2\u00e3"+
+		"\u00e4\5(\25\2\u00e4\u00fa\3\2\2\2\u00e5\u00e6\5(\25\2\u00e6\u00e7\7\31"+
+		"\2\2\u00e7\u00e8\7\64\2\2\u00e8\u00e9\58\35\2\u00e9\u00ea\7\65\2\2\u00ea"+
+		"\u00fa\3\2\2\2\u00eb\u00ec\5(\25\2\u00ec\u00ed\7\31\2\2\u00ed\u00ee\7"+
+		"+\2\2\u00ee\u00fa\3\2\2\2\u00ef\u00f0\7\27\2\2\u00f0\u00fa\5&\24\2\u00f1"+
+		"\u00f2\7\27\2\2\u00f2\u00f3\7\30\2\2\u00f3\u00f4\7\62\2\2\u00f4\u00f5"+
+		"\5\4\3\2\u00f5\u00f6\7\63\2\2\u00f6\u00fa\3\2\2\2\u00f7\u00f8\7\32\2\2"+
+		"\u00f8\u00fa\5*\26\2\u00f9\u00e1\3\2\2\2\u00f9\u00e5\3\2\2\2\u00f9\u00eb"+
+		"\3\2\2\2\u00f9\u00ef\3\2\2\2\u00f9\u00f1\3\2\2\2\u00f9\u00f7\3\2\2\2\u00fa"+
+		"\'\3\2\2\2\u00fb\u00fe\5L\'\2\u00fc\u00fe\5*\26\2\u00fd\u00fb\3\2\2\2"+
+		"\u00fd\u00fc\3\2\2\2\u00fe)\3\2\2\2\u00ff\u010b\7!\2\2\u0100\u0101\7!"+
+		"\2\2\u0101\u010b\5,\27\2\u0102\u0103\7!\2\2\u0103\u0104\7-\2\2\u0104\u010b"+
+		"\5N(\2\u0105\u0106\7!\2\2\u0106\u0107\5,\27\2\u0107\u0108\7-\2\2\u0108"+
+		"\u0109\5N(\2\u0109\u010b\3\2\2\2\u010a\u00ff\3\2\2\2\u010a\u0100\3\2\2"+
+		"\2\u010a\u0102\3\2\2\2\u010a\u0105\3\2\2\2\u010b+\3\2\2\2\u010c\u010d"+
+		"\5.\30\2\u010d-\3\2\2\2\u010e\u010f\7\60\2\2\u010f\u0110\5\60\31\2\u0110"+
+		"\u0111\7\61\2\2\u0111/\3\2\2\2\u0112\u0113\b\31\1\2\u0113\u0114\5\62\32"+
+		"\2\u0114\u011a\3\2\2\2\u0115\u0116\f\3\2\2\u0116\u0117\7\25\2\2\u0117"+
+		"\u0119\5\62\32\2\u0118\u0115\3\2\2\2\u0119\u011c\3\2\2\2\u011a\u0118\3"+
+		"\2\2\2\u011a\u011b\3\2\2\2\u011b\61\3\2\2\2\u011c\u011a\3\2\2\2\u011d"+
+		"\u011e\b\32\1\2\u011e\u011f\5\64\33\2\u011f\u0125\3\2\2\2\u0120\u0121"+
+		"\f\3\2\2\u0121\u0122\7\24\2\2\u0122\u0124\5\64\33\2\u0123\u0120\3\2\2"+
+		"\2\u0124\u0127\3\2\2\2\u0125\u0123\3\2\2\2\u0125\u0126\3\2\2\2\u0126\63"+
+		"\3\2\2\2\u0127\u0125\3\2\2\2\u0128\u0129\5J&\2\u0129\u012a\7)\2\2\u012a"+
+		"\u012b\5J&\2\u012b\u013c\3\2\2\2\u012c\u013c\7 \2\2\u012d\u012e\7 \2\2"+
+		"\u012e\u012f\7.\2\2\u012f\u013c\7,\2\2\u0130\u0131\7 \2\2\u0131\u0132"+
+		"\7.\2\2\u0132\u013c\7%\2\2\u0133\u013c\5\66\34\2\u0134\u013c\7(\2\2\u0135"+
+		"\u0136\7(\2\2\u0136\u0137\7.\2\2\u0137\u013c\7,\2\2\u0138\u0139\7(\2\2"+
+		"\u0139\u013a\7.\2\2\u013a\u013c\7%\2\2\u013b\u0128\3\2\2\2\u013b\u012c"+
+		"\3\2\2\2\u013b\u012d\3\2\2\2\u013b\u0130\3\2\2\2\u013b\u0133\3\2\2\2\u013b"+
+		"\u0134\3\2\2\2\u013b\u0135\3\2\2\2\u013b\u0138\3\2\2\2\u013c\65\3\2\2"+
+		"\2\u013d\u0143\7+\2\2\u013e\u013f\5J&\2\u013f\u0140\7\31\2\2\u0140\u0141"+
+		"\7+\2\2\u0141\u0143\3\2\2\2\u0142\u013d\3\2\2\2\u0142\u013e\3\2\2\2\u0143"+
+		"\67\3\2\2\2\u0144\u0147\5:\36\2\u0145\u0147\7*\2\2\u0146\u0144\3\2\2\2"+
+		"\u0146\u0145\3\2\2\2\u01479\3\2\2\2\u0148\u014e\5L\'\2\u0149\u014a\5L"+
+		"\'\2\u014a\u014b\7.\2\2\u014b\u014c\5:\36\2\u014c\u014e\3\2\2\2\u014d"+
+		"\u0148\3\2\2\2\u014d\u0149\3\2\2\2\u014e;\3\2\2\2\u014f\u0150\7\60\2\2"+
+		"\u0150\u0151\5> \2\u0151\u0152\7\61\2\2\u0152=\3\2\2\2\u0153\u0154\t\3"+
+		"\2\2\u0154?\3\2\2\2\u0155\u0156\7\60\2\2\u0156\u0157\5B\"\2\u0157\u0158"+
+		"\7\61\2\2\u0158A\3\2\2\2\u0159\u015a\5D#\2\u015aC\3\2\2\2\u015b\u0160"+
+		"\5F$\2\u015c\u015d\7\25\2\2\u015d\u015f\5F$\2\u015e\u015c\3\2\2\2\u015f"+
+		"\u0162\3\2\2\2\u0160\u015e\3\2\2\2\u0160\u0161\3\2\2\2\u0161E\3\2\2\2"+
+		"\u0162\u0160\3\2\2\2\u0163\u0168\5H%\2\u0164\u0165\7\24\2\2\u0165\u0167"+
+		"\5H%\2\u0166\u0164\3\2\2\2\u0167\u016a\3\2\2\2\u0168\u0166\3\2\2\2\u0168"+
+		"\u0169\3\2\2\2\u0169G\3\2\2\2\u016a\u0168\3\2\2\2\u016b\u016c\5J&\2\u016c"+
+		"\u016d\7)\2\2\u016d\u016e\5J&\2\u016eI\3\2\2\2\u016f\u0172\5N(\2\u0170"+
+		"\u0172\5L\'\2\u0171\u016f\3\2\2\2\u0171\u0170\3\2\2\2\u0172K\3\2\2\2\u0173"+
+		"\u0174\t\4\2\2\u0174M\3\2\2\2\u0175\u017a\5P)\2\u0176\u0177\7-\2\2\u0177"+
+		"\u0179\5P)\2\u0178\u0176\3\2\2\2\u0179\u017c\3\2\2\2\u017a\u0178\3\2\2"+
+		"\2\u017a\u017b\3\2\2\2\u017bO\3\2\2\2\u017c\u017a\3\2\2\2\u017d\u017f"+
+		"\7!\2\2\u017e\u0180\5,\27\2\u017f\u017e\3\2\2\2\u017f\u0180\3\2\2\2\u0180"+
+		"Q\3\2\2\2\u0181\u0182\7\62\2\2\u0182\u0183\5T+\2\u0183\u0184\7\63\2\2"+
+		"\u0184\u0187\3\2\2\2\u0185\u0187\5T+\2\u0186\u0181\3\2\2\2\u0186\u0185"+
+		"\3\2\2\2\u0187S\3\2\2\2\u0188\u018a\7!\2\2\u0189\u018b\7!\2\2\u018a\u0189"+
+		"\3\2\2\2\u018a\u018b\3\2\2\2\u018b\u0190\3\2\2\2\u018c\u0190\5V,\2\u018d"+
+		"\u0190\5X-\2\u018e\u0190\5Z.\2\u018f\u0188\3\2\2\2\u018f\u018c\3\2\2\2"+
+		"\u018f\u018d\3\2\2\2\u018f\u018e\3\2\2\2\u0190U\3\2\2\2\u0191\u0193\7"+
+		"!\2\2\u0192\u0194\7!\2\2\u0193\u0192\3\2\2\2\u0193\u0194\3\2\2\2\u0194"+
+		"\u0196\3\2\2\2\u0195\u0197\7\'\2\2\u0196\u0195\3\2\2\2\u0196\u0197\3\2"+
+		"\2\2\u0197W\3\2\2\2\u0198\u019a\7\34\2\2\u0199\u019b\7!\2\2\u019a\u0199"+
+		"\3\2\2\2\u019a\u019b\3\2\2\2\u019b\u019d\3\2\2\2\u019c\u019e\5@!\2\u019d"+
+		"\u019c\3\2\2\2\u019d\u019e\3\2\2\2\u019eY\3\2\2\2\u019f\u01a1\7\33\2\2"+
+		"\u01a0\u01a2\7!\2\2\u01a1\u01a0\3\2\2\2\u01a1\u01a2\3\2\2\2\u01a2\u01a5"+
+		"\3\2\2\2\u01a3\u01a6\5@!\2\u01a4\u01a6\5<\37\2\u01a5\u01a3\3\2\2\2\u01a5"+
+		"\u01a4\3\2\2\2\u01a5\u01a6\3\2\2\2\u01a6[\3\2\2\2(adnx\u0085\u0094\u00a7"+
+		"\u00af\u00b3\u00bc\u00c3\u00ca\u00cf\u00d6\u00de\u00f9\u00fd\u010a\u011a"+
+		"\u0125\u013b\u0142\u0146\u014d\u0160\u0168\u0171\u017a\u017f\u0186\u018a"+
+		"\u018f\u0193\u0196\u019a\u019d\u01a1\u01a5";
+	public static final ATN _ATN =
+		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
+	static {
+		_decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
+		for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {
+			_decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
+		}
+	}
+}

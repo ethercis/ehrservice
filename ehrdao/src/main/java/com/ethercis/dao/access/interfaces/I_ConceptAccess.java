@@ -18,7 +18,7 @@ package com.ethercis.dao.access.interfaces;
 
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.CONCEPT;
+import static com.ethercis.jooq.pg.Tables.CONCEPT;
 
 /**
  * access layer to Concepts

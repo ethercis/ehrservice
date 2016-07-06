@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.ethercis.aql.sql.binding;
+
+import com.ethercis.aql.containment.IdentifierMapper;
+import com.ethercis.aql.definition.VariableDefinition;
+import com.ethercis.aql.sql.PathResolver;
+import org.apache.log4j.Logger;
+import org.jooq.DSLContext;
+
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Created by christian on 5/4/2016.
+ */
+public class SelectBinder {
+    Logger logger = Logger.getLogger(SelectBinder.class);
+
+    private DSLContext context;
+    private List<VariableDefinition> variableDefinitions;
+    private PathResolver pathResolver;
+
+    public SelectBinder(DSLContext context, IdentifierMapper mapper, List<VariableDefinition> definitions) {
+        this.context = context;
+        this.variableDefinitions = definitions;
+        this.pathResolver = new PathResolver(context, mapper);
+    }
+
+    public org.jooq.Select<?> bind(UUID comp_id){
+        pathResolver.resolvePaths(comp_id);
+        for (VariableDefinition variableDefinition: variableDefinitions) {
+            String path = pathResolver.pathOf(variableDefinition.getIdentifier());
+            String suffix = variableDefinition.getPath();
+            String alias = variableDefinition.getAlias();
+            System.out.println("--->"+path+"/"+suffix+(alias != null ? " AS "+alias : ""));
+        }
+        return null;
+    }
+
+
+}

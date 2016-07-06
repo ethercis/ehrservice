@@ -25,7 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.STATUS;
+import static com.ethercis.jooq.pg.Tables.STATUS;
 
 /**
  * Ehr access layer<br>

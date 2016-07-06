@@ -19,10 +19,12 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.dao.jooq.enums.ContributionDataType;
-import com.ethercis.dao.jooq.tables.records.EhrRecord;
-import com.ethercis.dao.jooq.tables.records.IdentifierRecord;
-import com.ethercis.dao.jooq.tables.records.StatusRecord;
+import com.ethercis.jooq.pg.enums.ContributionDataType;
+import com.ethercis.jooq.pg.tables.Contribution;
+import com.ethercis.jooq.pg.tables.records.ContributionRecord;
+import com.ethercis.jooq.pg.tables.records.EhrRecord;
+import com.ethercis.jooq.pg.tables.records.IdentifierRecord;
+import com.ethercis.jooq.pg.tables.records.StatusRecord;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
@@ -44,7 +46,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static com.ethercis.dao.jooq.Tables.*;
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Created by Christian Chevalley on 4/17/2015.
@@ -512,7 +514,11 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         ehrAccess.isNew = false;
 
         //retrieve the current contribution for this ehr
-        UUID contributionId = context.fetchOne(CONTRIBUTION, CONTRIBUTION.EHR_ID.eq(ehrRecord.getId()).and(CONTRIBUTION.CONTRIBUTION_TYPE.eq(ContributionDataType.ehr))).getId();
+        ContributionRecord contributionRecord = context.fetchOne(CONTRIBUTION, CONTRIBUTION.EHR_ID.eq(ehrRecord.getId()).and(CONTRIBUTION.CONTRIBUTION_TYPE.eq(ContributionDataType.ehr)));
+        if (contributionRecord == null)
+            throw new IllegalArgumentException("DB inconsistency: could not find a related contribution for ehr="+ehrRecord.getId());
+
+        UUID contributionId = contributionRecord.getId();
 
         if (contributionId != null){
             ehrAccess.setContributionAccess(I_ContributionAccess.retrieveInstance(domainAccess, contributionId));

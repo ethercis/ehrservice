@@ -1,0 +1,297 @@
+/*
+ * Copyright (c) 2015 Christian Chevalley
+ * This file is part of Project Ethercis
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.ethercis.aql.compiler;
+
+import com.ethercis.aql.parser.AqlBaseListener;
+import com.ethercis.aql.parser.AqlParser;
+import com.ethercis.aql.containment.*;
+import com.ethercis.aql.definition.FromDefinition;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
+import java.util.*;
+import org.apache.log4j.Logger;
+
+/**
+ * Created by christian on 4/1/2016.
+ */
+public class QueryCompilerPass1 extends AqlBaseListener {
+    Logger logger = Logger.getLogger(QueryCompilerPass1.class);
+    private static int serial = 0;
+
+    ParseTreeProperty<Object> annotations = new ParseTreeProperty<>();
+
+    IdentifierMapper identifierMapper = new IdentifierMapper();
+    Containment currentContainment = null;
+    AstContainment astContainment = null;
+
+    Deque<ContainmentSet> containmentStack = new ArrayDeque<>();
+    ContainmentSet closedContainmentSet = null;
+
+    ContainmentSet rootContainmentSet;
+
+    List<ContainmentSet> closedSetList = new ArrayList<>();
+
+    private int setLevel = 0;
+    Boolean inContainedSet = false; //reset each time we enter a group
+    int containLevel = 0;
+
+    FromDefinition fromDefinition = new FromDefinition();
+//    List<String> fromEHRStatements = new ArrayList<>();
+
+    @Override
+    public void exitFromEHR(AqlParser.FromEHRContext context){
+        if (context.IDENTIFIER() != null){
+            String identifier = context.IDENTIFIER().getText();
+            fromDefinition.setIdentifier(identifier);
+            identifierMapper.add(new FromDefinition.EhrPredicate(identifier, null));
+        }
+        if (context.EHR() != null) {
+            fromDefinition.setIsEHR(true);
+        }
+
+        logger.debug("FromEHR");
+    }
+
+    @Override
+    public void exitStandardPredicate(AqlParser.StandardPredicateContext standardPredicateContext){
+        logger.debug("StandardPredicate");
+    }
+
+    @Override
+    public void enterFromEHR(AqlParser.FromEHRContext context){
+        logger.debug("ENTER FromEHR");
+    }
+
+    @Override
+    public void exitPredicateEquality(AqlParser.PredicateEqualityContext predicateEqualityContext){
+        if (predicateEqualityContext.predicateOperand().size() > 0){
+            List<AqlParser.PredicateOperandContext> predicateOperandContexts = predicateEqualityContext.predicateOperand();
+            switch (predicateOperandContexts.size()){
+                case 1:
+                    break;
+                case 2:
+                    fromDefinition.add((predicateOperandContexts.get(0)).getText(), (predicateOperandContexts.get(1)).getText());
+                    break;
+                case 3: //this one is expected...
+                    break;
+            }
+        }
+//        AqlParser.PredicateOperandContext predicateOperandContext = (AqlParser.PredicateOperandContext) predicateEqualityContext.getChild(2);
+//
+//        fromEHRString.append(predicateOperandContext.operand().STRING());
+    }
+
+    @Override
+    public void exitArchetypedClassExpr(AqlParser.ArchetypedClassExprContext archetypedClassExprContext){
+        String className = archetypedClassExprContext.IDENTIFIER(0).getSymbol().getText();
+        String symbol = archetypedClassExprContext.IDENTIFIER(1).getSymbol().getText();
+        String archetypeId = archetypedClassExprContext.ARCHETYPE_PREDICATE().getText();
+
+        Containment containment = new Containment(className, symbol, archetypeId);
+        identifierMapper.add(containment);
+
+        //requires a CONTAINS expression!
+        if (inContainedSet &&  containLevel > 0) {
+            containment.setEnclosingContainment(currentContainment);
+            inContainedSet = false;
+        }
+        else
+            containment.setEnclosingContainment(currentContainment.enclosingContainment);
+
+        astContainment = new AtomicContainment(containment, astContainment);
+
+        if (astContainment.getEnclosing() != null){
+            AstContainment astEnclosing = astContainment.getEnclosing();
+            if (astEnclosing instanceof AtomicContainment)
+                ((AtomicContainment) astEnclosing).setChild(astContainment);
+        }
+
+        currentContainment = addContainment(containment);
+
+        //debug stuff
+        logger.debug(containment.toString());
+        if (currentContainment.getEnclosingContainment() != null){
+            logger.debug("<-----" + currentContainment.getEnclosingContainment().toString());
+        }
+
+    }
+
+    @Override
+    public void enterContainExpressionBool(AqlParser.ContainExpressionBoolContext containExpressionBoolContext) {
+        if (containExpressionBoolContext.OPEN_PARENTHESIS() != null){
+            setLevel++;
+            //add a new prefixcontainment on stack
+            ContainmentSet containmentSet = new ContainmentSet(serial++, currentContainment);
+
+            containmentStack.push(containmentSet);
+            logger.debug("---- START GROUP:" + setLevel + " contained in:" + currentContainment);
+            inContainedSet = true; //reset the containment sequencing
+        }
+    }
+
+    @Override
+    public void exitContainExpressionBool(AqlParser.ContainExpressionBoolContext containExpressionBoolContext) {
+
+        if (containExpressionBoolContext.CLOSE_PARENTHESIS() != null){
+            logger.debug("---- CLOSING GROUP:" + setLevel);
+            setLevel--;
+            if (containmentStack.size() > 0) {
+                closedContainmentSet = containmentStack.pop();
+                if (!containmentStack.isEmpty())
+                    closedContainmentSet.setParentSet(containmentStack.getFirst());
+                else
+                    closedContainmentSet.setParentSet(rootContainmentSet);
+//                if (!closedContainmentSet.isEmpty())
+                closedSetList.add(closedContainmentSet);
+            }
+            else if (rootContainmentSet != null){
+                rootContainmentSet.add(astContainment.getContainment());
+                closedSetList.add(rootContainmentSet);
+            }
+            else
+                throw new IllegalArgumentException("Invalid condition in boolean expression parsing");
+        }
+    }
+
+    @Override
+    public void exitContainsExpression(AqlParser.ContainsExpressionContext containsExpressionContext){
+        if (currentContainment != null)
+            currentContainment = currentContainment.getEnclosingContainment();
+
+        if (containsExpressionContext.BooleanOperator() != null){
+            logger.debug(containsExpressionContext.BooleanOperator());
+            if (containmentStack.size() > 0) {
+                //get the current containment set
+                ContainmentSet current = containmentStack.getFirst();
+                if (current.size() > 0)
+                    current.setOperator(containsExpressionContext.BooleanOperator().getText());
+                else {
+                    logger.debug("Orphan operator:" + containsExpressionContext.BooleanOperator().getText());
+                    if (rootContainmentSet == null)
+                        rootContainmentSet = new ContainmentSet(serial++, null);
+                    rootContainmentSet.add(containsExpressionContext.BooleanOperator().getText());
+                }
+            }
+            else if (rootContainmentSet != null){
+                rootContainmentSet.setOperator(containsExpressionContext.BooleanOperator().getText());
+            }
+
+        }
+
+    }
+
+    @Override
+    public void enterContainsExpression(AqlParser.ContainsExpressionContext containsExpressionContext){
+
+        if (currentContainment == null ){
+            currentContainment = new Containment(null);
+
+        }
+
+    }
+
+
+
+    @Override
+    public void exitSimpleClassExpr(AqlParser.SimpleClassExprContext simpleClassExprContext){
+        logger.debug("from exitSimpleClassExpr: ENTER");
+        if (!simpleClassExprContext.IDENTIFIER().isEmpty()) {
+            String className = simpleClassExprContext.IDENTIFIER(0).getSymbol().getText();
+            String symbol = simpleClassExprContext.IDENTIFIER(1).getSymbol().getText();
+
+            Containment containment = new Containment(className, symbol, "");
+            if (/* inContainedSet && */ containLevel > 0)
+                containment.setEnclosingContainment(currentContainment);
+
+            currentContainment = addContainment(containment);
+            identifierMapper.add(currentContainment);
+
+            //debug stuff
+            logger.debug(containment.toString());
+            if (currentContainment.getEnclosingContainment() != null){
+                logger.debug("<-----" + currentContainment.getEnclosingContainment().toString());
+            }
+            containLevel++;
+        }
+    }
+
+    @Override
+    public void exitContains(AqlParser.ContainsContext containsContext){
+        if (containsContext.CONTAINS() != null){
+            logger.debug(containsContext.CONTAINS().getSymbol().getText());
+        }
+    }
+
+    @Override
+    public void enterContains(AqlParser.ContainsContext containsContext){
+        if (containsContext.CONTAINS() != null){
+            logger.debug("ENTER:"+containsContext.CONTAINS().getSymbol().getText());
+            if (!inContainedSet) {
+                inContainedSet = true;
+                containLevel = 0;
+            }
+        }
+    }
+
+    @Override
+    public void exitQuery(AqlParser.QueryContext queryContext){
+        annotations.put(queryContext, identifierMapper);
+        //append the root containment in the set list
+        closedSetList.add(rootContainmentSet);
+        //reverse the list
+//        Collections.reverse(closedSetList);  //start from root
+
+    }
+
+//    public ContainmentSet getRootContainmentSet() {
+//        return rootContainmentSet;
+//    }
+
+    public List<ContainmentSet> getClosedSetList() {
+        return closedSetList;
+    }
+
+
+    private Containment addContainment(Containment containment) {
+        if (containmentStack.size() > 0) {
+            //add this containment in the containment list at the top of the stack
+            ContainmentSet containmentSet = containmentStack.getFirst();
+            containmentSet.add(containment);
+        } else { //we are back to the root
+            if (rootContainmentSet != null)
+                rootContainmentSet.add(containment);
+            else { //no root yet
+                rootContainmentSet = new ContainmentSet(serial++, null);
+                rootContainmentSet.add(containment);
+            }
+        }
+
+        if (rootContainmentSet == null && setLevel == 0) {
+            rootContainmentSet = new ContainmentSet(serial++, null);
+            rootContainmentSet.add(containment);
+        }
+
+        containLevel++;
+
+        return containment;
+    }
+
+    public FromDefinition getFromStatements() {
+        return fromDefinition;
+    }
+}

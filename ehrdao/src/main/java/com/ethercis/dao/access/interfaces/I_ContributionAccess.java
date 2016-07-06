@@ -18,7 +18,7 @@ package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.ContributionAccess;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.dao.jooq.enums.ContributionDataType;
+import com.ethercis.jooq.pg.enums.ContributionDataType;
 import com.ethercis.ehr.util.EhrException;
 
 import java.sql.Timestamp;

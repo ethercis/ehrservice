@@ -1,6 +1,5 @@
 package com.ethercis.ehr.building;
 
-import com.ethercis.ehr.building.util.CompositionAttributesHelper;
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
@@ -12,12 +11,10 @@ import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
 import com.ethercis.ehr.util.FlatJsonCompositionConverter;
 import com.ethercis.ehr.util.I_FlatJsonCompositionConverter;
-import com.ethercis.ehr.util.MapInspector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.marand.thinkehr.jsonlib.CompositionConverter;
 import com.marand.thinkehr.jsonlib.impl.CompositionConverterImpl;
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import junit.framework.TestCase;
 import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.io.FileUtils;
@@ -35,23 +32,25 @@ import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.EventContext;
-import org.openehr.rm.datastructure.itemstructure.ItemList;
-import org.openehr.rm.datastructure.itemstructure.ItemStructure;
-import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.support.identification.ObjectVersionID;
-import org.openehr.schemas.v1.COMPOSITION;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
-import static com.ethercis.ehr.building.util.CompositionAttributesHelper.*;
+import static com.ethercis.ehr.building.util.CompositionAttributesHelper.createComposer;
 
 public class ContentBuilderTest extends TestCase {
     //	ClusterController controller;
@@ -354,11 +353,13 @@ public class ContentBuilderTest extends TestCase {
     }
 
     public void testBuildFromJson() throws Exception {
-        String templateId = "IDCR - Laboratory Order.v0";
+//        String templateId = "IDCR - Laboratory Order.v0";
+        String templateId = "IDCR - Laboratory Test Report.v0";
         Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
-        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
+//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
+        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/CLONE-Exception-160407.json")).forEach(line -> sb.append(line));
 //        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "IDCR Problem List.v1");
         I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
 
@@ -685,11 +686,14 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testThinkEhrLib3() throws Exception {
+//        String templateId = "IDCR - Laboratory Order.v0";
+        String templateId = "IDCR Problem List.v1";
         Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR_adverse_reaction_listv1.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
         //hack map for Marand's library
@@ -697,7 +701,8 @@ public class ContentBuilderTest extends TestCase {
 //        map.put("ctx/territory", "GB");
         //rebuild from map
 
-        Composition lastComposition = jsonCompositionConverter.toComposition("IDCR - Laboratory Order.v0", map);
+        Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
+
 //        Composition lastComposition = jsonCompositionConverter.toComposition("IDCR - Adverse Reaction List.v1", map);
         assertNotNull(lastComposition);
 
@@ -708,8 +713,15 @@ public class ContentBuilderTest extends TestCase {
 
         assertNotNull(stringMap);
 
+        //rebuild the composition from the map
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+
+        Composition newComposition = content.buildCompositionFromJson(stringMap);
+
+        assertNotNull(newComposition);
+
         //storeComposition a temp file and write the exported XML into: C:\Users\<current_user>\AppData\Local\Temp
-        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "");
+        content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "");
         byte[] exportXml = content.exportCanonicalXML(lastComposition, true, false);
         System.out.println(new String(exportXml));
 

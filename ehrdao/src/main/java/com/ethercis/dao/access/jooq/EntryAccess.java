@@ -18,9 +18,9 @@ package com.ethercis.dao.access.jooq;
 
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.DataAccess;
-import com.ethercis.dao.jooq.enums.EntryType;
-import com.ethercis.dao.jooq.tables.records.EntryHistoryRecord;
-import com.ethercis.dao.jooq.tables.records.EntryRecord;
+import com.ethercis.jooq.pg.enums.EntryType;
+import com.ethercis.jooq.pg.tables.records.EntryHistoryRecord;
+import com.ethercis.jooq.pg.tables.records.EntryRecord;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.*;
 import org.jooq.exception.DataAccessException;
+import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.SQLDataType;
 import org.jooq.tools.json.JSONObject;
@@ -42,7 +43,7 @@ import org.postgresql.util.PGobject;
 import java.sql.*;
 import java.util.*;
 
-import static com.ethercis.dao.jooq.Tables.*;
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Created by Christian Chevalley on 4/9/2015.
@@ -53,8 +54,10 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
     private static final String DEFAULT_VERSION = "1";
 
     private EntryRecord entryRecord;
-    private PreparedStatement insertStatement;
+//    private PreparedStatement insertStatement;
     private PreparedStatement updateStatement;
+
+    private I_ContainmentAccess containmentAccess;
 
     private Composition composition;
 //    private boolean committed = false;
@@ -122,6 +125,7 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         contentBuilder.setEntryData(composition);
 
         record.setEntry(contentBuilder.getEntry());
+        containmentAccess = new ContainmentAccess(context, record.getId(), record.getArchetypeId(), contentBuilder.getLtreeMap(), true);
     }
 
     private void setFields(String templateId, Integer sequence, UUID compositionId, Composition composition) throws Exception {
@@ -141,20 +145,20 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 //
 //        Connection connection1 = configuration.connectionProvider().acquire();
 
-        String sql = "INSERT INTO ehr.entry (sequence, composition_id, template_id, item_type, archetype_id, category, entry, sys_transaction) " +
-                "VALUES (?, ?, ?, CAST(? AS ehr.entry_type), ?, ?, ?::jsonb, ?)" +
-                " RETURNING id";
-
-        Connection connection = context.configuration().connectionProvider().acquire();
-        insertStatement = connection.prepareStatement(sql);
-        insertStatement.setInt(1, getSequence());
-        insertStatement.setObject(2, getCompositionId());
-        insertStatement.setObject(3, getTemplateId());
-        insertStatement.setObject(4, getItemType());
-        insertStatement.setObject(5, getArchetypeId());
-        insertStatement.setObject(6, getCategory());
-        insertStatement.setObject(7, getEntryJson());
-        insertStatement.setObject(8, new Timestamp(DateTime.now().getMillis())); //default value, changed by commit!
+//        String sql = "INSERT INTO ehr.entry (sequence, composition_id, template_id, item_type, archetype_id, category, entry, sys_transaction) " +
+//                "VALUES (?, ?, ?, CAST(? AS ehr.entry_type), ?, ?, ?::jsonb, ?)" +
+//                " RETURNING id";
+//
+//        Connection connection = context.configuration().connectionProvider().acquire();
+//        insertStatement = connection.prepareStatement(sql);
+//        insertStatement.setInt(1, getSequence());
+//        insertStatement.setObject(2, getCompositionId());
+//        insertStatement.setObject(3, getTemplateId());
+//        insertStatement.setObject(4, getItemType());
+//        insertStatement.setObject(5, getArchetypeId());
+//        insertStatement.setObject(6, getCategory());
+//        insertStatement.setObject(7, getEntryJson());
+//        insertStatement.setObject(8, new Timestamp(DateTime.now().getMillis())); //default value, changed by commit!
     }
 
     @Override
@@ -166,20 +170,40 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
     public UUID commit(Timestamp transactionTime) throws Exception {
 
         //patch insertStatement with the actual transaction time
-        insertStatement.setObject(8, transactionTime);
+//        insertStatement.setObject(8, transactionTime);
+//
+//        ResultSet resultSet = insertStatement.executeQuery();
 
-        ResultSet resultSet = insertStatement.executeQuery();
+        //use jOOQ!
+        Record result = context
+                .insertInto(ENTRY, ENTRY.SEQUENCE, ENTRY.COMPOSITION_ID, ENTRY.TEMPLATE_ID, ENTRY.ITEM_TYPE, ENTRY.ARCHETYPE_ID, ENTRY.CATEGORY, ENTRY.ENTRY_, ENTRY.SYS_TRANSACTION)
+                .values(DSL.val(getSequence()),
+                        DSL.val(getCompositionId()),
+                        DSL.val(getTemplateId()),
+                        DSL.val(EntryType.valueOf(getItemType())),
+                        DSL.val(getArchetypeId()),
+                        DSL.val(getCategory()),
+                        DSL.field(DSL.val(getEntryJson())+"::jsonb"),
+                        DSL.val(transactionTime))
+                .returning(ENTRY.ID)
+                .fetchOne();
 
-        String retval  = null;
 
-        if (resultSet != null && resultSet.next()){
-            retval = resultSet.getString(1);
+//        String retval  = null;
+//
+//        if (resultSet != null && resultSet.next()){
+//            retval = resultSet.getString(1);
+//        }
+//
+//        if (retval != null)
+//            return UUID.fromString(retval);
+
+        if (containmentAccess != null) {
+            containmentAccess.setCompositionId(entryRecord.getCompositionId());
+            containmentAccess.update();
         }
 
-        if (retval != null)
-            return UUID.fromString(retval);
-
-        return entryRecord.getId();
+        return result.getValue(ENTRY.ID);
 
     }
 
@@ -365,6 +389,11 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 
         log.debug("Update done...");
 
+        if (containmentAccess != null) {
+            containmentAccess.setCompositionId(entryRecord.getCompositionId());
+            containmentAccess.update();
+        }
+
         return updateStatement.execute();
     }
 
@@ -475,6 +504,37 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         for (Record record: records) {
             Map<String, Object> fieldMap = new HashMap<>();
             for (Field field : records.fields()) {
+                fieldMap.put(field.getName(), record.getValue(field));
+            }
+
+            resultList.add(fieldMap);
+        }
+
+        resultMap.put("resultSet", resultList);
+
+        return resultMap;
+    }
+
+    public static Map<String, Object> queryAqlJson(I_DomainAccess domainAccess, String queryString) throws Exception {
+        List<Record> records;
+        try {
+            AqlQueryHandler queryHandler = new AqlQueryHandler(domainAccess);
+            records = queryHandler.process(queryString);
+        } catch (DataAccessException e) {
+            String message = e.getCause().getMessage();
+            throw new IllegalArgumentException("AQL exception:"+message.replaceAll("\n", ","));
+
+        }
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        resultMap.put("executedAQL", queryString);
+
+        List<Map> resultList = new ArrayList<>();
+
+        for (Record record: records) {
+            Map<String, Object> fieldMap = new HashMap<>();
+            for (Field field : record.fields()) {
                 fieldMap.put(field.getName(), record.getValue(field));
             }
 

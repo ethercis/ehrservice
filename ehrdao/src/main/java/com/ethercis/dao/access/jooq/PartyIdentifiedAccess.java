@@ -19,8 +19,8 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_PartyIdentifiedAccess;
 import com.ethercis.dao.access.support.DataAccess;
-import com.ethercis.dao.jooq.tables.records.IdentifierRecord;
-import com.ethercis.dao.jooq.tables.records.PartyIdentifiedRecord;
+import com.ethercis.jooq.pg.tables.records.IdentifierRecord;
+import com.ethercis.jooq.pg.tables.records.PartyIdentifiedRecord;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
@@ -35,8 +35,8 @@ import org.openehr.rm.support.identification.PartyRef;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static com.ethercis.dao.jooq.Tables.IDENTIFIER;
-import static com.ethercis.dao.jooq.Tables.PARTY_IDENTIFIED;
+import static com.ethercis.jooq.pg.Tables.IDENTIFIER;
+import static com.ethercis.jooq.pg.Tables.PARTY_IDENTIFIED;
 
 /**
  * Created by Christian Chevalley on 4/10/2015.

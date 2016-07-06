@@ -20,7 +20,7 @@ import com.ethercis.dao.access.jooq.SystemAccess;
 
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.SYSTEM;
+import static com.ethercis.jooq.pg.Tables.SYSTEM;
 
 /**
  * System access layer interface

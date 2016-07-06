@@ -22,7 +22,7 @@ import org.jooq.Result;
 
 import java.util.UUID;
 
-import static com.ethercis.dao.jooq.Tables.CONCEPT;
+import static com.ethercis.jooq.pg.Tables.CONCEPT;
 
 /**
  * Created by Christian Chevalley on 4/10/2015.

@@ -19,11 +19,11 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.dao.jooq.enums.ContributionChangeType;
-import com.ethercis.dao.jooq.enums.ContributionDataType;
-import com.ethercis.dao.jooq.enums.ContributionState;
-import com.ethercis.dao.jooq.tables.records.ContributionHistoryRecord;
-import com.ethercis.dao.jooq.tables.records.ContributionRecord;
+import com.ethercis.jooq.pg.enums.ContributionChangeType;
+import com.ethercis.jooq.pg.enums.ContributionDataType;
+import com.ethercis.jooq.pg.enums.ContributionState;
+import com.ethercis.jooq.pg.tables.records.ContributionHistoryRecord;
+import com.ethercis.jooq.pg.tables.records.ContributionRecord;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
@@ -33,7 +33,7 @@ import org.jooq.DSLContext;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static com.ethercis.dao.jooq.Tables.*;
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Created by Christian Chevalley on 4/17/2015.
@@ -61,7 +61,7 @@ public class ContributionAccess extends DataAccess implements I_ContributionAcce
         contributionRecord.setSystemId(systemId);
         contributionRecord.setDescription(description);
         contributionRecord.setContributionType(ContributionDataType.valueOf(contributionType.getLiteral()));
-        contributionRecord.setState(com.ethercis.dao.jooq.enums.ContributionState.valueOf(contributionState.getLiteral()));
+        contributionRecord.setState(com.ethercis.jooq.pg.enums.ContributionState.valueOf(contributionState.getLiteral()));
 //        contributionRecord.setSignature(signature);
         contributionRecord.setEhrId(ehrId);
     }

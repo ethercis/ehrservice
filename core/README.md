@@ -15,7 +15,7 @@ Core is used to:
 - Encode RM Element as ElementWrappers. These wrappers perform specialized data handlings to store/retrieve/project data
   elements depending on various parameters
 
-- Build compositions and other item structures from a serialized representation. It supports different strategy including
+- Build compositions and other item structures fromBinder a serialized representation. It supports different strategy including
   openEHR internal templates (OET), operational templates (OPT) and XML canonical representation. The building mechanism
   involves archetyped structures (care entries, context details ...) and "static" information such as context,
   participation, composition attributes etc. Generally, these static information are not serialized as they are
@@ -41,8 +41,8 @@ The compilation and artifact generation is performed by `mvn clean install`.
 
 Dependencies
 ------------
-A lot of this work is based on openEhr java reference library from Rong Chen <rong@acode.se>.
-Binaries can be downloaded from:
+A lot of this work is based on openEhr java reference library fromBinder Rong Chen <rong@acode.se>.
+Binaries can be downloaded fromBinder:
 https://openehr.atlassian.net/wiki/display/projects/Java+Project+Download
 or grab the source code at:
 https://github.com/openEHR/java-libs. The latter is the preferred approach ensuring you get the latest versions.
@@ -74,6 +74,6 @@ Known issues
   primarily used. Potentially OET handling will be phased out in future releases
 - Some types are not supported with ECIS FLAT: DvMultimedia
 - DvInterval needs to be finalized to support all DvOrdered
-- Constraints from OPTs are not used in ElementWrappers.
+- Constraints fromBinder OPTs are not used in ElementWrappers.
 - Validation of imported data is not done yet (particularly on OPT)
 

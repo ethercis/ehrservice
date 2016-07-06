@@ -362,24 +362,23 @@ public class OetBinding extends RmBinding {
                 valueMap.put(TIME, new DvDateTime());
             }
             if(valueMap.get(DESCRIPTION) == null) {
-                valueMap.put(DESCRIPTION,
-                        new ItemTree("at0001", new DvText("tree"), null));
+                valueMap.put(DESCRIPTION, new ItemTree(RmBinding.DEFAULT_NODE_ID, new DvText(RmBinding.DEFAULT_DESCRIPTION_NAME), null));
             }
 
         } else if("INSTRUCTION".equals(rmTypeName)) {
 
             if( ! valueMap.containsKey(NARRATIVE)) {
-                valueMap.put(NARRATIVE, new DvText("instruction narrative"));
+                valueMap.put(NARRATIVE, new DvText(RmBinding.DEFAULT_NARRATIVE));
             }
             addEntryValues(valueMap, archetype);
 
         } else if("ACTIVITY".equals(rmTypeName)) {
 
             if( ! valueMap.containsKey(TIMING)) {
-                valueMap.put(TIMING, new DvParsable("activity timing", "txt"));
+                valueMap.put(TIMING, new DvParsable(RmBinding.DEFAULT_TIMING_SCHEME, "txt"));
             }
             if ( ! valueMap.containsKey(ACTION_ARCHETYPE_ID)){
-                valueMap.put(ACTION_ARCHETYPE_ID, "/.*/");
+                valueMap.put(ACTION_ARCHETYPE_ID, RmBinding.DEFAULT_ACTION_ARCHETYPE_ID);
             }
 
         } else if("COMPOSITION".equals(rmTypeName)) {
@@ -427,8 +426,7 @@ public class OetBinding extends RmBinding {
             }
 
             if( ! valueMap.containsKey(SETTING)) {
-                valueMap.put(SETTING, new DvCodedText("emergency care",
-                        new CodePhrase("openehr", "227")));
+                valueMap.put(SETTING, new DvCodedText("emergency care", new CodePhrase("openehr", "227")));
             }
 
         } else if("SECTION".equals(rmTypeName)) {

@@ -32,7 +32,7 @@ if "%ERRORLEVEL%" == "0" goto init
 echo.
 echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
 echo.
-echo Please set the JAVA_HOME variable in your environment to match the
+echo Please set the JAVA_HOME identifier in your environment to match the
 echo location of your Java installation.
 
 goto fail
@@ -44,7 +44,7 @@ if exist "%JAVA_EXE%" goto init
 echo.
 echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%
 echo.
-echo Please set the JAVA_HOME variable in your environment to match the
+echo Please set the JAVA_HOME identifier in your environment to match the
 echo location of your Java installation.
 goto fail
 
@@ -64,7 +64,7 @@ set CMD_LINE_ARGS=%*
 goto execute
 
 :4NT_args
-@rem Get arguments from the 4NT Shell from JP Software
+@rem Get arguments fromBinder the 4NT Shell fromBinder JP Software
 set CMD_LINE_ARGS=%$
 
 :execute
@@ -78,7 +78,7 @@ set CLASSPATH=%JOOQ_LIB%\jooq-%JOOQ_VERSION%.jar;%JOOQ_LIB%\jooq-codegen-%JOOQ_V
 if "%ERRORLEVEL%"=="0" goto mainEnd
 
 :fail
-rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
+rem Set identifier GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
 rem the _cmd.exe /c_ return code!
 if not "" == "%GRADLE_EXIT_CONSOLE%" exit 1
 exit /b 1

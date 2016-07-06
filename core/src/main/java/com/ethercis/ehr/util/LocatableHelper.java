@@ -89,6 +89,13 @@ public class LocatableHelper {
 
     }
 
+    /**
+     * insert a cloned locatable in an item list
+     * @param parent
+     * @param clone
+     * @param insertionPath
+     * @param itemPath
+     */
     public  static void insertCloneInList(Locatable parent, Locatable clone, String insertionPath, String itemPath){
         //get the list of sibling at insertionPath
         Object objectList = parent.itemAtPath(insertionPath);
@@ -160,6 +167,11 @@ public class LocatableHelper {
         }
     }
 
+    /**
+     * identify the attribute in the last path segment
+     * @param path
+     * @return
+     */
     private static String identifyAttribute(String path) {
         //get the last segment of this path
         List<String> segments = Locatable.dividePathIntoSegments(path);
@@ -184,11 +196,20 @@ public class LocatableHelper {
         return attributeName;
     }
 
-    private static String indentifyName(String path){
+    /**
+     * identify the name in the last path segment
+     * @param path
+     * @return
+     */
+    public static String indentifyName(String path){
         List<String> segments = Locatable.dividePathIntoSegments(path);
         String pathSegment = segments.get(segments.size() - 1);
 
         int index = pathSegment.indexOf("[");
+
+        if (index < 0)
+            return null; //path such as /ism_transition f.ex.
+
         String expression = pathSegment.substring(index + 1,pathSegment.indexOf("]"));
 
         String archetypeNodeId;
@@ -213,6 +234,45 @@ public class LocatableHelper {
         return name;
     }
 
+
+    /**
+     * set the names of children from a path to a end path.
+     * Often, the name of nodes is given in a name expression in the locatable path itself as<br>
+     *     <code>[at00xy and name/value='a name']</code>
+     *     <br>
+     * This method traverse the locatable and sets the name of each child based on the path name
+     * expression
+     * @param node the node containing the children
+     * @param fromPath the path of the current node (it can be a subset of a Locatable tree)
+     * @param toPath the full path where the children names are defined
+     */
+    public static void adjustChildrenNames(Locatable node, String fromPath, String toPath){
+        if (toPath.length() > fromPath.length()){
+            String diffPath = toPath.substring(fromPath.length());
+            //get the corresponding name if any
+            String childPath = "";
+            for (String pathSegment: Locatable.dividePathIntoSegments(diffPath)) {
+                childPath += "/"+pathSegment;
+                String name = LocatableHelper.indentifyName(pathSegment);
+                if (name != null) {
+                    //strip the name part from the path
+                    String strippedPath = childPath.substring(0, childPath.lastIndexOf("and name/value=")) + "]";
+                    //update the name accordingly
+                    Locatable childSegment = (Locatable)node.itemAtPath(strippedPath);
+                    if (childSegment != null) {
+                        childSegment.setName(new DvText(name));
+                    }
+
+                }
+            }
+        }
+    }
+
+    /**
+     * identify the path of sibling in a item list or array corresponding to an unresolved path.
+     * @param unresolvedPath
+     * @return
+     */
     public static String siblingPath(String unresolvedPath){
         //if the last path is qualified with a name/value, check if a similar item exists
 
@@ -231,6 +291,12 @@ public class LocatableHelper {
         return tentativePath.toString();
     }
 
+    /**
+     * return a sibling locatable for an unresolved path
+     * @param locatable
+     * @param unresolvedPath
+     * @return
+     */
     public static Locatable siblingAtPath(Locatable locatable, String unresolvedPath) {
         //if the last path is qualified with a name/value, check if a similar item exists
 
@@ -255,6 +321,13 @@ public class LocatableHelper {
 
     }
 
+    /**
+     * return the first parent matching an unresolved path by identify the first item which
+     * path matches fully a partial path expression
+     * @param locatable
+     * @param unresolvedPath
+     * @return
+     */
     public static NodeItem backtrackItemAtPath(Locatable locatable, String unresolvedPath) {
 
 
@@ -276,6 +349,13 @@ public class LocatableHelper {
         return new NodeItem((Locatable)parentAtPath, lastPath, "/"+identifyAttribute(lastPath));
    }
 
+    /**
+     * clone the item at a given path
+     * @param node
+     * @param childPath
+     * @return
+     * @throws Exception
+     */
    public static Locatable cloneChildAtPath(Locatable node, String childPath)  throws Exception {
        if (childPath != null) { //identify a clonable child for this parent
            String attribute = identifyAttribute(childPath);
@@ -316,5 +396,51 @@ public class LocatableHelper {
        return null;
 
    }
+
+    /**
+     * return a path without name/value in nodeId predicate
+     * @param path
+     * @return
+     */
+    public static String simplifyPath(String path){
+        //if the last path is qualified with a name/value, check if a similar item exists
+        StringBuffer tentativePath = new StringBuffer();
+        tentativePath.append("/");
+
+        List<String> segments = Locatable.dividePathIntoSegments(path);
+        for (int i = 0; i < segments.size(); i++){
+            String segment = segments.get(i);
+            if (segment.contains(" and name/value=")){
+                tentativePath.append(segment.split(" and name/value=")[0]);
+                tentativePath.append("]");
+            }
+            else
+                tentativePath.append(segment);
+            if (i < segments.size() - 1)
+                tentativePath.append("/");
+        }
+
+        return tentativePath.toString();
+    }
+
+    /**
+     * check if path contains expression like 'and name/value='iteration #1''
+     * @param path
+     * @return
+     */
+    public static boolean hasDefinedOccurence(String path){
+        //if the last path is qualified with a name/value, check if a similar item exists
+        List<String> segments = Locatable.dividePathIntoSegments(path);
+        for (int i = 0; i < segments.size(); i++){
+            String segment = segments.get(i);
+            if (segment.contains(" and name/value=")){
+                String namePart = segment.split(" and name/value=")[1];
+                if (namePart.contains("#"))
+                    return true;
+            }
+        }
+
+        return false;
+    }
 
 }
