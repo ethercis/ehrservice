@@ -92,6 +92,8 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 return ehrStatusSubjectNamespace(compositionId, withAlias, variableDefinition.getAlias());
             case "ehr_status/subject/external_ref/id/value":
                 return ehrStatusSubjectIdValue(compositionId, withAlias, variableDefinition.getAlias());
+            case "ehr_id/value":
+                return ehrIdValue(compositionId, withAlias, variableDefinition.getAlias());
 
 
         }
@@ -309,6 +311,15 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         }
         else
             return DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_NAMESPACE);
+    }
+
+    private Field<?> ehrIdValue(UUID compositionId, boolean alias, String aliasStr){
+        if (alias) {
+            Field<?> select = DSL.field("DISTINCT {0}", COMP_EXPAND.EHR_ID).as(aliasStr == null ? "ehr_id":aliasStr);
+            return select;
+        }
+        else
+            return DSL.field(COMP_EXPAND.EHR_ID);
     }
 
 }

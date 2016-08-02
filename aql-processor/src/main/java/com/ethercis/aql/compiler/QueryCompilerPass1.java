@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 public class QueryCompilerPass1 extends AqlBaseListener {
     Logger logger = Logger.getLogger(QueryCompilerPass1.class);
     private static int serial = 0;
+    private static int fieldId = 0;
 
     ParseTreeProperty<Object> annotations = new ParseTreeProperty<>();
 
@@ -211,7 +212,11 @@ public class QueryCompilerPass1 extends AqlBaseListener {
         logger.debug("from exitSimpleClassExpr: ENTER");
         if (!simpleClassExprContext.IDENTIFIER().isEmpty()) {
             String className = simpleClassExprContext.IDENTIFIER(0).getSymbol().getText();
-            String symbol = simpleClassExprContext.IDENTIFIER(1).getSymbol().getText();
+            String symbol;
+            if (simpleClassExprContext.IDENTIFIER().size() > 0 && simpleClassExprContext.IDENTIFIER(1) != null)
+                symbol = simpleClassExprContext.IDENTIFIER(1).getSymbol().getText();
+            else
+                symbol = className+"_"+(++fieldId);
 
             Containment containment = new Containment(className, symbol, "");
             if (/* inContainedSet && */ containLevel > 0)

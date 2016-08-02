@@ -247,19 +247,19 @@ public class QueryParserTest {
 
         // ======================= FROM IAN
 
-        query = "select a/uid/value as uid, " +
-                "a/context/start_time/value as date_created, " +
-                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name, " +
-                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken, " +
-                "c/items[at0002]/items[at0001]/value/name as what, " +
-                "c/items[at0002]/items[at0001]/value/value/magnitude as value, " +
-                "c/items[at0002]/items[at0001]/value/value/units as units " +
-                "from EHR e " +
-                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1] " +
-                "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0] " +
-                "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]"+
-                "where a/name/value='Laboratory test report' "+
-                "AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
+//        query = "select a/uid/value as uid, " +
+//                "a/context/start_time/value as date_created, " +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name, " +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken, " +
+//                "c/items[at0002]/items[at0001]/value/name as what, " +
+//                "c/items[at0002]/items[at0001]/value/value/magnitude as value, " +
+//                "c/items[at0002]/items[at0001]/value/value/units as units " +
+//                "from EHR e " +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1] " +
+//                "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0] " +
+//                "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]"+
+//                "where a/name/value='Laboratory test report' "+
+//                "AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
 
 //        query = "select a/uid/value as uid, " +
 //                "a_a/items/items/data[at0001]/items/items[at0001]/value/value as name, " +
@@ -339,6 +339,8 @@ public class QueryParserTest {
 //                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1] " +
 //                "contains INSTRUCTION b_a[openEHR-EHR-INSTRUCTION.request-procedure.v1] " +
 //                "where a/name/value='Encounter' ";
+
+        query = "select e/ehr_id/value from EHR e contains COMPOSITION";
 
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);

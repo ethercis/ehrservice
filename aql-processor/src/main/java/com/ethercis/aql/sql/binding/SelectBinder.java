@@ -171,7 +171,7 @@ public class SelectBinder {
     }
 
     public SelectQuery<?> bind(SelectQuery<?> containQuery, Integer limit, List<OrderAttribute> orderAttributes){
-        if (hasPathBasedField(orderAttributes))
+        if (orderAttributes!= null && hasPathBasedField(orderAttributes))
             throw new IllegalArgumentException("Order by using a path based expression is not yet implemented");
 
         jsonbEntryQuery.reset();
@@ -184,6 +184,9 @@ public class SelectBinder {
             Field<?> field;
             switch (className){
                 case "COMPOSITION":
+                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true);
+                    break;
+                case "EHR":
                     field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true);
                     break;
                 default:
