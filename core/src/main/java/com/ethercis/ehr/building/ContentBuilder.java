@@ -19,18 +19,20 @@ package com.ethercis.ehr.building;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DvDateAdapter;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.wrappers.constraints.ConstraintUtils;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.keyvalues.I_PathValue;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.util.LocatableHelper;
 import com.ethercis.ehr.util.MapInspector;
 import com.ethercis.ehr.util.RMDataSerializer;
+import com.ethercis.validation.ConstraintMapper;
+import com.ethercis.validation.hardwired.CHistory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -55,9 +57,7 @@ import org.openehr.rm.support.identification.LocatableRef;
 import org.openehr.rm.support.identification.ObjectRef;
 import org.openehr.schemas.v1.*;
 import org.openehr.schemas.v1.impl.COMPOSITIONImpl;
-import org.openehr.schemas.v1.impl.ITEMTREEImpl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -78,6 +78,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     static Logger log = Logger.getLogger(ContentBuilder.class);
     private String rootArchetypeId;
     private Map<String, String> ltreeMap;
+    protected ConstraintMapper constraintMapper;
+    protected boolean lenient = false;
 
     //public static final String TAG_OBJECT =  "/$OBJECT$";
 
@@ -85,6 +87,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         this.values = values;
         this.knowledge = knowledge;
         this.templateId = templateId;
+        //set lenient from the environment
+        if (System.getProperty("validation.lenient") != null){
+            lenient = Boolean.parseBoolean(System.getProperty("validation.lenient"));
+            log.info("ContentBuilder validation set to: "+(lenient ? "lenient" : "active"));
+        }
     }
 
     @Override
@@ -169,7 +176,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
         //check for potential sibling
         String siblingPath = LocatableHelper.siblingPath(path);
-        Locatable sibling = (Locatable) locatable.itemAtPath(siblingPath);
+//        Locatable sibling = (Locatable) locatable.itemAtPath(siblingPath);
+        Locatable sibling = (Locatable) LocatableHelper.itemAtPath(locatable, siblingPath);
 
         if (sibling != null){
             LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
@@ -178,6 +186,9 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                 DvText newName = getNewName(definition);
                 cloned.setName(newName);
             }
+            else
+                LocatableHelper.adjustChildrenNames(cloned, Locatable.parentPath(path), path);
+
             LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), path);
             log.debug("Inserted sibling at path:" + path);
         }
@@ -191,7 +202,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //            sibling = (Locatable) locatable.itemAtPath(siblingPath);
         }
         //reference the newly created child
-        Object itemAtPath = locatable.itemAtPath(path);
+//        Object itemAtPath = locatable.itemAtPath(path);
+        Object itemAtPath = LocatableHelper.itemAtPath(locatable, path);
 
         //TODO: set a termination to avoid endless loop...
         //TODO: fail on /content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value='Laboratory test tracker']/ism_transition
@@ -218,6 +230,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     protected void assignValuesFromStack(Composition composition, ArrayDeque<Map<String, Object>> stack) throws Exception {
 
+        ConstraintUtils constraintUtils = new ConstraintUtils(lenient, composition, constraintMapper);
         //traverse the queue
         for (Map<String, Object> definition: stack){
             if (definition.containsKey("/meta")) continue; //ignore the meta entry (not used to build only for querying
@@ -266,13 +279,15 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             //HACK! if an itemAtPath is already there with dirtyBit == true, just clone the element for this path
 //            if (itemAtPath == null || (itemAtPath instanceof ElementWrapper && ((ElementWrapper)itemAtPath).dirtyBitSet())) {
             if (itemAtPath == null) {
+                if (!constraintMapper.isValidNode(LocatableHelper.simplifyPath(path)))
+                    throw new IllegalArgumentException("Invalid child element at:"+path);
                 itemAtPath = insertCloneInPath(composition, definition, path);
             }
 
             if (itemAtPath instanceof ElementWrapper) {
                 assignElementWrapper((ElementWrapper) itemAtPath, object, path);
-
                 setItemAttributes(((ElementWrapper) itemAtPath).getAdaptedElement(), definition);
+//                constraintUtils.validateItem(path, itemAtPath);
             }
             else if (itemAtPath instanceof Activity){
                 Activity activity = (Activity)itemAtPath;
@@ -298,6 +313,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                     ((History) itemAtPath).setOrigin((DvDateTime) object);
                     log.debug("DvDateTime set to" + itemAtPath);
                 }
+                constraintUtils.validateItem(LocatableHelper.simplifyPath(path), itemAtPath);
             }
             else if (itemAtPath instanceof PointEvent){
                 if (object instanceof DvDateTime){ //set origin
@@ -374,7 +390,48 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             }
 
         }
+//        constraintUtils.validateCardinality(composition);
+//        constraintUtils.validateElementConstraints(composition);
     }
+
+//    private void validateElementWrapper(ElementWrapper referenceElement,String path) throws Exception {
+//        //validate instantiated object
+////        Element referenceElement = ((ElementWrapper)itemAtPath).getAdaptedElement();
+////        Element testElement = new Element("*validation*", "test_value", (DataValue)object);
+//        ConstraintMapper.ConstraintItem constraint = constraintMapper.getConstraintItem(LocatableHelper.siblingPath(path));
+//        if (constraint == null){
+//            String tentativePath = LocatableHelper.simplifyPath(path);
+//            Object tentativeElement = composition.itemAtPath(tentativePath);
+//            if (tentativeElement == null)
+//                log.debug("No constraint matching element (node could not be identified):"+tentativePath);
+//            else {
+//                //we should have an ElementWrapper here...
+//                if (tentativeElement instanceof ElementWrapper) {
+//                    constraint = constraintMapper.getConstraintItem(tentativePath);
+//                    if (constraint == null)
+//                        log.debug("No constraint matching element:" + tentativeElement);
+//                    else {
+//                        if (constraint instanceof OptConstraintMapper.OptConstraintItem) {
+//
+//                            new CArchetypeConstraint(this.constraintMapper.getLocalTerminologyLookup()).validate(constraint.getPath(), referenceElement.getAdaptedElement(), ((OptConstraintMapper.OptConstraintItem) constraint).getConstraint());
+//                        }
+//                    }
+//                }
+//                else
+//                    log.debug("identified node is not an Element..."+tentativeElement);
+//            }
+//
+//        }
+//        else {
+//            if (constraint instanceof OptConstraintMapper.OptConstraintItem) {
+//                new CArchetypeConstraint(this.constraintMapper.getLocalTerminologyLookup()).validate(constraint.getPath(), referenceElement.getAdaptedElement(), ((OptConstraintMapper.OptConstraintItem) constraint).getConstraint());
+//            }
+//        }
+//
+//        //check the occurences
+////        constraintMapper.validateWatchList();
+//
+//    }
 
     /**
      * used to assign an ItemTree (for example other_context)
@@ -384,6 +441,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
      */
     protected void assignValuesFromStack(ItemStructure itemStructure, ArrayDeque<Map<String, Object>> stack) throws Exception {
         //traverse the queue
+//        ConstraintUtils constraintUtils = new ConstraintUtils(lenient, itemStructure, constraintMapper);
+
         for (Map<String, Object> definition: stack){
             String path = (String)definition.get(CompositionSerializer.TAG_PATH);
             Object object = definition.get(MapInspector.TAG_OBJECT);
@@ -401,6 +460,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             if (itemAtPath instanceof ElementWrapper) {
                 assignElementWrapper((ElementWrapper) itemAtPath, object, path);
                 setItemAttributes(((ElementWrapper) itemAtPath).getAdaptedElement(), definition);
+//                constraintUtils.validateItem(path, itemAtPath);
             }
             else if (itemAtPath instanceof Activity){
                 Activity activity = (Activity)itemAtPath;
@@ -418,6 +478,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                 }
             }
         }
+        //check if all required element have been set
+
+//        constraintUtils.validateElementConstraints();
+//        constraintUtils.validateCardinality();
     }
 
     /**
@@ -447,6 +511,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //        }
 
         XmlOptions xmlOptions = new XmlOptions();
+        xmlOptions.setCharacterEncoding("UTF-8");
         Map<String, String> nameSpacesMap = new HashMap<>();
         nameSpacesMap.put("", "http://schemas.openehr.org/v1");
         xmlOptions.setLoadSubstituteNamespaces(nameSpacesMap);
@@ -454,12 +519,25 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
         CompositionDocument cd = CompositionDocument.Factory.parse(inputStream, xmlOptions);
         COMPOSITION comp = cd.getComposition();
+
+        //get the templateId and generate the constraint map if not lenient
+        templateId = comp.getArchetypeDetails().getTemplateId().getValue();
+        //force the creation of a dummy composition to assemble the constraints
+        generateNewComposition();
+
+//        XMLBinding binding = new XMLBinding();
         XMLBinding binding = new XMLBinding();
 
         Object rmObj = binding.bindToRM(comp);
         //consistency test
         if (!(rmObj instanceof Composition))
             throw new IllegalArgumentException("Parsed object does not yield an RM composition");
+
+        //validate the result
+        new ConstraintUtils(lenient, (Composition)rmObj, constraintMapper).validateLocatable();
+//        constraintUtils.validateLocatable();
+//        constraintUtils.validateCardinality();
+//        constraintUtils.validateElementConstraints();
 
         Composition importedComposition = (Composition)rmObj;
 
@@ -572,10 +650,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             XMLBinding xmlBinding = new XMLBinding(anyElement);
             Object object = xmlBinding.bindToXML(composition, true);
 
-            if (!(object instanceof COMPOSITIONImpl))
+            if (!(object instanceof COMPOSITION))
                 throw new IllegalArgumentException("Invalid binding of object, resulting in class:"+object.getClass());
 
             XmlOptions xmlOptions = new XmlOptions();
+            xmlOptions.setCharacterEncoding("UTF-8");
             xmlOptions.setUseDefaultNamespace();
         	HashMap<String, String> uriToPrefixMap = new HashMap<String, String>();
 //		    uriToPrefixMap.put(SCHEMA_XSI, "xsi");
@@ -594,14 +673,14 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
             xmlOptions.setSaveUseOpenFrag();
 
-            String xml = ((COMPOSITIONImpl)object).xmlText(xmlOptions);
+            String xml = ((COMPOSITION)object).xmlText(xmlOptions);
 
 //            String xml = ((COMPOSITIONImpl)object).xmlText();
-            try {
-                data = xml.getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+//            try {
+                data = xml.getBytes();
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -681,11 +760,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             if (object != null) {
                 String xml = ((LOCATABLE) object).xmlText(xmlOptions);
 
-                try {
+//                try {
                     data = xml.getBytes("UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
             }
             else //empty object...
                 return null;
@@ -841,4 +920,17 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         }
     }
 
+    public void setLenient(boolean lenient) {
+        this.lenient = lenient;
+    }
+
+    @Override
+    public Boolean isLenient(){
+        return lenient;
+    }
+
+    @Override
+    public ConstraintMapper getConstraintMapper(){
+        return constraintMapper;
+    }
 }

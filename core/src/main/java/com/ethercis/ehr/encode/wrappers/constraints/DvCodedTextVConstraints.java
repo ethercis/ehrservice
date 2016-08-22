@@ -28,6 +28,7 @@ import org.openehr.build.SystemValue;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
+import org.openehr.schemas.v1.CATTRIBUTE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -149,5 +150,9 @@ public class DvCodedTextVConstraints extends DataValueConstraints {
             return true;
 
         return false;
+    }
+
+    public static boolean validate(DataValue value, CATTRIBUTE[] cattributes){
+        return true;
     }
 }

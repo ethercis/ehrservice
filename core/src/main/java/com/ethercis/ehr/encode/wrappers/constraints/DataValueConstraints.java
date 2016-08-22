@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
+
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.build.RMObjectBuilder;
@@ -33,19 +34,22 @@ public abstract class DataValueConstraints implements I_VBeanConstraints, Serial
     String description; //localized description
 	String concept; //coded text (support::id)
 	boolean initial = true; //initially created, false if edited
-    Map<String, AttributeDefinition> attributes = new HashMap<String, AttributeDefinition>();
+    Map<String, ConstraintAttribute> attributes = new HashMap<String, ConstraintAttribute>();
     transient RMObjectBuilder builder;
 
     private DataValue parent;
+//    private ConstraintOccurrences occurences;
 
-    private class AttributeDefinition implements Serializable {
+    private class ConstraintAttribute implements Serializable {
         private static final long serialVersionUID = -8328719040403521976L;
         private String name;
         private boolean required;
         private boolean system;
         private Class clazz;
+//        ConstraintOccurrences existence;
+//        List<ConstraintPrimitive> constraints;
 
-        private AttributeDefinition(String name, boolean required, boolean system, Class clazz) {
+        private ConstraintAttribute(String name, boolean required, boolean system, Class clazz) {
             this.name = name;
             this.required = required;
             this.system = system;
@@ -81,7 +85,7 @@ public abstract class DataValueConstraints implements I_VBeanConstraints, Serial
                 ; //do nothing...
             }
             if (afield != null) { //it is defined at this class level (we need to identify the field class...)
-                AttributeDefinition def = new AttributeDefinition(attr.name(),
+                ConstraintAttribute def = new ConstraintAttribute(attr.name(),
                         attr.required(),
                         attr.system(),
                         afield == null ? null : afield.getType());
@@ -106,7 +110,7 @@ public abstract class DataValueConstraints implements I_VBeanConstraints, Serial
 	}
 
 
-    public AttributeDefinition getAttribute(String name){
+    public ConstraintAttribute getAttribute(String name){
         return attributes.get(name);
     }
 	
@@ -157,4 +161,5 @@ public abstract class DataValueConstraints implements I_VBeanConstraints, Serial
     public void setValue(DataValue val){
         parent = val;
     }
+
 }

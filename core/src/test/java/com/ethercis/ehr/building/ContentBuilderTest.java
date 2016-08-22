@@ -283,12 +283,13 @@ public class ContentBuilderTest extends TestCase {
 
     static String[] documentList = {
 
-            "IDCR Lab Order RAW1.xml" ,
-            "IDCR Procedures List_1 RAW.xml",
-            "IDCR Problem List.v1.xml",
-            "Vital_signs_TEST.xml",
-            "IDCR-LabReportRAW1.xml",
-            "RIPPLE_conformanceTesting_RAW.xml"
+//            "IDCR Lab Order RAW1.xml"
+//            "IDCR Procedures List_1 RAW.xml"
+//            "IDCR Problem List.v1.xml"
+//            "Vital_signs_TEST.xml"
+//            "IDCR-LabReportRAW1.xml"
+//            "RIPPLE_conformanceTesting_RAW.xml"
+            "prescription_validation_test.xml"
 
 
     };
@@ -509,23 +510,23 @@ public class ContentBuilderTest extends TestCase {
 
     private Map setQueryBodyWeirdTypes() {
         Map<String, String> kvPairs = new HashMap<>();
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0001 and name/value='DvIntervalCount']", "0::1");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0001 and name/value='DvIntervalCount']", "0::1");
         kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0002 and name/value='DvIntervalQuantity']", "0,kg::1,kg");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0003 and name/value='DvIntervalDateTime']", "1970-01-01T07:00:00.000+07:00::1970-01-02T07:00:00,000+07:00");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0004 and name/value='DvIntervalDateOnly']", "1970-01-01::1970-01-02");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0005 and name/value='DvIntervalTimeOnly']", "01::02");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0006 and name/value='ParsableHtml']", "text value");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0007 and name/value='URI']|name", "URI");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0007 and name/value='URI']|value", "http://www.ethercis.com/");
-////        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|name", "Proportion");
-////        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|value", "1,1,0");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|name", "Proportion");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|numerator", "1");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|denominator", "2");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|type", "FRACTION");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|precision", "0");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0009 and name/value='Ordinal']|name", "Ordinal");
-//        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0009 and name/value='Ordinal']|value", "-1|openehr::at0010|one|");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0003 and name/value='DvIntervalDateTime']", "1970-01-01T07:00:00.000+07:00::1970-01-02T07:00:00,000+07:00");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0004 and name/value='DvIntervalDateOnly']", "1970-01-01::1970-01-02");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0005 and name/value='DvIntervalTimeOnly']", "01::02");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0006 and name/value='ParsableHtml']", "text value");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0007 and name/value='URI']|name", "URI");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0007 and name/value='URI']|value", "http://www.ethercis.com/");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|name", "Proportion");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|value", "1,1,0");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|name", "Proportion");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|numerator", "1");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|denominator", "2");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|type", "FRACTION");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0008 and name/value='Proportion']|precision", "0");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0009 and name/value='Ordinal']|name", "Ordinal");
+        kvPairs.put("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']/items[openEHR-EHR-CLUSTER.weird_types_1.v0 and name/value='Weird types 1']/items[at0009 and name/value='Ordinal']|value", "-1|openehr::at0010|one|");
 
         return kvPairs;
     }
@@ -686,14 +687,14 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testThinkEhrLib3() throws Exception {
-//        String templateId = "IDCR - Laboratory Order.v0";
-        String templateId = "IDCR Problem List.v1";
+        String templateId = "IDCR - Laboratory Order.v0";
+//        String templateId = "IDCR Problem List.v1";
         Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.FLAT.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR_adverse_reaction_listv1.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
         //hack map for Marand's library

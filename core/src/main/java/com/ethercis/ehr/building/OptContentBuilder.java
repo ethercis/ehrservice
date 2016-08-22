@@ -64,6 +64,9 @@ public class OptContentBuilder extends ContentBuilder {
         OptBinding optBinding = (values == null ? new OptBinding() : new OptBinding(values));
         Object locatable = optBinding.generate(operationaltemplate);
 
+        constraintMapper = optBinding.getConstraintMapper();
+        constraintMapper.setLenient(lenient);
+
         if (locatable instanceof Composition) {
             if (knowledge.isLocatableCached()) {
                 storeCache(templateId, (Composition)locatable);

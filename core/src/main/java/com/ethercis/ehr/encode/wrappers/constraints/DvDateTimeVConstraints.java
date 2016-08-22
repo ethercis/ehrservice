@@ -16,10 +16,10 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
-import org.openehr.am.archetype.constraintmodel.CComplexObject;
 import org.openehr.am.archetype.constraintmodel.CPrimitiveObject;
 import org.openehr.am.archetype.constraintmodel.CSingleAttribute;
 import org.openehr.am.archetype.constraintmodel.primitive.CDateTime;
@@ -27,11 +27,13 @@ import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.support.basic.Interval;
+import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 
 /**
  * Created by Christian Chevalley on 7/7/2014.
  */
 public class DvDateTimeVConstraints extends DataValueConstraints {
+    static Logger logger = Logger.getLogger(DvDateTimeVConstraints.class);
 
     //a map of <support::code>,text value, description
     //the descriptive text is localized depending on the language set
@@ -47,10 +49,10 @@ public class DvDateTimeVConstraints extends DataValueConstraints {
 
     @Override
     public void setConstraints(Archetype archetype, CAttribute valueAttribute) {
-        if ((((CComplexObject) valueAttribute.getChildren().get(0)).getAttribute("value")) == null)
+        if ((((org.openehr.am.archetype.constraintmodel.CComplexObject) valueAttribute.getChildren().get(0)).getAttribute("value")) == null)
             return;
 
-        CPrimitiveObject obj = (CPrimitiveObject)(((CSingleAttribute) ((CComplexObject) valueAttribute.getChildren().get(0)).getAttribute("value")).getChildren().get(0));
+        CPrimitiveObject obj = (CPrimitiveObject)(((CSingleAttribute) ((org.openehr.am.archetype.constraintmodel.CComplexObject) valueAttribute.getChildren().get(0)).getAttribute("value")).getChildren().get(0));
         CDateTime cdatetime = (CDateTime)obj.getItem();
 
         //get the value range (min,max) if set
@@ -107,5 +109,15 @@ public class DvDateTimeVConstraints extends DataValueConstraints {
         DateTime time = ((DvDateTime) qty).getDateTime();
 
         return (time.isAfter(min.getDateTime()) && time.isBefore(max.getDateTime()));
+    }
+
+    public static void validate(String path, String datetime, ARCHETYPECONSTRAINT constraint) throws Exception {
+//        if (constraint instanceof CCOMPLEXOBJECT) {
+//            CCOMPLEXOBJECT ccomplexobject = (CCOMPLEXOBJECT) constraint.changeType(CCOMPLEXOBJECT.type);
+//            CComplexObject.validate(path, datetime, ccomplexobject);
+//        }
+//        else
+//            logger.warn("Validation on non CCOMPLEXOBJECT is not supported, constraint is of class:"+constraint.getClass());
+
     }
 }

@@ -574,7 +574,7 @@ public class OetBinding extends RmBinding {
                 log.debug("add first child for empty container attribute");
 
                 // disabled
-                // container.add(createObject(children.get(0), archetype));
+                // container.add(bindConstraintObject(children.get(0), archetype));
             }
 
             return container;
@@ -614,7 +614,7 @@ public class OetBinding extends RmBinding {
         CPrimitive cp = cpo.getItem();
 
         if(cp instanceof CBoolean) {
-            return CBooleanVBean.getDefault((CBoolean)cp);
+            return CBooleanVBean.getDefault((CBoolean) cp);
 
         } else if(cp instanceof CString) {
 
@@ -622,7 +622,7 @@ public class OetBinding extends RmBinding {
 
         } else if(cp instanceof CDate) {
 
-            return CDateVBean.getDefault((CDate)cp);
+            return CDateVBean.getDefault((CDate) cp);
 
         } else if(cp instanceof CTime) {
 
@@ -630,7 +630,7 @@ public class OetBinding extends RmBinding {
 
         } else if(cp instanceof CDateTime) {
 
-            return CDateTimeVBean.getDefault((CDateTime)cp);
+            return CDateTimeVBean.getDefault((CDateTime) cp);
 
         } else if(cp instanceof CInteger) {
 

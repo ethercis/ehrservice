@@ -37,38 +37,38 @@ public class ElementWrapper extends Item {
     private I_VBeanWrapper wrappedValue = null;
     private DataValueConstraints constraints = null;
     protected Element adaptedElement;
-    private String valuepath;
-    private boolean isHidden = false;
-    private Integer minOccurrences;
-    private Integer maxOccurrences;
-    private boolean isMinIncluded = true;
-    private boolean isMaxIncluded = true;
-    private boolean isValueRequired = false;
-    private String valueClass;
+//    private String valuepath;
+//    private boolean isHidden = false;
+//    private Integer minOccurrences;
+//    private Integer maxOccurrences;
+//    private boolean isMinIncluded = true;
+//    private boolean isMaxIncluded = true;
+//    private boolean isValueRequired = false;
+//    private String valueClass;
     private boolean dirtyBit = false; //true if modified
     private CAttribute value_attributes;
 
 
     public ElementWrapper(Element element, CComplexObject ccobj) throws Exception {
         this.adaptedElement = element;
-        this.isHidden = ccobj != null ? ccobj.isHiddenOnForm() : false;
-        this.minOccurrences = ccobj != null ? ccobj.getOccurrences().getLower() : 0;
-        this.maxOccurrences = ccobj != null ? ccobj.getOccurrences().getUpper() : Integer.MAX_VALUE;
-        this.isMinIncluded = ccobj != null ? ccobj.getOccurrences().isLowerIncluded() : true;
-        this.isMaxIncluded = ccobj != null ? ccobj.getOccurrences().isUpperIncluded() : true;
-        this.valueClass = adaptedElement.getValue().getClass().getCanonicalName();
+//        this.isHidden = ccobj != null ? ccobj.isHiddenOnForm() : false;
+//        this.minOccurrences = ccobj != null ? ccobj.getOccurrences().getLower() : 0;
+//        this.maxOccurrences = ccobj != null ? ccobj.getOccurrences().getUpper() : Integer.MAX_VALUE;
+//        this.isMinIncluded = ccobj != null ? ccobj.getOccurrences().isLowerIncluded() : true;
+//        this.isMaxIncluded = ccobj != null ? ccobj.getOccurrences().isUpperIncluded() : true;
+//        this.valueClass = adaptedElement.getValue().getClass().getCanonicalName();
 //        if (!(adaptee.getValue() instanceof I_VBeanWrapper))
 //            throw new Exception("Internal error, non encapsulated data found with type:"+adaptee.getValue().getClass());
 //        this.wrapped_value = (I_VBeanWrapper) adaptee.getValue();
 
-        CAttribute value_attribute = ccobj != null ? ccobj.getAttribute("value") : null;
+//        CAttribute value_attribute = ccobj != null ? ccobj.getAttribute("value") : null;
 
-        if (value_attribute != null) {
-            this.valuepath = value_attribute.path();
-            this.isValueRequired = value_attribute.isRequired();
-        }
+//        if (value_attribute != null) {
+//            this.valuepath = value_attribute.path();
+//            this.isValueRequired = value_attribute.isRequired();
+//        }
 
-        this.value_attributes = ccobj != null ? ccobj.getAttribute("value") : null;
+//        this.value_attributes = ccobj != null ? ccobj.getAttribute("value") : null;
         //retrofit name and archetypeNodeId to allow locatable methods.
         this.setArchetypeNodeId(element.getArchetypeNodeId());
         this.setName(element.getName());
@@ -133,29 +133,29 @@ public class ElementWrapper extends Item {
         return false;
     }
 
-    public boolean isHidden() {
-        return isHidden;
-    }
-
-    public Integer getMinOccurrences() {
-        return minOccurrences;
-    }
-
-    public Integer getMaxOccurrences() {
-        return maxOccurrences;
-    }
-
-    public boolean isMinIncluded() {
-        return isMinIncluded;
-    }
-
-    public boolean isMaxIncluded() {
-        return isMaxIncluded;
-    }
-
-    public boolean isValueRequired() {
-        return isValueRequired;
-    }
+//    public boolean isHidden() {
+//        return isHidden;
+//    }
+//
+//    public Integer getMinOccurrences() {
+//        return minOccurrences;
+//    }
+//
+//    public Integer getMaxOccurrences() {
+//        return maxOccurrences;
+//    }
+//
+//    public boolean isMinIncluded() {
+//        return isMinIncluded;
+//    }
+//
+//    public boolean isMaxIncluded() {
+//        return isMaxIncluded;
+//    }
+//
+//    public boolean isValueRequired() {
+//        return isValueRequired;
+//    }
 
     public boolean dirtyBitSet() {
         return dirtyBit;

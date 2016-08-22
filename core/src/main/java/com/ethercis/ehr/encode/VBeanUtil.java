@@ -20,6 +20,7 @@ import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import org.apache.log4j.Logger;
 import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
+import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -238,23 +239,31 @@ public class VBeanUtil {
 
     public static boolean isConstraintImplemented(Object object) {
         String clazzname = object.getClass().getSimpleName();
-        try {
-            Class<?> instrClazz = Class.forName(INSTRUMENT_PACKAGE +".constraints."+clazzname+constraintsSuffix);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+		return isConstraintImplemented(clazzname);
+	}
+
+	public static boolean isConstraintImplemented(String clazzname) {
+		try {
+			Class<?> instrClazz = Class.forName(INSTRUMENT_PACKAGE +".constraints."+clazzname+constraintsSuffix);
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+    public static Class findConstraintClass(Object object) {
+        String clazzname = object.getClass().getSimpleName();
+		return findConstraintClass(clazzname);
     }
 
-    public static Class findConstraintClass(Object object) {;
-        String clazzname = object.getClass().getSimpleName();
-        try {
-            Class<?> instrClazz = Class.forName(INSTRUMENT_PACKAGE +".constraints."+clazzname+constraintsSuffix);
-            return instrClazz;
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
+	public static Class findConstraintClass(String clazzname) {
+		try {
+			Class<?> instrClazz = Class.forName(INSTRUMENT_PACKAGE +".constraints."+clazzname+constraintsSuffix);
+			return instrClazz;
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
 
     public static DataValueConstraints getConstraintInstance(RMObjectBuilder builder, Object obj) throws Exception {
         if (!(obj instanceof DataValue))
@@ -272,5 +281,6 @@ public class VBeanUtil {
 
         return null;
     }
+
 
 }

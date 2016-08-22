@@ -262,6 +262,8 @@ public class LocatableHelper {
                     if (childSegment != null) {
                         childSegment.setName(new DvText(name));
                     }
+                    else
+                        node.setName(new DvText(name));
 
                 }
             }
@@ -441,6 +443,10 @@ public class LocatableHelper {
         }
 
         return false;
+    }
+
+    public static Object itemAtPath(Locatable locatable, String path){
+        return locatable.itemAtPath(path.replaceAll(" and name/value=", ","));
     }
 
 }

@@ -37,6 +37,8 @@ public final class DvQuantityVConstraints extends DataValueConstraints {
 
     transient Logger log = Logger.getLogger(DvQuantityVConstraints.class);
 
+	CDvQuantity cDvQuantity;
+
     /**
 	 * Example: 5, 100 mg precision = 0 (integer)
 	 */
@@ -191,5 +193,6 @@ public final class DvQuantityVConstraints extends DataValueConstraints {
             return false;
         return isWithinLimits(((DvQuantity)qty).getUnits(), ((DvQuantity)qty).getMagnitude());
     }
+
 }
 

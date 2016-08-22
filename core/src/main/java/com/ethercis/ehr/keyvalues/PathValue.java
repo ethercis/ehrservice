@@ -23,6 +23,7 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.FieldUtil;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.*;
+import com.ethercis.ehr.encode.wrappers.constraints.ConstraintUtils;
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import com.ethercis.ehr.encode.wrappers.element.AnyElementWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ChoiceElementWrapper;
@@ -197,6 +198,9 @@ public class PathValue implements I_PathValue {
 
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(map, knowledge, templateId);
         Composition composition = contentBuilder.generateNewComposition();
+
+        ConstraintUtils constraintUtils = new ConstraintUtils(contentBuilder.isLenient(), composition, contentBuilder.getConstraintMapper());
+        constraintUtils.validateLocatable();
 
         assignItemStructure(CONTENT_TAG, composition, mapContent);
 
@@ -595,6 +599,12 @@ public class PathValue implements I_PathValue {
 
             String path = keySetArray[pathIterator];
 
+            //CHC 160819 - Change path expression containing 'and name/value=' by the shortcut ","
+            //itemAtPath seems not to interpret the longer expression:
+            //=> expression with name/value returns null, whereas using the shortcut returns the expected item
+
+//            path = path.replaceAll(" and name/value=", ",");
+
             if (path != null && !path.startsWith(filterTag))
                 continue;
 
@@ -646,7 +656,9 @@ public class PathValue implements I_PathValue {
             }
 
 
-            Object itemAtPath = locatable.itemAtPath(locatablePath);
+//            Object itemAtPath = locatable.itemAtPath(locatablePath);
+            Object itemAtPath = LocatableHelper.itemAtPath(locatable, locatablePath);
+
 
 //            if (itemAtPath == null) {
 //                log.debug("Item could not be located, cloning required:" + locatablePath);
@@ -668,7 +680,7 @@ public class PathValue implements I_PathValue {
                 //build a definition based on the provided path...
                 String lastPathSegment = locatablePath.substring(locatablePath.lastIndexOf("[")+1, locatablePath.lastIndexOf("]"));
                 Map<String, Object> definition = new HashMap<>();
-                if (lastPathSegment.contains("and name/value=")){
+                if (lastPathSegment.contains("and name/value=") || lastPathSegment.contains(",")){
                     String name = lastPathSegment.substring(lastPathSegment.indexOf("'")+1, lastPathSegment.lastIndexOf("'"));
                     if (!name.contains("|")){
                         //assume simple string name

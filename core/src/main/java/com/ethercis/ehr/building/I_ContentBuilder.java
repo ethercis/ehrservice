@@ -17,6 +17,7 @@
 package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.validation.ConstraintMapper;
 import openEHR.v1.template.TEMPLATE;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -149,4 +150,8 @@ public interface I_ContentBuilder {
     public static Locatable parseOtherDetailsXml(InputStream inputStream) throws Exception {
         return ContentBuilder.parseOtherDetailsXML(inputStream);
     }
+
+    Boolean isLenient();
+
+    ConstraintMapper getConstraintMapper();
 }

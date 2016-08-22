@@ -35,6 +35,7 @@ public class DvBooleanVConstraints extends DataValueConstraints {
     //the descriptive text is localized depending on the language set
 
     private boolean assumed_value_code;
+    CBoolean cBoolean;
 
     public DvBooleanVConstraints(RMObjectBuilder builder, DataValue parent) {
         super(builder, parent);

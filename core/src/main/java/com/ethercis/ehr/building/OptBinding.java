@@ -25,6 +25,9 @@ import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
+import com.ethercis.ehr.util.LocatableHelper;
+import com.ethercis.validation.ConstraintMapper;
+import com.ethercis.validation.OptConstraintMapper;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
@@ -44,7 +47,6 @@ import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.datatypes.uri.DvURI;
-import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
 import org.openehr.rm.support.identification.TemplateID;
 import org.openehr.rm.support.identification.TerminologyID;
@@ -57,6 +59,8 @@ import java.util.*;
 public class OptBinding extends RmBinding {
 
 	Logger log = Logger.getLogger(OptBinding.class);
+
+	private OptConstraintMapper constrainMapper = new OptConstraintMapper();
 
 	private Map<String,Map<String, String>> termTable=new  HashMap<String,Map<String, String>>();
 
@@ -382,6 +386,7 @@ public class OptBinding extends RmBinding {
 		CARCHETYPEROOT def = opt.getDefinition();
 
 		Object c = handleArchetypeRoot(opt, def, null, "");
+		constrainMapper.setTerminology(termTable);
 		return c;
 	}
 
@@ -467,6 +472,10 @@ public class OptBinding extends RmBinding {
 		String rmTypeName = ccobj.getRmTypeName();
 		log.debug("rmTypeName=" + rmTypeName + ":nodeId=" + nodeId + ":ccobj="
 				+ ccobj);
+
+		constrainMapper.addToValidPath(path);
+		constrainMapper.addToExistence(path, ccobj.getOccurrences());
+
 		if (nodeId != null && nodeId.trim().length() > 0) {
 			DvText txtName = null;
 			// root node with archetype_id as node_id
@@ -547,6 +556,7 @@ public class OptBinding extends RmBinding {
 					}
 					log.debug("valueMap.put " + attr.getRmAttributeName()+ " :" + container);
 					valueMap.put(attr.getRmAttributeName(), container);
+					constrainMapper.addToCardinalityList(path+"/"+attr.getRmAttributeName(), cma);
 				}
 			}
 		}
@@ -688,6 +698,8 @@ public class OptBinding extends RmBinding {
 			if (!valueMap.containsKey(ORIGIN)) {
 				valueMap.put(ORIGIN, new DvDateTime(DEFAULT_DATE_TIME));
 			}
+			//test only for now
+			constrainMapper.bind(path, ccobj);
 
 		} else if ("EVENT".equals(rmTypeName) || "POINT_EVENT".equals(rmTypeName)) {
 
@@ -777,6 +789,7 @@ public class OptBinding extends RmBinding {
 						//TODO: add additional attributes (contains DvCodedText supplementary data ex. terminology id + code)
                         log.debug("additional attribute found for element attr.getRmAttributeName()=" + attr.getRmAttributeName());
                     }
+					constrainMapper.addToWatchList(path, attr);
                 }
                 else {
                     log.debug("Other type for obj:"+obj);
@@ -852,11 +865,11 @@ public class OptBinding extends RmBinding {
 			ElementWrapper wrapper;
 
 			if (valueMap.containsKey(CHOICE))
-				wrapper = new ChoiceElementWrapper(element, EZBindCComplexObject(path, ccobj), (List)valueMap.get(CHOICE), builder);
+				wrapper = new ChoiceElementWrapper(element, EZBindCComplexObject(path, obj, ccobj), (List)valueMap.get(CHOICE), builder);
 			else if (valueMap.containsKey(ANY))
-				wrapper = new AnyElementWrapper(element, EZBindCComplexObject(path, ccobj), builder);
+				wrapper = new AnyElementWrapper(element, EZBindCComplexObject(path, obj, ccobj), builder);
 			else
-            	wrapper = new ElementWrapper(element, EZBindCComplexObject(path, ccobj));
+            	wrapper = new ElementWrapper(element, EZBindCComplexObject(path, obj, ccobj));
 
             Object value = valueMap.get(VALUE);
 
@@ -897,32 +910,37 @@ public class OptBinding extends RmBinding {
         return retobj;
 	}
 
-    private CComplexObject EZBindCComplexObject(String path, CCOMPLEXOBJECT ccomplexobject){
+    private CComplexObject EZBindCComplexObject(String path, Object object, CCOMPLEXOBJECT ccomplexobject) throws Exception {
+		//CHC: 160809: use a new validation strategy
+		constrainMapper.bind(LocatableHelper.simplifyPath(path), ccomplexobject);
 
-        CComplexObject cComplexObject = new CComplexObject();
-        cComplexObject.setAnyAllowed(true); //could not get this from XML representation
-        org.openehr.rm.support.basic.Interval<Integer> integerInterval = new Interval<>();
-
-        if (ccomplexobject.getOccurrences().isSetLower())
-            integerInterval.setLower(ccomplexobject.getOccurrences().getLower());
-        else
-            integerInterval.setLower(0);
-
-        if (ccomplexobject.getOccurrences().isSetUpper())
-            integerInterval.setUpper(ccomplexobject.getOccurrences().getUpper());
-        else
-            integerInterval.setUpper(Integer.MAX_VALUE);
-
-        integerInterval.setLowerIncluded(ccomplexobject.getOccurrences().getLowerIncluded());
-        integerInterval.setUpperIncluded(ccomplexobject.getOccurrences().getUpperIncluded());
-
-        cComplexObject.setOccurrences(integerInterval);
-        cComplexObject.setNodeId(ccomplexobject.getNodeId());
-        cComplexObject.setPath(path);
+//        CComplexObject cComplexObject = new CComplexObject();
+//        cComplexObject.setAnyAllowed(true); //could not get this from XML representation
+//        org.openehr.rm.support.basic.Interval<Integer> integerInterval = new Interval<>();
+//
+//		ConstraintBinding constraintBinding = new ConstraintBinding(object);
+//		constraintBinding.bind(path, ccomplexobject);
+//
+//        if (ccomplexobject.getOccurrences().isSetLower())
+//            integerInterval.setLower(ccomplexobject.getOccurrences().getLower());
+//        else
+//            integerInterval.setLower(0);
+//
+//        if (ccomplexobject.getOccurrences().isSetUpper())
+//            integerInterval.setUpper(ccomplexobject.getOccurrences().getUpper());
+//        else
+//            integerInterval.setUpper(Integer.MAX_VALUE);
+//
+//        integerInterval.setLowerIncluded(ccomplexobject.getOccurrences().getLowerIncluded());
+//        integerInterval.setUpperIncluded(ccomplexobject.getOccurrences().getUpperIncluded());
+//
+//        cComplexObject.setOccurrences(integerInterval);
+//        cComplexObject.setNodeId(ccomplexobject.getNodeId());
+//        cComplexObject.setPath(path);
 
 //        CAttribute value_attribute = ccomplexobject.
 
-        return cComplexObject;
+        return null;
 
     }
 
@@ -931,7 +949,9 @@ public class OptBinding extends RmBinding {
 		log.debug("cobj=" + cobj.getClass() + ":" + cobj.getRmTypeName());
 
 		if (cobj instanceof CARCHETYPEROOT) {
-			path = path + "["+ ((CARCHETYPEROOT) cobj).getArchetypeId().getValue() + "]";
+			if (!((CARCHETYPEROOT) cobj).getArchetypeId().getValue().isEmpty()) {
+				path = path + "[" + ((CARCHETYPEROOT) cobj).getArchetypeId().getValue() + "]";
+			}
 			log.debug("CARCHETYPEROOT path=" + path);
 			return handleArchetypeRoot(opt, (CARCHETYPEROOT) cobj, attrName, path);
 		} else if (cobj instanceof CDOMAINTYPE) {
@@ -944,11 +964,15 @@ public class OptBinding extends RmBinding {
             else if ("/context".equalsIgnoreCase(path)){
                 return handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef, attrName, path);
             }
-			path = path + "[" + ((CCOMPLEXOBJECT) cobj).getNodeId() + "]";
+			if (!((CCOMPLEXOBJECT) cobj).getNodeId().isEmpty()) {
+				path = path + "[" + ((CCOMPLEXOBJECT) cobj).getNodeId() + "]";
+			}
 			log.debug("CONTEXT path=" + path);
 			return handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef, attrName, path);
 		} else if (cobj instanceof ARCHETYPESLOT) {
-			path = path + "[" + ((ARCHETYPESLOT) cobj).getNodeId() + "]";
+			if (!((ARCHETYPESLOT) cobj).getNodeId().isEmpty()) {
+				path = path + "[" + ((ARCHETYPESLOT) cobj).getNodeId() + "]";
+			}
 			ARCHETYPESLOT slot = (ARCHETYPESLOT) cobj;
 			// slot.
 
@@ -985,4 +1009,7 @@ public class OptBinding extends RmBinding {
 		}
 	}
 
+	public ConstraintMapper getConstraintMapper() {
+		return constrainMapper;
+	}
 }
