@@ -73,7 +73,7 @@ public class IdentifierMapper {
             if (mapper.containsKey(ehrPredicate.getField()))
                 throw new IllegalArgumentException("Symbol already exists:"+ehrPredicate.getField());
             Mapper def = new Mapper(ehrPredicate);
-            mapper.put(ehrPredicate.getField(), def);
+            mapper.put(ehrPredicate.getIdentifier(), def);
         }
     }
 
@@ -87,6 +87,22 @@ public class IdentifierMapper {
         if (mapped == null)
             return null;
         return mapped.getContainer();
+    }
+
+    public FromDefinition.EhrPredicate getEhrContainer(){
+        for (Map.Entry<String, Mapper> containment: mapper.entrySet()){
+            if (containment.getValue().getContainer() instanceof FromDefinition.EhrPredicate)
+                return (FromDefinition.EhrPredicate)containment.getValue().getContainer();
+        }
+        return null;
+    }
+
+    public boolean hasEhrContainer(){
+        for (Map.Entry<String, Mapper> containment: mapper.entrySet()){
+            if (containment.getValue().getContainer() instanceof FromDefinition.EhrPredicate)
+                return true;
+        }
+        return false;
     }
 
     public Class getQueryStrategy(String symbol){

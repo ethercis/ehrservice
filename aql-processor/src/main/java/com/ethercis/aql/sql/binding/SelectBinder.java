@@ -20,20 +20,21 @@ package com.ethercis.aql.sql.binding;
 import com.ethercis.aql.compiler.OrderAttribute;
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.containment.IdentifierMapper;
+import com.ethercis.aql.definition.FromDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
-import org.apache.log4j.Logger;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Result;
-import org.jooq.SelectQuery;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jooq.*;
 
 import java.util.List;
 import java.util.UUID;
 
 import static com.ethercis.jooq.pg.Tables.COMP_EXPAND;
+import static com.ethercis.jooq.pg.Tables.EHR;
+import static com.ethercis.jooq.pg.Tables.STATUS;
 
 /**
  * Bind the abstract representation of a SELECT clause into a SQL expression
@@ -41,7 +42,7 @@ import static com.ethercis.jooq.pg.Tables.COMP_EXPAND;
  */
 public class SelectBinder {
 
-    Logger logger = Logger.getLogger(SelectBinder.class);
+    Logger logger = LogManager.getLogger(SelectBinder.class);
 
     private JsonbEntryQuery jsonbEntryQuery;
     private CompositionAttributeQuery compositionAttributeQuery;
@@ -96,18 +97,24 @@ public class SelectBinder {
                     break;
             }
 //            field = DSL.field(field);
-            if (field == null)
-                throw new IllegalArgumentException("Could not resolve field :"+variableDefinition);
-
+            if (field == null) {
+                throw new IllegalArgumentException("Field expression is not supported or invalid :" + variableDefinition);
+            }
             selectQuery.addSelect(field);
             jsonbEntryQuery.inc();
         }
         //add the from bit
 //        selectQuery.addFrom(CompositionQuerySnippets.content(context, comp_id));
-        selectQuery.addFrom(COMP_EXPAND);
+//        selectQuery.addFrom(COMP_EXPAND);
+//        if (compositionAttributeQuery.containsEhrStatus()){ //add a join clause to get other_details
+//            selectQuery.addJoin(STATUS, JoinType.JOIN, STATUS.EHR_ID.eq(COMP_EXPAND.EHR_ID));
+//        }
+
         whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.eq(comp_id));
 //        selectQuery.addConditions();
         selectQuery.addConditions(whereBinder.bind(comp_id));
+
+        completeFromClause(selectQuery); //as some variables (other_status) may be defined only in where...
 //        return context.select(selectFields);
         return selectQuery;
     }
@@ -141,7 +148,8 @@ public class SelectBinder {
         }
         //add the from bit
 //        selectQuery.addFrom(CompositionQuerySnippets.content(context, comp_id));
-        selectQuery.addFrom(COMP_EXPAND);
+        completeFromClause(selectQuery);
+//        selectQuery.addFrom(COMP_EXPAND);
         whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(inSet));
 //        selectQuery.addConditions();
         selectQuery.addConditions(whereBinder.bind(null));
@@ -188,6 +196,9 @@ public class SelectBinder {
                     break;
                 case "EHR":
                     field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true);
+                    //check for implicit where associated with the FROM EHR clause
+//                    FromDefinition.EhrPredicate predicate = (FromDefinition.EhrPredicate) mapper.getContainer(identifier);
+//                    whereBinder.whereClause.add();
                     break;
                 default:
                     throw new IllegalArgumentException("Bind with an IN set is only applicable to non JSON entries");
@@ -196,8 +207,11 @@ public class SelectBinder {
             jsonbEntryQuery.inc();
         }
         //add the from bit
-        selectQuery.addFrom(COMP_EXPAND);
-        whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(containQuery.asField()));
+        completeFromClause(selectQuery);
+//        selectQuery.addFrom(COMP_EXPAND);
+        if (containQuery != null) {
+            whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(containQuery.asField()));
+        }
         selectQuery.addConditions(whereBinder.bind(null));
 
         if (limit != null)
@@ -274,5 +288,20 @@ public class SelectBinder {
 
     public PathResolver getPathResolver() {
         return pathResolver;
+    }
+
+    private void completeFromClause(SelectQuery<?> selectQuery){
+        selectQuery.addFrom(COMP_EXPAND);
+        if (compositionAttributeQuery.containsEhrStatus()){ //add a join clause to get other_details
+            selectQuery.addJoin(STATUS, JoinType.FULL_OUTER_JOIN, STATUS.EHR_ID.eq(COMP_EXPAND.EHR_ID));
+        }
+    }
+
+    public boolean hasEhrIdExpression(){
+        return compositionAttributeQuery.containsEhrId();
+    }
+
+    public String getEhrIdAlias(){
+        return compositionAttributeQuery.getEhrIdAlias();
     }
 }

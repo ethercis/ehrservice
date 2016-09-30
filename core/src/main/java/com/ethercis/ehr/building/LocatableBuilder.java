@@ -18,7 +18,8 @@ package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import openEHR.v1.template.TEMPLATE;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.Flattener;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -28,7 +29,7 @@ import org.openehr.rm.common.archetyped.Locatable;
  * Created by Christian Chevalley on 8/8/2014.
  */
 public class LocatableBuilder {
-    private Logger log = Logger.getLogger(LocatableBuilder.class);
+    private Logger log = LogManager.getLogger(LocatableBuilder.class);
 //    private I_ResourceService resourceService;
     private I_KnowledgeCache knowledgeManager;
 

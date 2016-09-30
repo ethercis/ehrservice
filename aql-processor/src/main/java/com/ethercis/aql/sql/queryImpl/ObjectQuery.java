@@ -49,7 +49,7 @@ public abstract class ObjectQuery {
         serial++;
     }
 
-    public int getSerial(){
+    public static int getSerial(){
         return serial;
     }
 }

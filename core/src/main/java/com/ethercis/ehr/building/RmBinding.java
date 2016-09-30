@@ -81,7 +81,7 @@ public abstract class RmBinding implements I_RmBinding {
 
     public static final String DEFAULT_DATE = "1900-01-01";
     public static final String DEFAULT_TIME = "00:00:00";
-    public static final String DEFAULT_DATE_TIME = "1900-01-01T00:00:00";
+    public static final String DEFAULT_DATE_TIME = "1900-01-01T00:00:00Z";
     public static final String DEFAULT_DURATION = "PT0S";
     public static final String DEFAULT_TEXT = "DEFAULT_TEXT_VALUE";
     public static final String DEFAULT_CODED_TEXT = "DEFAULT_CODED_TEXT_VALUE";

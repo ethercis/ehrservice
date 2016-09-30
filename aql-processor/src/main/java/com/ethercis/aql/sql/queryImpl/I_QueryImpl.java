@@ -27,6 +27,7 @@ import java.util.UUID;
  * Created by christian on 5/6/2016.
  */
 public interface I_QueryImpl {
+
     Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias);
 
     Field<?> whereField(UUID compositionId, String identifier, VariableDefinition variableDefinition);

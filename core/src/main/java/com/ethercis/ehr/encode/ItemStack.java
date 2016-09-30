@@ -16,7 +16,8 @@
  */
 package com.ethercis.ehr.encode;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 import java.util.Stack;
@@ -27,7 +28,7 @@ import java.util.TreeMap;
 * Created by Christian Chevalley on 8/3/2015.
 */
 public class ItemStack {
-    private Logger log = Logger.getLogger(ItemStack.class);
+    private Logger log = LogManager.getLogger(ItemStack.class);
 
     private static final String archetypePrefix = "[openEHR-";
     private static final String namedItemPrefix = " and name/value='";
@@ -76,8 +77,9 @@ public class ItemStack {
     }
 
     public static String getLabelType(String path){
-        String label = path.substring(1, path.indexOf("["));
-        return label;
+        if (path.contains("["))
+            return path.substring(1, path.indexOf("["));
+        return path;
     }
 
     private boolean isArchetypeSlot(String path){
@@ -88,8 +90,9 @@ public class ItemStack {
         //get the last element on stack
         ContainmentStruct containmentStruct = containmentStack.lastElement();
 //        System.out.println(containmentStruct.getLabel() + "-->" + containmentStruct.getFullPath());
-        if (ltreeMap.containsKey(containmentStruct.getLabel()))
-            log.warn("CONTAINMENT: ltree map already contain key:"+containmentStruct.getLabel());
+        if (ltreeMap.containsKey(containmentStruct.getLabel())) {
+            //log.warn("CONTAINMENT: ltree map already contain key:"+containmentStruct.getLabel());
+        }
         else
             ltreeMap.put(containmentStruct.getLabel(), containmentStruct.getFullPath());
     }
@@ -106,7 +109,8 @@ public class ItemStack {
 //                log.warn("Ignoring entry/item name:"+name);
         }
         pushStack(pathStack, path);
-        pushStack(namedStack, name);
+        if (name != null)
+            pushStack(namedStack, name.toLowerCase().replaceAll(" ", "_"));
         if (isArchetypeSlot(path)) {
 
             String label = normalizeLabel(path);

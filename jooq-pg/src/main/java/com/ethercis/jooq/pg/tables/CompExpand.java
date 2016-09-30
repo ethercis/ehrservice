@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CompExpand extends TableImpl<CompExpandRecord> {
 
-	private static final long serialVersionUID = -1488001381;
+	private static final long serialVersionUID = 71585902;
 
 	/**
 	 * The reference instance of <code>ehr.comp_expand</code>
@@ -175,6 +175,11 @@ public class CompExpand extends TableImpl<CompExpandRecord> {
 	 * The column <code>ehr.comp_expand.composer_type</code>.
 	 */
 	public final TableField<CompExpandRecord, String> COMPOSER_TYPE = createField("composer_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "");
+
+	/**
+	 * The column <code>ehr.comp_expand.other_details</code>.
+	 */
+	public final TableField<CompExpandRecord, Object> OTHER_DETAILS = createField("other_details", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "");
 
 	/**
 	 * Create a <code>ehr.comp_expand</code> table reference

@@ -36,6 +36,7 @@ public interface I_PathValue {
     public static final String VALUE_SUBTAG = "|value";
     public static final String DEFINING_CODE_SUBTAG = "|defining_code";
     public static final String NAME_SUBTAG = "|name";
+    String FORMALISM_SUBTAG = "|formalism";
 
     public static final String CATEGORY_TAG = "/category";
     public static final String CONTENT_TAG = "/content";

@@ -2,7 +2,9 @@ package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.DvDateAdapter;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.DvTimeAdapter;
 import com.ethercis.ehr.json.FlatJsonUtil;
 import com.ethercis.ehr.json.JsonUtil;
 import com.ethercis.ehr.keyvalues.EcisFlattener;
@@ -19,8 +21,7 @@ import junit.framework.TestCase;
 import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.xmlbeans.XmlOptions;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,9 @@ import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.EventContext;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 import org.openehr.rm.support.identification.ObjectVersionID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
@@ -42,6 +45,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -71,10 +75,10 @@ public class ContentBuilderTest extends TestCase {
     }
 
     @Test
-    /**
-     * generate a composition from an Operational Template (OPT)
-     */
-    public void testOPTGenerateComposition() throws Exception {
+         /**
+          * generate a composition from an Operational Template (OPT)
+          */
+         public void testOPTGenerateComposition() throws Exception {
 //        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "ECIS EVALUATION TEST");
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, "LCR Problem List.opt");
 //        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "action test");
@@ -82,6 +86,26 @@ public class ContentBuilderTest extends TestCase {
         Composition composition = contentBuilder.generateNewComposition();
 
         assertNotNull(composition);
+    }
+
+    @Test
+    /**
+     * generate a composition from an Operational Template (OPT)
+     */
+    public void testSerializeComposition() throws Exception {
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "ECIS EVALUATION TEST");
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, "COLNEC Medication");
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "action test");
+
+        Composition composition = contentBuilder.generateNewComposition();
+
+        assertNotNull(composition);
+
+        CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        Map<String, Object> retmap = compositionSerializer.process(composition);
+        String stringMap = CompositionSerializer.jsonMapToString(retmap);
+
+        assertNotNull(stringMap);
     }
 
     @Test
@@ -101,46 +125,57 @@ public class ContentBuilderTest extends TestCase {
         InputStream is = new FileInputStream(new File("/Development/Dropbox/eCIS_Development/samples/other_details.xml"));
         Locatable itemStructure = I_ContentBuilder.parseOtherDetailsXml(is);
 
+        //serialize other_details
+        CompositionSerializer serializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        String encoded = serializer.dbEncode(CompositionSerializer.TAG_OTHER_DETAILS, itemStructure);
+//        Map<String, Object> stringObjectMap = serializer.processItem(itemStructure);
+//        GsonBuilder builder = new GsonBuilder();
+//        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+//        builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
+//        builder.registerTypeAdapter(DvTime.class, new DvTimeAdapter());
+////        builder.registerTypeAdapter(DvTime.class, new DvTimeAdapter());
+//        Gson gson = builder.setPrettyPrinting().create();
+//        String mapjson = gson.toJson(stringObjectMap);
         System.out.println("====================================================================================");
         System.out.println(new String(exportXml));
 
 
 
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
-        Map<String, Object>retmap = inspector.processItem(CompositionSerializer.TAG_OTHER_DETAILS, generated);
+//        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+//        Map<String, Object>retmap = inspector.processItem(CompositionSerializer.TAG_OTHER_DETAILS, generated);
 
-        //insert the template id
-        retmap.put("$TEMPLATE_ID$", "person anonymised parent");
-
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-        Gson gson = builder.setPrettyPrinting().create();
-        String mapjson = gson.toJson(retmap);
-
-        System.out.println("====================================================================================");
-        System.out.println(mapjson);
-
-        //use an anonymous contentbuilder
-
-        //retrieve the template id from the serialized map
-        Map structured = gson.fromJson(mapjson, Map.class);
-
-        contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, (String)structured.get("$TEMPLATE_ID$"));
-
-        //rebuild it from json
-        //get the archetype node id and name from the first line of the map
-//        String otherDetailsHeader = mapjson.substring(mapjson.indexOf("/other_details["), mapjson.indexOf("]")+1).replace("\\u003d", "=").replace("\\u0027", "'");
-//        String[] segments = otherDetailsHeader.split(" and name/value");
-//        String archetypeNodeId = segments[0].substring("/other_details[".length());
-//        String name = segments[1].substring(1, segments[1].lastIndexOf("'"));
-        Locatable locatable = contentBuilder.buildLocatableFromJson(mapjson);
-
-        assertNotNull(locatable);
-
-        String xml = new String(contentBuilder.exportCanonicalXML(locatable, true));
-
-        System.out.println("REBUILT ====================================================================================");
-        System.out.println(xml);
+//        //insert the template id
+//        retmap.put("$TEMPLATE_ID$", "person anonymised parent");
+//
+//        GsonBuilder builder = new GsonBuilder();
+//        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+//        Gson gson = builder.setPrettyPrinting().create();
+//        String mapjson = gson.toJson(retmap);
+//
+//        System.out.println("====================================================================================");
+//        System.out.println(mapjson);
+//
+//        //use an anonymous contentbuilder
+//
+//        //retrieve the template id from the serialized map
+//        Map structured = gson.fromJson(mapjson, Map.class);
+//
+//        contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, (String)structured.get("$TEMPLATE_ID$"));
+//
+//        //rebuild it from json
+//        //get the archetype node id and name from the first line of the map
+////        String otherDetailsHeader = mapjson.substring(mapjson.indexOf("/other_details["), mapjson.indexOf("]")+1).replace("\\u003d", "=").replace("\\u0027", "'");
+////        String[] segments = otherDetailsHeader.split(" and name/value");
+////        String archetypeNodeId = segments[0].substring("/other_details[".length());
+////        String name = segments[1].substring(1, segments[1].lastIndexOf("'"));
+//        Locatable locatable = contentBuilder.buildLocatableFromJson(mapjson);
+//
+//        assertNotNull(locatable);
+//
+//        String xml = new String(contentBuilder.exportCanonicalXML(locatable, true));
+//
+//        System.out.println("REBUILT ====================================================================================");
+//        System.out.println(xml);
 
     }
 
@@ -156,7 +191,7 @@ public class ContentBuilderTest extends TestCase {
         knowledge.retrieveArchetype("openEHR-EHR-ACTION.medication.v1");
         knowledge.retrieveArchetype("openEHR-EHR-ITEM_TREE.medication.v1");
 
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        LogManager.getRootLogger().setLevel(Level.DEBUG);
         String templateFileName = "action test.oet";
 
 //        TEMPLATE prescription = knowledge.retrieveTemplate(templateId);
@@ -196,7 +231,7 @@ public class ContentBuilderTest extends TestCase {
         knowledge.retrieveArchetype("openEHR-EHR-INSTRUCTION.medication.v1");
         knowledge.retrieveArchetype("openEHR-EHR-ITEM_TREE.medication_mod.v1");
 
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         String templateId = "prescription";
 
         TEMPLATE prescription = knowledge.retrieveOpenehrTemplate(templateId);
@@ -287,9 +322,9 @@ public class ContentBuilderTest extends TestCase {
 //            "IDCR Procedures List_1 RAW.xml"
 //            "IDCR Problem List.v1.xml"
 //            "Vital_signs_TEST.xml"
-//            "IDCR-LabReportRAW1.xml"
+            "IDCR-LabReportRAW1.xml"
 //            "RIPPLE_conformanceTesting_RAW.xml"
-            "prescription_validation_test.xml"
+//            "prescription_validation_test.xml"
 
 
     };
@@ -354,13 +389,11 @@ public class ContentBuilderTest extends TestCase {
     }
 
     public void testBuildFromJson() throws Exception {
-//        String templateId = "IDCR - Laboratory Order.v0";
-        String templateId = "IDCR - Laboratory Test Report.v0";
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+        String templateId = "IDCR - Laboratory Order.v0";
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
-//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
-        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/CLONE-Exception-160407.json")).forEach(line -> sb.append(line));
+        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
 //        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "IDCR Problem List.v1");
         I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
 
@@ -484,7 +517,7 @@ public class ContentBuilderTest extends TestCase {
     //test composition building with the above kv
     @Test
     public void testBuildFromJson2() throws Exception {
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         String templateId = "prescription";
 
         TEMPLATE prescription = knowledge.retrieveOpenehrTemplate(templateId);
@@ -533,7 +566,7 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testBuildFromJsonWeirdTypes() throws Exception {
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         String templateId = "Weird Types 1";
 
         TEMPLATE weirdTypes = knowledge.retrieveOpenehrTemplate(templateId);
@@ -560,7 +593,7 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testThinkEhrLib() throws Exception {
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         JAXBContext context = JAXBContext.newInstance("org.openehr.jaxb.rm:org.openehr.jaxb.am");
         Unmarshaller unmarshaller = context.createUnmarshaller();
         unmarshaller.setSchema(null); // disable schema validation
@@ -634,10 +667,11 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testThinkEhrLib2() throws Exception {
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
-        String document = documentList[5];
+//        String document = documentList[5];
+        String document = "RIPPLE_conformanceTesting_RAW.xml";
         System.out.println("=============================================="+document);
         String documentPath = path + document;
         InputStream is = new FileInputStream(new File(documentPath));
@@ -689,7 +723,7 @@ public class ContentBuilderTest extends TestCase {
     public void testThinkEhrLib3() throws Exception {
         String templateId = "IDCR - Laboratory Order.v0";
 //        String templateId = "IDCR Problem List.v1";
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
@@ -735,7 +769,7 @@ public class ContentBuilderTest extends TestCase {
         String fileId = "IDCR-LabReportRAW1";
         String templateId = "IDCR - Laboratory Test Report.v0";
 
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
@@ -768,11 +802,11 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testThinkEhrLibFaulty() throws Exception {
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
 //        String document = "faulty_jaxb_itemtree.xml";
-        String document = "unmarshal_pb.xml";
+        String document = "COLNEC-medication.xml";
         System.out.println("=============================================="+document);
         String documentPath = "C:\\Development\\Dropbox\\eCIS_Development\\test\\" + document;
         InputStream is = new FileInputStream(new File(documentPath));
@@ -808,5 +842,21 @@ public class ContentBuilderTest extends TestCase {
         //rebuild from string map
         Map newMap = FlatJsonUtil.inputStream2Map(new StringReader(outMap));
 
+    }
+
+    @Test
+    public void testFlatJson() throws Exception {
+        String templateId = "COLNEC Medication";
+//        String templateId = "IDCR Problem List.v1";
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+
+        //get a flat json test file
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/COLNEC_Medication_FLAT.json");
+        Map map = FlatJsonUtil.inputStream2Map(fileReader);
+
+        Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
+
+        assertNotNull(lastComposition);
     }
 }

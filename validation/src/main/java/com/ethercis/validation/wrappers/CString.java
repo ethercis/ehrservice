@@ -44,7 +44,7 @@ public class CString extends CConstraint implements I_CTypeValidate {
                     if (string.matches(pattern))
                         break check_list;
                 }
-                ValidationException.raise(path, "Could not find a pattern matching string:" + string, "STR01");
+                ValidationException.raise(path, "Could not find a pattern matching string:'" + string+"'", "STR01");
             }
         }
     }

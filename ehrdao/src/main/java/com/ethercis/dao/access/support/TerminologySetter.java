@@ -20,7 +20,8 @@ import com.ethercis.jooq.pg.tables.records.ConceptRecord;
 import com.ethercis.jooq.pg.tables.records.LanguageRecord;
 import com.ethercis.jooq.pg.tables.records.TerritoryRecord;
 import org.apache.commons.cli.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
@@ -66,7 +67,7 @@ public class TerminologySetter {
     private static int stat_insert_concept = 0;
     private static int stat_update_concept = 0;
 
-    private static final Logger log = Logger.getLogger(TerminologySetter.class);
+    private static final Logger log = LogManager.getLogger(TerminologySetter.class);
 
     /**
      * Create a new setter for terminology header

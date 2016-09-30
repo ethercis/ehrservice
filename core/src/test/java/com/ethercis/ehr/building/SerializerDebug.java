@@ -17,57 +17,23 @@
 
 package com.ethercis.ehr.building;
 
-import com.ethercis.ehr.building.util.ContextHelper;
-import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
-import com.ethercis.ehr.json.FlatJsonUtil;
-import com.ethercis.ehr.json.JsonUtil;
 import com.ethercis.ehr.keyvalues.EcisFlattener;
-import com.ethercis.ehr.keyvalues.PathValue;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
 import com.ethercis.ehr.util.FlatJsonCompositionConverter;
 import com.ethercis.ehr.util.I_FlatJsonCompositionConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.marand.thinkehr.jsonlib.CompositionConverter;
-import com.marand.thinkehr.jsonlib.impl.CompositionConverterImpl;
 import junit.framework.TestCase;
-import openEHR.v1.template.TEMPLATE;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.xmlbeans.XmlOptions;
 import org.junit.Before;
 import org.junit.Test;
-import org.openehr.am.archetype.Archetype;
-import org.openehr.am.template.Flattener;
-import org.openehr.am.template.FlattenerNew;
-import org.openehr.jaxb.am.Template;
-import org.openehr.rm.common.archetyped.Locatable;
-import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
-import org.openehr.rm.composition.EventContext;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
-import org.openehr.rm.support.identification.ObjectVersionID;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.regex.Pattern;
-
-import static com.ethercis.ehr.building.util.CompositionAttributesHelper.createComposer;
 
 public class SerializerDebug extends TestCase {
     //	ClusterController controller;
@@ -91,7 +57,7 @@ public class SerializerDebug extends TestCase {
     public void testBuildFromJson() throws Exception {
 //        String templateId = "IDCR - Laboratory Order.v0";
         String templateId = "IDCR - Immunisation summary.v0";
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));

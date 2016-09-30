@@ -24,7 +24,8 @@ import com.ethercis.jooq.pg.tables.records.EntryRecord;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.*;
 import org.jooq.exception.DataAccessException;
@@ -50,7 +51,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class EntryAccess extends DataAccess implements I_EntryAccess {
 
-    private static final Logger log = Logger.getLogger(EntryAccess.class);
+    private static final Logger log = LogManager.getLogger(EntryAccess.class);
     private static final String DEFAULT_VERSION = "1";
 
     private EntryRecord entryRecord;
@@ -532,13 +533,15 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 
         List<Map> resultList = new ArrayList<>();
 
-        for (Record record: records) {
-            Map<String, Object> fieldMap = new HashMap<>();
-            for (Field field : record.fields()) {
-                fieldMap.put(field.getName(), record.getValue(field));
-            }
+        if (records != null) {
+            for (Record record : records) {
+                Map<String, Object> fieldMap = new HashMap<>();
+                for (Field field : record.fields()) {
+                    fieldMap.put(field.getName(), record.getValue(field));
+                }
 
-            resultList.add(fieldMap);
+                resultList.add(fieldMap);
+            }
         }
 
         resultMap.put("resultSet", resultList);

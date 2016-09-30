@@ -17,7 +17,8 @@
 package com.ethercis.ehr.encode;
 
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
@@ -36,7 +37,7 @@ public class VBeanUtil {
 
     public static String TAG_VALUE_AS_STRING = "/VALUE_AS_STRING";
 
-    static private Logger log = Logger.getLogger(VBeanUtil.class);
+    static private Logger log = LogManager.getLogger(VBeanUtil.class);
 	
 	/**
 	 * identifies if a instrumentalization of the class exists.<p>
@@ -228,7 +229,7 @@ public class VBeanUtil {
 				try {
 					valuemap.put("/"+fieldname, fieldmap.get(fieldname));
 				} catch (IllegalArgumentException e) {
-					Logger.getLogger(VBeanUtil.class).error("duplicate field:"+fieldname+" Exception"+e);
+					LogManager.getLogger(VBeanUtil.class).error("duplicate field:"+fieldname+" Exception"+e);
 					throw new Exception("duplicate field:"+fieldname+", please fix the input structure");
 				}
 			}

@@ -8,6 +8,7 @@ import com.ethercis.jooq.pg.tables.Access;
 import com.ethercis.jooq.pg.tables.Attestation;
 import com.ethercis.jooq.pg.tables.AttestedView;
 import com.ethercis.jooq.pg.tables.CompExpand;
+import com.ethercis.jooq.pg.tables.CompoXref;
 import com.ethercis.jooq.pg.tables.Composition;
 import com.ethercis.jooq.pg.tables.CompositionHistory;
 import com.ethercis.jooq.pg.tables.Concept;
@@ -24,6 +25,7 @@ import com.ethercis.jooq.pg.tables.Participation;
 import com.ethercis.jooq.pg.tables.ParticipationHistory;
 import com.ethercis.jooq.pg.tables.PartyIdentified;
 import com.ethercis.jooq.pg.tables.Status;
+import com.ethercis.jooq.pg.tables.StatusDetails;
 import com.ethercis.jooq.pg.tables.StatusHistory;
 import com.ethercis.jooq.pg.tables.System;
 import com.ethercis.jooq.pg.tables.TerminologyProvider;
@@ -52,7 +54,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Ehr extends SchemaImpl {
 
-	private static final long serialVersionUID = 1700425498;
+	private static final long serialVersionUID = 1535427257;
 
 	/**
 	 * The reference instance of <code>ehr</code>
@@ -79,6 +81,7 @@ public class Ehr extends SchemaImpl {
 			Attestation.ATTESTATION,
 			AttestedView.ATTESTED_VIEW,
 			CompExpand.COMP_EXPAND,
+			CompoXref.COMPO_XREF,
 			Composition.COMPOSITION,
 			CompositionHistory.COMPOSITION_HISTORY,
 			Concept.CONCEPT,
@@ -96,6 +99,7 @@ public class Ehr extends SchemaImpl {
 			ParticipationHistory.PARTICIPATION_HISTORY,
 			PartyIdentified.PARTY_IDENTIFIED,
 			Status.STATUS,
+			StatusDetails.STATUS_DETAILS,
 			StatusHistory.STATUS_HISTORY,
 			System.SYSTEM,
 			TerminologyProvider.TERMINOLOGY_PROVIDER,

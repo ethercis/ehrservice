@@ -73,6 +73,6 @@ public class DvParsableVBean extends DataValueAdapter implements I_VBeanWrapper 
     }
 
     public static DvParsable generate(){
-        return new DvParsable("dummy", "fomalism");
+        return new DvParsable("dummy", "formalism");
     }
 }

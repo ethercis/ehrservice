@@ -34,7 +34,8 @@ import com.ethercis.ehr.util.LocatableHelper;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ClassUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.SystemValue;
@@ -58,8 +59,13 @@ import org.openehr.rm.support.terminology.TerminologyService;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * ECISFLAT handling
+ * The format consists of a list of key/value pairs:
+ * - path
+ * - value
  * ETHERCIS Project ehrservice
  * Created by Christian Chevalley on 9/24/2015.
  */
@@ -73,7 +79,7 @@ public class PathValue implements I_PathValue {
     protected UIDBasedID uid = null;
     protected I_KnowledgeCache knowledge;
 
-    protected static Logger log = Logger.getLogger(PathValue.class);
+    protected static Logger log = LogManager.getLogger(PathValue.class);
 
     //context attributes
     protected PartyIdentified healthCareFacility = null;
@@ -165,8 +171,8 @@ public class PathValue implements I_PathValue {
                 composer = parseComposerAttribute(value);
                 hasComposer = true;
             }
-            else if (path.startsWith(CATEGORY_TAG))
-                category = parseCategoryAttribute(value);
+//            else if (path.startsWith(CATEGORY_TAG))
+//                category = parseCategoryAttribute(value);
             else
                 log.debug("Passthrough unhandled directive:"+path);
             //identify object class for this path
@@ -207,6 +213,9 @@ public class PathValue implements I_PathValue {
         //2nd build phase: assign other item structures with passed values
         if (composition.getContext().getOtherContext() != null)
             assignItemStructure(OTHER_CONTEXT_TAG, composition.getContext().getOtherContext(), otherContextMap);
+
+        //validation
+        new ConstraintUtils(contentBuilder.isLenient(), composition, contentBuilder.getConstraintMapper()).validateLocatable();
 
         return composition;
     }
@@ -330,10 +339,11 @@ public class PathValue implements I_PathValue {
                 value = keyValues.get(COMPOSER_TAG + IDENTIFIER_PARTY_ID_SUBTAG) + "::" + keyValues.get(COMPOSER_TAG + IDENTIFIER_PARTY_NAME_SUBTAG);
                 composition.setComposer( parseComposerAttribute(value));
                 modified = true;
-            } else if (CATEGORY_TAG.equals(path)) {
-                modified = true;
-                composition.setCategory(parseCategoryAttribute(value));
             }
+//            else if (CATEGORY_TAG.equals(path)) {
+//                modified = true;
+//                composition.setCategory(parseCategoryAttribute(value));
+//            }
         }
         return modified;
     }
@@ -586,6 +596,7 @@ public class PathValue implements I_PathValue {
         return parsed;
     }
 
+
     public boolean assignItemStructure(String filterTag, Locatable locatable, Map<String, String> pathValues) throws Exception {
 
         boolean modified = false;
@@ -617,19 +628,35 @@ public class PathValue implements I_PathValue {
             String locatablePath = path;
 
             //identify if this path consists of composite attributes: ex. <path...>[at00xy]|attribute1
-            if (locatablePath.contains("]|")){
+//            if (locatablePath.contains("]|")){
+//                attributeSet = new HashMap<>();
+//                String[] segments = path.split("\\]\\|");
+//                locatablePath = segments[0]+"]";
+//                attribute = segments[1];
+//                attributeSet.put(attribute, sortedMap.get(path));
+//
+//                //if composite value set get the map of attributes with their value
+//                int j = pathIterator + 1; //look ahead
+//                while (j < keySetArray.length && keySetArray[j].contains(locatablePath) && keySetArray[j].contains("]|")) {
+//                    //grab the next attribute for this path
+//                    segments = keySetArray[j].split("\\]\\|");
+//                    locatablePath = segments[0] + "]";
+//                    attribute = segments[1];
+//                    attributeSet.put(attribute, sortedMap.get(keySetArray[j]));
+//                    j++;
+//                }
+//                pathIterator = j-1; //skip what has been processed.
+//            } else
+            if (lastTag.contains("|")){ //a leaf node followed by an attribute
                 attributeSet = new HashMap<>();
-                String[] segments = path.split("\\]\\|");
-                locatablePath = segments[0]+"]";
+                String[] segments = lastTag.split("\\|");
                 attribute = segments[1];
                 attributeSet.put(attribute, sortedMap.get(path));
-
-                //if composite value set get the map of attributes with their value
-                int j = pathIterator + 1; //look ahead
-                while (j < keySetArray.length && keySetArray[j].contains(locatablePath) && keySetArray[j].contains("]|")) {
+                locatablePath =  path.substring(0, path.length() - attribute.length() - 1);
+                int j = pathIterator + 1; //look ahead and grab remaining attributes for this path
+                while (j < keySetArray.length && keySetArray[j].contains(locatablePath+"|")) {
                     //grab the next attribute for this path
-                    segments = keySetArray[j].split("\\]\\|");
-                    locatablePath = segments[0] + "]";
+                    segments = keySetArray[j].split("\\|");
                     attribute = segments[1];
                     attributeSet.put(attribute, sortedMap.get(keySetArray[j]));
                     j++;
@@ -723,6 +750,23 @@ public class PathValue implements I_PathValue {
             }
             else if (itemAtPath instanceof Entry){
                 assignEntryAttribute(sortedMap, (Entry) itemAtPath, path, attribute, sortedMap.get(attributeKey));
+            }
+            else if (itemAtPath instanceof DataValue){
+//                Map<String, Object> valueMap = new HashMap<>();
+//                valueMap.put(CompositionSerializer.TAG_VALUE, attributeSet);
+//                VBeanUtil.getInstance(VBeanUtil.findInstrumentalizedClass(itemAtPath), valueMap);
+                //check who is the parent of this datavalue
+                String parentPath = LocatableHelper.getLocatableParentPath(locatable, locatablePath);
+                Locatable parent = (Locatable) locatable.itemAtPath(parentPath);
+                //get the complete attribute identifier
+                String attributePath = locatablePath.substring(parentPath.length());
+                DataValue dataValue = ((DataValue)itemAtPath).parse(attributeSet.get("value"));
+                parent.set(attributePath, dataValue);
+//                for (Map.Entry<String, String> entry: attributeSet.entrySet()) {
+//                    String attributeSetter = "set"+entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
+//                    Method setter = itemAtPath.getClass().getDeclaredMethod(attributeSetter, new Class[]{String.class});
+//                    setter.invoke(itemAtPath, entry.getValue());
+//                }
             }
             else {
                 log.warn("Unhandled path value:"+path);

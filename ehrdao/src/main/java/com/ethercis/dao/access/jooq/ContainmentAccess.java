@@ -20,7 +20,8 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.I_ContainmentAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.ehr.encode.ItemStack;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.InsertQuery;
@@ -41,7 +42,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class ContainmentAccess extends DataAccess implements I_ContainmentAccess {
 
-    static Logger logger = Logger.getLogger(ContainmentAccess.class);
+    static Logger logger = LogManager.getLogger(ContainmentAccess.class);
 
     UUID entryId;
     UUID compositionId;

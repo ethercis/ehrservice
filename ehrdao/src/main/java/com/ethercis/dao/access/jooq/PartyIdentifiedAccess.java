@@ -21,7 +21,8 @@ import com.ethercis.dao.access.interfaces.I_PartyIdentifiedAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.jooq.pg.tables.records.IdentifierRecord;
 import com.ethercis.jooq.pg.tables.records.PartyIdentifiedRecord;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
 import org.jooq.Result;
@@ -44,7 +45,7 @@ import static com.ethercis.jooq.pg.Tables.PARTY_IDENTIFIED;
 public class PartyIdentifiedAccess extends DataAccess implements I_PartyIdentifiedAccess
 {
 
-    private static Logger log = Logger.getLogger(PartyIdentifiedAccess.class);
+    private static Logger log = LogManager.getLogger(PartyIdentifiedAccess.class);
     private PartyIdentifiedRecord partyIdentifiedRecord;
     private Map<String, IdentifierRecord> identifiers;
 
@@ -300,12 +301,12 @@ public class PartyIdentifiedAccess extends DataAccess implements I_PartyIdentifi
 
             if (context.fetchExists(PARTY_IDENTIFIED,
                     PARTY_IDENTIFIED.PARTY_REF_NAMESPACE.eq(partyRef.getNamespace())
-                            .and(PARTY_IDENTIFIED.PARTY_REF_SCHEME.eq(genericID.getScheme()))
+//                            .and(PARTY_IDENTIFIED.PARTY_REF_SCHEME.eq(genericID.getScheme()))
                             .and(PARTY_IDENTIFIED.PARTY_REF_VALUE.eq(genericID.getValue())))) {
 
                 return context.fetchOne(PARTY_IDENTIFIED,
                         PARTY_IDENTIFIED.PARTY_REF_NAMESPACE.eq(partyRef.getNamespace())
-                                .and(PARTY_IDENTIFIED.PARTY_REF_SCHEME.eq(genericID.getScheme()))
+//                                .and(PARTY_IDENTIFIED.PARTY_REF_SCHEME.eq(genericID.getScheme()))
                                 .and(PARTY_IDENTIFIED.PARTY_REF_VALUE.eq(genericID.getValue()))).getId();
             }
 

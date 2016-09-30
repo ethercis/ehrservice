@@ -22,6 +22,7 @@ import com.ethercis.jooq.pg.Tables;
 import com.ethercis.aql.sql.PathResolver;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +37,10 @@ import static com.ethercis.jooq.pg.Tables.*;
 public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImpl {
 
     private String serverNodeId;
+    private String columnAlias;
+    private boolean containsEhrStatus = false;
+    private boolean containsEhrId = false;
+    private String ehrIdAlias;
 
     public CompositionAttributeQuery(DSLContext context, PathResolver pathResolver, List<VariableDefinition> definitions, String serverNodeId){
         super(context, pathResolver, definitions);
@@ -45,7 +50,10 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     @Override
     public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias) {
         //resolve composition attributes and/or context
-        switch (variableDefinition.getPath()){
+        columnAlias = variableDefinition.getPath();
+        if (columnAlias == null)
+            return null;
+        switch (columnAlias){
             case "uid/value":
                 if (withAlias)
                     return uid(compositionId, withAlias, variableDefinition.getAlias());
@@ -97,6 +105,10 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
 
         }
+        if (columnAlias.startsWith("ehr_status/other_details"))
+        {
+            return ehrStatusOtherDetails(variableDefinition, withAlias);
+        }
         return null;
     }
 
@@ -115,15 +127,16 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 +"||"
                 + DSL.val("::")
                 +"||"
-                + DSL.field(context.select(DSL.count().add(1)).from(COMPOSITION_HISTORY).where(Tables.COMPOSITION_HISTORY.ID.eq(compositionId))))
-                .as("uid");
+                + DSL.field(context.select(DSL.count().add(1)).from(COMPOSITION_HISTORY).where(Tables.COMPOSITION_HISTORY.ID.eq(compositionId))), SQLDataType.VARCHAR)
+                .as(alias && aliasStr!= null && !aliasStr.isEmpty() ? aliasStr : "uid")
+                ;
 
         return select;
     }
 
     private Field<?> rawUid(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_ID).as(aliasStr == null ? "uid" : aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_ID).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
@@ -133,7 +146,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     private Field<?> name(UUID compositionId, boolean alias, String aliasStr){
         //postgresql equivalent expression
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_NAME).as(aliasStr == null ? "composition_name" : aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_NAME).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
@@ -142,7 +155,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> archetypeNodeId(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.ARCHETYPE_ID).as(aliasStr == null ? "archetype_node_id" : aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.ARCHETYPE_ID).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
@@ -151,7 +164,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> templateId(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.TEMPLATE_ID).as(aliasStr == null ? "template_id" : aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.TEMPLATE_ID).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
@@ -160,7 +173,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> language(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.LANGUAGE).as(aliasStr == null ? "language" : aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.LANGUAGE).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
@@ -169,7 +182,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> territory(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.TERRITORY).as(aliasStr == null ? "territory":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.TERRITORY).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -178,7 +191,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> composerNameValue(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_NAME).as(aliasStr == null ? "composer_name_value":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_NAME).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -187,7 +200,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> composerIdNamespace(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_NAMESPACE).as(aliasStr == null ? "composer_id_namespace":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_NAMESPACE).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -196,7 +209,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> composerIdScheme(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_SCHEME).as(aliasStr == null ? "composer_id_scheme":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_SCHEME).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -205,7 +218,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> composerIdRef(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_REF).as(aliasStr == null ? "composer_id_ref":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_REF).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -214,7 +227,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> composerType(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_TYPE).as(aliasStr == null ? "composer_type":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_TYPE).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -224,7 +237,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     private Field<?> contextStartTime(UUID compositionId,boolean alias, String aliasStr){
         if (alias) {
             Field<?> select = DSL.field("to_char(" + COMP_EXPAND.START_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + COMP_EXPAND.START_TIME_TZID)
-                    .as(aliasStr == null ? "start_time":aliasStr);
+                    .as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -234,7 +247,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     private Field<?> contextEndTime(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
             Field<?> select = DSL.field("to_char(" + COMP_EXPAND.END_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + COMP_EXPAND.END_TIME_TZID)
-                    .as(aliasStr == null ? "end_time":aliasStr);
+                    .as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -243,7 +256,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> contextLocation(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.CTX_LOCATION).as(aliasStr == null ? "location":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.CTX_LOCATION).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -252,7 +265,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> contextFacilityName(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_NAME).as(aliasStr == null ? "facility_name":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_NAME).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -261,7 +274,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> contextFacilityRef(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_REF).as(aliasStr == null ? "facility_ref":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_REF).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -270,7 +283,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> contextFacilityScheme(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_SCHEME).as(aliasStr == null ? "facility_scheme":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_SCHEME).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -279,7 +292,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> contextFacilityNamespace(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_NAMESPACE).as(aliasStr == null ? "facility_namespace":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_NAMESPACE).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -288,7 +301,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> contextFacilityType(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_TYPE).as(aliasStr == null ? "facility_type":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_TYPE).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -297,7 +310,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> ehrStatusSubjectIdValue(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_VALUE).as(aliasStr == null ? "subject_externalref_id_value":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_VALUE).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -306,7 +319,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> ehrStatusSubjectNamespace(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_NAMESPACE).as(aliasStr == null ? "subject_externalref_id_namespace":aliasStr);
+            Field<?> select = DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_NAMESPACE).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
@@ -314,12 +327,39 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     }
 
     private Field<?> ehrIdValue(UUID compositionId, boolean alias, String aliasStr){
-        if (alias) {
-            Field<?> select = DSL.field("DISTINCT {0}", COMP_EXPAND.EHR_ID).as(aliasStr == null ? "ehr_id":aliasStr);
-            return select;
+        containsEhrId = true;
+        ehrIdAlias = (aliasStr == null ? columnAlias : aliasStr);
+        if (!containsEhrStatus()) {
+            if (alias) {
+                Field<?> select = DSL.field("DISTINCT {0}", COMP_EXPAND.EHR_ID).as(aliasStr == null ? columnAlias : aliasStr);
+                return select;
+            } else
+                return DSL.field(COMP_EXPAND.EHR_ID);
         }
-        else
-            return DSL.field(COMP_EXPAND.EHR_ID);
+        else {
+            if (alias) {
+                Field<?> select = DSL.field("DISTINCT {0}", STATUS.EHR_ID).as(aliasStr == null ? columnAlias : aliasStr);
+                return select;
+            } else
+                return DSL.field(STATUS.EHR_ID);
+        }
     }
 
+    private Field<?> ehrStatusOtherDetails(VariableDefinition variableDefinition, boolean withAlias){
+        containsEhrStatus = true;
+        String variablePath = variableDefinition.getPath().substring("ehr_status/other_details".length() + 1);
+        Field<?> field = JsonbEntryQuery.makeField(JsonbEntryQuery.OTHER_ITEM.OTHER_DETAILS, null, variableDefinition.getAlias(), variablePath, withAlias);
+        return field;
+    }
+
+    public boolean containsEhrStatus() {
+        return containsEhrStatus;
+    }
+    public boolean containsEhrId() {
+        return containsEhrId;
+    }
+
+    public String getEhrIdAlias() {
+        return ehrIdAlias;
+    }
 }

@@ -22,9 +22,10 @@ import com.ethercis.aql.definition.FromDefinition;
 import com.ethercis.aql.parser.AqlBaseListener;
 import com.ethercis.aql.parser.AqlParser;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import org.apache.log4j.Logger;
 
 /**
  * AQL compilation pass 1<br>
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  * Created by christian on 4/1/2016.
  */
 public class QueryCompilerPass1 extends AqlBaseListener {
-    Logger logger = Logger.getLogger(QueryCompilerPass1.class);
+    Logger logger = LogManager.getLogger(QueryCompilerPass1.class);
     private static int serial = 0;
     private static int fieldId = 0;
 
@@ -62,7 +63,12 @@ public class QueryCompilerPass1 extends AqlBaseListener {
         if (context.IDENTIFIER() != null){
             String identifier = context.IDENTIFIER().getText();
             fromDefinition.setIdentifier(identifier);
-            identifierMapper.add(new FromDefinition.EhrPredicate(identifier, null));
+            if (!fromDefinition.getEhrPredicates().isEmpty()) {
+                fromDefinition.getEhrPredicates().get(0).setIdentifier(identifier);
+                identifierMapper.add(fromDefinition.getEhrPredicates().get(0));
+            }
+            else
+                identifierMapper.add(new FromDefinition.EhrPredicate(identifier));
         }
         if (context.EHR() != null) {
             fromDefinition.setIsEHR(true);
@@ -89,7 +95,7 @@ public class QueryCompilerPass1 extends AqlBaseListener {
                 case 1:
                     break;
                 case 2:
-                    fromDefinition.add((predicateOperandContexts.get(0)).getText(), (predicateOperandContexts.get(1)).getText());
+                    fromDefinition.add((predicateOperandContexts.get(0)).getText(), (predicateOperandContexts.get(1)).getText(), "=");
                     break;
                 case 3: //this one is expected...
                     break;
@@ -99,9 +105,12 @@ public class QueryCompilerPass1 extends AqlBaseListener {
 
     @Override
     public void exitArchetypedClassExpr(AqlParser.ArchetypedClassExprContext archetypedClassExprContext){
-        String className = archetypedClassExprContext.IDENTIFIER(0).getSymbol().getText();
+        //CHC, 160808: make classname case insensitive
+        String className = archetypedClassExprContext.IDENTIFIER(0).getSymbol().getText().toUpperCase();
+
         String symbol = archetypedClassExprContext.IDENTIFIER(1).getSymbol().getText();
-        String archetypeId = archetypedClassExprContext.ARCHETYPE_PREDICATE().getText();
+        //TODO:
+        String archetypeId = archetypedClassExprContext.ARCHETYPEID().getText();
 
         Containment containment = new Containment(className, symbol, archetypeId);
         identifierMapper.add(containment);
@@ -134,7 +143,7 @@ public class QueryCompilerPass1 extends AqlBaseListener {
 
     @Override
     public void enterContainExpressionBool(AqlParser.ContainExpressionBoolContext containExpressionBoolContext) {
-        if (containExpressionBoolContext.OPEN_PARENTHESIS() != null){
+        if (containExpressionBoolContext.OPEN_PAR() != null){
             setLevel++;
             //add a new prefixcontainment on stack
             ContainmentSet containmentSet = new ContainmentSet(serial++, currentContainment);
@@ -148,7 +157,7 @@ public class QueryCompilerPass1 extends AqlBaseListener {
     @Override
     public void exitContainExpressionBool(AqlParser.ContainExpressionBoolContext containExpressionBoolContext) {
 
-        if (containExpressionBoolContext.CLOSE_PARENTHESIS() != null){
+        if (containExpressionBoolContext.CLOSE_PAR() != null){
             logger.debug("---- CLOSING GROUP:" + setLevel);
             setLevel--;
             if (containmentStack.size() > 0) {
@@ -174,22 +183,26 @@ public class QueryCompilerPass1 extends AqlBaseListener {
         if (currentContainment != null)
             currentContainment = currentContainment.getEnclosingContainment();
 
-        if (containsExpressionContext.BooleanOperator() != null){
-            logger.debug(containsExpressionContext.BooleanOperator());
+        if (containsExpressionContext.AND() != null || containsExpressionContext.OR() != null || containsExpressionContext.XOR() != null){
+            String operator = containsExpressionContext.AND() != null ? "AND" :
+                    containsExpressionContext.OR() != null ? "OR" :
+                            containsExpressionContext.XOR() != null ? "XOR" : "*undef*";
+
+            logger.debug(operator);
             if (containmentStack.size() > 0) {
                 //get the current containment set
                 ContainmentSet current = containmentStack.getFirst();
                 if (current.size() > 0)
-                    current.setOperator(containsExpressionContext.BooleanOperator().getText());
+                    current.setOperator(operator);
                 else {
-                    logger.debug("Orphan operator:" + containsExpressionContext.BooleanOperator().getText());
+                    logger.debug("Orphan operator:" + operator);
                     if (rootContainmentSet == null)
                         rootContainmentSet = new ContainmentSet(serial++, null);
-                    rootContainmentSet.add(containsExpressionContext.BooleanOperator().getText());
+                    rootContainmentSet.add(operator);
                 }
             }
             else if (rootContainmentSet != null){
-                rootContainmentSet.setOperator(containsExpressionContext.BooleanOperator().getText());
+                rootContainmentSet.setOperator(operator);
             }
 
         }
@@ -211,7 +224,8 @@ public class QueryCompilerPass1 extends AqlBaseListener {
     public void exitSimpleClassExpr(AqlParser.SimpleClassExprContext simpleClassExprContext){
         logger.debug("from exitSimpleClassExpr: ENTER");
         if (!simpleClassExprContext.IDENTIFIER().isEmpty()) {
-            String className = simpleClassExprContext.IDENTIFIER(0).getSymbol().getText();
+            //CHC, 160808: make classname case insensitive
+            String className = simpleClassExprContext.IDENTIFIER(0).getSymbol().getText().toUpperCase();
             String symbol;
             if (simpleClassExprContext.IDENTIFIER().size() > 0 && simpleClassExprContext.IDENTIFIER(1) != null)
                 symbol = simpleClassExprContext.IDENTIFIER(1).getSymbol().getText();

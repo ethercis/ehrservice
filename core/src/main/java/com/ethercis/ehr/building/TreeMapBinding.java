@@ -24,7 +24,8 @@ import com.ethercis.ehr.json.FlatJsonUtil;
 import com.ethercis.ehr.json.TreeMapNode;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.PredicateUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.content.ContentItem;
@@ -53,7 +54,7 @@ public class TreeMapBinding {
 		NAMED
 	}
 
-	private static Logger log = Logger.getLogger(TreeMapBinding.class);
+	private static Logger log = LogManager.getLogger(TreeMapBinding.class);
 
 	private Map<String, Object> ctree;
 	private WalkerOutputMode tag_mode = WalkerOutputMode.PATH; //default

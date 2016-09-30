@@ -29,6 +29,9 @@ import java.util.Map;
  * Created by Christian Chevalley on 4/21/2015.
  */
 public interface I_DomainAccess {
+
+    String PG_POOL = "PG_POOL";
+
     /**
      * get jOOQ SQL dialect
      * @return SQLDialect
@@ -67,6 +70,12 @@ public interface I_DomainAccess {
     public static String KEY_LOGIN = "login";
     public static String KEY_PASSWORD = "password";
     public static String KEY_KNOWLEDGE = "knowledge";
+    String KEY_HOST = "host";
+    String KEY_PORT = "port";
+    String KEY_MAX_CONNECTION = "max_connection";
+    String KEY_CONNECTION_MODE = "connection_mode";
+    String KEY_DATABASE = "database";
+    String KEY_SCHEMA = "schema";
 
 
     String getServerNodeId();

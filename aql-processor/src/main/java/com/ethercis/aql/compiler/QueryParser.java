@@ -20,6 +20,8 @@ package com.ethercis.aql.compiler;
 import com.ethercis.aql.containment.Containment;
 import com.ethercis.aql.containment.ContainmentSet;
 import com.ethercis.aql.containment.IdentifierMapper;
+import com.ethercis.aql.definition.FromDefinition;
+import com.ethercis.aql.definition.FunctionDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.parser.AqlLexer;
 import com.ethercis.aql.parser.AqlParser;
@@ -29,7 +31,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectQuery;
@@ -45,7 +48,7 @@ import java.util.List;
  */
 public class QueryParser {
 
-    private Logger log = Logger.getLogger(QueryParser.class);
+    private Logger log = LogManager.getLogger(QueryParser.class);
 
     //this is the list of nested sets from the CONTAINS expressions
     private List<ContainmentSet> nestedSets;
@@ -60,9 +63,10 @@ public class QueryParser {
     private IdentifierMapper identifierMapper;
     ParseTreeWalker walker = new ParseTreeWalker();
     List<VariableDefinition> variables;
-    private boolean requirePathResolution = false;
+    private boolean requirePathResolution = false; //true if expression has CONTAINS
     private TopAttributes topAttributes;
     private List<OrderAttribute> orderAttributes;
+    private FunctionDefinition functionDefinitions;
 
     private DSLContext context;
 
@@ -99,16 +103,17 @@ public class QueryParser {
         nestedSets = queryCompilerPass1.getClosedSetList();
 
         //check if path resolution is required (e.g. contains inner archetypes in composition(s)
+
         for (ContainmentSet containmentSet: nestedSets){
-            if (containmentSet.getContainmentList().size() > 1) {
-                requirePathResolution = true;
-                break;
-            }
-            else
-                if (containmentSet.getContainmentList().size() == 1 && !((Containment)containmentSet.getContainmentList().get(0)).getClassName().equals("COMPOSITION")) {
+            if (containmentSet != null) {
+                if (containmentSet.getContainmentList().size() > 1) {
+                    requirePathResolution = true;
+                    break;
+                } else if (containmentSet.getContainmentList().size() == 1 && !((Containment) containmentSet.getContainmentList().get(0)).getClassName().equals("COMPOSITION")) {
                     requirePathResolution = true;
                     break;
                 }
+            }
         }
 
         //bind the nested sets to SQL (it should be an configuration btw)
@@ -123,14 +128,30 @@ public class QueryParser {
         walker.walk(queryCompilerPass2, parseTree);
         variables = queryCompilerPass2.variables();
         whereClause = visitWhere();
+        //append any EHR predicates into the where clause list
+
+        if (identifierMapper.hasEhrContainer())
+            appendEhrPredicate(identifierMapper.getEhrContainer());
+
         topAttributes = queryCompilerPass2.getTopAttributes();
         orderAttributes = queryCompilerPass2.getOrderAttributes();
+        functionDefinitions = queryCompilerPass2.getFunctionDefinitions();
     }
 
     private List visitWhere(){
         WhereVisitor whereVisitor = new WhereVisitor();
         whereVisitor.visit(parseTree);
         return whereVisitor.getWhereExpression();
+    }
+
+    private void appendEhrPredicate(FromDefinition.EhrPredicate ehrPredicate){
+        if (ehrPredicate == null)
+            return;
+
+        //append field, operator and value to the where clause
+        whereClause.add(new VariableDefinition(ehrPredicate.getField(), null, ehrPredicate.getIdentifier()));
+        whereClause.add(ehrPredicate.getOperator());
+        whereClause.add(ehrPredicate.getValue());
     }
 
 
@@ -181,5 +202,9 @@ public class QueryParser {
 
     public List<OrderAttribute> getOrderAttributes() {
         return orderAttributes;
+    }
+
+    public boolean hasDefinedFunctions(){
+        return functionDefinitions.size() > 0;
     }
 }

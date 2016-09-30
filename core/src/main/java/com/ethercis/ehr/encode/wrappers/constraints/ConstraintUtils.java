@@ -26,7 +26,8 @@ import com.ethercis.validation.hardwired.CHistory;
 import com.ethercis.validation.wrappers.CArchetypeConstraint;
 import com.ethercis.validation.wrappers.IntervalComparator;
 import com.ethercis.validation.wrappers.ValidationException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.datastructure.history.History;
@@ -46,7 +47,7 @@ public class ConstraintUtils {
     private ConstraintMapper constraintMapper;
     private Locatable locatable;
 
-    private static Logger log = Logger.getLogger(ConstraintUtils.class);
+    private static Logger log = LogManager.getLogger(ConstraintUtils.class);
 
     public ConstraintUtils(Boolean lenient, Composition composition, ConstraintMapper constraintMapper){
         this.lenient = lenient;
@@ -119,8 +120,10 @@ public class ConstraintUtils {
                     Integer elementCount = counter.getCount();
                     if (elementCount > 0)
                         return false;
-                    if (pathSegments.get(i - 1).contains("openEHR-EHR"))
-                        break;
+                    else
+                        return true;
+//                    if (pathSegments.get(i - 1).contains("openEHR-EHR"))
+//                        break;
                 }
             }
 //            if ((i-1 >= 0) && pathSegments.get(i - 1).contains("openEHR-EHR")) //archetype container level, not optional

@@ -26,7 +26,8 @@ import com.ethercis.ehr.encode.DvDateTimeAdapter;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -66,7 +67,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
     private PreparedStatement updateStatement;
 
     private List<ParticipationRecord> participations = new ArrayList<>();
-    private static Logger log = Logger.getLogger(ContextAccess.class);
+    private static Logger log = LogManager.getLogger(ContextAccess.class);
     final static String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ";
 
     public ContextAccess(DSLContext context, EventContext eventContext) throws Exception {

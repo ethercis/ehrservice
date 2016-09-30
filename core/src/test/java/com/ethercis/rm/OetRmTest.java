@@ -12,8 +12,6 @@ import com.ethercis.ehr.knowledge.KnowledgeCache;
 
 import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.collections.MapUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
@@ -66,7 +64,7 @@ public class OetRmTest {
 	
 	@Test
 	public void testOET() throws Exception {
-		Logger.getRootLogger().setLevel(Level.DEBUG);
+//		Logger.getRootLogger().setLevel(Level.DEBUG);
 //		I_ResourceService service = (I_ResourceService) ClusterInfo.getRegisteredService(controller, "ResourceService", "1.0", new Object[] {null});
 //		I_KnowledgeManager knowledge = service.getKnowledgeManager();
 		
@@ -154,7 +152,7 @@ public class OetRmTest {
 
     @Test
     public void testOPT() throws Exception {
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
         String templateId = "prescription.opt";
 
         //try to build an actual COMPOSITION from the instance...

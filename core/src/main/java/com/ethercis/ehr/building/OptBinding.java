@@ -28,7 +28,8 @@ import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import com.ethercis.ehr.util.LocatableHelper;
 import com.ethercis.validation.ConstraintMapper;
 import com.ethercis.validation.OptConstraintMapper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
 import org.openehr.build.SystemValue;
@@ -43,6 +44,7 @@ import org.openehr.rm.datatypes.quantity.*;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
+import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
@@ -58,7 +60,7 @@ import java.util.*;
 
 public class OptBinding extends RmBinding {
 
-	Logger log = Logger.getLogger(OptBinding.class);
+	Logger log = LogManager.getLogger(OptBinding.class);
 
 	private OptConstraintMapper constrainMapper = new OptConstraintMapper();
 
@@ -806,7 +808,7 @@ public class OptBinding extends RmBinding {
 		} else if ("EVENT_CONTEXT".equals(rmTypeName)) {
 
 			if (!valueMap.containsKey(START_TIME)) {
-				valueMap.put(START_TIME, new DvDateTime(new DateTime(0L).toString()));
+				valueMap.put(START_TIME, new DvDateTime(DEFAULT_DATE_TIME));
 			}
 
 			if (!valueMap.containsKey(SETTING)) {
@@ -833,7 +835,7 @@ public class OptBinding extends RmBinding {
 			if (!valueMap.containsKey(TEMPLATE_ID))
 				valueMap.put(TEMPLATE_ID, "template_id");
 			if (!valueMap.containsKey(TIME))
-				valueMap.put(TIME, new DvDateTime(new DateTime(0L).toString()));
+				valueMap.put(TIME, new DvDateTime(DEFAULT_DATE_TIME));
 			if (!valueMap.containsKey(WIDTH))
 				valueMap.put(WIDTH, new DvDuration(DEFAULT_DURATION));
 		}

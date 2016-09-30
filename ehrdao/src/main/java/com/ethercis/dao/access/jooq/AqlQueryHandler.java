@@ -22,7 +22,8 @@ import com.ethercis.aql.sql.QueryProcessor;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
 
@@ -35,7 +36,7 @@ import java.util.Map;
  */
 public class AqlQueryHandler extends DataAccess {
 
-    Logger logger = Logger.getLogger(AqlQueryHandler.class);
+    Logger logger = LogManager.getLogger(AqlQueryHandler.class);
 
 
     public AqlQueryHandler(SQLDialect dialect, String DBURL, String login, String password, I_KnowledgeCache knowledgeManager) throws Exception {

@@ -17,7 +17,8 @@
 
 package com.ethercis.validation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.constraintmodel.*;
 import org.openehr.rm.support.measurement.MeasurementService;
 import org.openehr.schemas.v1.*;
@@ -31,7 +32,7 @@ import java.util.*;
 public class ConstraintBinding {
 
     Object object; //object in Operational Template associated with constraint
-    Logger logger = Logger.getLogger(ConstraintBinding.class);
+    Logger logger = LogManager.getLogger(ConstraintBinding.class);
     protected MeasurementService measurementService = null;
     ArchetypeConstraint archetypeConstraint;
 

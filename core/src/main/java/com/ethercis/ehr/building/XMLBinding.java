@@ -24,7 +24,8 @@ import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
@@ -53,7 +54,7 @@ import java.util.*;
  * @author minor modifications by Erik Sundvall, Linköping University
  */
 public class XMLBinding {
-	Logger log = Logger.getLogger(XMLBinding.class);
+	Logger log = LogManager.getLogger(XMLBinding.class);
 	boolean anyElement = false;
 	
 	public XMLBinding(Map<SystemValue, Object> values) {

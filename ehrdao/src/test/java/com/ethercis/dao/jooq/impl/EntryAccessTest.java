@@ -93,11 +93,11 @@ public class EntryAccessTest extends AccessTestCase {
         //perform the query
         Map<String, Object> map = I_EntryAccess.queryJSON(testDomainAccess, query);
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        new org.codehaus.jackson.map.ObjectMapper().writer().writeValue(byteArrayOutputStream, map);
-        String bodyContent = byteArrayOutputStream.toString();
-
-        System.out.println(bodyContent);
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        new org.codehaus.jackson.map.ObjectMapper().writer().writeValue(byteArrayOutputStream, map);
+//        String bodyContent = byteArrayOutputStream.toString();
+//
+//        System.out.println(bodyContent);
     }
 
     @Test
@@ -120,11 +120,11 @@ public class EntryAccessTest extends AccessTestCase {
         //perform the query
         Map<String, Object> map = I_EntryAccess.queryAqlJson(testDomainAccess, query);
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        new org.codehaus.jackson.map.ObjectMapper().writer().writeValue(byteArrayOutputStream, map);
-        String bodyContent = byteArrayOutputStream.toString();
-
-        System.out.println(bodyContent);
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        new org.codehaus.jackson.map.ObjectMapper().writer().writeValue(byteArrayOutputStream, map);
+//        String bodyContent = byteArrayOutputStream.toString();
+//
+//        System.out.println(bodyContent);
     }
 
 }

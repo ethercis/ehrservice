@@ -18,21 +18,27 @@ package com.ethercis.dao.access.support;
 
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.postgresql.ds.PGPoolingDataSource;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 
+
 /**
  * Created by Christian Chevalley on 4/21/2015.
  */
 public abstract class DataAccess implements I_DomainAccess {
 
-    protected Connection connection;
+    Logger logger = LogManager.getLogger(DataAccess.class);
+
+//    protected Connection connection;
     protected DSLContext context;
     protected I_KnowledgeCache knowledgeManager;
 
@@ -59,31 +65,44 @@ public abstract class DataAccess implements I_DomainAccess {
      *
      */
     public DataAccess(Map<String, Object> properties) throws Exception {
-        SQLDialect dialect = SQLDialect.valueOf((String)properties.get(I_DomainAccess.KEY_DIALECT));
-        String url = (String)properties.get(I_DomainAccess.KEY_URL);
-        String login = (String)properties.get(I_DomainAccess.KEY_LOGIN);
-        String password = (String)properties.get(I_DomainAccess.KEY_PASSWORD);
 
-        setParameters(dialect, url, login, password);
+        String serverConnectionMode = (String) properties.get(I_DomainAccess.KEY_CONNECTION_MODE);
+
+        if (serverConnectionMode != null && serverConnectionMode.equals(I_DomainAccess.PG_POOL)){
+            setPGPoolParameters(properties);
+            logger.info("Database connection uses POSTGRES CONNECTION POOLING");
+        }
+        //default
+        else {
+            SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
+            String url = (String) properties.get(I_DomainAccess.KEY_URL);
+            String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
+            String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
+
+            setParameters(dialect, url, login, password);
+            logger.info("Database connection uses JDBC DRIVER");
+       }
 
         knowledgeManager = (I_KnowledgeCache)properties.get(I_DomainAccess.KEY_KNOWLEDGE);
     }
 
     public DataAccess(DSLContext context, I_KnowledgeCache knowledgeManager){
-        this.connection = context == null ? null : context.configuration().connectionProvider().acquire();
+//        this.connection = context == null ? null : context.configuration().connectionProvider().acquire();
         this.context = context;
         this.knowledgeManager = knowledgeManager;
     }
 
     public DataAccess(I_DomainAccess domainAccess){
-        this.connection = domainAccess.getConnection();
+//        this.connection = domainAccess.getConnection();
         this.context = domainAccess.getContext();
         this.knowledgeManager = domainAccess.getKnowledgeManager();
     }
 
     private void setParameters(SQLDialect dialect, String DBURL, String login, String password) throws Exception {
+        //use a driver
+        Connection connection;
         try {
-            this.connection = DriverManager.getConnection(DBURL, login, password);
+            connection = DriverManager.getConnection(DBURL, login, password);
         }
         catch (SQLException e){
             throw new IllegalArgumentException("SQL exception occurred while connecting:"+e);
@@ -96,6 +115,47 @@ public abstract class DataAccess implements I_DomainAccess {
 
     }
 
+    private void setPGPoolParameters(Map<String, Object> properties) throws Exception {
+        Connection connection;
+
+        SQLDialect dialect = SQLDialect.valueOf((String)properties.get(I_DomainAccess.KEY_DIALECT));
+        String host = (String)properties.get(I_DomainAccess.KEY_HOST);
+        String port = (String)properties.get(I_DomainAccess.KEY_PORT);
+        String login = (String)properties.get(I_DomainAccess.KEY_LOGIN);
+        String password = (String)properties.get(I_DomainAccess.KEY_PASSWORD);
+        String database = (String)properties.get(I_DomainAccess.KEY_DATABASE);
+        String schema = (String)properties.get(I_DomainAccess.KEY_SCHEMA);
+        Integer max_connection = 10;
+        if (properties.containsKey(I_DomainAccess.KEY_MAX_CONNECTION))
+            max_connection = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
+
+        //use a datasource
+        try {
+            PGPoolingDataSource source = new PGPoolingDataSource();
+            source.setDataSourceName("pg_pool");
+            source.setServerName(host);
+            source.setPortNumber(Integer.parseInt(port));
+            source.setUser(login);
+            source.setPassword(password);
+            source.setMaxConnections(max_connection);
+            source.setDatabaseName(database);
+            this.context = DSL.using(source, dialect);
+
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("PG_POOL: SQL exception occurred while connecting:"+e);
+        }
+
+//        thtext = DSL.using(source, dialect);
+//
+//
+//        if (connection == null)
+//            throw new IllegalArgumentException("PG_POOL: Could not connect to DB, please check your parameters");
+
+
+    }
+
+
     @Override
     public SQLDialect getDialect() {
         return context.dialect();
@@ -103,7 +163,8 @@ public abstract class DataAccess implements I_DomainAccess {
 
     @Override
     public Connection getConnection() {
-        return connection;
+        return context.configuration().connectionProvider().acquire();
+//        return connection;
     }
 
     @Override

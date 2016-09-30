@@ -26,26 +26,27 @@ import com.ethercis.dao.access.support.DummyDataAccess;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
+import com.ethercis.jooq.pg.tables.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.*;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 
+import java.lang.System;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 import static com.ethercis.jooq.pg.Tables.*;
 
@@ -53,7 +54,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  * Created by christian on 5/30/2016.
  */
 public class MigrateEntry {
-    static Logger logger = Logger.getLogger(MigrateEntry.class);
+    static Logger logger = LogManager.getLogger(MigrateEntry.class);
     protected static I_DomainAccess domainAccess;
     protected static DSLContext context;
     protected static I_KnowledgeCache knowledge;
@@ -76,6 +77,7 @@ public class MigrateEntry {
         Map<String, Object> properties = new HashMap<>();
         properties.put(I_DomainAccess.KEY_DIALECT, "POSTGRES");
         properties.put(I_DomainAccess.KEY_URL, "jdbc:postgresql://localhost:"+props.getOrDefault("db.port", 5434)+"/ethercis");
+        properties.put(I_DomainAccess.KEY_URL, props.getOrDefault(I_DomainAccess.KEY_URL, properties.get(I_DomainAccess.KEY_URL)));
         properties.put(I_DomainAccess.KEY_LOGIN, "postgres");
         properties.put(I_DomainAccess.KEY_PASSWORD, "postgres");
 
@@ -90,13 +92,15 @@ public class MigrateEntry {
         context = domainAccess.getContext();
 
         isInitialized = true;
+
+        logger.info("MIGRATING Composition at:"+properties.get("url"));
     }
 
     public static String dumpSerialized(Composition composition) throws Exception {
         CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
         Map<String, Object> retMap = inspector.process(composition);
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+//        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
         //choose this option to ease reading and debugging... but not for storing into DB
         Gson gson = builder.setPrettyPrinting().create();
         String serialized = gson.toJson(retMap);
@@ -111,6 +115,14 @@ public class MigrateEntry {
         return entryAccess.commit(Timestamp.valueOf(LocalDateTime.now()));
     }
 
+    /**
+     * Migrates a jsonb entry structure to the new format.
+     * @param properties
+     * @param entryId
+     * @param debug
+     * @return
+     * @throws Exception
+     */
     public static  String migrateEntry(Properties properties, UUID entryId, boolean debug) throws Exception {
         setupDomainAccess(properties);
         I_EntryAccess entryAccess = I_EntryAccess.retrieveInstance(domainAccess, entryId);
@@ -170,10 +182,14 @@ public class MigrateEntry {
         System.out.println("Migrated " + count + " entries");
     }
 
+    /**
+     * Utility to convert legacy entries into a newer format
+     * @param args
+     */
     public static void main(String[] args){
 
         Options options = new Options();
-        Logger logger = Logger.getLogger(CompositionUtil.class);
+        Logger logger = LogManager.getLogger(CompositionUtil.class);
 
         options.addOption("uuid", true, "UUID of entry to migrate");
         options.addOption("ckm_archetype", true, "Path to archetypes repository");
@@ -182,6 +198,27 @@ public class MigrateEntry {
         options.addOption("port", true, "port # to bind to the DB (default:5432)");
         options.addOption("all", false, "if set migrate all entries (mutually exclusive with option uuid");
         options.addOption("debug", false, "if set simulate the migration but do not commit to the DB");
+
+        System.out.println("Migrate json db entry into the new format");
+        System.out.println("- set new default value convention in DataValue");
+        System.out.println("- remove any name/value in node predicates");
+        System.out.println("- convert Date value serialization into an AQL compatible form");
+        System.out.println("Please make sure you have a backup of your DB before using this utility");
+        System.out.println("Do you want to continue [y/N]?");
+
+        Scanner scanner = new Scanner(System.in);
+
+        String keyIn;
+
+        while (true){
+            keyIn = scanner.next();
+
+            if (keyIn.toUpperCase().equals("Y"))
+                break;
+            else
+                if (keyIn.toUpperCase().equals("N"))
+                    System.exit(0);
+        }
 
         try {
             boolean debug = false;

@@ -7,6 +7,7 @@ package com.ethercis.jooq.pg;
 import com.ethercis.jooq.pg.tables.Access;
 import com.ethercis.jooq.pg.tables.Attestation;
 import com.ethercis.jooq.pg.tables.AttestedView;
+import com.ethercis.jooq.pg.tables.CompoXref;
 import com.ethercis.jooq.pg.tables.Composition;
 import com.ethercis.jooq.pg.tables.Concept;
 import com.ethercis.jooq.pg.tables.Contribution;
@@ -24,6 +25,7 @@ import com.ethercis.jooq.pg.tables.Territory;
 import com.ethercis.jooq.pg.tables.records.AccessRecord;
 import com.ethercis.jooq.pg.tables.records.AttestationRecord;
 import com.ethercis.jooq.pg.tables.records.AttestedViewRecord;
+import com.ethercis.jooq.pg.tables.records.CompoXrefRecord;
 import com.ethercis.jooq.pg.tables.records.CompositionRecord;
 import com.ethercis.jooq.pg.tables.records.ConceptRecord;
 import com.ethercis.jooq.pg.tables.records.ContributionRecord;
@@ -92,6 +94,8 @@ public class Keys {
 
 	public static final ForeignKey<AttestationRecord, ContributionRecord> ATTESTATION__ATTESTATION_CONTRIBUTION_ID_FKEY = ForeignKeys0.ATTESTATION__ATTESTATION_CONTRIBUTION_ID_FKEY;
 	public static final ForeignKey<AttestedViewRecord, AttestationRecord> ATTESTED_VIEW__ATTESTED_VIEW_ATTESTATION_ID_FKEY = ForeignKeys0.ATTESTED_VIEW__ATTESTED_VIEW_ATTESTATION_ID_FKEY;
+	public static final ForeignKey<CompoXrefRecord, CompositionRecord> COMPO_XREF__COMPO_XREF_MASTER_UUID_FKEY = ForeignKeys0.COMPO_XREF__COMPO_XREF_MASTER_UUID_FKEY;
+	public static final ForeignKey<CompoXrefRecord, CompositionRecord> COMPO_XREF__COMPO_XREF_CHILD_UUID_FKEY = ForeignKeys0.COMPO_XREF__COMPO_XREF_CHILD_UUID_FKEY;
 	public static final ForeignKey<CompositionRecord, EhrRecord> COMPOSITION__COMPOSITION_EHR_ID_FKEY = ForeignKeys0.COMPOSITION__COMPOSITION_EHR_ID_FKEY;
 	public static final ForeignKey<CompositionRecord, ContributionRecord> COMPOSITION__COMPOSITION_IN_CONTRIBUTION_FKEY = ForeignKeys0.COMPOSITION__COMPOSITION_IN_CONTRIBUTION_FKEY;
 	public static final ForeignKey<CompositionRecord, LanguageRecord> COMPOSITION__COMPOSITION_LANGUAGE_FKEY = ForeignKeys0.COMPOSITION__COMPOSITION_LANGUAGE_FKEY;
@@ -140,6 +144,8 @@ public class Keys {
 	private static class ForeignKeys0 extends AbstractKeys {
 		public static final ForeignKey<AttestationRecord, ContributionRecord> ATTESTATION__ATTESTATION_CONTRIBUTION_ID_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.CONTRIBUTION_PKEY, Attestation.ATTESTATION, Attestation.ATTESTATION.CONTRIBUTION_ID);
 		public static final ForeignKey<AttestedViewRecord, AttestationRecord> ATTESTED_VIEW__ATTESTED_VIEW_ATTESTATION_ID_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.ATTESTATION_PKEY, AttestedView.ATTESTED_VIEW, AttestedView.ATTESTED_VIEW.ATTESTATION_ID);
+		public static final ForeignKey<CompoXrefRecord, CompositionRecord> COMPO_XREF__COMPO_XREF_MASTER_UUID_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.COMPOSITION_PKEY, CompoXref.COMPO_XREF, CompoXref.COMPO_XREF.MASTER_UUID);
+		public static final ForeignKey<CompoXrefRecord, CompositionRecord> COMPO_XREF__COMPO_XREF_CHILD_UUID_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.COMPOSITION_PKEY, CompoXref.COMPO_XREF, CompoXref.COMPO_XREF.CHILD_UUID);
 		public static final ForeignKey<CompositionRecord, EhrRecord> COMPOSITION__COMPOSITION_EHR_ID_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.EHR_PKEY, Composition.COMPOSITION, Composition.COMPOSITION.EHR_ID);
 		public static final ForeignKey<CompositionRecord, ContributionRecord> COMPOSITION__COMPOSITION_IN_CONTRIBUTION_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.CONTRIBUTION_PKEY, Composition.COMPOSITION, Composition.COMPOSITION.IN_CONTRIBUTION);
 		public static final ForeignKey<CompositionRecord, LanguageRecord> COMPOSITION__COMPOSITION_LANGUAGE_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.LANGUAGE_PKEY, Composition.COMPOSITION, Composition.COMPOSITION.LANGUAGE);

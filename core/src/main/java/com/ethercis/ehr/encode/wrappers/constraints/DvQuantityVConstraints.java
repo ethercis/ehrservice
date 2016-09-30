@@ -16,7 +16,8 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantity;
@@ -35,7 +36,7 @@ import java.util.Set;
  */
 public final class DvQuantityVConstraints extends DataValueConstraints {
 
-    transient Logger log = Logger.getLogger(DvQuantityVConstraints.class);
+    transient Logger log = LogManager.getLogger(DvQuantityVConstraints.class);
 
 	CDvQuantity cDvQuantity;
 

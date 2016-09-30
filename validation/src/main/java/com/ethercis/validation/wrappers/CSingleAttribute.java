@@ -38,8 +38,22 @@ public class CSingleAttribute extends CConstraint implements I_CArchetypeConstra
         CSINGLEATTRIBUTE csingleattribute = (CSINGLEATTRIBUTE) archetypeconstraint;
 
         if (csingleattribute.sizeOfChildrenArray() > 0){
-            for (COBJECT cobject: csingleattribute.getChildrenArray())
-                new CObject(localTerminologyLookup).validate(path, aValue, cobject);
+            int rulecount = csingleattribute.sizeOfChildrenArray();
+            StringBuffer messageBuffer = new StringBuffer();
+            for (COBJECT cobject: csingleattribute.getChildrenArray()) {
+                //multiple rules for a specific item, at least one must be verified
+                try {
+                    new CObject(localTerminologyLookup).validate(path, aValue, cobject);
+                } catch (Exception e){
+                    if (messageBuffer.length() > 0)
+                        messageBuffer.append(", ");
+                    messageBuffer.append(e.getMessage());
+                    rulecount--;
+                }
+            }
+            if (rulecount == 0){
+                throw new IllegalArgumentException(messageBuffer.toString());
+            }
         }
     }
 }

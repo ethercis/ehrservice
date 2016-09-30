@@ -22,7 +22,8 @@ import com.ethercis.aql.containment.IdentifierMapper;
 import com.ethercis.aql.sql.binding.ContainBinder;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 
 import java.util.UUID;
@@ -49,7 +50,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  * Created by christian on 5/3/2016.
  */
 public class PathResolver {
-    Logger logger = Logger.getLogger(PathResolver.class);
+    Logger logger = LogManager.getLogger(PathResolver.class);
     DSLContext context;
     //query string format: SELECT path from containment where comp_id = 'UUID' AND and label ~ 'lquery expression'
 //    private static String select01 = "SELECT path from ehr.containment where comp_id = ";

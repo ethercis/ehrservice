@@ -199,9 +199,15 @@ public interface I_EhrAccess extends I_SimpleCRUD<I_EhrAccess, UUID > {
 
     void setOtherDetails(Locatable otherDetails, String templateId);
 
+    void setOtherDetails(String otherDetails, String templateId);
+
+    void setOtherDetails(Map otherDetails, String templateId) throws Exception;
+
     Locatable getOtherDetails();
 
     String getOtherDetailsTemplateId();
+
+    String getOtherDetailsSerialized();
 
     /**
      * utility to export other_details as canonical xml
@@ -211,4 +217,6 @@ public interface I_EhrAccess extends I_SimpleCRUD<I_EhrAccess, UUID > {
     String exportOtherDetailsXml() throws Exception;
 
     boolean isSetOtherDetails();
+
+    boolean isSetOtherDetailsSerialized();
 }

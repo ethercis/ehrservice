@@ -17,7 +17,8 @@
 
 package com.ethercis.validation.wrappers;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CATTRIBUTE;
@@ -30,7 +31,7 @@ import java.util.Map;
  */
 public class CComplexObject extends CConstraint implements I_CArchetypeConstraintValidate{
 
-    static Logger logger = Logger.getLogger(CComplexObject.class);
+    static Logger logger = LogManager.getLogger(CComplexObject.class);
 
     protected CComplexObject(Map<String, Map<String, String>> localTerminologyLookup) {
         super(localTerminologyLookup);

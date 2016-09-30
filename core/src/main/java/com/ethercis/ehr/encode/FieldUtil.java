@@ -21,7 +21,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.Attribute;
 
@@ -29,7 +30,7 @@ import com.google.gson.internal.Primitives;
 
 public class FieldUtil {
 	private static RMObjectBuilder builder = RMObjectBuilder.getInstance();
-	private static Logger logger = Logger.getLogger(FieldUtil.class);
+	private static Logger logger = LogManager.getLogger(FieldUtil.class);
 	
 	private static void getClassScalarAttributes(Map<String, Object>map, Class<?> clazz) throws SecurityException, NoSuchFieldException {
 		Map<String, Attribute> thismap = builder.getAttributes(clazz);

@@ -18,7 +18,8 @@ package com.ethercis.ehr.encode.wrappers;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 public class DvDateTimeVBean extends DataValueAdapter implements I_VBeanWrapper {
 	final String format = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ";
-    static Logger log = Logger.getLogger(DvDateTimeVBean.class);
+    static Logger log = LogManager.getLogger(DvDateTimeVBean.class);
 	/**
 	 * 
 	 */

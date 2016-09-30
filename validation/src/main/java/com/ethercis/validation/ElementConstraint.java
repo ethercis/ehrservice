@@ -17,7 +17,8 @@
 
 package com.ethercis.validation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 
 /**
@@ -25,7 +26,7 @@ import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
  */
 public abstract class ElementConstraint implements I_ElementConstraint {
 
-    Logger logger = Logger.getLogger(ElementConstraint.class);
+    Logger logger = LogManager.getLogger(ElementConstraint.class);
     protected ARCHETYPECONSTRAINT constraint;
     protected String path;
 

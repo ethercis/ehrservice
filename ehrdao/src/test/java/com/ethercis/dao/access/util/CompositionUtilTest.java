@@ -11,7 +11,7 @@ import org.openehr.rm.support.identification.ObjectVersionID;
 import java.util.Map;
 
 public class CompositionUtilTest extends AccessTestCase {
-    String templateId = "LCR Problem List.opt";
+    String templateId = "COLNEC Medication";
 
     @Before
     public void setUp() throws Exception {

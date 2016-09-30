@@ -17,13 +17,17 @@
 
 package com.ethercis.aql.compiler;
 
+import com.ethercis.aql.definition.FunctionDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.parser.AqlBaseListener;
 import com.ethercis.aql.parser.AqlParser;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * AQL compilation pass 2<p>
@@ -38,35 +42,71 @@ import java.util.*;
  */
 public class QueryCompilerPass2 extends AqlBaseListener {
 
-    Logger logger = Logger.getLogger(QueryCompilerPass2.class);
+    Logger logger = LogManager.getLogger(QueryCompilerPass2.class);
 
     Deque<VariableDefinition> variableStack = new ArrayDeque<>();
     Deque<OrderAttribute> orderAttributes = null;
 
     TopAttributes topAttributes = null;
+    FunctionDefinition functionDefinitions = new FunctionDefinition();
 
     @Override
     public void exitObjectPath(AqlParser.ObjectPathContext objectPathContext){
         logger.debug("Object Path->");
     }
 
-    @Override
-    public void exitIdentifiedPath(AqlParser.IdentifiedPathContext identifiedPathContext){
-        logger.debug("Identified Path->");
-    }
+//    @Override
+//    public void exitIdentifiedPath(AqlParser.IdentifiedPathContext identifiedPathContext){
+//        logger.debug("Identified Path->");
+//    }
 
     @Override
-    public void exitIdentifiedPathSeq(AqlParser.IdentifiedPathSeqContext identifiedPathSeqContext){
-        logger.debug("IdentifiedPathSeq->");
-        AqlParser.IdentifiedPathContext identifiedPathContext = identifiedPathSeqContext.identifiedPath();
-        String path = identifiedPathContext.objectPath().getText();
-        String identifier = identifiedPathContext.IDENTIFIER().getText();
-        String alias = null;
-        if (identifiedPathSeqContext.IDENTIFIER() != null)
-            alias = identifiedPathSeqContext.IDENTIFIER().getText();
-        VariableDefinition variableDefinition = new VariableDefinition(path, alias, identifier);
-        variableStack.push(variableDefinition);
+    public void exitSelectExpr(AqlParser.SelectExprContext selectExprContext){
+        AqlParser.IdentifiedPathContext identifiedPathContext = selectExprContext.identifiedPath();
+        if (identifiedPathContext != null) {
+            String identifier = identifiedPathContext.IDENTIFIER().getText();
+            String path = null;
+            if (identifiedPathContext.objectPath() != null && !identifiedPathContext.objectPath().isEmpty())
+                path = identifiedPathContext.objectPath().getText();
+            String alias = null;
+            //get an alias if any
+            if (selectExprContext.AS() != null) {
+                alias = selectExprContext.IDENTIFIER().getText();
+            }
+
+            VariableDefinition variableDefinition = new VariableDefinition(path, alias, identifier);
+            variableStack.push(variableDefinition);
+        }
+        else {
+            //function handling
+            logger.debug("Found function:");
+            //set alias if any (function AS alias
+            AqlParser.FunctionContext functionContext = selectExprContext.function();
+            String name = functionContext.FUNCTION_IDENTIFIER().getText();
+            List<String> identifiers = functionContext.IDENTIFIER().stream().map(terminalNode -> terminalNode.getSymbol().getText()).collect(Collectors.toList());
+            functionDefinitions.add(name, identifiers);
+            String alias = selectExprContext.IDENTIFIER() == null ? name : selectExprContext.IDENTIFIER().getText();
+            functionDefinitions.setAlias(name, alias);
+        }
     }
+
+//    @Override
+//    public void exitIdentifiedPath(AqlParser.IdentifiedPathContext identifiedPathContext){
+//        logger.debug("IdentifiedPathSeq->");
+////        AqlParser.IdentifiedPathContext identifiedPathContext = identifiedPathContext.identifiedPath();
+//        String path = identifiedPathContext.objectPath().getText();
+//        String identifier = identifiedPathContext.IDENTIFIER().getText();
+//        String alias = null;
+//        Object parent = identifiedPathContext.getParent(); //either selectExpr or identifiedOperand (no alias)
+//        if (parent instanceof AqlParser.SelectExprContext) {
+//            AqlParser.SelectExprContext selectExprContext = (AqlParser.SelectExprContext) identifiedPathContext.getParent();
+//            if (selectExprContext.IDENTIFIER() != null)
+//                alias = selectExprContext.IDENTIFIER().getText();
+//
+//            VariableDefinition variableDefinition = new VariableDefinition(path, alias, identifier);
+//            variableStack.push(variableDefinition);
+//        }
+//    }
 
     @Override
     public void exitIdentifiedExpr(AqlParser.IdentifiedExprContext identifiedExprContext){
@@ -122,6 +162,12 @@ public class QueryCompilerPass2 extends AqlBaseListener {
         }
     }
 
+    @Override
+    public void exitFunction(AqlParser.FunctionContext functionContext){
+        //get the function id and parameters
+        logger.debug("in function");
+    }
+
     public List<VariableDefinition> variables(){
         return new ArrayList<>(variableStack);
     }
@@ -134,5 +180,9 @@ public class QueryCompilerPass2 extends AqlBaseListener {
         if (orderAttributes == null)
             return null;
         return new ArrayList<>(orderAttributes);
+    }
+
+    public FunctionDefinition getFunctionDefinitions() {
+        return functionDefinitions;
     }
 }

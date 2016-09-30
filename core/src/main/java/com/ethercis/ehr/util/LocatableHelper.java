@@ -82,8 +82,10 @@ public class LocatableHelper {
     }
 
     private static String extractLastAtPath(String itemPath){
-        if (itemPath.contains("[at"))
-            return itemPath.substring(itemPath.lastIndexOf("[")+1, itemPath.lastIndexOf("]"));
+        if (itemPath.contains("[at")) {
+            String path = LocatableHelper.simplifyPath(itemPath);
+            return path.substring(path.lastIndexOf("[") + 1, path.lastIndexOf("]"));
+        }
         else
             return "at0000";
 
@@ -131,8 +133,13 @@ public class LocatableHelper {
                         lastNodeId = extractLastAtPath(itemPath);
                     }
                 }
-                else
-                    lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(" and name/value"));
+                else {
+                    if (lastNodeId.contains(" and name/value"))
+                        lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(" and name/value"));
+                    else if (lastNodeId.contains(","))
+                        lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(","));
+
+                }
 
             }
         }
@@ -215,16 +222,18 @@ public class LocatableHelper {
         String archetypeNodeId;
         String name = null;
 
-        if(expression.contains(" AND ")
-            || expression.contains(" and ")) {
+        if(expression.contains(" AND ") || expression.contains(" and ") || expression.contains(",")) {
 
         // OG - 20100401: Fixed bug where the name contained 'AND' or 'and',
         // i.e. 'MEDICINSK BEHANDLING'.
         if(expression.contains(" AND ")) {
             index = expression.indexOf(" AND ");
-        } else {
+        } else if (expression.contains("and")){
             index = expression.indexOf(" and ");
-        }
+        } else
+            index = expression.indexOf(",");
+
+
             archetypeNodeId = expression.substring(0, index).trim();
             name = expression.substring(expression.indexOf("'") + 1,expression.lastIndexOf("'"));
         // just name, ['standing']
@@ -255,8 +264,13 @@ public class LocatableHelper {
                 childPath += "/"+pathSegment;
                 String name = LocatableHelper.indentifyName(pathSegment);
                 if (name != null) {
+                    String strippedPath = "";
                     //strip the name part from the path
-                    String strippedPath = childPath.substring(0, childPath.lastIndexOf("and name/value=")) + "]";
+                    if (childPath.contains("and name/value="))
+                        strippedPath = childPath.substring(0, childPath.lastIndexOf("and name/value=")) + "]";
+                    else if (childPath.contains(","))
+                        strippedPath = childPath.substring(0, childPath.lastIndexOf(",")) + "]";
+
                     //update the name accordingly
                     Locatable childSegment = (Locatable)node.itemAtPath(strippedPath);
                     if (childSegment != null) {
@@ -280,8 +294,8 @@ public class LocatableHelper {
 
         List<String> segments = Locatable.dividePathIntoSegments(unresolvedPath);
         String last = segments.get(segments.size() - 1);
-        if (last.contains(" and name/value=")){
-            last = last.substring(0, last.indexOf(" and name/value="))+"]";
+        if (last.contains(" and name/value=") || last.contains(",")){
+            last = last.contains(" and name/value=") ? last.substring(0, last.indexOf(" and name/value="))+"]" : last.substring(0, last.indexOf(","))+"]";
         }
 
         StringBuffer tentativePath = new StringBuffer();
@@ -351,6 +365,28 @@ public class LocatableHelper {
         return new NodeItem((Locatable)parentAtPath, lastPath, "/"+identifyAttribute(lastPath));
    }
 
+    public static Locatable getLocatableParent(Locatable locatable, String path) {
+        List<String> segments = Locatable.dividePathIntoSegments(path);
+
+        for (int i = segments.size() - 1; i >= 0; i --){
+            String parentPath = "/"+String.join("/", segments.subList(0, i));
+            if (locatable.itemAtPath(parentPath) instanceof Locatable)
+                return (Locatable)locatable.itemAtPath(parentPath);
+        }
+        return null;
+    }
+
+    public static String getLocatableParentPath(Locatable locatable, String path) {
+        List<String> segments = Locatable.dividePathIntoSegments(path);
+
+        for (int i = segments.size() - 1; i >= 0; i --){
+            String parentPath = "/"+String.join("/", segments.subList(0, i));
+            if (locatable.itemAtPath(parentPath) instanceof Locatable)
+                return parentPath;
+        }
+        return null;
+    }
+
     /**
      * clone the item at a given path
      * @param node
@@ -412,8 +448,8 @@ public class LocatableHelper {
         List<String> segments = Locatable.dividePathIntoSegments(path);
         for (int i = 0; i < segments.size(); i++){
             String segment = segments.get(i);
-            if (segment.contains(" and name/value=")){
-                tentativePath.append(segment.split(" and name/value=")[0]);
+            if (segment.contains(" and name/value=") || segment.contains(",")){
+                tentativePath.append(segment.contains(" and name/value=") ? segment.split(" and name/value=")[0] : segment.split(",")[0]);
                 tentativePath.append("]");
             }
             else
@@ -435,8 +471,9 @@ public class LocatableHelper {
         List<String> segments = Locatable.dividePathIntoSegments(path);
         for (int i = 0; i < segments.size(); i++){
             String segment = segments.get(i);
-            if (segment.contains(" and name/value=")){
-                String namePart = segment.split(" and name/value=")[1];
+            if (segment.contains(" and name/value=")||segment.contains(",")){
+
+                String namePart = segment.contains(" and name/value=") ? segment.split(" and name/value=")[1] : segment.split(",")[1];
                 if (namePart.contains("#"))
                     return true;
             }
@@ -447,6 +484,25 @@ public class LocatableHelper {
 
     public static Object itemAtPath(Locatable locatable, String path){
         return locatable.itemAtPath(path.replaceAll(" and name/value=", ","));
+    }
+
+    /**
+     * retrieve the value of an array index in a nodeId predicate
+     * @param nodeId
+     * @return
+     */
+    public static Integer retrieveIndexValue(String nodeId) {
+        if (nodeId.contains("#")){
+            Integer indexValue = Integer.valueOf((nodeId.split("#")[1]).split("']")[0]);
+            return indexValue;
+        }
+        return null;
+    }
+
+    public static String trimNameValue(String nodeid){
+        if (nodeid.contains(" and name/value") || nodeid.contains(","))
+            return nodeid.substring(0, nodeid.indexOf(nodeid.contains(" and name/value") ? " and name/value" : ","))+"]";
+        return nodeid;
     }
 
 }

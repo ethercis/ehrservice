@@ -104,7 +104,7 @@ public class Containment {
     }
 
     private String archetypeOnly(String archetypeId){
-        if (archetypeId.length() > 0)
+        if (archetypeId.length() > 0 && archetypeId.contains("["))
             return archetypeId.substring(0, archetypeId.indexOf("]")).substring(1);
         else
             return archetypeId;

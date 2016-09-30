@@ -19,7 +19,8 @@ package com.ethercis.validation;
 
 import com.ethercis.validation.wrappers.IntervalComparator;
 import com.ethercis.validation.wrappers.ValidationException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.archetype.constraintmodel.Cardinality;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -33,7 +34,7 @@ import java.util.*;
  */
 public abstract class ConstraintMapper {
 
-    Logger logger = Logger.getLogger(ConstraintMapper.class);
+    Logger logger = LogManager.getLogger(ConstraintMapper.class);
 
     protected Map<String,Map<String, String>> localTerminologyLookup;
     protected boolean lenient;

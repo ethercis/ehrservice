@@ -20,7 +20,8 @@ import com.ethercis.ehr.encode.JodaPeriodAdapter;
 import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.Period;
 
 import java.io.Reader;
@@ -36,7 +37,7 @@ import java.util.Map;
  */
 public class FlatJsonUtil {
 
-    private static Logger log = Logger.getLogger(FlatJsonUtil.class);
+    private static Logger log = LogManager.getLogger(FlatJsonUtil.class);
 
     private static final int DELIM_TREENODE = '/';
     private static final int DELIM_FIELD = '|';

@@ -53,31 +53,31 @@ public class WhereVisitor extends AqlBaseVisitor< List<Object>> {
                 String what = tree.getText().trim();
                 whereExpression.add(what);
             }
-            else if (tree instanceof AqlParser.IdentifiedExprAndContext) {
-                visitIdentifiedExprAnd((AqlParser.IdentifiedExprAndContext) tree);
-            }
-        }
-
-        return whereExpression;
-    }
-
-    @Override
-    public List<Object> visitIdentifiedExprAnd(AqlParser.IdentifiedExprAndContext context){
-        for (ParseTree tree: context.children) {
-            if (tree instanceof TerminalNodeImpl) {
-                String what = tree.getText().trim();
-                whereExpression.add(what);
-            }
             else if (tree instanceof AqlParser.IdentifiedEqualityContext) {
                 visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext) tree);
             }
-            else if (tree instanceof AqlParser.IdentifiedExprContext) {
-                visitIdentifiedExpr((AqlParser.IdentifiedExprContext) tree);
-            }
         }
 
         return whereExpression;
     }
+
+//    @Override
+//    public List<Object> visitIdentifiedExprAnd(AqlParser.IdentifiedExprAndContext context){
+//        for (ParseTree tree: context.children) {
+//            if (tree instanceof TerminalNodeImpl) {
+//                String what = tree.getText().trim();
+//                whereExpression.add(what);
+//            }
+//            else if (tree instanceof AqlParser.IdentifiedEqualityContext) {
+//                visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext) tree);
+//            }
+//            else if (tree instanceof AqlParser.IdentifiedExprContext) {
+//                visitIdentifiedExpr((AqlParser.IdentifiedExprContext) tree);
+//            }
+//        }
+//
+//        return whereExpression;
+//    }
 
     @Override
     public List<Object> visitIdentifiedEquality(AqlParser.IdentifiedEqualityContext context){

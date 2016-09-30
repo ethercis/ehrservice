@@ -20,7 +20,8 @@ import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_StatusAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.jooq.pg.tables.records.StatusRecord;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 
@@ -35,7 +36,7 @@ import static com.ethercis.jooq.pg.Tables.STATUS;
  */
 public class StatusAccess extends DataAccess implements I_StatusAccess {
 
-    private static final Logger log = Logger.getLogger(StatusAccess.class);
+    private static final Logger log = LogManager.getLogger(StatusAccess.class);
 
     private StatusRecord statusRecord;
 

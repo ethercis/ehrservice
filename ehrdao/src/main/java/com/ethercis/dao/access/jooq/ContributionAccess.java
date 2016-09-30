@@ -26,7 +26,8 @@ import com.ethercis.jooq.pg.tables.records.ContributionHistoryRecord;
 import com.ethercis.jooq.pg.tables.records.ContributionRecord;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
 
@@ -40,7 +41,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class ContributionAccess extends DataAccess implements I_ContributionAccess {
 
-    Logger logger = Logger.getLogger(CompositionAccess.class);
+    Logger logger = LogManager.getLogger(CompositionAccess.class);
 
     private ContributionRecord contributionRecord;
 

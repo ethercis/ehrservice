@@ -46,6 +46,8 @@ public class DvDateTimeAdapter extends TypeAdapter<DvDateTime> {
         writer.name("epoch_offset").value(dvalue.getDateTime().getMillis());
         writer.endObject();
 
+//		writer.value(dvalue.getValue());
+
 	}
 
 }

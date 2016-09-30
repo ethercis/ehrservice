@@ -1,0 +1,21 @@
+{
+  "/context/end_time": "2014-09-28T11:18:17.352+07:00",
+  "/context/participation|function": "Cantine",
+  "/context/participation|name": "Joe",
+  "/context/participation|identifier": "99999-222",
+  "/context/participation|mode": "openehr::216|face-to-face communication|",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0003]": "at0004|Type 1|",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0008]": "true",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0007]": "2010-09-24",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0002]/items[at0003]": "at0005|Type 2|",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0002]/items[at0008]": "true",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0002]/items[at0007]": "2015-09-24",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|function": "Oncologist",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|identifier": "1345678",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|mode": "openehr::216|face-to-face communication|",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|name": "Dr. Knock",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|function": "Oncologist",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|identifier": "999999-8",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|mode": "openehr::216|evil cabinet|",
+  "/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|name": "Dr. Caligari"
+}

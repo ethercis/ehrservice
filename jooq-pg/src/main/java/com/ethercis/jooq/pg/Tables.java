@@ -8,6 +8,7 @@ import com.ethercis.jooq.pg.tables.Access;
 import com.ethercis.jooq.pg.tables.Attestation;
 import com.ethercis.jooq.pg.tables.AttestedView;
 import com.ethercis.jooq.pg.tables.CompExpand;
+import com.ethercis.jooq.pg.tables.CompoXref;
 import com.ethercis.jooq.pg.tables.Composition;
 import com.ethercis.jooq.pg.tables.CompositionHistory;
 import com.ethercis.jooq.pg.tables.Concept;
@@ -25,6 +26,7 @@ import com.ethercis.jooq.pg.tables.Participation;
 import com.ethercis.jooq.pg.tables.ParticipationHistory;
 import com.ethercis.jooq.pg.tables.PartyIdentified;
 import com.ethercis.jooq.pg.tables.Status;
+import com.ethercis.jooq.pg.tables.StatusDetails;
 import com.ethercis.jooq.pg.tables.StatusHistory;
 import com.ethercis.jooq.pg.tables.System;
 import com.ethercis.jooq.pg.tables.TerminologyProvider;
@@ -65,6 +67,11 @@ public class Tables {
 	 * The table ehr.comp_expand
 	 */
 	public static final CompExpand COMP_EXPAND = com.ethercis.jooq.pg.tables.CompExpand.COMP_EXPAND;
+
+	/**
+	 * The table ehr.compo_xref
+	 */
+	public static final CompoXref COMPO_XREF = com.ethercis.jooq.pg.tables.CompoXref.COMPO_XREF;
 
 	/**
 	 * Composition table
@@ -150,6 +157,11 @@ public class Tables {
 	 * specifies an ehr modality and ownership (patient)
 	 */
 	public static final Status STATUS = com.ethercis.jooq.pg.tables.Status.STATUS;
+
+	/**
+	 * The table ehr.status_details
+	 */
+	public static final StatusDetails STATUS_DETAILS = com.ethercis.jooq.pg.tables.StatusDetails.STATUS_DETAILS;
 
 	/**
 	 * The table ehr.status_history

@@ -19,7 +19,8 @@ package com.ethercis.ehr.encode;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.content.ContentItem;
@@ -44,7 +45,7 @@ import org.openehr.rm.datatypes.encapsulated.DvMultimedia;
 import org.openehr.rm.integration.GenericEntry;
 
 public class DvMultimediaExtractor {
-	private static Logger log = Logger.getLogger(DvMultimediaExtractor.class);
+	private static Logger log = LogManager.getLogger(DvMultimediaExtractor.class);
 	/**
 	 * 
 	 * @param composition

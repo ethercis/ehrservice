@@ -22,7 +22,8 @@ import com.ethercis.aql.containment.ContainmentSet;
 import com.ethercis.aql.containment.Predicates;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
@@ -38,7 +39,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  * Created by christian on 4/19/2016.
  */
 public class ContainBinder {
-    Logger logger = Logger.getLogger(ContainBinder.class);
+    Logger logger = LogManager.getLogger(ContainBinder.class);
 
     private List<ContainmentSet> nestedSets;
     private Predicates predicates;
@@ -78,17 +79,19 @@ public class ContainBinder {
 //        int index = nestedSets.size() - 1;
         for (int index = nestedSets.size() - 1; index >= 0; index--){
             ContainmentSet containmentSet = nestedSets.get(index);
-            if (containmentSet.getParentSet() != null && containmentSet.getParentSet().isEmpty()){
-                ContainmentSet adopter = containmentSet.getParentSet();
+            if (containmentSet != null) {
+                if (containmentSet.getParentSet() != null && containmentSet.getParentSet().isEmpty()) {
+                    ContainmentSet adopter = containmentSet.getParentSet();
 
-                while (adopter != null && adopter.isEmpty()){
-                    nestedSets.remove(adopter);
-                    adopter = adopter.getParentSet();
-                }
-                if (adopter.getContainmentList() != null){
-                    containmentSet.setParentSet(adopter);
-                }
+                    while (adopter != null && adopter.isEmpty()) {
+                        nestedSets.remove(adopter);
+                        adopter = adopter.getParentSet();
+                    }
+                    if (adopter.getContainmentList() != null) {
+                        containmentSet.setParentSet(adopter);
+                    }
 
+                }
             }
         }
     }
@@ -262,6 +265,8 @@ public class ContainBinder {
         StringBuffer query = new StringBuffer();
         List<String> pendingAtomics = new ArrayList<>();
         for (Predicates predicates: predicatesList) {
+            if (predicates == null)
+                continue;
             //start with the atomic predicate
             if (predicates.atomicPredicates.size() > 0) {
                 for (Predicates.Details definition : predicates.atomicPredicates) {
@@ -284,8 +289,11 @@ public class ContainBinder {
                 query = new StringBuffer();
             }
         }
-        query.append(pendingAtomics.get(0));
-        return query.toString();
+        if (!pendingAtomics.isEmpty()) {
+            query.append(pendingAtomics.get(0));
+            return query.toString();
+        }
+        return "";
     }
 
     private SelectQuery<?> jooqQuery(DSLContext context, List<Predicates> predicatesList){
@@ -293,6 +301,8 @@ public class ContainBinder {
         SelectQuery<?> selectQuery = null;
         for (Predicates predicates: predicatesList) {
             //start with the atomic predicate
+            if (predicates == null)
+                continue;
             if (predicates.atomicPredicates.size() > 0) {
                 for (Predicates.Details definition : predicates.atomicPredicates) {
                     selectQuery = singularSelect(context, definition);
@@ -313,8 +323,11 @@ public class ContainBinder {
                 selectQuery = context.selectQuery();
             }
         }
-        selectQuery.addFrom(pendingAtomics.get(0));
-        return selectQuery;
+        if (!pendingAtomics.isEmpty()) {
+            selectQuery.addFrom(pendingAtomics.get(0));
+            return selectQuery;
+        }
+        return null;
     }
 
 
@@ -339,10 +352,12 @@ public class ContainBinder {
     private void factor4LTree(List<Predicates> predicates){
 
         for (Predicates predicatesDetail: predicates){
-            factorEnclosing(predicatesDetail.atomicPredicates);
-            factorEnclosing(predicatesDetail.unionPredicates);
-            factorEnclosing(predicatesDetail.intersectPredicates);
-            factorEnclosing(predicatesDetail.exceptPredicates);
+            if (predicatesDetail != null) {
+                factorEnclosing(predicatesDetail.atomicPredicates);
+                factorEnclosing(predicatesDetail.unionPredicates);
+                factorEnclosing(predicatesDetail.intersectPredicates);
+                factorEnclosing(predicatesDetail.exceptPredicates);
+            }
         }
 
     }
@@ -375,6 +390,8 @@ public class ContainBinder {
     }
 
     private Predicates bind(ContainmentSet containmentSet){
+        if (containmentSet == null)
+            return null;
         this.predicates = new Predicates(containmentSet);
         Deque<ContainmentSet.OPERATOR> operatorStack = new ArrayDeque<>();
 

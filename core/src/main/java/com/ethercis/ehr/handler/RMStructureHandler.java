@@ -23,7 +23,8 @@ import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import openEHR.v1.template.TEMPLATE;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.Flattener;
 import org.openehr.am.template.FlatteningException;
@@ -34,7 +35,7 @@ import org.openehr.rm.datatypes.basic.DataValue;
  * Created by Christian Chevalley on 7/14/2014.
  */
 public class RMStructureHandler {
-    private Logger log = Logger.getLogger(RMStructureHandler.class);
+    private Logger log = LogManager.getLogger(RMStructureHandler.class);
     private Locatable locatable;
 
     public RMStructureHandler(String templateId, I_KnowledgeCache knowledgeManager) throws Exception {

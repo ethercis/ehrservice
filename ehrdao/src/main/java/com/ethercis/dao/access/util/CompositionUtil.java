@@ -29,7 +29,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.composition.Composition;
 
@@ -73,7 +74,7 @@ public class CompositionUtil {
 
     public static void main(String[] args){
         Options options = new Options();
-        Logger logger = Logger.getLogger(CompositionUtil.class);
+        Logger logger = LogManager.getLogger(CompositionUtil.class);
 
         options.addOption("ckm_archetype", true, "Path to archetypes repository");
         options.addOption("ckm_template", true, "Path to templates (OET) repository");

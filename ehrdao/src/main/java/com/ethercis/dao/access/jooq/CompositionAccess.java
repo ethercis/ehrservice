@@ -23,7 +23,8 @@ import com.ethercis.jooq.pg.enums.ContributionDataType;
 import com.ethercis.jooq.pg.tables.records.CompositionRecord;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.util.EhrException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -41,7 +42,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class CompositionAccess extends DataAccess implements I_CompositionAccess {
 
-    static Logger log = Logger.getLogger(CompositionAccess.class);
+    static Logger log = LogManager.getLogger(CompositionAccess.class);
 
     private DateTime dateCreated;
 

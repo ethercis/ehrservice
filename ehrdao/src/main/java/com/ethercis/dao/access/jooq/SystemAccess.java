@@ -20,7 +20,8 @@ import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_SystemAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.jooq.pg.tables.records.SystemRecord;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -39,7 +40,7 @@ import static com.ethercis.jooq.pg.Tables.SYSTEM;
  */
 public class SystemAccess extends DataAccess implements I_SystemAccess {
 
-    private static final Logger log = Logger.getLogger(SystemAccess.class);
+    private static final Logger log = LogManager.getLogger(SystemAccess.class);
     private SystemRecord systemRecord;
 
     public SystemAccess(DSLContext context){

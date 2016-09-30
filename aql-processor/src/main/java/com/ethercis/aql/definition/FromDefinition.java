@@ -35,10 +35,18 @@ public class FromDefinition {
         String field;
         String value;
         String identifier;
+        String operator;
 
-        public EhrPredicate(String field, String  value){
+//        public enum OPERATOR {EQ, NE, GT, LT, GE, LE}
+
+        public EhrPredicate(String field, String  value, String operator){
             this.field = field;
             this.value = value;
+            this.operator = operator;
+        }
+
+        public EhrPredicate(String identifier){
+            this.identifier = identifier;
         }
 
         public void setIdentifier(String identifier) {
@@ -57,6 +65,10 @@ public class FromDefinition {
             return value;
         }
 
+        public String getOperator() {
+            return operator;
+        }
+
         public String toString(){
             return "EHR::"+getIdentifier()+"::"+getIdentifier()+"::"+getValue();
         }
@@ -69,8 +81,8 @@ public class FromDefinition {
 
     private List<EhrPredicate> fromEhrPredicates = new ArrayList<>();
 
-    public void add(String identifier, String value){
-        fromEhrPredicates.add(new EhrPredicate(identifier, value));
+    public void add(String identifier, String value, String operator){
+        fromEhrPredicates.add(new EhrPredicate(identifier, value, operator));
     }
 
     public void setIsEHR(boolean isEHR) {

@@ -300,6 +300,14 @@ create TABLE ehr.containment (
   path text
 );
 
+-- simple cross reference table to link INSTRUCTIONS with ACTIONS or other COMPOSITION
+CREATE TABLE ehr.compo_xref (
+  master_uuid UUID REFERENCES ehr.composition(id),
+  child_uuid UUID REFERENCES ehr.composition(id),
+  sys_transaction TIMESTAMP NOT NULL
+);
+CREATE INDEX ehr_compo_xref ON ehr.compo_xref USING BTREE (master_uuid);
+
 -- views to abstract querying
 -- EHR STATUS
 CREATE VIEW ehr.ehr_status AS

@@ -17,8 +17,7 @@
 package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateAdapter;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.constraints.ConstraintUtils;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.keyvalues.I_PathValue;
@@ -27,11 +26,11 @@ import com.ethercis.ehr.util.LocatableHelper;
 import com.ethercis.ehr.util.MapInspector;
 import com.ethercis.ehr.util.RMDataSerializer;
 import com.ethercis.validation.ConstraintMapper;
-import com.ethercis.validation.hardwired.CHistory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlOptions;
 import org.openehr.build.SystemValue;
@@ -46,7 +45,6 @@ import org.openehr.rm.datastructure.itemstructure.ItemStructure;
 import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.encapsulated.DvParsable;
-import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
 import org.openehr.rm.datatypes.text.CodePhrase;
@@ -56,10 +54,8 @@ import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.LocatableRef;
 import org.openehr.rm.support.identification.ObjectRef;
 import org.openehr.schemas.v1.*;
-import org.openehr.schemas.v1.impl.COMPOSITIONImpl;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -75,7 +71,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     protected Composition composition;
     private Deque<Map<String, Object>> stack;
     protected I_KnowledgeCache knowledge;
-    static Logger log = Logger.getLogger(ContentBuilder.class);
+    static Logger log = LogManager.getLogger(ContentBuilder.class);
     private String rootArchetypeId;
     private Map<String, String> ltreeMap;
     protected ConstraintMapper constraintMapper;
@@ -97,40 +93,14 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     @Override
     public void setEntryData(Composition composition) throws Exception {
         //retrieve the JSON representation for persistence
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-        Map<String, Object> retMap = inspector.process(composition);
-
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-//        builder.registerTypeAdapter(ArrayList.class, new ArrayListAdapter());
-
-         //choose this option to ease reading and debugging... but not for storing into DB
-        Gson gson = builder.setPrettyPrinting().create();
-        /*
-        Gson gson = builder.create();
-        */
+        //CHC: 29.09.16 new encoding method :)
+        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        String dbEncoded = compositionSerializer.dbEncode(composition);
         this.composition = composition;
-        this.entry = gson.toJson(retMap);
-        this.rootArchetypeId = inspector.getTreeRootArchetype();
-        this.ltreeMap = inspector.getLtreeMap();
+        this.entry = dbEncoded;
+        this.rootArchetypeId = compositionSerializer.getTreeRootArchetype();
+        this.ltreeMap = compositionSerializer.getLtreeMap();
     }
-
-//    public String setEntryData(Object entry) throws Exception {
-//        //retrieve the JSON representation for persistence
-//        CompWalker inspector = new CompWalker(CompWalker.WalkerOutputMode.NAMED);
-//        Map<String, Object> retmap = inspector.process(entry, CompWalker.TAG_CONTENT);
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-//
-//        //choose this option to ease reading and debugging... but not for storing into DB
-//        Gson gson = builder.setPrettyPrinting().create();
-//        /*
-//        Gson gson = builder.create();
-//        */
-//
-//        return gson.toJson(retmap);
-//    }
 
 
     protected void assignElementWrapper(ElementWrapper item, Object object, String path){
@@ -217,11 +187,6 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                 itemAtPath = insertCloneInPath(locatable, definition, path); //deeper...
         }
 
-//        if (sibling != null)
-//            itemAtPath = locatable.itemAtPath(path);
-//        else //completion
-//            itemAtPath = insertCloneInPath(locatable, definition, path);
-
         if (itemAtPath == null) //something really wrong here...
             throw new IllegalArgumentException("Unhandled path in template:"+path+" with definition:"+definition+", possible cause is out of synch template and persisted data (composition id: "+locatable.getName()+")");
 
@@ -268,14 +233,6 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
             Object itemAtPath = composition.itemAtPath(path);
 
-            //check if this can be resolved without name/value in nodeId predicate...
-            /* Potentially not required anymore...
-            if (itemAtPath == null && !LocatableHelper.hasDefinedOccurence(path)){
-                String simplifiedPath = LocatableHelper.simplifyPath(path);
-                itemAtPath = composition.itemAtPath(simplifiedPath);
-            }
-
-            */
             //HACK! if an itemAtPath is already there with dirtyBit == true, just clone the element for this path
 //            if (itemAtPath == null || (itemAtPath instanceof ElementWrapper && ((ElementWrapper)itemAtPath).dirtyBitSet())) {
             if (itemAtPath == null) {
@@ -367,8 +324,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                         throw new IllegalArgumentException("Invalid tag in InstructionDetails:"+lastTag);
                 }
             }
-            else {
-                log.warn("Unhandled value in stack:" + path);
+            else if (!(itemAtPath instanceof Entry)){
+                log.warn("Unhandled value in stack:" + path+", item:"+itemAtPath);
             }
 
             //more decoration for Entry...
@@ -394,44 +351,6 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //        constraintUtils.validateElementConstraints(composition);
     }
 
-//    private void validateElementWrapper(ElementWrapper referenceElement,String path) throws Exception {
-//        //validate instantiated object
-////        Element referenceElement = ((ElementWrapper)itemAtPath).getAdaptedElement();
-////        Element testElement = new Element("*validation*", "test_value", (DataValue)object);
-//        ConstraintMapper.ConstraintItem constraint = constraintMapper.getConstraintItem(LocatableHelper.siblingPath(path));
-//        if (constraint == null){
-//            String tentativePath = LocatableHelper.simplifyPath(path);
-//            Object tentativeElement = composition.itemAtPath(tentativePath);
-//            if (tentativeElement == null)
-//                log.debug("No constraint matching element (node could not be identified):"+tentativePath);
-//            else {
-//                //we should have an ElementWrapper here...
-//                if (tentativeElement instanceof ElementWrapper) {
-//                    constraint = constraintMapper.getConstraintItem(tentativePath);
-//                    if (constraint == null)
-//                        log.debug("No constraint matching element:" + tentativeElement);
-//                    else {
-//                        if (constraint instanceof OptConstraintMapper.OptConstraintItem) {
-//
-//                            new CArchetypeConstraint(this.constraintMapper.getLocalTerminologyLookup()).validate(constraint.getPath(), referenceElement.getAdaptedElement(), ((OptConstraintMapper.OptConstraintItem) constraint).getConstraint());
-//                        }
-//                    }
-//                }
-//                else
-//                    log.debug("identified node is not an Element..."+tentativeElement);
-//            }
-//
-//        }
-//        else {
-//            if (constraint instanceof OptConstraintMapper.OptConstraintItem) {
-//                new CArchetypeConstraint(this.constraintMapper.getLocalTerminologyLookup()).validate(constraint.getPath(), referenceElement.getAdaptedElement(), ((OptConstraintMapper.OptConstraintItem) constraint).getConstraint());
-//            }
-//        }
-//
-//        //check the occurences
-////        constraintMapper.validateWatchList();
-//
-//    }
 
     /**
      * used to assign an ItemTree (for example other_context)
@@ -535,19 +454,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
         //validate the result
         new ConstraintUtils(lenient, (Composition)rmObj, constraintMapper).validateLocatable();
-//        constraintUtils.validateLocatable();
-//        constraintUtils.validateCardinality();
-//        constraintUtils.validateElementConstraints();
 
         Composition importedComposition = (Composition)rmObj;
-
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-        Map<String, Object>retmap = inspector.process(importedComposition);
-
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-        Gson gson = builder.setPrettyPrinting().create();
-        String mapjson = gson.toJson(retmap);
+        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        String mapjson = compositionSerializer.dbEncode(importedComposition);
 
         //create an actual RM composition
         this.entry = mapjson;
@@ -562,13 +472,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         //the templateId is found in the composition
         this.templateId = composition.getArchetypeDetails().getTemplateId().getValue();
 
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-        Map<String, Object>retmap = inspector.process(composition);
-
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-        Gson gson = builder.setPrettyPrinting().create();
-        String mapjson = gson.toJson(retmap);
+        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        String mapjson = compositionSerializer.dbEncode(composition);
 
         //create an actual RM composition
         this.entry = mapjson;
@@ -777,9 +682,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
 
     protected MapInspector getMapInspector(String jsonData) throws Exception {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-        builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
+        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
         Gson gson = builder.setPrettyPrinting().create();
 
         Map<String, Object> retmap = gson.fromJson(jsonData, TreeMap.class);

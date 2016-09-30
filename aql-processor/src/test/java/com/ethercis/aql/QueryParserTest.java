@@ -44,7 +44,8 @@ public class QueryParserTest {
     public void setUp(){
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
-        String url = "jdbc:postgresql://localhost:5434/ethercis";
+//        String url = "jdbc:postgresql://localhost:5434/ethercis";
+        String url = "jdbc:postgresql://192.168.2.104:5432/ethercis";
         String login = "postgres";
         String password = "postgres";
 
@@ -268,26 +269,44 @@ public class QueryParserTest {
 //                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.care_summary.v0] " +
 //                "contains SECTION a_a[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1] " +
 //                "where a/name/value='Current medication list' ";
-//                "and e/ehr_status/subject/external_ref/namespace = '" + namespace + "' " +
-//                "and e/ehr_status/subject/external_ref/id/value = '" + patientId + "'"
+////                "and e/ehr_status/subject/external_ref/namespace = '" + namespace + "' " +
+////                "and e/ehr_status/subject/external_ref/id/value = '" + patientId + "'"
 
 //        query = "select a/uid/value as uid, " +
 //                "a/composer/name as author, " +
 //                "a/context/start_time/value as date_created, " +
-//                "a_a/items/items/data[at0001]/items/items[at0001]/value/value as name, " +
-//                "a_a/items/items/data[at0001]/items/items[at0001]/value/defining_code/code_string as medication_code, " +
-//                "a_a/items/items/data[at0001]/items/items[at0001]/value/defining_code/terminology_id/value as medication_terminology, " +
-//                "a_a/items/items/data[at0001]/items/items[at0002]/value/defining_code/code_string as route, " +
-//                "a_a/items/items/data[at0001]/items/items[at0003]/value/value as dose_directions, " +
-//                "a_a/items/items/data[at0001]/items/items[at0020]/value/value as dose_amount, " +
-//                "a_a/items/items/data[at0001]/items/items[at0021]/value/value as dose_timing, " +
-//                "a_a/items/items/data[at0001]/items/items[at0046]/items/value/value as start_date " +
+//                "a_a/activities/activities[at0001]/name/name as name_activities, " +
+//                "a_a/activities/activities[at0001]/timing/value as timing_activities, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0070]/value/value as name, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0109]/value/value as dose_amount, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0055]/value/value as dose_timing, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0113]/items[at0012]/value/value/value as start_date " +
+////                "a_a/items/items/data[at0001]/items/items[at0001]/value/value as name, " +
+////                "a_a/items/items/data[at0001]/items/items[at0001]/value/defining_code/code_string as medication_code, " +
+////                "a_a/items/items/data[at0001]/items/items[at0001]/value/defining_code/terminology_id/value as medication_terminology, " +
+////                "a_a/items/items/data[at0001]/items/items[at/0002]/value/defining_code/code_string as route, " +
+////                "a_a/items/items/data[at0001]/items/items[at0003]/value/value as dose_directions, " +
 //                "from EHR e " +
-//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.care_summary.v0] " +
-//                "contains SECTION a_a[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1] " +
+//                "contains COMPOSITION a " +
+//                "contains INSTRUCTION a_a[openEHR-EHR-INSTRUCTION.medication_order.v0] " +
 //                "where a/name/value='Current medication list' " +
 ////                "and a/uid/value='" + medicationId + "' " +
 ////                "and e/ehr_status/subject/external_ref/namespace = '" + namespace + "' " +
+//                " AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
+
+//        query = "select a/uid/value as uid, " +
+//                "a/composer/name as author, " +
+//                "a/context/start_time/value as date_created, " +
+//                "a_a/activities/activities[at0001]/name/name as name_activities, " +
+//                "a_a/activities/activities[at0001]/timing/value as timing_activities, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0070]/value/value as name, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0109]/value/value as dose_amount, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0055]/value/value as dose_timing, " +
+//                "a_a/activities/activities[at0001]/description[at0002]/items[at0113]/items[at0012]/value/value/value as start_date " +
+//                "from EHR e " +
+//                "contains COMPOSITION a " +
+//                "contains INSTRUCTION a_a[openEHR-EHR-INSTRUCTION.medication_order.v0] " +
+//                "where a/name/value='Current medication list' " +
 //                " AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
 
 //        query =  "select a/uid/value as uid, " +
@@ -307,7 +326,7 @@ public class QueryParserTest {
 //                "where a/name/value='Procedures list' "+
 ////                "and a/uid/value='" + procedureId + "' " +
 //                "and e/ehr_status/subject/external_ref/id/value = '9999999000'";
-//                "and e/ehr_status/subject/external_ref/id/value = '" + patientId + "'";
+////                "and e/ehr_status/subject/external_ref/id/value = '" + patientId + "'";
 
 //        query = "select top 10 " +
 //                "a/uid/value,\n" +
@@ -327,20 +346,93 @@ public class QueryParserTest {
 //                "WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/value > 140";
 
         //============= RIPPLE CONFORMANCE TEMPLATE
-//        query =  "select a/uid/value as uid, " +
-//                "a/composer/name as author, " +
-//                "b_a/other_participations/performer/name as performer, " +
-//                "b_a/uid/value/value as instruction_uid, " +
-//                "b_a/narrative/value/value as narrative, " +
-//                "b_a/activities/activities[at0001]/name/name as name_activities, " +
-//                "b_a/activities/activities[at0001]/timing/value as timing_activities, " +
-//                "b_a/activities/activities[at0001]/action_archetype_id as archetype_activities " +
-//                "from EHR e " +
-//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1] " +
-//                "contains INSTRUCTION b_a[openEHR-EHR-INSTRUCTION.request-procedure.v1] " +
-//                "where a/name/value='Encounter' ";
+        query =  "select a/uid/value as uid, " +
+                "a/composer/name as author, " +
+                "b_a/other_participations/performer/name as performer, " +
+                "b_a/uid/value/value as instruction_uid, " +
+                "b_a/narrative/value/value as narrative, " +
+                "b_a/activities/activities[at0001]/name/name as name_activities, " +
+                "b_a/activities/activities[at0001]/timing/value as timing_activities, " +
+                "b_a/activities/activities[at0001]/action_archetype_id as archetype_activities " +
+                "from ehr e " +
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1] " +
+                "contains instruction b_a[openEHR-EHR-INSTRUCTION.request-procedure.v1] " +
+                "where a/name/value='Encounter' " +
+                "and b_a/activities/activities[at0001]/name/name = 'Request' " +
+                "and b_a/narrative/value/value = 'Human readable instruction narrative'";
 
-        query = "select e/ehr_id/value from EHR e contains COMPOSITION";
+        query = "select  b_a/data[at0001]/items[at0002]/value/value as Causative_agent,     " +
+                "b_a/data[at0001]/items[at0002]/value/defining_code/code_string as Causative_agent_code,     " +
+                "b_a/protocol[at0042]/items[at0062]/value/value as RecordedDate,     " +
+                "b_a/data[at0001]/items[at0009]/items[at0011]/value/value as Manifestation,     " +
+                "a/uid/value as compositionId " +
+                "from EHR e " +
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
+                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] " +
+                "where a/name/value='Allergies list'";
+
+//        query = "select count(e) as cnt from EHR e" +
+//                "  contains COMPOSITION a" +
+//                "  contains EVALUATION a_a[openEHR-EHR-EVALUATION.problem_diagnosis.v1]" +
+//                "  where a_a/data[at0001]/items[at0002]/value/defining_code/code_string matches {'456'}" +
+//                "  and a_a/data[at0001]/items[at0002]/value/defining_code/terminology_id/value = 'SNOMED-CT'" +
+//                "  and e/ehr_status/other_details/items[openEHR-EHR-CLUSTER.person_anonymised_parent.v1]/items[at0014]/value/value >= 1940" +
+//                "  and e/ehr_status/other_details/items[openEHR-EHR-CLUSTER.person_anonymised_parent.v1]/items[at0014]/value/value <= 1950";
+
+//        query = "select " +
+//                "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0012]/value/value as date," +
+//                "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0009]/value/value as status," +
+//                "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0002]/value/value/definingCode/terminologyId/value as code," +
+//                "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0002]/value/name as name " +
+//                "from EHR e[ehr_id/value='f2724b93-c9a6-49ff-ac52-11c0bd53b9a1'] "+
+//                "where e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0012]/value/value != '' " +
+//                "and e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0012]/value/value != ''";
+
+//        query = "select e/ehr_id/value from ehr e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9'] contains composition";
+//        query = "select e/ehr_id/value from EHR e contains composition";
+//        query = "select e/ehr_id/value from EHR e";
+//
+//        query = "select e/ehr_id/value, " +
+//                "c_a/items[at0053]/value/numerator as Percent_O2_numerator " +
+//                "from EHR e contains COMPOSITION c contains CLUSTER c_a[openEHR-EHR-CLUSTER.person-name.v1]";
+        
+        //================================================================================
+//        query = "select" +
+//                "    b_a/data[at0001]/items[at0002]/value/value as cause," +
+//                "    b_a/data[at0001]/items[at0009]/items[at0011]/value/value as reaction," +
+//                "    a/uid/value as compositionId " +
+//                "from EHR e  " +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
+//                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] " +
+//                "where a/name/value='Adverse reaction list' " +
+//                "and e/ehr_status/subject/external_ref/id/value  = '9999999000' " +
+//                "and e/ehr_status/subject/external_ref/namespace = 'DEMOGRAPHIC' ";
+//                " d/items[at0057]/items[at0064]/items[at0065]/value/value as medication " +
+
+//        query = "select " +
+//                " a/uid/value as composition_uid, " +
+//                " a_i/narrative/value as narrative, " +
+//                " a/context/start_time/value as start_time, " +
+//                " a_i/activities[at0001]/timing/value as timing, " +
+//                " d/items[at0001]/value/value as medication_name, " +
+//                " d/items[at0003]/value/magnitude as medication_strength," +
+//                " d/items[at0003]/value/units as medication_units," +
+//                " d/items[at0057]/items[at0064]/items[at0065]/value/magnitude as offset, " +
+//                " d/items[at0057]/items[at0064]/items[at0065]/value/units as units, " +
+//                " d/items[at0057]/items[at0064]/items[at0067]/value/value as event" +
+//                " from EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9']" +
+//                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.prescription.v1] " +
+//                " contains INSTRUCTION a_i[openEHR-EHR-INSTRUCTION.medication.v1] " +
+//                " contains DESCRIPTION d[openEHR-EHR-ITEM_TREE.medication_mod.v1]" +
+//                " orderby start_time DESC ";
+
+        query = "select " +
+                "e/ehr_id/value as ehr_id, " +
+                "e/ehr_status/subject/external_ref/id/value as subject_id, "+
+                "e/ehr_status/subject/external_ref/namespace as subject_namespace "+
+                "from EHR e " +
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
+                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] ";
 
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);

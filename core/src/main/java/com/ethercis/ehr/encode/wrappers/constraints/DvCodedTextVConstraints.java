@@ -16,7 +16,8 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
@@ -40,7 +41,7 @@ public class DvCodedTextVConstraints extends DataValueConstraints {
 
     private final int CODE_TEXT = 1;
     private final int CODE_DESCRIPTION = 2;
-    private transient Logger log = Logger.getLogger(DvCodedTextVConstraints.class);
+    private transient Logger log = LogManager.getLogger(DvCodedTextVConstraints.class);
 
     //a map of <support::code>,text value, description
     //the descriptive text is localized depending on the language set

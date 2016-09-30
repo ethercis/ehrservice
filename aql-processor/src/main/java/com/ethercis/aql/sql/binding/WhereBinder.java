@@ -107,6 +107,8 @@ public class WhereBinder {
             case "COMPOSITION":
             case "EHR":
                 field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
+                if (field == null)
+                    return null;
                 return new TaggedStringBuffer(field.toString(), TagField.SQLQUERY);
 
             default:
@@ -134,16 +136,16 @@ public class WhereBinder {
         return taggedBuffer;
     }
 
-    private Condition wrapInCondition(Condition condition, TaggedStringBuffer stringBuffer, Deque<Operator> operators){
+    private Condition wrapInCondition(Condition condition, TaggedStringBuffer taggedStringBuffer, Deque<Operator> operators){
         //perform the condition query wrapping depending on the dialect jsquery or sql
         String wrapped;
 
-        switch (stringBuffer.getTagField()){
+        switch (taggedStringBuffer.getTagField()){
             case JSQUERY:
-                wrapped = JsonbEntryQuery.Jsquery_OPEN + stringBuffer.toString() + JsonbEntryQuery.Jsquery_CLOSE;
+                wrapped = JsonbEntryQuery.Jsquery_COMPOSITION_OPEN + taggedStringBuffer.toString() + JsonbEntryQuery.Jsquery_CLOSE;
                 break;
             case SQLQUERY:
-                wrapped = stringBuffer.toString();
+                wrapped = taggedStringBuffer.toString();
                 break;
 
             default:
@@ -234,8 +236,10 @@ public class WhereBinder {
                     taggedBuffer = new TaggedStringBuffer();
                 }
                 TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item);
-                taggedBuffer.append(taggedStringBuffer.toString());
-                taggedBuffer.setTagField(taggedStringBuffer.getTagField());
+                if (taggedStringBuffer != null) {
+                    taggedBuffer.append(taggedStringBuffer.toString());
+                    taggedBuffer.setTagField(taggedStringBuffer.getTagField());
+                }
 //                condition = wrapInCondition(condition, stringBuffer, operators);
             }
             else if (item instanceof List){
@@ -255,6 +259,8 @@ public class WhereBinder {
     }
 
 
+
+
     //from AQL grammar
     Set<String> operators = new HashSet<String>(Arrays.asList("=", "!=", ">", ">=", "<",  "<=", "MATCHES", "EXISTS", "NOT", "(", ")", "{", "}"));
 
@@ -265,6 +271,9 @@ public class WhereBinder {
         if (taggedBuffer.toString().contains("composition_id")){
             if (item.contains("::"))
                 return item.split("::")[0]+"'";
+        }
+        if (taggedBuffer.stringBuffer.indexOf("#") > 0 && item.contains("'")){ //conventionally double quote for jsquery
+            return item.replaceAll("'", "\"");
         }
         return item;
     }

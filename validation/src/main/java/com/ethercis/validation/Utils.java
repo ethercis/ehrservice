@@ -41,8 +41,9 @@ public class Utils {
     }
 
     public static void checkDateTimeSyntax(String path, String dvDateStr, String pattern){
-        if (!DvDateTime.isValidISO8601DateTime(dvDateStr))
-           ValidationException.raise(path, "Supplied date/time is not ISO8601 compatible:" + dvDateStr, "DATE04");
+        //TODO: do a smarter test based on the supplied pattern...
+//        if (!DvDateTime.isValidISO8601DateTime(dvDateStr))
+//           ValidationException.raise(path, "Supplied date/time is not ISO8601 compatible:" + dvDateStr, "DATE04");
 
         //check pattern if any
         if (pattern != null){

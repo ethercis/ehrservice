@@ -24,7 +24,9 @@ import com.ethercis.ehr.encode.wrappers.ParticipationVBean;
 import com.ethercis.ehr.keyvalues.I_PathValue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.datatypes.basic.DataValue;
@@ -45,8 +47,10 @@ import java.util.*;
 public class MapInspector {
 
     private Deque<Map<String, Object>> stack;
-    static Logger log = Logger.getLogger(MapInspector.class);
+    static Logger log = LogManager.getLogger(MapInspector.class);
     public static final String TAG_OBJECT =  "$OBJECT$";
+    
+    private String[] structuralClasses = {"Element","Cluster","ItemSingle","ItemList","ItemTable","ItemTree","History","IntervalEvent","PointEvent"};
 
     public MapInspector(){
         this.stack = new ArrayDeque<>();
@@ -92,12 +96,66 @@ public class MapInspector {
         return stack;
     }
 
+    public String simplifyPathExpression(String path){
+        if (path.contains("{{")) //annotated
+            return path;
+        List<String> segments = Locatable.dividePathIntoSegments(path);
+        List<String> result = new ArrayList<>();
+//        StringBuffer stringBuffer = new StringBuffer();
+        //first segment is added
+        result.add(segments.get(0));
+        segments.remove(0);
+
+        for (String segment: segments){
+            if (segment.contains(" and name/value") || segment.contains(",")){
+                String simplified = segment.substring(0, segment.indexOf(segment.contains(" and name/value") ? " and name/value" : ","))+"]";
+                result.add(simplified);
+            }
+            else
+                result.add(segment);
+        }
+
+        return "/"+String.join("/", result);
+    }
+
+    public String simplifyPathExpressionKeepArrayIndex(String path){
+        if (path.contains("{{")) //annotated
+            return path;
+        List<String> segments = Locatable.dividePathIntoSegments(path);
+        List<String> result = new ArrayList<>();
+//        StringBuffer stringBuffer = new StringBuffer();
+        //first segment is added
+//        result.add(segments.get(0));
+//        segments.remove(0);
+
+        for (String segment: segments){
+            if (segment.contains(" and name/value") || segment.contains(",")){
+                if (segment.contains("#")) {
+                    Integer arrayValue = LocatableHelper.retrieveIndexValue(segment);
+                    String trimmed = LocatableHelper.trimNameValue(segment);
+                    trimmed = trimmed.substring(0, trimmed.length() -1 )+",#"+arrayValue+"]";
+                    result.add(trimmed);
+                }
+                else {
+                    String trimmed = LocatableHelper.trimNameValue(segment);
+                    result.add(trimmed);
+                }
+            }
+            else
+                result.add(segment);
+        }
+
+        return "/"+String.join("/", result);
+    }
+
     public Map<String, String> getStackFlatten(){
         Map<String, String> retMap = new TreeMap<>();
 
         for (Object o : stack) {
             Map<String, Object> map = (Map) o;
-            String path = (String) map.get(CompositionSerializer.TAG_PATH);
+            String path = simplifyPathExpressionKeepArrayIndex((String) map.get(CompositionSerializer.TAG_PATH));
+            //transform the path expression, remove ' and name/value='
+
             Object object = map.get(CompositionSerializer.TAG_VALUE);
             if (object instanceof Participation) {
                 Participation participation = (Participation) object;
@@ -114,8 +172,10 @@ public class MapInspector {
 
 
             }
-            else if (object instanceof DvParsable)
-                retMap.put(path, ((DvParsable) object).getValue());
+            else if (object instanceof DvParsable) {
+                retMap.put(path+I_PathValue.VALUE_SUBTAG, ((DvParsable) object).getValue());
+                retMap.put(path+I_PathValue.FORMALISM_SUBTAG, ((DvParsable)object).getFormalism());
+            }
             else if (object instanceof DvInterval) {
                 DvInterval interval = (DvInterval) object;
                 String lowerValue = (interval.getLower() != null ? interval.getLower().toString() : "[null]");
@@ -133,10 +193,21 @@ public class MapInspector {
                     composite = true;
                 }
                 if (composite){
-                    retMap.put(path + I_PathValue.VALUE_SUBTAG, object.toString());
+                    String classname = (String)map.get(CompositionSerializer.TAG_CLASS);
+                    if (!isStructural(classname)) {
+                        if (map.containsKey(TAG_OBJECT)){
+//                            Object = (DataValue) map.get(TAG_OBJECT);
+                            retMap.put(path + I_PathValue.VALUE_SUBTAG, map.get(TAG_OBJECT).toString());
+                        }
+                        else
+                            retMap.put(path + I_PathValue.VALUE_SUBTAG, object.toString());
+                    }
+                    else
+                        retMap.put(path + I_PathValue.VALUE_SUBTAG, object.toString());
                 }
-                else
+                else {
                     retMap.put(path, object.toString());
+                }
             }
             else
                 log.error("no mapping for object map:" + map);
@@ -227,6 +298,12 @@ public class MapInspector {
             String key = node.getKey();
             Object value = node.getValue();
 
+            if (map.size() == 4 && map.containsKey(CompositionSerializer.TAG_CLASS)){ //encoded element
+                generateObject(map);
+                stack.push(map);
+                return;
+            }
+
             if (key.equals(VBeanUtil.TAG_VALUE_AS_STRING)){
                 log.debug("VALUE AS STRING ------->");
                 //it is expected to have a DataValue object here...
@@ -237,24 +314,24 @@ public class MapInspector {
                 }
 //                continue;
             }
-            else if (key.equals(CompositionSerializer.TAG_CLASS)) { //new map object, trigger to add a new entry on stack
-                //if there is a value as string don't create an instance
-//                if (map.containsKey(VBeanUtil.TAG_VALUE_AS_STRING))
-//                    continue;
-
-                if (!(stack.isEmpty())){ //build object for the preceding class...
-                    Map<String, Object> current = stack.getFirst();
-                    log.debug("Building object for class " + current.get(CompositionSerializer.TAG_CLASS));
-                    generateObject(current);
-                }
-
-//                Map<String, Object> objectAttributes = new HashMap<>();
-//                objectAttributes.put(key, value);
-//                stack.push(objectAttributes);
-            }
-//            else if (key.equals(CompositionSerializer.TAG_PATH)) {
-//                addObjectAttributesOnStack(key, value);
+//            else if (key.equals(CompositionSerializer.TAG_CLASS)) { //new map object, trigger to add a new entry on stack
+//                //if there is a value as string don't create an instance
+////                if (map.containsKey(VBeanUtil.TAG_VALUE_AS_STRING))
+////                    continue;
+//
+//                if (!(stack.isEmpty())){ //build object for the preceding class...
+//                    Map<String, Object> current = stack.getFirst();
+//                    log.debug("Building object for class " + current.get(CompositionSerializer.TAG_CLASS));
+//                    generateObject(current);
+//                }
+//
+////                Map<String, Object> objectAttributes = new HashMap<>();
+////                objectAttributes.put(key, value);
+////                stack.push(objectAttributes);
 //            }
+////            else if (key.equals(CompositionSerializer.TAG_PATH)) {
+////                addObjectAttributesOnStack(key, value);
+////            }
 
 
             if (!isElementMetaData(key) && value instanceof String){
@@ -330,7 +407,7 @@ public class MapInspector {
 //                        current.remove(CompWalker.TAG_VALUE);
                 }
                 else {
-                    if (((Map) value).containsKey(CompositionSerializer.TAG_CLASS)){
+                    if (((Map) value).containsKey(CompositionSerializer.TAG_CLASS) && !isStructural((String) ((Map) value).get(CompositionSerializer.TAG_CLASS))){
                         generateObject((Map<String, Object>) value);
                         stack.push((Map<String, Object>) value);
 //                        return;
@@ -420,6 +497,10 @@ public class MapInspector {
 
     public void resetStack(){
         stack.clear();
+    }
+
+    private boolean isStructural(String classname){
+        return Arrays.asList(structuralClasses).contains(classname);
     }
 
 }

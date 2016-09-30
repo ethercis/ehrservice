@@ -7,8 +7,18 @@ import com.ethercis.dao.access.support.RmObjectHelper;
 import com.ethercis.dao.access.support.TestHelper;
 import com.ethercis.dao.access.util.CompositionUtil;
 import com.ethercis.dao.access.util.ContributionDef;
+import com.ethercis.ehr.building.ContentBuilder;
+import com.ethercis.ehr.building.I_ContentBuilder;
+import com.ethercis.ehr.building.OptContentBuilder;
 import com.ethercis.ehr.building.util.CompositionAttributesHelper;
 import com.ethercis.ehr.building.util.ContextHelper;
+import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.DvDateAdapter;
+import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.keyvalues.EcisFlattener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -16,12 +26,15 @@ import org.junit.Test;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.EventContext;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
+import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * ETHERCIS Project ehrservice
@@ -215,5 +228,70 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
             fail("Could not storeComposition new composition:"+e);
         }
     }
+
+    //    @Test
+    public void testCreateComposition() throws Exception {
+//        Map<String, String> kvPairs = new HashMap<>();
+
+        String templateId = "COLNEC Medication";
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
+        StringBuffer sb = new StringBuffer();
+//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
+//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
+        Files.readAllLines(Paths.get("/Development/Dropbox/COLNEC/colnec_medication.ecisflat.json"), Charset.defaultCharset()).forEach(line -> sb.append(line));
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+        builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
+        Gson gson = builder.setPrettyPrinting().create();
+
+        Map<String, String> kvPairs = gson.fromJson(sb.toString(), HashMap.class);
+
+        PvCompoHandler pvCompoHandler = new PvCompoHandler(testDomainAccess, templateId, null);
+        UUID compositionId = pvCompoHandler.storeComposition(ehrIdUUID, kvPairs);
+        Composition composition = pvCompoHandler.assign(kvPairs);
+
+        assertNotNull(composition);
+
+        //serialize it
+
+        CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, Object> serialized = compositionSerializer.process(composition);
+        String json = gson.toJson(serialized);
+        System.out.println(json);
+
+        //and back to ECISFLAT
+        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, false, CompositionSerializer.WalkerOutputMode.PATH);
+        json = gson.toJson(testRetMap);
+        System.out.println(json);
+
+
+
+    }
+
+    //    @Test
+    public void testTemplateExample() throws Exception {
+//        Map<String, String> kvPairs = new HashMap<>();
+
+        String templateId = "COLNEC Medication";
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
+        StringBuffer sb = new StringBuffer();
+        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+        Gson gson = builder.setPrettyPrinting().create();
+
+        I_ContentBuilder contentBuilder  = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+        Composition composition = contentBuilder.generateNewComposition();
+
+        assertNotNull(composition);
+
+        //and back to ECISFLAT
+        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, true, CompositionSerializer.WalkerOutputMode.PATH);
+        String json = gson.toJson(testRetMap);
+        System.out.println(json);
+
+
+
+    }
+
 
 }

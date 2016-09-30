@@ -1,6 +1,9 @@
 package com.ethercis.ehr.keyvalues;
 
+import com.ethercis.ehr.building.ContentBuilder;
 import com.ethercis.ehr.building.I_ContentBuilder;
+import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.FieldUtil;
 import com.ethercis.ehr.encode.wrappers.*;
 import com.ethercis.ehr.json.FlatJsonUtil;
@@ -50,6 +53,7 @@ public class PathValueTest {
         props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
 
         Pattern include = Pattern.compile(".*");
@@ -217,6 +221,34 @@ public class PathValueTest {
         jsonString = gson.toJson(testRetMap);
         System.out.println(jsonString);
 
+    }
+
+    @Test
+    public void testSerializeArray() throws Exception {
+        String templateId = "COLNEC_history_of_past_illness.v0";
+        PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.kvp.json");
+        Map<String, String> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
+        Composition composition = pathValue.assign(valuePairs);
+        assertNotNull(composition);
+        //serialize this composition  for persistence
+        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        String dbEncoded = compositionSerializer.dbEncode(composition);
+        System.out.print(dbEncoded);
+
+        //rebuild the composition from the encoded structure
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
+        Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
+        assertNotNull(retrieved);
+        //export flat
+        Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        String jsonString = gson.toJson(testRetMap);
+
+        System.out.println(jsonString);
     }
 
     DataValue dataValue;

@@ -19,27 +19,35 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.dao.access.util.ContributionDef;
+import com.ethercis.ehr.encode.*;
+import com.ethercis.ehr.keyvalues.EcisFlattener;
 import com.ethercis.jooq.pg.enums.ContributionDataType;
-import com.ethercis.jooq.pg.tables.Contribution;
 import com.ethercis.jooq.pg.tables.records.ContributionRecord;
 import com.ethercis.jooq.pg.tables.records.EhrRecord;
 import com.ethercis.jooq.pg.tables.records.IdentifierRecord;
 import com.ethercis.jooq.pg.tables.records.StatusRecord;
 import com.ethercis.ehr.building.I_ContentBuilder;
-import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.transform.rawjson.RawJsonParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.log4j.Logger;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.MultiMap;
+import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.datastructure.itemstructure.ItemStructure;
-import org.openehr.rm.datastructure.itemstructure.ItemTree;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
+import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 import org.postgresql.util.PGobject;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,13 +61,14 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class EhrAccess extends DataAccess implements  I_EhrAccess {
 
-    private static final Logger log = Logger.getLogger(EhrAccess.class);
+    private static final Logger log = LogManager.getLogger(EhrAccess.class);
     private static EhrRecord ehrRecord;
     private StatusRecord statusRecord = null;
     private static boolean isNew = false;
 
     //holds the non serialized archetyped other_details structure
     private Locatable otherDetails = null;
+    private String otherDetailsSerialized = null; //kind of a hack really, used to deal with RAW JSON without a template!
     private String otherDetailsTemplateId;
 
     private I_ContributionAccess contributionAccess = null; //locally referenced contribution associated to ehr transactions
@@ -120,9 +129,13 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         CompositionSerializer serializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
         Map<String, Object>retmap = serializer.processItem(CompositionSerializer.TAG_OTHER_DETAILS, otherDetails);
         //the template id is encoded into the json structure
-        retmap.put(TAG_TEMPLATE_ID, otherDetailsTemplateId);
+        if (otherDetailsTemplateId != null)
+            retmap.put(TAG_TEMPLATE_ID, otherDetailsTemplateId);
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+        builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
+        builder.registerTypeAdapter(DvTime.class, new DvTimeAdapter());
+        builder.registerTypeAdapter(DvDuration.class, new DvDurationAdapter());
         Gson gson = builder.setPrettyPrinting().create();
         return gson.toJson(retmap);
     }
@@ -176,6 +189,8 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
             if (otherDetails != null) {
                 insertStatement.setObject(5, serializeOtherDetails());
             }
+            else if (otherDetailsSerialized != null)
+                insertStatement.setObject(5, otherDetailsSerialized);
             else
                 insertStatement.setObject(5, null);
 
@@ -244,6 +259,8 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
             if (otherDetails != null) {
                 updateStatement.setObject(4, serializeOtherDetails());
             }
+            else if (otherDetailsSerialized != null)
+                updateStatement.setObject(4, otherDetailsSerialized);
 
             updateStatement.setTimestamp(5, statusRecord.getSysTransaction());
             updateStatement.setObject(6, statusRecord.getId());
@@ -492,23 +509,31 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
             String serialized = ((PGobject) ehrAccess.statusRecord.getOtherDetails()).getValue();
 
             GsonBuilder gsonBuilder = new GsonBuilder();
-            Gson gson = gsonBuilder.create();
+            Gson gson = gsonBuilder.setPrettyPrinting().create();
 
             Map structured = gson.fromJson(serialized, Map.class);
 
-            if (!structured.containsKey(I_EhrAccess.TAG_TEMPLATE_ID))
-                throw new IllegalArgumentException("Serialized other details does not contain its template Id");
+            if (structured.containsKey(I_EhrAccess.TAG_TEMPLATE_ID)){
+//                throw new IllegalArgumentException("Serialized other details does not contain its template Id");
 
-            ehrAccess.otherDetailsTemplateId = (String)structured.get(I_EhrAccess.TAG_TEMPLATE_ID);
+                ehrAccess.otherDetailsTemplateId = (String) structured.get(I_EhrAccess.TAG_TEMPLATE_ID);
 
-            //identify the template name
-            I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, domainAccess.getKnowledgeManager(), ehrAccess.otherDetailsTemplateId);
-            Locatable locatable = contentBuilder.buildLocatableFromJson(serialized);
+                //identify the template name
+                I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, domainAccess.getKnowledgeManager(), ehrAccess.otherDetailsTemplateId);
+                Locatable locatable = contentBuilder.buildLocatableFromJson(serialized);
 
-            if (locatable instanceof ItemStructure)
-                ehrAccess.otherDetails = (ItemStructure)locatable;
-            else
-                throw new IllegalArgumentException("Retrieved structure in other details is not an ItemStructure");
+                if (locatable instanceof ItemStructure)
+                    ehrAccess.otherDetails = (ItemStructure) locatable;
+                else
+                    throw new IllegalArgumentException("Retrieved structure in other details is not an ItemStructure");
+            }
+            else {
+                //could return other_status under ECISFLAT
+//                Map<String, Object> retmap = gson.fromJson(serialized, TreeMap.class);
+//                Map<String, String> flatten = EcisFlattener.generateEcisFlat(retmap);
+                ehrAccess.otherDetailsSerialized = serialized;
+//                log.warn("other_details without a templateId cannot be rebuilt... sorry");
+            }
         }
 
         ehrAccess.isNew = false;
@@ -583,13 +608,26 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         if (ehrAccess == null)
             throw new IllegalArgumentException("No ehr found for id:" + ehrId);
 
-        Map<String, String> idlist = new HashMap<>();
+        Map<String, String> idlist = MapUtils.multiValueMap(new HashMap<String, String>());
 
         //getNewInstance the corresponding subject Identifiers
+
         context.selectFrom(IDENTIFIER).
                 where(IDENTIFIER.PARTY.eq(getParty(ehrAccess))).fetch()
                 .forEach(record -> {
-                    idlist.put(record.getIssuer(), record.getIdValue());
+                    idlist.put("identifier_issuer", record.getIssuer());
+                    idlist.put("identifier_id_value", record.getIdValue());
+                });
+
+        //get the list of ref attributes
+        context.selectFrom(PARTY_IDENTIFIED)
+                .where(PARTY_IDENTIFIED.ID.eq(getParty(ehrAccess)))
+                .fetch()
+                .forEach(record -> {
+                    idlist.put("ref_name_space", record.getPartyRefNamespace());
+                    idlist.put("id_value", record.getPartyRefValue());
+                    idlist.put("ref_name_scheme", record.getPartyRefScheme());
+                    idlist.put("ref_party_type", record.getPartyRefType());
                 });
 
         return idlist;
@@ -674,9 +712,21 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
     }
     
     @Override
-    public void setOtherDetails(Locatable otherDetails, String templateId){
+    public void setOtherDetails(Locatable otherDetails, String templateId) {
         this.otherDetailsTemplateId = templateId;
         this.otherDetails = otherDetails;
+    }
+
+    @Override
+    public void setOtherDetails(String otherDetails, String templateId){
+        this.otherDetailsTemplateId = templateId;
+        this.otherDetailsSerialized = otherDetails;
+    }
+
+    @Override
+    public void setOtherDetails(Map otherDetails, String templateId) throws Exception {
+        this.otherDetailsTemplateId = templateId;
+        this.otherDetailsSerialized = RawJsonParser.dbEncode(otherDetails);
     }
 
     @Override
@@ -687,6 +737,11 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
     @Override
     public String getOtherDetailsTemplateId() {
         return otherDetailsTemplateId;
+    }
+
+    @Override
+    public String getOtherDetailsSerialized() {
+        return otherDetailsSerialized;
     }
 
     public I_ContributionAccess getContributionAccess() {
@@ -711,5 +766,10 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
     @Override
     public boolean isSetOtherDetails(){
         return otherDetails != null;
+    }
+
+    @Override
+    public boolean isSetOtherDetailsSerialized(){
+        return otherDetailsSerialized != null;
     }
 }

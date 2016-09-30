@@ -134,7 +134,7 @@ public class RMObjectBuilder {
 				ItemTable.class,       ItemTree.class,        History.class,         IntervalEvent.class,
 				PointEvent.class,
 			
-				// com.ethercis.ehr classes
+				// domain classes
 				Action.class,          Activity.class,        Evaluation.class,      ISMTransition.class,
 				Instruction.class,     InstructionDetails.class, Observation.class,  AdminEntry.class,
 				Section.class,         Composition.class,     EventContext.class,    EHRStatus.class,
@@ -651,7 +651,7 @@ public class RMObjectBuilder {
 
 	private void checkRequired(Attribute attribute) throws AttributeMissingException {
 		if (attribute.required()) {
-			throw new AttributeMissingException(String.format("missing value for required attribute %s",
+			throw new AttributeMissingException(String.format("missing value for required attribute '%s'",
 					attribute.name()));
 		}
 	}

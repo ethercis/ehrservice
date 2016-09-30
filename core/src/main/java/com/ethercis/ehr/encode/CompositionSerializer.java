@@ -24,7 +24,8 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.map.MultiValueMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.rm.RMObject;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
@@ -42,11 +43,13 @@ import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.encapsulated.DvParsable;
 import org.openehr.rm.datatypes.quantity.DvInterval;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
+import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.integration.GenericEntry;
-import org.openehr.schemas.v1.LOCATABLE;
 
 import java.util.*;
 
@@ -61,14 +64,13 @@ import java.util.*;
 public class CompositionSerializer {
 
 
-
 	public enum WalkerOutputMode {
 		PATH,
 		NAMED,
         EXPANDED
 	}
 	
-	private static Logger log = Logger.getLogger(CompositionSerializer.class);
+	private static Logger log = LogManager.getLogger(CompositionSerializer.class);
 
 	private Map<String, Object> ctree;
 
@@ -83,7 +85,7 @@ public class CompositionSerializer {
 	public static final String TAG_META = "/meta";
 	public static final String TAG_CONTENT = "/content";
 	static final String TAG_PROTOCOL = "/protocol";
-	static final String TAG_DATA = "/data";
+	public static final String TAG_DATA = "/data";
 	static final String TAG_STATE = "/state";
 	static final String TAG_DESCRIPTION = "/description";
 	public static final String TAG_TIME = "/time";
@@ -92,7 +94,7 @@ public class CompositionSerializer {
 	static final String TAG_INSTRUCTION="/instruction";
 	public static final String TAG_NARRATIVE = "/narrative";
 	public static final String TAG_ITEMS="/items";
-    static final String TAG_OTHER_CONTEXT = "/context/other_context";
+    public static final String TAG_OTHER_CONTEXT = "/context/other_context";
 	public static final String TAG_ACTIVITIES="/activities";
 	public static final String TAG_ACTIVITY="/activity";
 	public static final String TAG_VALUE="/value";
@@ -203,7 +205,7 @@ public class CompositionSerializer {
 				return prefix;
 			else {
 				String path = prefix + "[" + node.getArchetypeNodeId() + "]";
-				if (!mapClass.equals(MultiValueMap.class)){
+				if (!mapClass.equals(MultiValueMap.class) && (!(path.startsWith("/description")))){
 					if (path.contains("[openEHR-") || path.contains(CompositionSerializer.TAG_ACTIVITIES) || path.contains(CompositionSerializer.TAG_ITEMS) || path.contains(CompositionSerializer.TAG_EVENTS)) {
 					//expand name in key
 						String name = node.getName().getValue();
@@ -367,9 +369,11 @@ public class CompositionSerializer {
 		ctree = newPathMap();
 
 		if (locatable instanceof Item)
-			putObject(ctree, getNodeTag(tag, locatable, ctree.getClass()), traverse((Item)locatable, TAG_ITEMS));
+//			putObject(ctree, getNodeTag(tag, locatable, ctree.getClass()), traverse((Item)locatable, TAG_ITEMS));
+			putObject(ctree, tag, traverse((Item)locatable, TAG_ITEMS));
 		else if (locatable instanceof ItemStructure)
-			putObject(ctree, getNodeTag(tag, locatable, ctree.getClass()), traverse((ItemStructure)locatable, TAG_ITEMS));
+//			putObject(ctree, getNodeTag(tag, locatable, ctree.getClass()), traverse((ItemStructure)locatable, TAG_ITEMS));
+			putObject(ctree, tag, traverse((ItemStructure)locatable, TAG_ITEMS));
 		else
 			throw new IllegalArgumentException("locatable is not an Item or ItemStructure instance...");
 
@@ -554,7 +558,7 @@ public class CompositionSerializer {
 
 			if (instruction.getProtocol() != null)
 				putObject(ltree, getNodeTag(TAG_PROTOCOL, ((Instruction) item).getProtocol(), ltree.getClass()), traverse(instruction.getProtocol(), TAG_PROTOCOL));
-			if (instruction.getNarrative() != null && !instruction.getNarrative().equals(new DvText(RmBinding.DEFAULT_NARRATIVE)))
+			if (instruction.getNarrative() != null && (allElements || !instruction.getNarrative().equals(new DvText(RmBinding.DEFAULT_NARRATIVE))))
 				encodeNodeAttribute(ltree, TAG_NARRATIVE, instruction.getNarrative(), instruction.getName().getValue());
 			if (instruction.getWorkflowId() != null)
 				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, instruction.getWorkflowId(), instruction.getName().getValue());
@@ -572,6 +576,7 @@ public class CompositionSerializer {
 				Map<String, Object> activities = newMultiMap();
 				for (Activity act : instruction.getActivities()) {
 					itemStack.pushStacks(TAG_ACTIVITIES + "[" + act.getArchetypeNodeId() + "]", act.getName().getValue());
+//					putObject(activities, getNodeTag(TAG_ACTIVITIES, act, activities.getClass()), traverse(act, TAG_DESCRIPTION));
 					putObject(activities, getNodeTag(TAG_ACTIVITIES, act, activities.getClass()), traverse(act, TAG_DESCRIPTION));
 					itemStack.popStacks();
 				}
@@ -608,7 +613,7 @@ public class CompositionSerializer {
 				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, action.getGuidelineId(), action.getName().getValue());
 
 			if (action.getTime() != null){
-				if (!action.getTime().equals(new DvDateTime(RmBinding.DEFAULT_DATE_TIME)))
+				if (allElements || !action.getTime().equals(new DvDateTime(RmBinding.DEFAULT_DATE_TIME)))
 					encodeNodeAttribute(ltree, TAG_TIME, action.getTime(), action.getName().getValue());
 			}
 
@@ -621,7 +626,7 @@ public class CompositionSerializer {
 
 			if (action.getIsmTransition() != null){
 				ISMTransition ismTransition = action.getIsmTransition();
-				if (ismTransition != null && ismTransition.getCareflowStep() != null && !ismTransition.getCareflowStep().getValue().equals("DUMMY")) {
+				if (ismTransition != null && ismTransition.getCareflowStep() != null && (allElements || !ismTransition.getCareflowStep().getValue().equals("DUMMY"))) {
 					if (ismTransition.getCurrentState() != null)
 						encodeNodeAttribute(ltree, TAG_ISM_TRANSITION + TAG_CURRENT_STATE, ismTransition.getCurrentState(), action.getName().getValue());
 					if (ismTransition.getTransition() != null)
@@ -729,7 +734,7 @@ public class CompositionSerializer {
 
         if (act.getTiming() != null) {
 			//CHC: 160317 do not pass a name for time
-			if (!act.getTiming().equals(new DvParsable(RmBinding.DEFAULT_TIMING_SCHEME, RmBinding.DEFAULT_TIMING_FORMALISM)))
+			if (allElements || !act.getTiming().equals(new DvParsable(RmBinding.DEFAULT_TIMING_SCHEME, RmBinding.DEFAULT_TIMING_FORMALISM)))
             	encodeNodeAttribute(ltree, TAG_TIMING, act.getTiming(), null);
         }
 
@@ -777,7 +782,7 @@ public class CompositionSerializer {
 		log.debug(itemStack.pathStackDump()+TAG_ORIGIN+"["+item.getArchetypeNodeId()+"]="+item.getOrigin().toString());
 		
 		if (item.getOrigin() != null) {
-			if (!item.getOrigin().equals(new DvDateTime(OptBinding.DEFAULT_DATE_TIME)))
+			if (allElements || !item.getOrigin().equals(new DvDateTime(OptBinding.DEFAULT_DATE_TIME)))
 				encodeNodeAttribute(ltree, TAG_ORIGIN, item.getOrigin(), item.getName().getValue());
 		}
 
@@ -808,7 +813,7 @@ public class CompositionSerializer {
 
 
 				if (event.getTime() != null) {
-					if (!event.getTime().equals(new DvDateTime(OptBinding.DEFAULT_DATE_TIME)))
+					if (!allElements || event.getTime().equals(new DvDateTime(OptBinding.DEFAULT_DATE_TIME)))
 						encodeNodeAttribute(subtree, TAG_TIME, event.getTime(), event.getName().getValue());
 				}
 				if (event.getData() != null)
@@ -1059,8 +1064,11 @@ public class CompositionSerializer {
 
 			if (c.getItems() != null) {
 
-				for (Item i : c.getItems()) {
-					putObject(ltree, getNodeTag(TAG_ITEMS, i, ltree.getClass()), traverse(i, TAG_ITEMS));
+				//CHC:160914: fixed issue with cluster encoding as items (generated /value {/name... /value... /$PATH$... $CLASS$})
+				//this caused inconsistencies when running AQL queries
+				for (Item clusterItem : c.getItems()) {
+					compactEntry(ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree.getClass()), traverse(clusterItem, TAG_ITEMS));
+//					putObject(ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree.getClass()), traverse(clusterItem, TAG_ITEMS));
                 }
 			}
 			if (ltree.size() > 0)
@@ -1101,5 +1109,32 @@ public class CompositionSerializer {
 		String mapjson = gson.toJson(map);
 
 		return mapjson;
+	}
+
+	/**
+	 * Convenience method, encode a locatable to be persisted in a JSON data entry
+	 * @param locatable
+	 * @return
+	 * @throws Exception
+	 */
+	public String dbEncode(Locatable locatable) throws Exception {
+		Map<String, Object> stringObjectMap = processItem(locatable);
+		GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+		Gson gson = builder.setPrettyPrinting().create();
+		return gson.toJson(stringObjectMap);
+	}
+
+	public String dbEncode(Composition composition) throws Exception {
+		Map<String, Object> stringObjectMap = process(composition);
+		GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+		Gson gson = builder.setPrettyPrinting().create();
+		return gson.toJson(stringObjectMap);
+	}
+
+	public String dbEncode(String tag, Locatable locatable) throws Exception {
+		Map<String, Object> stringObjectMap = processItem(tag, locatable);
+		GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+		Gson gson = builder.setPrettyPrinting().create();
+		return gson.toJson(stringObjectMap);
 	}
 }

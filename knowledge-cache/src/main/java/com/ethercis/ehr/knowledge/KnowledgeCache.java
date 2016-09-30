@@ -18,7 +18,8 @@ package com.ethercis.ehr.knowledge;
 
 import openEHR.v1.template.TEMPLATE;
 import openEHR.v1.template.TemplateDocument;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.openehr.am.archetype.Archetype;
@@ -117,7 +118,7 @@ public class KnowledgeCache implements I_KnowledgeCache {
 	
 	public static String DEFAULT_ENCODING = "UTF-8";
 
-	private static Logger log = Logger.getLogger(KnowledgeCache.class);
+	private static Logger log = LogManager.getLogger(KnowledgeCache.class);
 
 //    private RunTimeSingleton global;
 

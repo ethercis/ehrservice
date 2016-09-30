@@ -42,9 +42,10 @@ public class CDuration extends CConstraint implements I_CTypeValidate {
         String dvDurationStr = (String)aValue;
 
         //check pattern if any
-        if (cduration.isSetPattern() && !dvDurationStr.matches(cduration.getPattern())){
-            throw new ValidationException(path, "Supplied value does not match pattern:"+dvDurationStr);
-        }
+        //TODO: use a pattern matching test for duration
+//        if (cduration.isSetPattern() && !dvDurationStr.matches(cduration.getPattern())){
+//            throw new ValidationException(path, "Supplied value does not match pattern:"+dvDurationStr);
+//        }
 
         //range check
         if (cduration.isSetRange())

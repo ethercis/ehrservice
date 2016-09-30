@@ -16,7 +16,8 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
@@ -33,7 +34,7 @@ import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
  * Created by Christian Chevalley on 7/7/2014.
  */
 public class DvDateTimeVConstraints extends DataValueConstraints {
-    static Logger logger = Logger.getLogger(DvDateTimeVConstraints.class);
+    static Logger logger = LogManager.getLogger(DvDateTimeVConstraints.class);
 
     //a map of <support::code>,text value, description
     //the descriptive text is localized depending on the language set

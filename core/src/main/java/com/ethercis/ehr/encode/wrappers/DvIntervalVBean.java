@@ -20,7 +20,8 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.google.gson.internal.LinkedTreeMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.rm.datatypes.quantity.DvCount;
 import org.openehr.rm.datatypes.quantity.DvInterval;
 import org.openehr.rm.datatypes.quantity.DvOrdered;
@@ -44,7 +45,7 @@ public class DvIntervalVBean extends DataValueAdapter implements I_VBeanWrapper 
 		this.adaptee = i;
 	}
 
-    static Logger log = Logger.getLogger(DvIntervalVBean.class);
+    static Logger log = LogManager.getLogger(DvIntervalVBean.class);
 	
 	@Override
 	public Map<String, Object> getFieldMap() throws Exception {

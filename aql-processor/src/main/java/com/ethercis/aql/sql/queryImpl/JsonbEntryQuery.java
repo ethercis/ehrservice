@@ -19,6 +19,7 @@ package com.ethercis.aql.sql.queryImpl;
 
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
+import com.ethercis.ehr.encode.CompositionSerializer;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jooq.*;
@@ -27,6 +28,7 @@ import org.jooq.impl.DSL;
 import org.openehr.rm.common.archetyped.Locatable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,10 +39,23 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
-    private static final String SELECT_CONTENT_MACRO = COMP_EXPAND.ENTRY+"->(select json_object_keys("+COMP_EXPAND.ENTRY+"::json))";
-    private final static String JSONBSelector_OPEN = SELECT_CONTENT_MACRO +" #>> '{";
+    //COMP_EXPAND (Composition query)
+    private static final String SELECT_COMPOSITION_CONTENT_MACRO = COMP_EXPAND.ENTRY+"->(select json_object_keys("+COMP_EXPAND.ENTRY+"::json))";
+    private final static String JSONBSelector_COMPOSITION_OPEN = SELECT_COMPOSITION_CONTENT_MACRO +" #>> '{";
+    public final static String Jsquery_COMPOSITION_OPEN = SELECT_COMPOSITION_CONTENT_MACRO +" @@ '";
+
+    //OTHER_DETAILS (Ehr Status Query)
+    private static final String SELECT_EHR_OTHER_DETAILS_MACRO = STATUS.OTHER_DETAILS+"->('"+ CompositionSerializer.TAG_OTHER_DETAILS+"')";
+    private final static String JSONBSelector_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO +" #>> '{";
+    public final static String Jsquery_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO +" @@ '";
+
+    //OTHER_CONTEXT (Composition context other_context Query)
+    private static final String SELECT_EHR_OTHER_CONTEXT_MACRO = EVENT_CONTEXT.OTHER_CONTEXT+"->('"+CompositionSerializer.TAG_OTHER_CONTEXT+"')";
+    private final static String JSONBSelector_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO +" #>> '{";
+    public final static String Jsquery_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO +" @@ '";
+
+    //Generic stuff
     private final static String JSONBSelector_CLOSE = "}'";
-    public final static String Jsquery_OPEN = SELECT_CONTENT_MACRO +" @@ '";
     public final static String Jsquery_CLOSE = " '::jsquery";
     private static final String namedItemPrefix = " and name/value='";
 
@@ -63,13 +78,18 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         return false;
     }
 
-    private enum PATH_PART {IDENTIFIER_PATH_PART, VARIABLE_PATH_PART}
+    public enum PATH_PART {IDENTIFIER_PATH_PART, VARIABLE_PATH_PART}
+
+    public enum OTHER_ITEM {OTHER_DETAILS, OTHER_CONTEXT}
 
     //deals with special tree based entities
     private static void encodeTreeMapNodeId(List<String> jqueryPath, String nodeId){
         if (nodeId.startsWith("/events")){
             //this is an exception since events are represented in an event tree
             jqueryPath.add("/events");
+        }
+        else if (nodeId.startsWith("/activities")){
+            jqueryPath.add("/activities");
         }
     }
 
@@ -106,14 +126,25 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         if (path_part.equals(PATH_PART.VARIABLE_PATH_PART)) {
             StringBuffer stringBuffer = new StringBuffer();
             for (int i = jqueryPath.size() - 1; i >= 0; i--) {
-                if (jqueryPath.get(i).matches("[0-9]*") || jqueryPath.get(i).contains("[at"))
+                if (jqueryPath.get(i).matches("[0-9]*|#") || jqueryPath.get(i).contains("[at"))
                     break;
                 String item = jqueryPath.remove(i);
                 stringBuffer.insert(0, item);
             }
             nodeId = EntryAttributeMapper.map(stringBuffer.toString());
             if (nodeId != null)
-                jqueryPath.add(nodeId);
+                if (defaultIndex.equals("#")) { //jsquery
+                    if (nodeId.contains(",")) {
+                        String[] parts = nodeId.split(",");
+                        jqueryPath.addAll(Arrays.asList(parts));
+                    }
+                    else {
+                        jqueryPath.add(nodeId);
+                    }
+                }
+                else {
+                    jqueryPath.add(nodeId);
+                }
 //            if (StringUtils.endsWithAny(jquery, new String[]{"/value"}))
 //                //append the value key
 //                jquery += ",value";
@@ -124,7 +155,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         return jqueryPath;
     }
 
-    private static int retrieveIndex(String nodeId) {
+    public static int retrieveIndex(String nodeId) {
         if (nodeId.contains("#")){
             Integer indexValue = Integer.valueOf((nodeId.split("#")[1]).split("']")[0]);
             return indexValue;
@@ -132,6 +163,34 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         return 0;
     }
 
+
+    public static Field<?> makeField(OTHER_ITEM type, String path, String alias, String variablePath, boolean withAlias){
+        List<String> itemPathArray = new ArrayList<>();
+
+        if (path != null)
+            itemPathArray.addAll(jqueryPath(PATH_PART.IDENTIFIER_PATH_PART, path, "0"));
+        itemPathArray.addAll(jqueryPath(PATH_PART.VARIABLE_PATH_PART, variablePath, "0"));
+
+        resolveArrayIndex(itemPathArray);
+
+        String itemPath = StringUtils.join(itemPathArray.toArray(new String[] {}), ",");
+
+        itemPath = wrapQuery(itemPath, type.equals(OTHER_ITEM.OTHER_DETAILS) ? JSONBSelector_EHR_OTHER_DETAILS_OPEN : JSONBSelector_EHR_OTHER_CONTEXT_OPEN, JSONBSelector_CLOSE);
+
+        Field<?> fieldPathItem;
+        if (withAlias) {
+            if (StringUtils.isNotEmpty(alias))
+                fieldPathItem = DSL.field(itemPath, String.class).as(alias);
+            else {
+                String tempAlias = "FIELD_" + getSerial();
+                fieldPathItem = DSL.field(itemPath, String.class).as(tempAlias);
+            }
+        }
+        else
+            fieldPathItem = DSL.field(itemPath, String.class);
+
+        return fieldPathItem;
+    }
 
     @Override
     public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias){
@@ -149,7 +208,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
         String itemPath = StringUtils.join(itemPathArray.toArray(new String[] {}), ",");
 
-        itemPath = wrapQuery(itemPath, JSONBSelector_OPEN, JSONBSelector_CLOSE);
+        itemPath = wrapQuery(itemPath, JSONBSelector_COMPOSITION_OPEN, JSONBSelector_CLOSE);
 
         Field<?> fieldPathItem = null;
         if (withAlias) {
@@ -186,12 +245,12 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         }
 //        String itemPath = StringUtils.join(itemPathArray.toArray(new String[] {}), ".");
 
-//        itemPath = wrapQuery(itemPath, Jsquery_OPEN, Jsquery_CLOSE);
+//        itemPath = wrapQuery(itemPath, Jsquery_COMPOSITION_OPEN, Jsquery_CLOSE);
         Field<?> fieldPathItem = DSL.field(jsqueryPath.toString(), String.class);
         return fieldPathItem;
     }
 
-    private void resolveArrayIndex(List<String> itemPathArray) {
+    private static void resolveArrayIndex(List<String> itemPathArray) {
 
         for (int i=0; i < itemPathArray.size(); i++ ){
             String nodeId = itemPathArray.get(i);
@@ -209,7 +268,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     }
 
 
-    private String wrapQuery(String itemPath, String open, String close){
+    private static String wrapQuery(String itemPath, String open, String close){
         if (itemPath.contains("/item_count")){
             //trim the last array index in the prefix
             //look ahead for an index expression: ','<nnn>','

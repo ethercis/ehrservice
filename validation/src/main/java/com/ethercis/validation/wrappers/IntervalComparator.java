@@ -105,6 +105,8 @@ public class IntervalComparator {
     }
 
     public static void isWithinPrecision(Integer integer, IntervalOfInteger intervalOfInteger) throws Exception {
+        if (intervalOfInteger == null)
+            return;
         Integer lower = (intervalOfInteger.isSetLower() ? intervalOfInteger.getLower() : Integer.MIN_VALUE);
         Integer upper = (intervalOfInteger.isSetUpper() ? intervalOfInteger.getUpper() : Integer.MAX_VALUE);
 

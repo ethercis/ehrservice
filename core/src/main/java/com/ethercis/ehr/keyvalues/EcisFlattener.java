@@ -158,8 +158,8 @@ public class EcisFlattener implements I_EcisFlattener {
                 flatten.put(I_PathValue.COMPOSER_TAG + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, composer.getExternalRef().getId().getValue());
         }
 
-        if (composition.getCategory() != null)
-            flatten.put(I_PathValue.CATEGORY_TAG, composition.getCategory().getValue());
+//        if (composition.getCategory() != null)
+//            flatten.put(I_PathValue.CATEGORY_TAG, composition.getCategory().getValue());
         if (composition.getTerritory() != null)
             flatten.put(I_PathValue.TERRITORY_TAG, composition.getTerritory().getCodeString());
         if (composition.getLanguage()!= null)
@@ -170,7 +170,7 @@ public class EcisFlattener implements I_EcisFlattener {
 
     }
 
-    private static Map<String, String> generateEcisFlat(Map<String, Object> locatableMap) throws Exception {
+    public static Map<String, String> generateEcisFlat(Map<String, Object> locatableMap) throws Exception {
         MapInspector mapInspector = new MapInspector();
         mapInspector.inspect(locatableMap);
         Map<String, String> flatten = mapInspector.getStackFlatten();

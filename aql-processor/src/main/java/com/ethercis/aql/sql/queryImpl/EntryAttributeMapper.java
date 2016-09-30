@@ -17,10 +17,7 @@
 
 package com.ethercis.aql.sql.queryImpl;
 
-import com.ethercis.ehr.encode.CompositionSerializer;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openehr.rm.common.archetyped.Locatable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,14 +92,21 @@ public class EntryAttributeMapper {
         }
         else { //this deals with the "/value,value"
             Integer match = firstOccurence(0, fields, "value");
-            if (match != null){
-                if (match != 0) {
+//            Integer match = fields.stream().filter(m -> m.equals("value"));
+            if (match != null){ //deals with "/value/value"
+                if (match == 0 && fields.size() == 2 && fields.get(1).equals("value")){
+//                    fields.add(1, "/value");
+                    ;
+                }
+                else if (match != 0) {
                     fields.set(match, "/value");
                     if (match == fields.size() - 1)
                         fields.add("value");
                 }
-                else if (match + 1 < fields.size() - 1 && firstOccurence(match+1, fields, "value") == match+1){
-                    fields.set(match+1, "/value");
+                else if (match + 1 < fields.size() - 1){
+                    Integer first = firstOccurence(match+1, fields, "value");
+                    if ( first != null && first == match+1)
+                        fields.set(match+1, "/value");
                 }
             }
             match = firstOccurence(0, fields, "name");

@@ -17,11 +17,14 @@
 
 package com.ethercis.aql.sql;
 
-import com.ethercis.aql.compiler.OrderAttribute;
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.compiler.TopAttributes;
+import com.ethercis.aql.sql.binding.OrderByBinder;
 import com.ethercis.aql.sql.binding.SelectBinder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -44,6 +47,7 @@ import java.util.UUID;
 public class QueryProcessor  {
 
     DSLContext context;
+    Logger logger = LogManager.getLogger(QueryProcessor.class);
 
     public QueryProcessor(DSLContext context){
         this.context = context;
@@ -65,41 +69,40 @@ public class QueryProcessor  {
 // selectBinder.getPathResolver().resolvePaths();
 //
         if (queryParser.hasPathExpr()) {
-            for (Record record: queryParser.getInSet()){
-                UUID comp_id = (UUID) record.getValue("comp_id");
-                SelectQuery<?> select = selectBinder.bind(comp_id);
-                Result<Record> intermediary = (Result<Record>) select.fetch();
-                if (result != null) {
-                    result.addAll(intermediary);
-                 }
-                else if (intermediary != null) {
-                    result = intermediary;
-                }
-            }
-            //applies sort if any and window
-            if (queryParser.getTopAttributes() != null){
-                for (OrderAttribute orderAttribute: queryParser.getOrderAttributes()){
-                    String identifier = orderAttribute.getVariableDefinition().getIdentifier();
-                    if (identifier != null){
-                        if (orderAttribute.getDirection() != null) {
-                            switch (orderAttribute.getDirection()) {
-                                case ASC:
-                                    result.sortAsc(identifier);
-                                    break;
-                                case DESC:
-                                    result.sortDesc(identifier);
-                                    break;
-                            }
-                        }
-                        else //default to ASCENDING
-                            result.sortAsc(identifier);
+            Result<?> records = queryParser.getInSet();
+            if (!records.isEmpty()) {
+                for (Record record : queryParser.getInSet()) {
+                    UUID comp_id = (UUID) record.getValue("comp_id");
+                    SelectQuery<?> select = selectBinder.bind(comp_id);
+                    Result<Record> intermediary = (Result<Record>) select.fetch();
+                    if (result != null) {
+                        result.addAll(intermediary);
+                    } else if (intermediary != null) {
+                        result = intermediary;
                     }
-                    else
-                        throw new IllegalArgumentException("Could not resolve field in ORDER BY clause:"+orderAttribute.getVariableDefinition());
-
-                    //final
-                    return result.subList(0, count -1 );
                 }
+
+                OrderByBinder orderByBinder = new OrderByBinder(queryParser);
+                //at this stage we can apply aggregate functions if any
+                if (!result.isEmpty()) {
+                    Table<?> table = DSL.table(result);
+                    SelectQuery<Record> selectQuery = context.selectQuery();
+                    selectQuery.addSelect(table.fields());
+                    if (selectBinder.hasEhrIdExpression()) {
+                        Name name = DSL.name(selectBinder.getEhrIdAlias());
+                        Field<?> ehrIdField = table.field(name);
+                        selectQuery.addDistinctOn(ehrIdField);
+                    }
+                    selectQuery.addFrom(table);
+                    if (orderByBinder.hasOrderBy())
+                        selectQuery.addOrderBy(orderByBinder.getOrderByFields());
+                    if (count != null)
+                        selectQuery.addLimit(count);
+
+                    return selectQuery.fetch();
+                }
+                else
+                    return result;
             }
         }
         else {

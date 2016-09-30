@@ -24,7 +24,8 @@ import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import com.ethercis.ehr.encode.wrappers.cprimitives.*;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.*;
 import org.openehr.am.archetype.constraintmodel.primitive.*;
@@ -57,7 +58,7 @@ import java.util.*;
 
 public class OetBinding extends RmBinding {
 
-    private static final Logger log = Logger.getLogger(OetBinding.class);
+    private static final Logger log = LogManager.getLogger(OetBinding.class);
 
     protected OetBinding() throws Exception {
         super(null);

@@ -16,7 +16,8 @@
  */
 package com.ethercis.ehr.util;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
@@ -34,7 +35,7 @@ public class RMDataSerializer implements Serializable {
 
     private static final long serialVersionUID = -2639020605055348125L;
     Locatable locatable;
-    static Logger log = Logger.getLogger("RMDataSerializer");
+    static Logger log = LogManager.getLogger("RMDataSerializer");
     static FSTConfiguration configuration =  FSTConfiguration.createDefaultConfiguration();
 
     public RMDataSerializer(Locatable handler){
