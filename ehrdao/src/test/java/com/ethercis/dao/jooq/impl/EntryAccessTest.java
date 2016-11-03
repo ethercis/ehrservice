@@ -6,6 +6,8 @@ import com.ethercis.dao.access.support.AccessTestCase;
 import com.ethercis.ehr.building.GenerationStrategy;
 import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.building.OetBinding;
+import com.ethercis.ehr.encode.EncodeUtil;
+import com.google.gson.Gson;
 import junit.framework.Assert;
 import openEHR.v1.template.TEMPLATE;
 import org.joda.time.DateTime;
@@ -65,33 +67,27 @@ public class EntryAccessTest extends AccessTestCase {
     public void testQuery() throws Exception {
         //more fun...
 
-        String query = "select * from (\n" +
-                "select composition_id, entry.entry #>>  '{openEHR-EHR-COMPOSITION.section_observation_test.v2,\n" +
-                "                          openEHR-EHR-SECTION.visual_acuity_simple_test.v1, 0,\n" +
-                "                            at0025, 0,\n" +
-                "                              openEHR-EHR-OBSERVATION.visual_acuity.v1, 0,\n" +
-                "                                at0001, [events], \n" +
-                "                                  at0002, 0, \n" +
-                "                                     /time, /value, value}' AS event_time\n" +
-                "  ,from ethercis.ehr.entry \n" +
-                "\n" +
-                "  where template_id LIKE 'section  observation test.oet'\n" +
-                "                    and entry.entry #>>  '{openEHR-EHR-COMPOSITION.section_observation_test.v2,\n" +
-                "                          openEHR-EHR-SECTION.visual_acuity_simple_test.v1, 0,\n" +
-                "                            at0025, 0,\n" +
-                "                              openEHR-EHR-OBSERVATION.visual_acuity.v1, 0,\n" +
-                "                                at0001, [events], \n" +
-                "                                  at0002, 0, \n" +
-                "                                    at0003,\n" +
-                "                                      at0053,\n" +
-                "                                        at0028, 0,\n" +
-                "                                          at0009, 0,\n" +
-                "                                            /value, /value, value}' = '20/10') SNELLEN \n" +
-                "\n" +
-                "                    where event_time LIKE '2015-08-28T07%';";
+        String query = "select\n" +
+                "  \"ehr\".\"comp_expand\".\"entry\"->(select json_object_keys(\"ehr\".\"comp_expand\".\"entry\"::json)) #>> '{/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1],0,/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1],0,/data[at0001],/items[at0002],0,/value,value}' as \"cause\",\n" +
+                "  \"ehr\".\"comp_expand\".\"entry\"->(select json_object_keys(\"ehr\".\"comp_expand\".\"entry\"::json)) #>> '{/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1],0,/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1],0,/data[at0001],/items[at0009],0,/items[at0011],0,/value,value}' as \"reaction\",\n" +
+                "  \"ehr\".\"comp_expand\".\"composition_id\"||'::'||'test-server'||'::'||(\n" +
+                "    select (count(*) + 1)\n" +
+                "    from \"ehr\".\"composition_history\"\n" +
+                "    where \"ehr\".\"composition_history\".\"id\" = '052541fd-8c32-4ef6-a2f1-69252b47b789'\n" +
+                "  ) as \"uid\"\n" +
+                "from \"ehr\".\"comp_expand\"\n" +
+                "where (\n" +
+                "  (\"ehr\".\"comp_expand\".\"composition_name\"='Adverse reaction list')\n" +
+                "  and (\"ehr\".\"comp_expand\".\"subject_externalref_id_value\"='9999999000')\n" +
+                ");";
 
         //perform the query
         Map<String, Object> map = I_EntryAccess.queryJSON(testDomainAccess, query);
+        assertNotNull(map);
+
+        Gson gson = EncodeUtil.getGsonBuilderInstance().setPrettyPrinting().create();
+
+        System.out.print(gson.toJson(map));
 
 //        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 //        new org.codehaus.jackson.map.ObjectMapper().writer().writeValue(byteArrayOutputStream, map);
@@ -108,7 +104,7 @@ public class EntryAccessTest extends AccessTestCase {
                 "c/name/value,"+
                 "eval/data[at0001]/items[at0002]/value AS problem,\n" +
                 "eval/data[at0001]/items[at0002]/defining_code/code_string AS code,\n" +
-                "eval/data[at0001]/items[at0002]/defining_code/terminology_id/name AS code,\n" +
+                "eval/data[at0001]/items[at0002]/defining_code/terminology_id/name AS terminology,\n" +
                 "eval/data[at0001]/items[at0009]/value AS description,\n"+
                 "eval/data[at0001]/items[at0077]/value AS onset,\n"+
                 "eval/data[at0001] AS struct\n"+

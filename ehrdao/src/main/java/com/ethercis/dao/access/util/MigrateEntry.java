@@ -17,31 +17,21 @@
 
 package com.ethercis.dao.access.util;
 
-import com.ethercis.dao.access.interfaces.I_ContainmentAccess;
-import com.ethercis.dao.access.interfaces.I_ContributionAccess;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_EntryAccess;
-import com.ethercis.dao.access.jooq.ContainmentAccess;
 import com.ethercis.dao.access.support.DummyDataAccess;
 import com.ethercis.ehr.building.I_ContentBuilder;
-import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
-import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
-import com.ethercis.jooq.pg.tables.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.jooq.*;
 import org.openehr.rm.composition.Composition;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 
 import java.lang.System;
 import java.sql.Timestamp;
@@ -97,14 +87,16 @@ public class MigrateEntry {
     }
 
     public static String dumpSerialized(Composition composition) throws Exception {
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-        Map<String, Object> retMap = inspector.process(composition);
-        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
-//        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-        //choose this option to ease reading and debugging... but not for storing into DB
-        Gson gson = builder.setPrettyPrinting().create();
-        String serialized = gson.toJson(retMap);
-        return serialized;
+        I_CompositionSerializer serializer = I_CompositionSerializer.getInstance();
+        return serializer.dbEncode(composition);
+//        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+//        Map<String, Object> retMap = inspector.process(composition);
+//        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+////        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+//        //choose this option to ease reading and debugging... but not for storing into DB
+//        Gson gson = builder.setPrettyPrinting().create();
+//        String serialized = gson.toJson(retMap);
+//        return serialized;
     }
 
     public static UUID saveUncommittedEntry(Composition composition) throws Exception {

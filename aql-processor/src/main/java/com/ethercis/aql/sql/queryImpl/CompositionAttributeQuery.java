@@ -18,12 +18,15 @@
 package com.ethercis.aql.sql.queryImpl;
 
 import com.ethercis.aql.definition.VariableDefinition;
+import com.ethercis.aql.sql.binding.I_JoinBinder;
 import com.ethercis.jooq.pg.Tables;
 import com.ethercis.aql.sql.PathResolver;
+import com.ethercis.jooq.pg.tables.records.PartyIdentifiedRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +37,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  * TODO: used external representation to make it more flexible...
  * Created by christian on 5/6/2016.
  */
-public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImpl {
+public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImpl, I_JoinBinder {
 
     private String serverNodeId;
     private String columnAlias;
@@ -42,84 +45,160 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     private boolean containsEhrId = false;
     private String ehrIdAlias;
 
+    private boolean ehrIdFiltered = false; //true if the query specifies the ehr id (in the AQL FROM clause)
+    private boolean compositionIdFiltered = false; //true if the query contains a where clause with composition id specified
+
+    //boolean indicating the resulting joins to generate
+    private boolean joinComposition = false;
+    private boolean joinEventContext = false;
+    private boolean joinSubject = false;
+    private boolean joinEhr = false;
+    private boolean joinEhrStatus = false;
+    private boolean joinComposer = false;
+    private boolean joinContextFacility = false;
+
     public CompositionAttributeQuery(DSLContext context, PathResolver pathResolver, List<VariableDefinition> definitions, String serverNodeId){
         super(context, pathResolver, definitions);
         this.serverNodeId = serverNodeId;
     }
 
     @Override
-    public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias) {
+    public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
         //resolve composition attributes and/or context
         columnAlias = variableDefinition.getPath();
         if (columnAlias == null)
             return null;
         switch (columnAlias){
             case "uid/value":
+                if (clause == Clause.WHERE)
+                    compositionIdFiltered = true;
+
                 if (withAlias)
                     return uid(compositionId, withAlias, variableDefinition.getAlias());
-                else
+                else {
+                    joinComposition = true;
                     return rawUid(compositionId, withAlias, variableDefinition.getAlias());
+                }
 //                return rawUid(compositionId, withAlias, variableDefinition.getAlias());
             case "name/value":
-                return name(compositionId, withAlias, variableDefinition.getAlias());
+                return name(compositionId, withAlias, variableDefinition.getAlias(), clause);
             case "archetype_node_id":
                 return archetypeNodeId(compositionId, withAlias, variableDefinition.getAlias());
             case "template_id":
                 return templateId(compositionId, withAlias, variableDefinition.getAlias());
             case "language/value":
+                joinComposition = true;
                 return language(compositionId,withAlias, variableDefinition.getAlias());
             case "territory/value":
+                joinComposition = true;
                 return territory(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/name":
+                joinComposer = true;
                 return composerNameValue(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/id/namespace":
+                joinComposer = true;
                 return composerIdNamespace(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/id/scheme":
+                joinComposer = true;
                 return composerIdScheme(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/id/ref":
+                joinComposer = true;
                 return composerIdRef(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/type":
+                joinComposer = true;
                 return composerType(compositionId, withAlias, variableDefinition.getAlias());
             case "context/start_time/value":
+                joinEventContext = true;
                 return contextStartTime(compositionId, withAlias, variableDefinition.getAlias());
             case "context/end_time/value":
+                joinEventContext = true;
                 return contextEndTime(compositionId, withAlias, variableDefinition.getAlias());
             case "context/location":
+                joinEventContext = true;
                 return contextLocation(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/name/value":
+                joinContextFacility = true;
                 return contextFacilityName(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/namespace":
+                joinContextFacility = true;
                 return contextFacilityNamespace(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/ref":
+                joinContextFacility = true;
                 return contextFacilityRef(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/scheme":
+                joinContextFacility = true;
                 return contextFacilityScheme(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/type":
+                joinContextFacility = true;
                 return contextFacilityType(compositionId, withAlias, variableDefinition.getAlias());
             case "ehr_status/subject/external_ref/namespace":
+                joinSubject = true;
                 return ehrStatusSubjectNamespace(compositionId, withAlias, variableDefinition.getAlias());
             case "ehr_status/subject/external_ref/id/value":
+                joinSubject = true;
                 return ehrStatusSubjectIdValue(compositionId, withAlias, variableDefinition.getAlias());
             case "ehr_id/value":
+                if (clause == Clause.FROM)
+                    ehrIdFiltered = true;
                 return ehrIdValue(compositionId, withAlias, variableDefinition.getAlias());
 
 
         }
         if (columnAlias.startsWith("ehr_status/other_details"))
         {
+            joinEhrStatus = true;
             return ehrStatusOtherDetails(variableDefinition, withAlias);
         }
-        return null;
+        throw new IllegalArgumentException("Could not interpret field:"+columnAlias);
     }
 
     @Override
     public Field<?> whereField(UUID compositionId, String identifier, VariableDefinition variableDefinition) {
-        return makeField(compositionId, identifier, variableDefinition, false);
+        return makeField(compositionId, identifier, variableDefinition, false, Clause.WHERE);
     }
 
     private Field<?> uid(UUID compositionId, boolean alias, String aliasStr){
 
-        Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_ID
+        //use inline SQL as it seems coalesce is not going through with POSTGRES dialect
+        SelectQuery<?> subSelect = context.selectQuery();
+        subSelect.addSelect(DSL.count());
+        subSelect.addFrom(COMPOSITION_HISTORY);
+        subSelect.addConditions(I_JoinBinder.compositionRecordTable.field("id", UUID.class).eq(COMPOSITION_HISTORY.ID));
+        subSelect.addGroupBy(COMPOSITION_HISTORY.ID);
+
+        String coalesceVersion = "1 + COALESCE(\n(" + subSelect +"), 0)";
+//                "  (select count(*)\n" +
+//                "from \"ehr\".\"composition_history\"\n" +
+//                "  where "+ I_JoinBinder.COMPOSITION_JOIN +".id = ehr.comp_expand.composition_id\n" +
+//                "group by id)\n" +
+//                ", 0)\n";
+
+
+
+//         Field<?> coalesceField = DSL.value(new Integer(1))
+//                 .coalesce(COMPOSITION_HISTORY.
+//                 DSL.field(
+//                         DSL.count().from(COMPOSITION_HISTORY).where(COMPOSITION_HISTORY.ID.eq(COMPOSITION.ID)).groupBy(COMPOSITION.ID)), 0
+//         )
+
+//        Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_ID
+//                +"||"
+//                + DSL.val("::")
+//                +"||"
+//                + DSL.val(serverNodeId)
+//                +"||"
+//                + DSL.val("::")
+//                +"||"
+//                + DSL.field(
+//                            context
+//                                    .select(DSL.count().add(1))
+//                                    .from(COMPOSITION_HISTORY)
+//                                    .where(Tables.COMPOSITION_HISTORY.ID.eq(compositionId)))
+//                , SQLDataType.VARCHAR)
+//                .as(alias && aliasStr!= null && !aliasStr.isEmpty() ? aliasStr : "uid")
+                ;
+
+        Field<?> select = DSL.field(I_JoinBinder.compositionRecordTable.field("id")
                 +"||"
                 + DSL.val("::")
                 +"||"
@@ -127,8 +206,9 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 +"||"
                 + DSL.val("::")
                 +"||"
-                + DSL.field(context.select(DSL.count().add(1)).from(COMPOSITION_HISTORY).where(Tables.COMPOSITION_HISTORY.ID.eq(compositionId))), SQLDataType.VARCHAR)
-                .as(alias && aliasStr!= null && !aliasStr.isEmpty() ? aliasStr : "uid")
+                + DSL.field(coalesceVersion)
+                , SQLDataType.VARCHAR)
+                .as(alias && aliasStr != null && !aliasStr.isEmpty() ? aliasStr : "uid")
                 ;
 
         return select;
@@ -136,205 +216,223 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> rawUid(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_ID).as(aliasStr == null ? columnAlias : aliasStr);
+            Field<?> select = DSL.field(COMPOSITION.ID).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.COMPOSITION_ID);
+            return DSL.field(COMPOSITION.ID);
     }
 
-    private Field<?> name(UUID compositionId, boolean alias, String aliasStr){
+    private Field<?> name(UUID compositionId, boolean alias, String aliasStr, Clause clause){
+        //extract the composition name from the jsonb root key
+        String trimName = "trim(LEADING '''' FROM (trim(TRAILING ''']' FROM\n" +
+                            " (regexp_split_to_array(jsonb_object_keys(entry.entry), 'and name/value=')) [2])))";
         //postgresql equivalent expression
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_NAME).as(aliasStr == null ? columnAlias : aliasStr);
+            Field<?> select = DSL.field(trimName).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
-        else
-            return DSL.field(COMP_EXPAND.COMPOSITION_NAME);
+        else {
+            if (clause.equals(Clause.WHERE)){
+                trimName = "(SELECT "+trimName+")";
+            }
+            return DSL.field(trimName);
+        }
     }
 
     private Field<?> archetypeNodeId(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.ARCHETYPE_ID).as(aliasStr == null ? columnAlias : aliasStr);
+            Field<?> select = DSL.field(ENTRY.ARCHETYPE_ID).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.ARCHETYPE_ID);
+            return DSL.field(ENTRY.ARCHETYPE_ID);
     }
 
     private Field<?> templateId(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.TEMPLATE_ID).as(aliasStr == null ? columnAlias : aliasStr);
+            Field<?> select = DSL.field(ENTRY.TEMPLATE_ID).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.TEMPLATE_ID);
+            return DSL.field(ENTRY.TEMPLATE_ID);
     }
 
     private Field<?> language(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.LANGUAGE).as(aliasStr == null ? columnAlias : aliasStr);
+            Field<?> select = DSL.field(COMPOSITION.LANGUAGE).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.LANGUAGE);
+            return DSL.field(COMPOSITION.LANGUAGE);
     }
 
     private Field<?> territory(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.TERRITORY).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(COMPOSITION.TERRITORY).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.TERRITORY);
+            return DSL.field(COMPOSITION.TERRITORY);
     }
 
     private Field<?> composerNameValue(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_NAME).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(composerRef.field(PARTY_IDENTIFIED.NAME)).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.COMPOSER_NAME);
+            return DSL.field(composerRef.field(PARTY_IDENTIFIED.NAME));
     }
 
     private Field<?> composerIdNamespace(UUID compositionId, boolean alias, String aliasStr){
+        SelectQuery selectQuery = context.selectQuery();
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_NAMESPACE).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.COMPOSER_NAMESPACE);
+            return DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE));
     }
 
     private Field<?> composerIdScheme(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_SCHEME).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_SCHEME)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.COMPOSER_SCHEME);
+            return DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_SCHEME));
     }
 
     private Field<?> composerIdRef(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_REF).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.COMPOSER_REF);
+            return DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE));
     }
 
     private Field<?> composerType(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.COMPOSER_TYPE).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.COMPOSER_TYPE);
+            return DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE));
     }
 
     private Field<?> contextStartTime(UUID compositionId,boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field("to_char(" + COMP_EXPAND.START_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + COMP_EXPAND.START_TIME_TZID)
+            Field<?> select = DSL.field("to_char(" + EVENT_CONTEXT.START_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.START_TIME_TZID)
                     .as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field("to_char(" + COMP_EXPAND.START_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + COMP_EXPAND.START_TIME_TZID);
+            return DSL.field("to_char(" + EVENT_CONTEXT.START_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.START_TIME_TZID);
     }
 
     private Field<?> contextEndTime(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field("to_char(" + COMP_EXPAND.END_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + COMP_EXPAND.END_TIME_TZID)
+            Field<?> select = DSL.field("to_char(" + EVENT_CONTEXT.END_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.END_TIME_TZID)
                     .as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field("to_char(" + COMP_EXPAND.END_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + COMP_EXPAND.END_TIME_TZID);
+            return DSL.field("to_char(" + EVENT_CONTEXT.END_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.END_TIME_TZID);
     }
 
     private Field<?> contextLocation(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.CTX_LOCATION).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(EVENT_CONTEXT.LOCATION).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.CTX_LOCATION);
+            return DSL.field(EVENT_CONTEXT.LOCATION);
     }
 
     private Field<?> contextFacilityName(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_NAME).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(facilityRef.field(PARTY_IDENTIFIED.NAME)).as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.FACILITY_NAME);
+            return DSL.field(facilityRef.field(PARTY_IDENTIFIED.NAME));
     }
 
     private Field<?> contextFacilityRef(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_REF).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.FACILITY_REF);
+            return DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE));
     }
 
     private Field<?> contextFacilityScheme(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_SCHEME).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_SCHEME)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.FACILITY_SCHEME);
+            return DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_SCHEME));
     }
 
     private Field<?> contextFacilityNamespace(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_NAMESPACE).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.FACILITY_NAMESPACE);
+            return DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE));
     }
 
     private Field<?> contextFacilityType(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.FACILITY_TYPE).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.FACILITY_TYPE);
+            return DSL.field(facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE));
     }
 
     private Field<?> ehrStatusSubjectIdValue(UUID compositionId, boolean alias, String aliasStr){
+        containsEhrStatus = true;
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_VALUE).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(subjectRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_VALUE);
+            return DSL.field(subjectRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE));
     }
 
     private Field<?> ehrStatusSubjectNamespace(UUID compositionId, boolean alias, String aliasStr){
+        containsEhrStatus = true;
         if (alias) {
-            Field<?> select = DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_NAMESPACE).as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(subjectRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE)).as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(COMP_EXPAND.SUBJECT_EXTERNALREF_ID_NAMESPACE);
+            return DSL.field(subjectRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE));
     }
 
     private Field<?> ehrIdValue(UUID compositionId, boolean alias, String aliasStr){
         containsEhrId = true;
         ehrIdAlias = (aliasStr == null ? columnAlias : aliasStr);
-        if (!containsEhrStatus()) {
+        if (useFromEntry()) {
+            joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", COMP_EXPAND.EHR_ID).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
-                return DSL.field(COMP_EXPAND.EHR_ID);
+                return DSL.field(ehrRecordTable.field(ehrRecordTable.field(EHR.ID.getName())));
+        }
+        else if (!containsEhrStatus()) {
+            if (alias) {
+                Field<?> select = DSL.field("DISTINCT {0}", EHR.ID).as(aliasStr == null ? columnAlias : aliasStr);
+                return select;
+            } else
+                return DSL.field(EHR.ID);
         }
         else {
             if (alias) {
@@ -361,5 +459,73 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     public String getEhrIdAlias() {
         return ehrIdAlias;
+    }
+
+    @Override
+    public boolean isEhrIdFiltered() {
+        return ehrIdFiltered;
+    }
+
+    @Override
+    public boolean isCompositionIdFiltered() {
+        return compositionIdFiltered;
+    }
+
+    @Override
+    public boolean isContainsJqueryPath() {
+        return false;
+    }
+
+    @Override
+    public boolean isUseEntry() {
+        return false;
+    }
+
+    public boolean isJoinComposition() {
+        return joinComposition;
+    }
+
+    public boolean isJoinEventContext() {
+        return joinEventContext;
+    }
+
+    public boolean isJoinSubject() {
+        return joinSubject;
+    }
+
+    public boolean isJoinEhr() {
+        return joinEhr;
+    }
+
+    public boolean isJoinEhrStatus() {
+        return joinEhrStatus;
+    }
+
+    public boolean isJoinComposer() {
+        return joinComposer;
+    }
+
+    public boolean isJoinContextFacility() {
+        return joinContextFacility;
+    }
+
+    public Table<PartyIdentifiedRecord> getComposerRef() {
+        return composerRef;
+    }
+
+    public Table<PartyIdentifiedRecord> getSubjectRef() {
+        return subjectRef;
+    }
+
+    public Table<PartyIdentifiedRecord> getFacilityRef() {
+        return facilityRef;
+    }
+
+    /**
+     * true if the expression contains path and then use ENTRY as primary from table
+     * @return
+     */
+    public boolean useFromEntry() {
+        return pathResolver.hasPathExpression();
     }
 }

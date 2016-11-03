@@ -126,18 +126,19 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
     }
 
     private String serializeOtherDetails() throws Exception {
-        CompositionSerializer serializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
-        Map<String, Object>retmap = serializer.processItem(CompositionSerializer.TAG_OTHER_DETAILS, otherDetails);
-        //the template id is encoded into the json structure
-        if (otherDetailsTemplateId != null)
-            retmap.put(TAG_TEMPLATE_ID, otherDetailsTemplateId);
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-        builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
-        builder.registerTypeAdapter(DvTime.class, new DvTimeAdapter());
-        builder.registerTypeAdapter(DvDuration.class, new DvDurationAdapter());
-        Gson gson = builder.setPrettyPrinting().create();
-        return gson.toJson(retmap);
+        I_CompositionSerializer serializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH, true);
+        return serializer.dbEncode(CompositionSerializer.TAG_OTHER_DETAILS, otherDetails);
+//        Map<String, Object>retmap = serializer.processItem(CompositionSerializer.TAG_OTHER_DETAILS, otherDetails);
+//        //the template id is encoded into the json structure
+//        if (otherDetailsTemplateId != null)
+//            retmap.put(TAG_TEMPLATE_ID, otherDetailsTemplateId);
+//        GsonBuilder builder = new GsonBuilder();
+//        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+//        builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
+//        builder.registerTypeAdapter(DvTime.class, new DvTimeAdapter());
+//        builder.registerTypeAdapter(DvDuration.class, new DvDurationAdapter());
+//        Gson gson = builder.setPrettyPrinting().create();
+//        return gson.toJson(retmap);
     }
 
     @Override

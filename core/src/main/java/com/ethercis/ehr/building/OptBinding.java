@@ -867,9 +867,9 @@ public class OptBinding extends RmBinding {
 			ElementWrapper wrapper;
 
 			if (valueMap.containsKey(CHOICE))
-				wrapper = new ChoiceElementWrapper(element, EZBindCComplexObject(path, obj, ccobj), (List)valueMap.get(CHOICE), builder);
+				wrapper = new ChoiceElementWrapper(element, EZBindCComplexObject(path, obj, ccobj), (List)valueMap.get(CHOICE));
 			else if (valueMap.containsKey(ANY))
-				wrapper = new AnyElementWrapper(element, EZBindCComplexObject(path, obj, ccobj), builder);
+				wrapper = new AnyElementWrapper(element, EZBindCComplexObject(path, obj, ccobj));
 			else
             	wrapper = new ElementWrapper(element, EZBindCComplexObject(path, obj, ccobj));
 

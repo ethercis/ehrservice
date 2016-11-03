@@ -17,8 +17,8 @@
 package com.ethercis.ehr.util;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateAdapter;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.wrappers.json.writer.DvDateAdapter;
+import com.ethercis.ehr.encode.wrappers.json.writer.DvDateTimeAdapter;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.ParticipationVBean;
 import com.ethercis.ehr.keyvalues.I_PathValue;
@@ -129,12 +129,13 @@ public class MapInspector {
 //        segments.remove(0);
 
         for (String segment: segments){
-            if (segment.contains(" and name/value") || segment.contains(",")){
-                if (segment.contains("#")) {
-                    Integer arrayValue = LocatableHelper.retrieveIndexValue(segment);
-                    String trimmed = LocatableHelper.trimNameValue(segment);
-                    trimmed = trimmed.substring(0, trimmed.length() -1 )+",#"+arrayValue+"]";
-                    result.add(trimmed);
+            if (segment.contains(LocatableHelper.AND_NAME_VALUE_TOKEN) || segment.contains(LocatableHelper.COMMA_TOKEN)){
+                if (segment.contains(LocatableHelper.INDEX_PREFIX_TOKEN)) {
+//                    Integer arrayValue = LocatableHelper.retrieveIndexValue(segment);
+//                    String trimmed = LocatableHelper.trimNameValue(segment);
+//                    trimmed = trimmed.substring(0, trimmed.length() -1 )+",'#"+arrayValue+"']";
+
+                    result.add(segment.replace(LocatableHelper.AND_NAME_VALUE_TOKEN, LocatableHelper.COMMA_TOKEN));
                 }
                 else {
                     String trimmed = LocatableHelper.trimNameValue(segment);

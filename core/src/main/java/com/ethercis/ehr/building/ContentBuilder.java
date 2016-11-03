@@ -18,6 +18,7 @@ package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.constraints.ConstraintUtils;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.keyvalues.I_PathValue;
@@ -36,7 +37,9 @@ import org.apache.xmlbeans.XmlOptions;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
+import org.openehr.rm.common.generic.PartyProxy;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.composition.EventContext;
 import org.openehr.rm.composition.content.entry.*;
 import org.openehr.rm.datastructure.history.History;
 import org.openehr.rm.datastructure.history.IntervalEvent;
@@ -53,10 +56,13 @@ import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.HierObjectID;
 import org.openehr.rm.support.identification.LocatableRef;
 import org.openehr.rm.support.identification.ObjectRef;
+import org.openehr.rm.support.identification.UIDBasedID;
 import org.openehr.schemas.v1.*;
 
 import java.io.InputStream;
 import java.util.*;
+
+import static org.openehr.build.SystemValue.*;
 
 /**
  * Abstract class to manage the content of a composition (an Entry) under its serialized representation.
@@ -77,6 +83,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     protected ConstraintMapper constraintMapper;
     protected boolean lenient = false;
 
+    private Map<String, Object> serializedCache;
+
+    private LocatableHelper locatableHelper = new LocatableHelper();
+
     //public static final String TAG_OBJECT =  "/$OBJECT$";
 
     public ContentBuilder(Map<SystemValue, Object> values, I_KnowledgeCache knowledge, String templateId) throws Exception {
@@ -88,13 +98,14 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             lenient = Boolean.parseBoolean(System.getProperty("validation.lenient"));
             log.info("ContentBuilder validation set to: "+(lenient ? "lenient" : "active"));
         }
+        this.serializedCache = new HashMap<>();
     }
 
     @Override
     public void setEntryData(Composition composition) throws Exception {
         //retrieve the JSON representation for persistence
         //CHC: 29.09.16 new encoding method :)
-        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();
         String dbEncoded = compositionSerializer.dbEncode(composition);
         this.composition = composition;
         this.entry = dbEncoded;
@@ -141,7 +152,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         return newName;
     }
 
-    public static Object insertCloneInPath(Locatable locatable, Map<String, Object> definition, String path) throws Exception {
+    public Object insertCloneInPath(Locatable locatable, Map<String, Object> definition, String path) throws Exception {
         log.debug("Item could not be located, cloning required:" + path);
 
         //check for potential sibling
@@ -151,7 +162,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
         if (sibling != null){
             LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
-            Locatable cloned = LocatableHelper.clone(sibling);
+//            Locatable cloned = LocatableHelper.clone(sibling);
+            Locatable cloned = locatableHelper.clone(siblingPath, sibling);
             if (definition.containsKey(CompositionSerializer.TAG_NAME)) {
                 DvText newName = getNewName(definition);
                 cloned.setName(newName);
@@ -165,7 +177,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         else {
             LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
             if (parent != null) {
-                Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
+                Locatable cloned = locatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
                 LocatableHelper.adjustChildrenNames(cloned, parent.getChildPath(), path);
                 LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), parent.getChildPath());
             }
@@ -236,8 +248,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             //HACK! if an itemAtPath is already there with dirtyBit == true, just clone the element for this path
 //            if (itemAtPath == null || (itemAtPath instanceof ElementWrapper && ((ElementWrapper)itemAtPath).dirtyBitSet())) {
             if (itemAtPath == null) {
-                if (!constraintMapper.isValidNode(LocatableHelper.simplifyPath(path)))
-                    throw new IllegalArgumentException("Invalid child element at:"+path);
+                if (!lenient && constraintMapper != null && !constraintMapper.isValidNode(LocatableHelper.simplifyPath(path)))
+                    throw new IllegalArgumentException("VALIDATION: Invalid child element at:"+path);
                 itemAtPath = insertCloneInPath(composition, definition, path);
             }
 
@@ -281,48 +293,36 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             }
             else if (itemAtPath instanceof ISMTransition){ //a node attribute (f.e. ism_transition)
                 ISMTransition ismTransition = (ISMTransition)itemAtPath;
-                switch (lastTag){
-                    case CompositionSerializer.TAG_CAREFLOW_STEP:
-                        ismTransition.setCareflowStep((DvCodedText)object);
-                        break;
-                    case CompositionSerializer.TAG_TRANSITION:
-                        ismTransition.setTransition((DvCodedText) object);
-                        break;
-                    case CompositionSerializer.TAG_CURRENT_STATE:
-                        ismTransition.setCurrentState((DvCodedText) object);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid tag in ISMTransition:"+lastTag);
-                }
+
+                if (lastTag.equals(CompositionSerializer.TAG_CAREFLOW_STEP))
+                    ismTransition.setCareflowStep((DvCodedText)object);
+                else if (lastTag.equals(CompositionSerializer.TAG_TRANSITION))
+                    ismTransition.setTransition((DvCodedText) object);
+                else if (lastTag.equals(CompositionSerializer.TAG_CURRENT_STATE))
+                    ismTransition.setCurrentState((DvCodedText) object);
+                else
+                    throw new IllegalArgumentException("Invalid tag in ISMTransition:"+lastTag);
+
             }
             else if (itemAtPath instanceof IntervalEvent){
                 IntervalEvent intervalEvent = (IntervalEvent)itemAtPath;
-                switch (lastTag){
-                    case CompositionSerializer.TAG_TIME:
-                        intervalEvent.setTime((DvDateTime) object);
-                        break;
-                    case CompositionSerializer.TAG_WIDTH:
-                        intervalEvent.setWidth((DvDuration) object);
-                        break;
-                    case CompositionSerializer.TAG_MATH_FUNCTION:
-                        intervalEvent.setMathFunction((DvCodedText) object);
-                        break;
-                    default:
-                        log.warn("Unhandled Tag in IntervalEvent"+lastTag);
-                }
+                if (lastTag.equals(CompositionSerializer.TAG_TIME))
+                    intervalEvent.setTime((DvDateTime) object);
+                else if (lastTag.equals(CompositionSerializer.TAG_WIDTH))
+                    intervalEvent.setWidth((DvDuration) object);
+                else if (lastTag.equals(CompositionSerializer.TAG_MATH_FUNCTION))
+                    intervalEvent.setMathFunction((DvCodedText) object);
+                else
+                    log.warn("Unhandled Tag in IntervalEvent"+lastTag);
             }
             else if (itemAtPath instanceof InstructionDetails){ //a node attribute (f.e. ism_transition)
                 InstructionDetails instructionDetails = (InstructionDetails)itemAtPath;
-                switch (lastTag){
-                    case CompositionSerializer.TAG_ACTIVITY_ID:
-                        instructionDetails.setActivityID((String) object);
-                        break;
-                    case CompositionSerializer.TAG_INSTRUCTION_ID:
-                        instructionDetails.setInstructionId((LocatableRef) object);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid tag in InstructionDetails:"+lastTag);
-                }
+                if (lastTag.equals(CompositionSerializer.TAG_ACTIVITY_ID))
+                    instructionDetails.setActivityID((String) object);
+                else if (lastTag.equals(CompositionSerializer.TAG_INSTRUCTION_ID))
+                    instructionDetails.setInstructionId((LocatableRef) object);
+                else
+                    throw new IllegalArgumentException("Invalid tag in InstructionDetails:"+lastTag);
             }
             else if (!(itemAtPath instanceof Entry)){
                 log.warn("Unhandled value in stack:" + path+", item:"+itemAtPath);
@@ -456,7 +456,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         new ConstraintUtils(lenient, (Composition)rmObj, constraintMapper).validateLocatable();
 
         Composition importedComposition = (Composition)rmObj;
-        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();
         String mapjson = compositionSerializer.dbEncode(importedComposition);
 
         //create an actual RM composition
@@ -472,7 +472,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         //the templateId is found in the composition
         this.templateId = composition.getArchetypeDetails().getTemplateId().getValue();
 
-        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();
         String mapjson = compositionSerializer.dbEncode(composition);
 
         //create an actual RM composition
@@ -752,9 +752,9 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         assignValuesFromStack(itemStructure, (ArrayDeque) inspector.getStack());
     }
 
-    protected void storeCache(String id, Composition composition) throws Exception {
+    protected void storeCache(String templateID, Composition composition, ConstraintMapper constraintMapper) throws Exception {
         byte[] bytes = RMDataSerializer.serializeRaw(composition);
-        knowledge.cacheGenerated(id, bytes);
+        knowledge.cacheGenerated(templateID, bytes, constraintMapper);
     }
 
     protected Composition retrieveCache(String id) throws Exception {
@@ -764,6 +764,14 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                 return (Composition)retrievedObject ;
             else
                 throw new IllegalArgumentException("Cache inconsistency, cache object is not a composition:"+id);
+        }
+        else
+            return null;
+    }
+
+    protected ConstraintMapper retrieveConstraintMapper(String id) throws Exception {
+        if (knowledge.cacheContainsLocatable(id)) {
+            return knowledge.retrieveCachedConstraints(id);
         }
         else
             return null;
@@ -801,6 +809,37 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     public void setCompositionParameters(Map<SystemValue, Object> values){
         this.values = values;
+    }
+
+    public void setCompositionAttributes(Composition composition){
+
+        if (values == null)
+            return;
+
+        for (Map.Entry<SystemValue, Object> systemValue: values.entrySet()){
+            switch (systemValue.getKey()){
+                case CATEGORY:
+                    composition.setCategory((DvCodedText)systemValue.getValue());
+                    break;
+                case LANGUAGE:
+                    composition.setLanguage((CodePhrase)systemValue.getValue());
+                    break;
+                case TERRITORY:
+                    composition.setTerritory((CodePhrase)systemValue.getValue());
+                    break;
+                case COMPOSER:
+                    composition.setComposer((PartyProxy)systemValue.getValue());
+                    break;
+                case UID:
+                    composition.setUid((UIDBasedID)systemValue.getValue());
+                    break;
+                case CONTEXT:
+                    composition.setContext((EventContext)systemValue.getValue());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Could not handle composition attribute:"+systemValue.getKey());
+            }
+        }
     }
 
     private void setItemAttributes(Item item, Map definition){

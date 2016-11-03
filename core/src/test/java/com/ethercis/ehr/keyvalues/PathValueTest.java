@@ -5,6 +5,7 @@ import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.FieldUtil;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.*;
 import com.ethercis.ehr.json.FlatJsonUtil;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
@@ -42,6 +43,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Test ECISFLAT
+ */
 public class PathValueTest {
     I_KnowledgeCache knowledge;
     Map<String, String> kvPairs = new HashMap<>();
@@ -53,6 +57,7 @@ public class PathValueTest {
         props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
 
@@ -225,30 +230,80 @@ public class PathValueTest {
 
     @Test
     public void testSerializeArray() throws Exception {
-        String templateId = "COLNEC_history_of_past_illness.v0";
+//        String templateId = "COLNEC_history_of_past_illness.v0";
+        String templateId = "IDCR - Adverse Reaction List.v1";
+//        String templateId = "COLNEC Patient Blood Pressure.v0";
+
+        //pre-warm
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+        //pre-warm the composition cache
+        content.generateNewComposition();
+
         PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.kvp.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.kvp.json");
+        for (String testfile: new String[]{"ecisflat", "ecisflat2"}) {
+            FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/adverse_reaction_list."+testfile+".json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/blood_pressure.ecisflat.json");
+            Map<String, String> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
+            Composition composition = pathValue.assign(valuePairs);
+            assertNotNull(composition);
+            //serialize this composition  for persistence
+            I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();
+            String dbEncoded = compositionSerializer.dbEncode(composition);
+            System.out.print(dbEncoded);
+
+            //rebuild the composition from the encoded structure
+            I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
+            Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
+            assertNotNull(retrieved);
+            //export flat
+            Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
+
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+            String jsonString = gson.toJson(testRetMap);
+
+            System.out.println(jsonString);
+        }
+    }
+
+    @Test
+    public void testSerialize() throws Exception {
+        String templateId = "COLNEC_history_of_past_illness.v0";
+//        String templateId = "Vital Signs Encounter (Composition)";
+        PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Vital Signs Encounter (Composition).raw.kvp.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_Goals.v0.kvp.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.kvp.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.fault.ecisflat.json");
         Map<String, String> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
         Composition composition = pathValue.assign(valuePairs);
         assertNotNull(composition);
         //serialize this composition  for persistence
-        CompositionSerializer compositionSerializer = new CompositionSerializer();
+        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.RAW);
+//        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();
         String dbEncoded = compositionSerializer.dbEncode(composition);
         System.out.print(dbEncoded);
 
+        Gson gson = EncodeUtil.getGsonBuilderInstance().setPrettyPrinting().create();
+        Map rawEncoded = gson.fromJson(compositionSerializer.dbEncode(composition), Map.class);
+
+        assertNotNull(rawEncoded);
+
         //rebuild the composition from the encoded structure
-        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
-        Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
-        assertNotNull(retrieved);
-        //export flat
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
-
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
-
-        String jsonString = gson.toJson(testRetMap);
-
-        System.out.println(jsonString);
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
+//        Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
+//        assertNotNull(retrieved);
+//        //export flat
+//        Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
+//
+//        GsonBuilder builder = new GsonBuilder();
+//        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+//
+//        String jsonString = gson.toJson(testRetMap);
+//
+//        System.out.println(jsonString);
     }
 
     DataValue dataValue;
@@ -326,7 +381,7 @@ public class PathValueTest {
     @Test
     public void testDvEHRURI() throws Exception {
         kvPairs.clear();
-        String value = "http://www.cern.ch";
+        String value = "compositions/87284370-2D4B-4e3d-A3F3-F303D2F4F34B/data%5Bat0001%5D/items%5Bat0001%5D/test";
         kvPairs.put("value", value);
         dataValue = (DataValue)PathValue.decodeValue("DvEHRURI", FieldUtil.flatten(FieldUtil.getAttributes(DvEHRURIVBean.generate())), kvPairs);
         assertEquals(((DvEHRURI)dataValue).getValue(), value);
@@ -432,4 +487,6 @@ public class PathValueTest {
         HierObjectID objectID = (HierObjectID)PathValue.decodeValue("HierObjectID", FieldUtil.flatten(FieldUtil.getAttributes(HierObjectIDVBean.generate())), kvPairs);
         assertEquals(objectID.toString(), test);
     }
+
+
 }

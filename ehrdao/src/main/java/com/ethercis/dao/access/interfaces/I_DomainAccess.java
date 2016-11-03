@@ -31,6 +31,30 @@ import java.util.Map;
 public interface I_DomainAccess {
 
     String PG_POOL = "PG_POOL";
+    String DBCP2_POOL = "DBCP2_POOL";
+    String KEY_MAX_IDLE = "max_idle";
+    String KEY_MAX_ACTIVE = "max_active";
+    String KEY_REMOVE_ABANDONNED = "remove_abandonned";
+    String KEY_REMOVE_ABANDONNED_TIMEOUT = "remove_abandonned_timeout";
+    String KEY_TEST_ON_BORROW = "test_on_borrow";
+    String KEY_LOG_ABANDONNED = "log_abandonned";
+    String KEY_AUTO_RECONNECT = "auto_reconnect";
+
+    String KEY_DIALECT = "dialect";
+    String KEY_URL = "url";
+    String KEY_LOGIN = "login";
+    String KEY_PASSWORD = "password";
+    String KEY_KNOWLEDGE = "knowledge";
+    String KEY_HOST = "host";
+    String KEY_PORT = "port";
+    String KEY_MAX_CONNECTION = "max_connection";
+    String KEY_INITIAL_CONNECTIONS = "initial_connections";
+    String KEY_CONNECTION_MODE = "connection_mode";
+    String KEY_DATABASE = "database";
+    String KEY_WAIT_MS = "wait_milliseconds";
+    String KEY_SCHEMA = "schema";
+    String KEY_SET_POOL_PREPARED_STATEMENTS = "set_pool_prepared_statement";
+    String KEY_SET_MAX_PREPARED_STATEMENTS = "set_max_prepared_statements";
 
     /**
      * get jOOQ SQL dialect
@@ -65,17 +89,6 @@ public interface I_DomainAccess {
         return new ServiceDataAccess(properties);
     }
 
-    public static String KEY_DIALECT = "dialect";
-    public static String KEY_URL = "url";
-    public static String KEY_LOGIN = "login";
-    public static String KEY_PASSWORD = "password";
-    public static String KEY_KNOWLEDGE = "knowledge";
-    String KEY_HOST = "host";
-    String KEY_PORT = "port";
-    String KEY_MAX_CONNECTION = "max_connection";
-    String KEY_CONNECTION_MODE = "connection_mode";
-    String KEY_DATABASE = "database";
-    String KEY_SCHEMA = "schema";
 
 
     String getServerNodeId();

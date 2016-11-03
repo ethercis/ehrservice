@@ -17,6 +17,7 @@
 package com.ethercis.ehr.keyvalues;
 
 import com.ethercis.ehr.building.ContentBuilder;
+import com.ethercis.ehr.building.ContentUtil;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
@@ -606,6 +607,8 @@ public class PathValue implements I_PathValue {
         String[] keySetArray = sortedMap.keySet().toArray(new String[]{});
         Map<String, String> attributeSet = null;
 
+        ContentUtil contentUtil = new ContentUtil();
+
         for (int pathIterator = 0; pathIterator < sortedMap.keySet().size(); pathIterator++) {
 
             String path = keySetArray[pathIterator];
@@ -663,6 +666,8 @@ public class PathValue implements I_PathValue {
                 }
                 pathIterator = j-1; //skip what has been processed.
             }
+            else
+                attributeSet = null; //reset attribute set
 
             if (ArrayUtils.contains(ENTRY_TAGS, lastTag) || ArrayUtils.contains(INSTRUCTION_TAGS, lastTag) || ArrayUtils.contains(ACTIVITY_TAGS, lastTag)){
                 attributeKey = path;
@@ -726,7 +731,7 @@ public class PathValue implements I_PathValue {
                     }
                 }
 //                definition.put(CompositionSerializer.TAG_NAME, "");
-                itemAtPath = ContentBuilder.insertCloneInPath(locatable, definition, locatablePath);
+                itemAtPath = contentUtil.insertCloneInPath(locatable, definition, locatablePath);
             }
 
             String valueToParse = null;

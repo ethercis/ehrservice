@@ -48,6 +48,8 @@ public class ContainBinder {
     private final String INTERSECT_EXPRESSION = " INTERSECT ";
     private final String UNION_EXPRESSION = " UNION ";
 
+    private boolean useSimpleCompositionContainment = false; //true if check only if ehr contains any composition
+
     private String DEFAULT_CONTAIN_QUERY_TEMPLATE =
             "SELECT DISTINCT compo.ehr_id, comp_id AS composition_id, subltree(label, 0, 1) AS composition_archetype " +
             "FROM ehr.composition compo "+
@@ -208,12 +210,21 @@ public class ContainBinder {
 
     private SelectQuery singularSelect(DSLContext context, Predicates.Details definition){
         SelectQuery selectQuery = context.selectQuery();
-        Condition condition = DSL.condition("label ~" + SINGLE_QUOTE + definition.expression + SINGLE_QUOTE);
-        selectQuery.addConditions(condition);
-        selectQuery.addFrom(CONTAINMENT);
-        selectQuery.addDistinctOn(CONTAINMENT.COMP_ID);
-        selectQuery.addSelect(CONTAINMENT.COMP_ID);
-        return selectQuery;
+
+        if (definition.expression.equals("COMPOSITION%")){
+            //check existence of a a composition for an EHR
+//            Condition condition = DSL.condition(DSL.exists(context.select(DSL.value(1, Integer.class)).from(COMPOSITION).where()))
+            useSimpleCompositionContainment = true;
+            return null;
+        }
+        else {
+            Condition condition = DSL.condition("label ~" + SINGLE_QUOTE + definition.expression + SINGLE_QUOTE);
+            selectQuery.addConditions(condition);
+            selectQuery.addFrom(CONTAINMENT);
+            selectQuery.addDistinctOn(CONTAINMENT.COMP_ID);
+            selectQuery.addSelect(CONTAINMENT.COMP_ID);
+            return selectQuery;
+        }
     }
 
     private SelectQuery assembleSetOp(DSLContext context, List<SelectQuery> pendingAtomics, List<Predicates.Details> details,  String opExpression, SelectQuery query){
@@ -324,7 +335,10 @@ public class ContainBinder {
             }
         }
         if (!pendingAtomics.isEmpty()) {
-            selectQuery.addFrom(pendingAtomics.get(0));
+            if (pendingAtomics.get(0) != null)
+                selectQuery.addFrom(pendingAtomics.get(0));
+            else
+                return null;
             return selectQuery;
         }
         return null;
@@ -340,6 +354,8 @@ public class ContainBinder {
                     String labelized = labelize(enclosure.getArchetypeId());
                     details.expression = labelized + ((labelized.length() > 0) ? INNER_WILDCARD : LEFT_WILDCARD) + details.expression;
                 }
+                else
+                    details.expression = LEFT_WILDCARD + details.expression;
                 enclosure = enclosure.enclosingContainment;
             }
         }
@@ -497,4 +513,7 @@ public class ContainBinder {
         return lquery.toString();
     }
 
+    public boolean isUseSimpleCompositionContainment() {
+        return useSimpleCompositionContainment;
+    }
 }

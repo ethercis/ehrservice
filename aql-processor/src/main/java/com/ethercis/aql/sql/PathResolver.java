@@ -26,6 +26,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.ethercis.jooq.pg.Tables.*;
@@ -57,7 +59,7 @@ public class PathResolver {
 //    private static String label01 = "and label ~ ";
 
     private IdentifierMapper mapper;
-
+    Map<String, String> resolveMap = new HashMap<>();
 
     public PathResolver(DSLContext context, IdentifierMapper mapper){
         this.context = context;
@@ -103,42 +105,68 @@ public class PathResolver {
      * resolve all the paths in the current containment mapper for a composition
      * @param comp_id
      */
-    public void resolvePaths(UUID comp_id){
+    public void resolvePaths(String templateId, UUID comp_id){
         SelectField<?>[] selectFields = {
                 CONTAINMENT.PATH
         } ;
-        Table<?> from = CONTAINMENT;
 
         for (String identifier: mapper.identifiers()) {
             try {
                 String lquery = lqueryExpression(identifier);
 
+                if (lquery.equals("COMPOSITION%")) //composition root, path is not used
+                        continue;
+
+                if (!resolveMap.containsKey(resolveMapKey(templateId,lquery))) {
 //                String query = select01 + "'" + comp_id + "' " + label01 + "'" + lquery + "'";
 
-                //query the DB to get the path
-                String labelWhere = "label ~ '"+lquery+"'";
-                Result<?> records = context.select(CONTAINMENT.PATH).from(from).where(CONTAINMENT.COMP_ID.eq(comp_id)).and(labelWhere).fetch();
+                    //query the DB to get the path
+//                String labelWhere = "label ~ '"+lquery+"'";
+                    Result<?> records = context
+                            .select(CONTAINMENT.PATH, ENTRY.TEMPLATE_ID)
+                            .from(CONTAINMENT)
+                            .join(ENTRY)
+                            .on(ENTRY.COMPOSITION_ID.eq(comp_id))
+                            .where(CONTAINMENT.COMP_ID.eq(ENTRY.COMPOSITION_ID))
+                            .and(CONTAINMENT.LABEL + "~ '" + lquery + "'")
+                            .fetch().into(CONTAINMENT.PATH, ENTRY.TEMPLATE_ID);
 
 //                Result<Record> records = context.fetch(query);
 
-                if (records.isEmpty()) {
-                    logger.debug("No path found for identifier (query return no records):" + identifier);
-                }
-                if (records.size() > 1) {
-                    logger.debug("Multiple paths found for identifier, returning first one:" + identifier);
-                }
+                    resolveMap.put(resolveMapKey((String) records.getValue(0, ENTRY.TEMPLATE_ID.getName()),lquery), records.getValue(0, CONTAINMENT.PATH));
 
-                String path = (String) records.get(0).getValue("path");
-                mapper.setPath(identifier, path);
-                if (((Containment)mapper.getContainer(identifier)).getClassName().equals("COMPOSITION")){
-                    mapper.setQueryStrategy(identifier, CompositionAttributeQuery.class);
+                    if (records.isEmpty()) {
+                        logger.debug("No path found for identifier (query return no records):" + identifier);
+                    }
+                    if (records.size() > 1) {
+                        logger.debug("Multiple paths found for identifier, returning first one:" + identifier);
+                    }
+
+                    String path = records.getValue(0, CONTAINMENT.PATH);
+                    mapper.setPath(identifier, path);
+                    if (((Containment) mapper.getContainer(identifier)).getClassName().equals("COMPOSITION")) {
+                        mapper.setQueryStrategy(identifier, CompositionAttributeQuery.class);
+                    } else
+                        mapper.setQueryStrategy(identifier, JsonbEntryQuery.class);
                 }
-                else
-                    mapper.setQueryStrategy(identifier, JsonbEntryQuery.class);
+                else { //already cached
+                    String path = resolveMap.get(resolveMapKey(templateId,lquery));
+                    mapper.setPath(identifier, path);
+                    if (((Containment) mapper.getContainer(identifier)).getClassName().equals("COMPOSITION")) {
+                        mapper.setQueryStrategy(identifier, CompositionAttributeQuery.class);
+                    } else
+                        mapper.setQueryStrategy(identifier, JsonbEntryQuery.class);
+                }
             } catch (IllegalArgumentException e){
                 logger.debug("No path for:"+e);
             }
+
         }
+    }
+
+    //ensure the same convention is used
+    private String resolveMapKey(String templateId, String lquery){
+        return templateId+"::"+lquery;
     }
 
     public void resolvePaths(){
@@ -161,5 +189,9 @@ public class PathResolver {
                 logger.debug("No path for:"+e);
             }
         }
+    }
+
+    public boolean hasPathExpression(){
+        return mapper.hasPathExpression();
     }
 }

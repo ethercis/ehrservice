@@ -14,20 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ethercis.ehr.encode;
+package com.ethercis.ehr.encode.wrappers.json.writer;
 
-import com.google.gson.TypeAdapter;
+import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 /**
  * GSON adapter for DvDateTime
  * Required since JSON does not support natively a DateTime data type
  */
-public class DvTimeAdapter extends TypeAdapter<DvTime> {
+public class DvTimeAdapter extends DvTypeAdapter<DvTime> {
+
+	public DvTimeAdapter(AdapterType adapterType) {
+		super(adapterType);
+	}
+
+	public DvTimeAdapter() {
+	}
 
 	@Override
 	public DvTime read(JsonReader arg0) throws IOException {
@@ -42,10 +54,19 @@ public class DvTimeAdapter extends TypeAdapter<DvTime> {
 			return;
 		}
 
-        writer.beginObject();
-        writer.name("value").value(dvalue.getValue());
-        writer.name("epoch_offset").value(dvalue.getDateTime().getMillis());
-        writer.endObject();
+		if (adapterType==AdapterType.PG_JSONB) {
+			writer.beginObject();
+			writer.name("value").value(dvalue.getValue());
+			writer.name("epoch_offset").value(dvalue.getDateTime().getMillis());
+			writer.endObject();
+		}
+		else if (adapterType==AdapterType.RAW_JSON){
+			writer.beginObject();
+			writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(EncodeUtil.camelToUpperSnake(dvalue));
+			writer.name("value").value(dvalue.getValue());
+			writer.endObject();
+
+		}
 
 	}
 

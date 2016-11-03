@@ -18,6 +18,7 @@
 package com.ethercis.aql.containment;
 
 import com.ethercis.aql.definition.FromDefinition;
+import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,6 +97,16 @@ public class IdentifierMapper {
         }
         return null;
     }
+
+    public boolean hasPathExpression() {
+        for (Map.Entry<String, Mapper> containment: mapper.entrySet()){
+            if (containment.getValue().getQueryStrategy() != null && containment.getValue().getQueryStrategy().equals(JsonbEntryQuery.class))
+                return true;
+        }
+        return false;
+
+    }
+
 
     public boolean hasEhrContainer(){
         for (Map.Entry<String, Mapper> containment: mapper.entrySet()){

@@ -31,11 +31,11 @@ import java.lang.reflect.Method;
  */
 public class AnyElementWrapper extends ElementWrapper {
 
-    transient RMObjectBuilder builder;
+//    transient RMObjectBuilder builder;
 
-    public AnyElementWrapper(Element element, CComplexObject ccobj, RMObjectBuilder builder) throws Exception {
+    public AnyElementWrapper(Element element, CComplexObject ccobj) throws Exception {
         super(element, ccobj);
-        this.builder = builder;
+//        this.builder = builder;
     }
 
     public void setAdaptedElement(Element element){
@@ -43,6 +43,7 @@ public class AnyElementWrapper extends ElementWrapper {
     }
 
     public I_VBeanWrapper getAdaptedValue(String valueToParse) {
+        RMObjectBuilder builder = RMObjectBuilder.getInstance();
         //get the index value
         if (valueToParse.charAt(0) != '@')
             throw new IllegalArgumentException("value to parse must begin with character '@'");

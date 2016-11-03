@@ -24,6 +24,8 @@ import org.nustaq.serialization.FSTObjectOutput;
 import org.openehr.rm.common.archetyped.Locatable;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Marshal/unmarshal an extended RM composition
@@ -32,14 +34,27 @@ import java.io.*;
  */
 public class RMDataSerializer implements Serializable {
 
+    public static FSTConfiguration configuration =  FSTConfiguration.createDefaultConfiguration();
 
     private static final long serialVersionUID = -2639020605055348125L;
     Locatable locatable;
     static Logger log = LogManager.getLogger("RMDataSerializer");
-    static FSTConfiguration configuration =  FSTConfiguration.createDefaultConfiguration();
+
+    static SerializedCache serializedCache = new SerializedCache();
+
+
+//    static Map<String, FSTObjectOutput> serializedCache = new HashMap<>();
 
     public RMDataSerializer(Locatable handler){
         this.locatable = handler;
+    }
+
+    public RMDataSerializer(){
+    }
+
+    public RMDataSerializer setHandler(Locatable handler){
+        this.locatable = handler;
+        return this;
     }
 
     public String write2tempfile() throws IOException {
@@ -74,7 +89,21 @@ public class RMDataSerializer implements Serializable {
     }
 
     public static FSTObjectOutput serialize(Locatable loc) throws IOException {
+
         return  configuration.getObjectOutput(configuration.asByteArray(loc));
+    }
+
+    public byte[] serialize(String path, Locatable loc) throws IOException {
+        FSTConfiguration configuration =  FSTConfiguration.createDefaultConfiguration();
+        String actualPath = LocatableHelper.simplifyPath(path);
+        if (serializedCache.containsKey(actualPath))
+            return serializedCache.getObject(actualPath);
+
+        byte[] serialized = configuration.asByteArray(loc);
+
+        serializedCache.put(actualPath, serialized, loc.getClass());
+
+        return  serialized;
     }
 
     public static byte[] serializeRaw(Object object) throws IOException {
@@ -85,14 +114,22 @@ public class RMDataSerializer implements Serializable {
         return configuration.asObject(bytes);
     }
 
-    public static Locatable unserialize(FSTObjectOutput outputStream) throws IllegalArgumentException, IOException {
-
-        Object object = configuration.asObject(outputStream.getBuffer());
+    public static Locatable unserialize(Object outputStream) throws IllegalArgumentException, IOException {
+        Object object = configuration.asObject((byte[])outputStream);
 
         if (object instanceof Locatable)
             return (Locatable)object;
 
         throw new IllegalArgumentException("supplied byte array is not a serialized Locatable");
+    }
+
+    public static Locatable unserialize(byte[] outputStream) throws IllegalArgumentException, IOException {
+
+        if (!(outputStream instanceof byte[]))
+            throw new IllegalArgumentException("Serialized object is not in a compatible format");
+
+        return unserialize(outputStream);
+
     }
 
 

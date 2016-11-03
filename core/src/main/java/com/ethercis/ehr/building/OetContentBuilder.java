@@ -49,7 +49,10 @@ public class OetContentBuilder extends ContentBuilder {
     public Composition generateNewComposition() throws Exception {
 
         if (knowledge.cacheContainsLocatable(templateId)){
-            return retrieveCache(templateId);
+            constraintMapper = retrieveConstraintMapper(templateId);
+            Composition composition = retrieveCache(templateId);
+            setCompositionAttributes(composition);
+            return composition;
         }
 
         //create a new composition
@@ -68,7 +71,7 @@ public class OetContentBuilder extends ContentBuilder {
             throw new IllegalArgumentException("Could not generate composition:"+templateId);
 
         if (knowledge.isLocatableCached()) {
-            storeCache(templateId, newComposition);
+            storeCache(templateId, newComposition, constraintMapper);
         }
 
         return newComposition;

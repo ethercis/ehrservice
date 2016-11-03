@@ -45,6 +45,7 @@ public class SerializerDebug extends TestCase {
         props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
 
@@ -56,18 +57,21 @@ public class SerializerDebug extends TestCase {
     @Test
     public void testBuildFromJson() throws Exception {
 //        String templateId = "IDCR - Laboratory Order.v0";
-        String templateId = "IDCR - Immunisation summary.v0";
+//        String templateId = "IDCR - Laboratory Test Report.v0";
+        String templateId = "IDCR - Laboratory Test Report.v0";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
-        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/ticket21.serial.json")).forEach(line -> sb.append(line));
+        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/a601a3df-cfea-4cb8-9b82-5737522b52c4.db.json")).forEach(line -> sb.append(line));
 //        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "IDCR Problem List.v1");
         I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
 
         Composition newComposition = content.buildCompositionFromJson(sb.toString());
 
         assertNotNull(newComposition);
+
+        Composition newComposition2 = content.buildCompositionFromJson(sb.toString());
 
         //=================== FLAT JSON ==========================
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);

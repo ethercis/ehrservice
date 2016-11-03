@@ -1,10 +1,7 @@
 package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.building.util.ContextHelper;
-import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateAdapter;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
-import com.ethercis.ehr.encode.DvTimeAdapter;
+import com.ethercis.ehr.encode.*;
 import com.ethercis.ehr.json.FlatJsonUtil;
 import com.ethercis.ehr.json.JsonUtil;
 import com.ethercis.ehr.keyvalues.EcisFlattener;
@@ -66,12 +63,21 @@ public class ContentBuilderTest extends TestCase {
         props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
 
         Pattern include = Pattern.compile(".*");
 
         knowledge.retrieveFileMap(include, null);
+    }
+
+   private String jsonMapToString(Map map){
+        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+        Gson gson = builder.setPrettyPrinting().create();
+        String mapjson = gson.toJson(map);
+
+        return mapjson;
     }
 
     @Test
@@ -101,9 +107,9 @@ public class ContentBuilderTest extends TestCase {
 
         assertNotNull(composition);
 
-        CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH, true);
         Map<String, Object> retmap = compositionSerializer.process(composition);
-        String stringMap = CompositionSerializer.jsonMapToString(retmap);
+        String stringMap = jsonMapToString(retmap);
 
         assertNotNull(stringMap);
     }
@@ -126,7 +132,7 @@ public class ContentBuilderTest extends TestCase {
         Locatable itemStructure = I_ContentBuilder.parseOtherDetailsXml(is);
 
         //serialize other_details
-        CompositionSerializer serializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        I_CompositionSerializer serializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH, true);
         String encoded = serializer.dbEncode(CompositionSerializer.TAG_OTHER_DETAILS, itemStructure);
 //        Map<String, Object> stringObjectMap = serializer.processItem(itemStructure);
 //        GsonBuilder builder = new GsonBuilder();
@@ -322,9 +328,9 @@ public class ContentBuilderTest extends TestCase {
 //            "IDCR Procedures List_1 RAW.xml"
 //            "IDCR Problem List.v1.xml"
 //            "Vital_signs_TEST.xml"
-            "IDCR-LabReportRAW1.xml"
-//            "RIPPLE_conformanceTesting_RAW.xml"
-//            "prescription_validation_test.xml"
+            "IDCR-LabReportRAW1.xml",
+            "RIPPLE_conformanceTesting_RAW.xml",
+            "prescription_validation_test.xml"
 
 
     };
@@ -342,10 +348,14 @@ public class ContentBuilderTest extends TestCase {
 //        InputStream is = new FileInputStream(new File("/TMP/CXML2495809321753426126.xml"));
 
         for (String document: documentList) {
+
             System.out.println("=============================================="+document);
             String documentPath = path + document;
             InputStream is = new FileInputStream(new File(documentPath));
-            I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "");
+            I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "IDCR - Laboratory Test Report.v0");
+            //pre-warm the composition cache
+            content.generateNewComposition();
+
             Composition composition = content.importCanonicalXML(is);
             assertNotNull(composition);
 
@@ -679,9 +689,9 @@ public class ContentBuilderTest extends TestCase {
         Composition composition = content.importCanonicalXML(is);
         assertNotNull(composition);
 
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
         Map<String, Object>retmap = inspector.process(composition);
-        String stringified = CompositionSerializer.jsonMapToString(retmap);
+        String stringified = jsonMapToString(retmap);
         File tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_RAWJSON", ".json");
         FileUtils.writeStringToFile(tempfile, stringified);
 
@@ -742,9 +752,9 @@ public class ContentBuilderTest extends TestCase {
         assertNotNull(lastComposition);
 
         //we serialize the composition
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH, true);
         Map<String, Object>retmap = inspector.process(lastComposition);
-        String stringMap = CompositionSerializer.jsonMapToString(retmap);
+        String stringMap = jsonMapToString(retmap);
 
         assertNotNull(stringMap);
 
@@ -780,7 +790,7 @@ public class ContentBuilderTest extends TestCase {
         Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
         assertNotNull(lastComposition);
 
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
         Map<String, Object>retmap = inspector.process(lastComposition);
         Map<String, String> ltreeMap = inspector.getLtreeMap();
 
@@ -814,9 +824,9 @@ public class ContentBuilderTest extends TestCase {
         Composition composition = content.importCanonicalXML(is);
         assertNotNull(composition);
 
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
         Map<String, Object>retmap = inspector.process(composition);
-        String stringified = CompositionSerializer.jsonMapToString(retmap);
+        String stringified = jsonMapToString(retmap);
         File tempfile = File.createTempFile(document.substring(0, document.lastIndexOf("."))+"_RAWJSON", ".json");
         FileUtils.writeStringToFile(tempfile, stringified);
 

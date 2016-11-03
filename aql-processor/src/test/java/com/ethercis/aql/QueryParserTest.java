@@ -248,19 +248,19 @@ public class QueryParserTest {
 
         // ======================= FROM IAN
 
-//        query = "select a/uid/value as uid, " +
-//                "a/context/start_time/value as date_created, " +
-//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name, " +
-//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken, " +
-//                "c/items[at0002]/items[at0001]/value/name as what, " +
-//                "c/items[at0002]/items[at0001]/value/value/magnitude as value, " +
-//                "c/items[at0002]/items[at0001]/value/value/units as units " +
-//                "from EHR e " +
-//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1] " +
-//                "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0] " +
-//                "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]"+
-//                "where a/name/value='Laboratory test report' "+
-//                "AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
+        query = "select a/uid/value as uid, " +
+                "a/context/start_time/value as date_created, " +
+                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name, " +
+                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken, " +
+                "c/items[at0002]/items[at0001]/name as what, " +
+                "c/items[at0002]/items[at0001]/value/magnitude as value, " +
+                "c/items[at0002]/items[at0001]/value/units as units " +
+                "from EHR e " +
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1] " +
+                "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0] " +
+                "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]"+
+                "where a/name/value='Laboratory test report' "+
+                "AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
 
 //        query = "select a/uid/value as uid, " +
 //                "a_a/items/items/data[at0001]/items/items[at0001]/value/value as name, " +
@@ -346,30 +346,30 @@ public class QueryParserTest {
 //                "WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/value > 140";
 
         //============= RIPPLE CONFORMANCE TEMPLATE
-        query =  "select a/uid/value as uid, " +
-                "a/composer/name as author, " +
-                "b_a/other_participations/performer/name as performer, " +
-                "b_a/uid/value/value as instruction_uid, " +
-                "b_a/narrative/value/value as narrative, " +
-                "b_a/activities/activities[at0001]/name/name as name_activities, " +
-                "b_a/activities/activities[at0001]/timing/value as timing_activities, " +
-                "b_a/activities/activities[at0001]/action_archetype_id as archetype_activities " +
-                "from ehr e " +
-                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1] " +
-                "contains instruction b_a[openEHR-EHR-INSTRUCTION.request-procedure.v1] " +
-                "where a/name/value='Encounter' " +
-                "and b_a/activities/activities[at0001]/name/name = 'Request' " +
-                "and b_a/narrative/value/value = 'Human readable instruction narrative'";
-
-        query = "select  b_a/data[at0001]/items[at0002]/value/value as Causative_agent,     " +
-                "b_a/data[at0001]/items[at0002]/value/defining_code/code_string as Causative_agent_code,     " +
-                "b_a/protocol[at0042]/items[at0062]/value/value as RecordedDate,     " +
-                "b_a/data[at0001]/items[at0009]/items[at0011]/value/value as Manifestation,     " +
-                "a/uid/value as compositionId " +
-                "from EHR e " +
-                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
-                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] " +
-                "where a/name/value='Allergies list'";
+//        query =  "select a/uid/value as uid, " +
+//                "a/composer/name as author, " +
+//                "b_a/other_participations/performer/name as performer, " +
+//                "b_a/uid/value/value as instruction_uid, " +
+//                "b_a/narrative/value/value as narrative, " +
+//                "b_a/activities/activities[at0001]/name/name as name_activities, " +
+//                "b_a/activities/activities[at0001]/timing/value as timing_activities, " +
+//                "b_a/activities/activities[at0001]/action_archetype_id as archetype_activities " +
+//                "from ehr e " +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1] " +
+//                "contains instruction b_a[openEHR-EHR-INSTRUCTION.request-procedure.v1] " +
+//                "where a/name/value='Encounter' " +
+//                "and b_a/activities/activities[at0001]/name/name = 'Request' " +
+//                "and b_a/narrative/value/value = 'Human readable instruction narrative'";
+//
+//        query = "select  b_a/data[at0001]/items[at0002]/value/value as Causative_agent,     " +
+//                "b_a/data[at0001]/items[at0002]/value/defining_code/code_string as Causative_agent_code,     " +
+//                "b_a/protocol[at0042]/items[at0062]/value/value as RecordedDate,     " +
+//                "b_a/data[at0001]/items[at0009]/items[at0011]/value/value as Manifestation,     " +
+//                "a/uid/value as compositionId " +
+//                "from EHR e " +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
+//                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] " +
+//                "where a/name/value='Allergies list'";
 
 //        query = "select count(e) as cnt from EHR e" +
 //                "  contains COMPOSITION a" +
@@ -388,27 +388,26 @@ public class QueryParserTest {
 //                "where e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0012]/value/value != '' " +
 //                "and e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0012]/value/value != ''";
 
-//        query = "select e/ehr_id/value from ehr e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9'] contains composition";
-//        query = "select e/ehr_id/value from EHR e contains composition";
-//        query = "select e/ehr_id/value from EHR e";
 //
 //        query = "select e/ehr_id/value, " +
 //                "c_a/items[at0053]/value/numerator as Percent_O2_numerator " +
 //                "from EHR e contains COMPOSITION c contains CLUSTER c_a[openEHR-EHR-CLUSTER.person-name.v1]";
         
         //================================================================================
-//        query = "select" +
-//                "    b_a/data[at0001]/items[at0002]/value/value as cause," +
-//                "    b_a/data[at0001]/items[at0009]/items[at0011]/value/value as reaction," +
-//                "    a/uid/value as compositionId " +
-//                "from EHR e  " +
-//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
-//                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] " +
-//                "where a/name/value='Adverse reaction list' " +
-//                "and e/ehr_status/subject/external_ref/id/value  = '9999999000' " +
-//                "and e/ehr_status/subject/external_ref/namespace = 'DEMOGRAPHIC' ";
-//                " d/items[at0057]/items[at0064]/items[at0065]/value/value as medication " +
+        query = "select" +
+                "    b_a/data[at0001]/items[at0002]/value/value as cause," +
+                "    b_a/data[at0001]/items[at0009]/items[at0011]/value/value as reaction," +
+                "    a/uid/value as compositionId " +
+                "from EHR e  " +
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
+                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] " +
+                "where a/name/value='Adverse reaction list' " +
+                "and e/ehr_status/subject/external_ref/id/value  = '9999999000' " +
+                "and e/ehr_status/subject/external_ref/namespace = 'uk.nhs.nhs_number' ";
 
+//
+////                " d/items[at0057]/items[at0064]/items[at0065]/value/value as medication " +
+//
 //        query = "select " +
 //                " a/uid/value as composition_uid, " +
 //                " a_i/narrative/value as narrative, " +
@@ -425,14 +424,66 @@ public class QueryParserTest {
 //                " contains INSTRUCTION a_i[openEHR-EHR-INSTRUCTION.medication.v1] " +
 //                " contains DESCRIPTION d[openEHR-EHR-ITEM_TREE.medication_mod.v1]" +
 //                " orderby start_time DESC ";
-
-        query = "select " +
-                "e/ehr_id/value as ehr_id, " +
-                "e/ehr_status/subject/external_ref/id/value as subject_id, "+
-                "e/ehr_status/subject/external_ref/namespace as subject_namespace "+
-                "from EHR e " +
-                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
-                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] ";
+////
+//
+//        query = "select " +
+//                "e/ehr_id/value as ehr_id, " +
+//                "e/ehr_status/subject/external_ref/id/value as subject_id, "+
+//                "e/ehr_status/subject/external_ref/namespace as subject_namespace "+
+//                "from EHR e " +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
+//                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] ";
+////
+//        query = "select a/uid/value as uid, a/context/start_time/value as date_created,\n" +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as systolic," +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/units as systolic_units," +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude as diastolic," +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/units as diastolic_units," +
+//                "   o_hr/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as rate," +
+//                "   o_hr/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/units as rate_units" +
+//                "       from EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9'] \n" +
+//                "                  contains COMPOSITION a\n" +
+//                "                  contains (OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1] \n" +
+//                "                  AND OBSERVATION o_hr[openEHR-EHR-OBSERVATION.heart_rate-pulse.v1])" +
+//                "   where o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > 80 " +
+//                "   ORDERBY systolic ASC";
+//////
+//        query = "select a/uid/value as comp_id, a/context/start_time/value as date_created,\n" +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as systolic," +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/units as systolic_units," +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude as diastolic," +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/units as diastolic_units" +
+//                "       from EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9'] \n" +
+//                "                  contains COMPOSITION a\n" +
+//                "                  contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1] \n" +
+//                "    where o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > 0\n" +
+//                "   ORDERBY date_created DESC";
+//
+//       query = "select e/ehr_id/value from ehr e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9'] contains composition";
+////
+//        query = "select e/ehr_id/value from EHR e contains composition";
+//
+//        query = "select e/ehr_id/value, " +
+//                "e/ehr_status/subject/external_ref/id/value as subject_id, "+
+//                "e/ehr_status/subject/external_ref/namespace as subject_namespace "+
+//                " from EHR e";
+//
+//        query = "select a/uid/value as uid, a/context/start_time/value as date_created,\n" +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as systolic,\n" +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/units as systolic_units,\n" +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude as diastolic,\n" +
+//                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/units as diastolic_units,\n" +
+//                "   o_hr/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as rate,\n" +
+//                "   o_hr/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/units as rate_units\n" +
+//                "   from EHR e \n" +
+//                "                  contains COMPOSITION a\n" +
+//                "                  contains (OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1] \n" +
+//                "                  AND OBSERVATION o_hr[openEHR-EHR-OBSERVATION.heart_rate-pulse.v1])  \n" +
+//                "                  where e/ehr_status/subject/external_ref/namespace='fr.asip.48221832'\n" +
+//                "                  and e/ehr_status/subject/external_ref/id/value='fr.asip.48221832'\n" +
+//                "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude < 80\n" +
+//                "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude > 130\n" +
+//                "                  ORDERBY date_created ASC ";
 
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);

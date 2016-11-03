@@ -5,6 +5,7 @@ import com.ethercis.ehr.building.GenerationStrategy;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
@@ -117,8 +118,8 @@ public class OetRmTest {
 		
 		
 //		assertNotNull(newact.parentPath(null));
-		
-		CompositionSerializer inspector = new CompositionSerializer();
+
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance();
 		Map<String, Object>retmap = inspector.process(composition);
 		MapUtils.debugPrint(new PrintStream(System.out), "DEBUG_STRUCTURE", retmap);
 		
@@ -161,7 +162,7 @@ public class OetRmTest {
 
         assertNotNull(composition);
 
-        CompositionSerializer inspector = new CompositionSerializer();
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance();
         Map<String, Object>retmap = inspector.process(composition);
         MapUtils.debugPrint(new PrintStream(System.out), "DEBUG_STRUCTURE", retmap);
 

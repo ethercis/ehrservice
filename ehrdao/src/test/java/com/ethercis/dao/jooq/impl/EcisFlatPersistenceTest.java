@@ -7,15 +7,12 @@ import com.ethercis.dao.access.support.RmObjectHelper;
 import com.ethercis.dao.access.support.TestHelper;
 import com.ethercis.dao.access.util.CompositionUtil;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.ehr.building.ContentBuilder;
 import com.ethercis.ehr.building.I_ContentBuilder;
-import com.ethercis.ehr.building.OptContentBuilder;
 import com.ethercis.ehr.building.util.CompositionAttributesHelper;
 import com.ethercis.ehr.building.util.ContextHelper;
-import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateAdapter;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
-import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.*;
+import com.ethercis.ehr.encode.wrappers.json.writer.DvDateAdapter;
+import com.ethercis.ehr.encode.wrappers.json.writer.DvDateTimeAdapter;
 import com.ethercis.ehr.keyvalues.EcisFlattener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,7 +27,6 @@ import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -47,7 +43,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
     private UUID systemUUID;
     private UUID composerUUID;
     String description = "test contribution";
-    String templateId = "prescription.opt";
+    String templateId = "prescription";
 
     long start, end;
 
@@ -71,11 +67,11 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
 //        I_ContextAccess contextAccess = I_ContextAccess.getNewInstance(testDomainAccess, eventContext);
 //        UUID contextUUID = contextAccess.commit();
 
-        Integer changeCode = 276; //Any Event
+        Integer contributionCode = 253; //Unknown
 
         long startTime = System.nanoTime();
 
-        I_ContributionAccess contributionAccess = I_ContributionAccess.getNewInstance(testDomainAccess, ehrIdUUID, systemUUID, composerUUID, description, changeCode, ContributionDef.ContributionType.COMPOSITION, ContributionDef.ContributionState.INCOMPLETE);
+        I_ContributionAccess contributionAccess = I_ContributionAccess.getNewInstance(testDomainAccess, ehrIdUUID, systemUUID, composerUUID, description, contributionCode, ContributionDef.ContributionType.COMPOSITION, ContributionDef.ContributionState.INCOMPLETE);
 
         long endtime = System.nanoTime();
 
@@ -97,6 +93,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         I_CompositionAccess compositionAccess = I_CompositionAccess.getNewInstance(testDomainAccess, aComposition, DateTime.now(), ehrIdUUID);
         I_EntryAccess entryAccess = I_EntryAccess.getNewInstance(testDomainAccess, templateId, 0, compositionAccess.getId(), aComposition);
         compositionAccess.addContent(entryAccess);
+        compositionAccess.setContributionAccess(contributionAccess);
 
         contributionAccess.addComposition(compositionAccess);
 
@@ -147,16 +144,18 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:0", "Nurse|1345678::Jessica|face-to-face communication::openehr::216");
         kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:1", "Assistant|1345678::2.16.840.1.113883.2.1.4.3::NHS-UK::ANY::D. Mabuse|face-to-face communication::openehr::216");
 
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001]/timing", "before sleep");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001]" +
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#1']/timing", "before sleep");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#1']" +
                         "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "aspirin");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0002]/timing", "lunch");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0002]" +
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#2]/timing", "lunch");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#2']" +
                         "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "Atorvastatin");
 
         Set<UUID> ids = retrieved.getCompositionIds();
         UUID testCompositionUID = ids.toArray(new UUID[]{})[0];
         I_CompositionAccess compositionAccess = retrieved.getComposition(testCompositionUID);
+
+        compositionAccess.setContributionAccess(retrieved);
 
         PvCompoHandler pvCompoHandler = new PvCompoHandler(testDomainAccess, compositionAccess, templateId, null);
 
@@ -177,8 +176,8 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         System.out.println(jsonFlat);
     }
 
-//    @Test
-    public void _testCreateComposition(){
+    @Test
+    public void testCreateComposition(){
         Map<String, String> kvPairs = new HashMap<>();
 
         kvPairs.put("/context/health_care_facility|name", "Northumbria Community NHS");
@@ -230,7 +229,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
     }
 
     //    @Test
-    public void testCreateComposition() throws Exception {
+    public void testCreateComposition2() throws Exception {
 //        Map<String, String> kvPairs = new HashMap<>();
 
         String templateId = "COLNEC Medication";
@@ -255,14 +254,15 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
 
         //serialize it
 
-        CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-        Map<String, Object> serialized = compositionSerializer.process(composition);
-        String json = gson.toJson(serialized);
-        System.out.println(json);
+//        CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+//        Map<String, Object> serialized = compositionSerializer.process(composition);
+//        String json = gson.toJson(serialized);
+        I_CompositionSerializer serializer = I_CompositionSerializer.getInstance();
+        System.out.println(serializer.dbEncode(composition));
 
         //and back to ECISFLAT
         Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, false, CompositionSerializer.WalkerOutputMode.PATH);
-        json = gson.toJson(testRetMap);
+        String json = gson.toJson(testRetMap);
         System.out.println(json);
 
 

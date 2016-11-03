@@ -23,7 +23,6 @@
     </orderEntry>
     <orderEntry type="module" module-name="knowledge-cache" />
     <orderEntry type="library" name="com.cedarsoftware:json-io:3.0.2" level="project" />
-    <orderEntry type="library" name="log4j:log4j:1.2.17" level="application" />
     <orderEntry type="library" name="com.googlecode.jctree:jctree:2.0.0" level="project" />
     <orderEntry type="library" name="commons-lang:commons-lang:2.6" level="application" />
     <orderEntry type="library" name="joda-time:joda-time:2.2" level="application" />
@@ -53,7 +52,10 @@
           <root url="jar://$MODULE_DIR$/../../../Dropbox/eCIS_Development/eCIS-LIB/applib/ecis-openehr.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://G:/DevelArchive/java-lib-master-sep4/java-libs-master/mini-termserv/src/main/java" />
+          <root url="file://G:/DevelArchive/java-lib-master-sep4/java-libs-master/mini-termserv/src/test/java" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.2" level="project" />
@@ -94,12 +96,15 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="gson-2.4" level="application" />
-    <orderEntry type="library" name="com.sun.jersey:jersey-json:1.19" level="application" />
     <orderEntry type="library" name="org.apache.commons:commons-collections4:4.0" level="application" />
     <orderEntry type="library" name="ecis-knowledge-cache" level="project" />
     <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="application" />
-    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="library" name="jooq-3.5.3" level="application" />
     <orderEntry type="library" name="xmlbeans-2.5.0" level="application" />
+    <orderEntry type="library" name="com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.2.0" level="application" />
+    <orderEntry type="library" name="thinkehr-framework-jsonlib-2.3.0-JL32" level="application" />
+    <orderEntry type="module" module-name="validation" />
+    <orderEntry type="library" name="org.apache.logging.log4j:log4j-api:2.6.2" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="org.apache.logging.log4j:log4j-core:2.6.2" level="application" />
+    <orderEntry type="library" name="log4j:log4j:1.2.17" level="project" />
   </component>
 </module>

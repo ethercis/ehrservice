@@ -15,5 +15,6 @@
     <orderEntry type="library" name="org.postgresql:postgresql:9.4-1204-jdbc42" level="application" />
     <orderEntry type="library" name="Maven: org.jooq:jooq:3.7.3" level="project" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4-1204-jdbc42" level="project" />
+    <orderEntry type="library" name="org.apache.logging.log4j:log4j-api:2.6.2" level="application" />
   </component>
 </module>

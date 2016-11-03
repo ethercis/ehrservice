@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.knowledge;
 
+import com.ethercis.validation.ConstraintMapper;
 import openEHR.v1.template.TEMPLATE;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -145,8 +146,9 @@ public interface I_KnowledgeCache {
 	public boolean addKnowledgeSourcePath(String path, KnowledgeCache.KnowledgeType type) throws Exception;
 
     Object retrieveGenerated(String name);
+    ConstraintMapper retrieveCachedConstraints(String name);
 
-    void cacheGenerated(String name, Object objectOutput);
+    void cacheGenerated(String name, Object objectOutput, ConstraintMapper constraintMapper);
 
     Boolean isLocatableCached();
 

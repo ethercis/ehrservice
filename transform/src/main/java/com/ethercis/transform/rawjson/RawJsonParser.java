@@ -18,6 +18,7 @@
 package com.ethercis.transform.rawjson;
 
 import com.ethercis.ehr.encode.*;
+import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -89,14 +90,14 @@ public class RawJsonParser {
             String name = map.containsKey("name") ? ((Map<String, String>) (map.get("name"))).get("value") : null;
             if (map.containsKey("items")){
                 itemStack.pushStacks(encodeNodeId(CompositionSerializer.TAG_ITEMS, nodeId), name);
-                treeMap.put(CompositionSerializer.TAG_CLASS, toRmType((String)map.get("@class")));
+                treeMap.put(CompositionSerializer.TAG_CLASS, toRmType((String)map.get(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)));
                 treeMap.put(encodeNodeId(CompositionSerializer.TAG_ITEMS, nodeId), translate(map.get("items")));
             }else if (map.containsKey("data")){
-                treeMap.put(CompositionSerializer.TAG_CLASS, toRmType((String)map.get("@class")));
+                treeMap.put(CompositionSerializer.TAG_CLASS, toRmType((String)map.get(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)));
                 itemStack.pushStacks(encodeNodeId(CompositionSerializer.TAG_DATA, nodeId), name);
                 treeMap.put(encodeNodeId(CompositionSerializer.TAG_DATA, nodeId), map.get("data"));
             }else if (map.containsKey("value")){
-                treeMap.put(CompositionSerializer.TAG_CLASS, toRmType((String) map.get("@class")));
+                treeMap.put(CompositionSerializer.TAG_CLASS, toRmType((String) map.get(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)));
                 itemStack.pushStacks(encodeNodeId(isItems ? CompositionSerializer.TAG_ITEMS : CompositionSerializer.TAG_DATA, nodeId), name);
 //                translate(map.get("value"));
 //                System.out.println("value-->" + map.get("value").toString());
@@ -162,13 +163,13 @@ public class RawJsonParser {
                     rmMap.put(camelKey, toRMconvention(item));
                 }
                 else {
-                    if (camelKey.equals("@class")){
+                    if (camelKey.equals(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)){
                         if (depth == 1)
                             valueClass = toRmType((String) item);
                     }
                     else {
                         rmMap.put(camelKey, item);
-                        rmMap.put(CompositionSerializer.TAG_CLASS, toRmType((String)map.get("@class")));
+                        rmMap.put(CompositionSerializer.TAG_CLASS, toRmType((String)map.get(I_DvTypeAdapter.TAG_CLASS_RAW_JSON)));
                     }
                 }
             }

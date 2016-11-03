@@ -16,12 +16,16 @@
  */
 package com.ethercis.ehr.knowledge;
 
+import com.ethercis.validation.ConstraintMapper;
 import openEHR.v1.template.TEMPLATE;
 import openEHR.v1.template.TemplateDocument;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimePrinter;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import se.acode.openehr.parser.ADLParser;
@@ -31,6 +35,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -67,8 +72,26 @@ public class KnowledgeCache implements I_KnowledgeCache {
 	private Map<String, File> optFileMap = new HashMap<String, File>();
 	private Map<String, OPERATIONALTEMPLATE> atOptCache = new HashMap<>();
 
-    //Cache a serialized object
-    private Map<String, Object> cacheSerialized = new HashMap<>();
+    //Cache a serialized object with the corresponding constraint map
+    private class CacheSerialized {
+        Object serialized;
+        ConstraintMapper constraintMapper;
+
+        public CacheSerialized(Object serialized, ConstraintMapper constraintMapper) {
+            this.serialized = serialized;
+            this.constraintMapper = constraintMapper;
+        }
+
+        public Object getSerialized() {
+            return serialized;
+        }
+
+        public ConstraintMapper getConstraintMapper() {
+            return constraintMapper;
+        }
+    }
+
+    private Map<String, CacheSerialized> cacheSerialized = new HashMap<>();
 
     //index
     //template index with UUID (not used so far...)
@@ -208,7 +231,7 @@ public class KnowledgeCache implements I_KnowledgeCache {
             }
             else if ( entry != null && ((String)entry.getKey()).compareTo("knowledge.cachelocatable")==0) {
                 //TODO: always false for the time being since it requires deep changes in composition builder
-//                cacheLocatable = Boolean.parseBoolean((String)entry.getValue());
+                cacheLocatable = Boolean.parseBoolean((String)entry.getValue());
                 log.info("Locatable caching set to:"+cacheLocatable);
             }
             else if ( entry != null && ((String)entry.getKey()).compareTo("knowledge.path.archetype")==0) {
@@ -349,6 +372,15 @@ public class KnowledgeCache implements I_KnowledgeCache {
 
         //copy the content to filename in OPT path
         Path path = Paths.get(optPath + "/" + filename+".opt");
+
+        //check if this template already exists
+        if (Files.exists(path)){
+            //create a backup
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
+            Path backupPath = Paths.get(optPath + "/" + filename+"_"+formatter.print(DateTime.now()) + ".opt.bak");
+            Files.copy(path, backupPath);
+        }
+
         try {
             Files.write(path, content, StandardOpenOption.CREATE);
         } catch (IOException e) {
@@ -637,16 +669,35 @@ public class KnowledgeCache implements I_KnowledgeCache {
     @Override
     public Object retrieveGenerated(String name){
         if (cacheLocatable) {
-            return cacheSerialized.get(name);
+            CacheSerialized cached = cacheSerialized.get(name);
+            if (cached != null)
+                return cached.getSerialized();
+            else
+                return null;
         }
         else
             return null;
     }
 
     @Override
-    public void cacheGenerated(String name, Object objectOutput){
-        if (cacheLocatable)
-            cacheSerialized.put(name, objectOutput);
+    public ConstraintMapper retrieveCachedConstraints(String name){
+        if (cacheLocatable) {
+            CacheSerialized cached = cacheSerialized.get(name);
+            if (cached != null)
+                return cached.getConstraintMapper();
+            else
+                return null;
+        }
+        else
+            return null;
+    }
+
+    @Override
+    public void cacheGenerated(String name, Object objectOutput, ConstraintMapper constraintMapper){
+        if (cacheLocatable) {
+            CacheSerialized serialized = new CacheSerialized(objectOutput, constraintMapper);
+            cacheSerialized.put(name, serialized);
+        }
     }
 
     @Override
@@ -724,6 +775,9 @@ public class KnowledgeCache implements I_KnowledgeCache {
         sb.append("In-cache generated locatable   :"+ cacheSerialized.size()+"\n");
         sb.append("Global template index          :"+globalIndex.size()+"\n");
         sb.append("Processing errors found        :"+errorMap.size()+"\n");
+
+        sb.append("=== INTERNAL ====\n");
+        sb.append(settings());
 
         return sb.toString();
     }

@@ -47,7 +47,11 @@ public class OptContentBuilder extends ContentBuilder {
     public Composition generateNewComposition() throws Exception {
 
         if (knowledge.cacheContainsLocatable(templateId)){
-            return retrieveCache(templateId);
+            Composition composition =  retrieveCache(templateId);
+            //TODO: assign initial composition attributes if any
+            constraintMapper = retrieveConstraintMapper(templateId);
+            setCompositionAttributes(composition);
+            return composition;
         }
 
         if (operationaltemplate == null) {
@@ -69,7 +73,7 @@ public class OptContentBuilder extends ContentBuilder {
 
         if (locatable instanceof Composition) {
             if (knowledge.isLocatableCached()) {
-                storeCache(templateId, (Composition)locatable);
+                storeCache(templateId, (Composition)locatable, constraintMapper);
             }
             return (Composition) locatable;
         }
@@ -82,7 +86,10 @@ public class OptContentBuilder extends ContentBuilder {
     public Locatable generate() throws Exception {
 
         if (knowledge.cacheContainsLocatable(templateId)){
-            return retrieveCache(templateId);
+            constraintMapper = retrieveConstraintMapper(templateId);
+            Composition composition = retrieveCache(templateId);
+            setCompositionAttributes(composition);
+            return composition;
         }
 
         if (operationaltemplate == null) {

@@ -20,12 +20,9 @@ import com.ethercis.dao.access.interfaces.I_ContextAccess;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_PartyIdentifiedAccess;
 import com.ethercis.dao.access.support.DataAccess;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.jooq.pg.tables.records.*;
-import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -146,12 +143,8 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
         //other context
         if (eventContext.getOtherContext() != null){
             //set up the JSONB field other_context
-            CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-            Map<String, Object> otherContextMap  = compositionSerializer.processItem(eventContext.getOtherContext());
-            GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-            Gson gson = builder.setPrettyPrinting().create();
-            eventContextRecord.setOtherContext(gson.toJson(otherContextMap));
+            I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();
+            eventContextRecord.setOtherContext(compositionSerializer.dbEncode(eventContext.getOtherContext()));
         }
     }
 

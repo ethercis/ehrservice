@@ -24,17 +24,21 @@ import com.ethercis.aql.definition.FromDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
+import com.ethercis.aql.sql.queryImpl.I_QueryImpl;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
+import com.ethercis.jooq.pg.tables.records.CompositionRecord;
+import com.ethercis.jooq.pg.tables.records.EhrRecord;
+import com.ethercis.jooq.pg.tables.records.PartyIdentifiedRecord;
+import com.ethercis.jooq.pg.tables.records.StatusRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 
 import java.util.List;
 import java.util.UUID;
 
-import static com.ethercis.jooq.pg.Tables.COMP_EXPAND;
-import static com.ethercis.jooq.pg.Tables.EHR;
-import static com.ethercis.jooq.pg.Tables.STATUS;
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Bind the abstract representation of a SELECT clause into a SQL expression
@@ -52,19 +56,23 @@ public class SelectBinder {
     DSLContext context ;
     private WhereBinder whereBinder;
 
+    public enum OptimizationMode {TEMPLATE_BATCH, NONE}
 
-    public SelectBinder(DSLContext context, IdentifierMapper mapper, List<VariableDefinition> definitions, List whereClause, String serverNodeId) {
+    private OptimizationMode optimizationMode;
+
+    public SelectBinder(DSLContext context, IdentifierMapper mapper, List<VariableDefinition> definitions, List whereClause, String serverNodeId, OptimizationMode mode, String entry_root) {
         this.context = context;
         this.pathResolver = new PathResolver(context, mapper);
         this.mapper = mapper;
         this.selectVariableDefinitions = definitions;
-        this.jsonbEntryQuery = new JsonbEntryQuery(context, pathResolver, definitions);
+        this.jsonbEntryQuery = new JsonbEntryQuery(context, pathResolver, definitions, entry_root);
         this.compositionAttributeQuery = new CompositionAttributeQuery(context, pathResolver, definitions, serverNodeId);
         this.whereBinder = new WhereBinder(jsonbEntryQuery, compositionAttributeQuery, whereClause, mapper);
+        this.optimizationMode = mode;
     }
 
-    public SelectBinder(DSLContext context, QueryParser parser, String serverNodeId) {
-        this(context, parser.getIdentifierMapper(), parser.getVariables(), parser.getWhereClause(), serverNodeId);
+    public SelectBinder(DSLContext context, QueryParser parser, String serverNodeId, OptimizationMode mode, String entry_root) {
+        this(context, parser.getIdentifierMapper(), parser.getVariables(), parser.getWhereClause(), serverNodeId, mode, entry_root);
     }
 
 
@@ -73,8 +81,8 @@ public class SelectBinder {
      * @param comp_id
      * @return
      */
-    public SelectQuery<?> bind(UUID comp_id){
-        pathResolver.resolvePaths(comp_id);
+    public SelectQuery<?> bind(String template_id, UUID comp_id, String label, String entry_root){
+        pathResolver.resolvePaths(template_id, comp_id);
 
         jsonbEntryQuery.reset();
 
@@ -88,11 +96,11 @@ public class SelectBinder {
             switch (className){
                 case "COMPOSITION":
                 case "EHR":
-                    field = compositionAttributeQuery.makeField(comp_id, identifier, variableDefinition, true);
+                    field = compositionAttributeQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
 //                    selectFields.add(compositionAttributeQuery.selectField(comp_id, identifier, variableDefinition));
                     break;
                 default:
-                    field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true);
+                    field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
 //                    selectFields.add(jsonbEntryQuery.selectField(comp_id, identifier, variableDefinition));
                     break;
             }
@@ -110,13 +118,21 @@ public class SelectBinder {
 //            selectQuery.addJoin(STATUS, JoinType.JOIN, STATUS.EHR_ID.eq(COMP_EXPAND.EHR_ID));
 //        }
 
-        whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.eq(comp_id));
+        if (optimizationMode.equals(OptimizationMode.NONE)) {
+            whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(comp_id));
+//        whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.eq(UUID.fromString(DSL.param("comp_id"))));
 //        selectQuery.addConditions();
-        selectQuery.addConditions(whereBinder.bind(comp_id));
+            selectQuery.addConditions(whereBinder.bind(comp_id));
+        }
 
-        completeFromClause(selectQuery); //as some variables (other_status) may be defined only in where...
+//        completeFromClause(selectQuery); //as some variables (other_status) may be defined only in where...
 //        return context.select(selectFields);
         return selectQuery;
+    }
+
+    public Condition getWhereConditions(UUID comp_id){
+        Condition condition =  whereBinder.bind(comp_id);
+        return condition;
     }
 
     /**
@@ -136,7 +152,7 @@ public class SelectBinder {
             SelectQuery<?> subSelect = context.selectQuery();
             switch (className){
                 case "COMPOSITION":
-                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true);
+                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
 //                    selectFields.add(compositionAttributeQuery.selectField(comp_id, identifier, variableDefinition));
                     break;
                 default:
@@ -148,7 +164,7 @@ public class SelectBinder {
         }
         //add the from bit
 //        selectQuery.addFrom(CompositionQuerySnippets.content(context, comp_id));
-        completeFromClause(selectQuery);
+//        completeFromClause(selectQuery);
 //        selectQuery.addFrom(COMP_EXPAND);
         whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(inSet));
 //        selectQuery.addConditions();
@@ -192,10 +208,10 @@ public class SelectBinder {
             Field<?> field;
             switch (className){
                 case "COMPOSITION":
-                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true);
+                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
                     break;
                 case "EHR":
-                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true);
+                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
                     //check for implicit where associated with the FROM EHR clause
 //                    FromDefinition.EhrPredicate predicate = (FromDefinition.EhrPredicate) mapper.getContainer(identifier);
 //                    whereBinder.whereClause.add();
@@ -206,8 +222,11 @@ public class SelectBinder {
             selectQuery.addSelect(field);
             jsonbEntryQuery.inc();
         }
-        //add the from bit
-        completeFromClause(selectQuery);
+//        //add the from bit
+//        completeFromClause(selectQuery);
+
+        //add required joins
+
 //        selectQuery.addFrom(COMP_EXPAND);
         if (containQuery != null) {
             whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(containQuery.asField()));
@@ -220,7 +239,7 @@ public class SelectBinder {
         if (orderAttributes != null && !orderAttributes.isEmpty()) {
             for (OrderAttribute orderAttribute: orderAttributes){
                 //assumes COMPOSITION fields
-                Field<?> field = compositionAttributeQuery.makeField(null, null, orderAttribute.getVariableDefinition(), false);
+                Field<?> field = compositionAttributeQuery.makeField(null, null, orderAttribute.getVariableDefinition(), false, I_QueryImpl.Clause.ORDERBY);
 
                 if (field != null){
                     if (orderAttribute.getDirection() != null) {
@@ -256,11 +275,11 @@ public class SelectBinder {
                 Field<?> field;
                 switch (className){
                     case "COMPOSITION":
-                        field = compositionAttributeQuery.makeField(comp_id, identifier, variableDefinition, true);
+                        field = compositionAttributeQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.ORDERBY);
 //                    selectFields.add(compositionAttributeQuery.selectField(comp_id, identifier, variableDefinition));
                         break;
                     default:
-                        field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true);
+                        field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.ORDERBY);
 //                    selectFields.add(jsonbEntryQuery.selectField(comp_id, identifier, variableDefinition));
                         break;
                 }
@@ -290,18 +309,31 @@ public class SelectBinder {
         return pathResolver;
     }
 
-    private void completeFromClause(SelectQuery<?> selectQuery){
-        selectQuery.addFrom(COMP_EXPAND);
-        if (compositionAttributeQuery.containsEhrStatus()){ //add a join clause to get other_details
-            selectQuery.addJoin(STATUS, JoinType.FULL_OUTER_JOIN, STATUS.EHR_ID.eq(COMP_EXPAND.EHR_ID));
-        }
-    }
-
     public boolean hasEhrIdExpression(){
         return compositionAttributeQuery.containsEhrId();
     }
 
     public String getEhrIdAlias(){
         return compositionAttributeQuery.getEhrIdAlias();
+    }
+
+    public boolean isCompositionIdFiltered(){
+        return compositionAttributeQuery.isCompositionIdFiltered();
+    }
+
+    public boolean isEhrIdFiltered(){
+        return compositionAttributeQuery.isEhrIdFiltered();
+    }
+
+    public boolean containsJQueryPath(){
+        return jsonbEntryQuery.isContainsJqueryPath();
+    }
+
+    public OptimizationMode getOptimizationMode() {
+        return optimizationMode;
+    }
+
+    public CompositionAttributeQuery getCompositionAttributeQuery() {
+        return compositionAttributeQuery;
     }
 }

@@ -27,6 +27,8 @@ public class RmObjectHelper {
         props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
+        props.put("knowledge.forcecache", "true");
         try {
             knowledge = new KnowledgeCache(null, props);
         } catch (Exception e) {
@@ -39,6 +41,8 @@ public class RmObjectHelper {
         props.put("knowledge.path.archetypes", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.templates", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
+        props.put("knowledge.forcecache", "true");
         this.knowledge = new KnowledgeCache(null, props);
     }
 

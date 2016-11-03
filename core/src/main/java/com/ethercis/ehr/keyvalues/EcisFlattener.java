@@ -17,6 +17,7 @@
 package com.ethercis.ehr.keyvalues;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.util.MapInspector;
 import org.apache.commons.collections4.iterators.PeekingIterator;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -36,28 +37,28 @@ public class EcisFlattener implements I_EcisFlattener {
 
 
     public static Map<String, String> renderFlat(Composition composition) throws Exception {
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
         Map<String, Object>retmap = inspector.process(composition);
 
         return generateEcisFlat(composition, retmap);
     }
 
     public static Map<String, String> renderFlat(Locatable locatable) throws Exception {
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
         Map<String, Object>retmap = inspector.processItem(locatable);
 
         return generateEcisFlat(retmap);
     }
 
     public static Map<String, String> renderFlat(Locatable locatable, boolean allElements, CompositionSerializer.WalkerOutputMode mode) throws Exception {
-        CompositionSerializer inspector = new CompositionSerializer(mode, allElements);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(mode, allElements);
         Map<String, Object>retmap = inspector.processItem(locatable);
 
         return generateEcisFlat(retmap);
     }
 
     public static Map<String, String> renderFlat(Composition composition, boolean allElements, CompositionSerializer.WalkerOutputMode mode) throws Exception {
-        CompositionSerializer inspector = new CompositionSerializer(mode, allElements);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(mode, allElements);
         Map<String, Object>retmap = inspector.process(composition);
 
         return generateEcisFlat(composition, retmap);
@@ -111,46 +112,47 @@ public class EcisFlattener implements I_EcisFlattener {
 
         //add context data
         EventContext eventContext = composition.getContext();
-        String baseTag = I_PathValue.CONTEXT_TAG;
-        if (eventContext.getHealthCareFacility() != null) {
-            flatten.put(baseTag + I_PathValue.CTX_FACILITY_TAG + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, eventContext.getHealthCareFacility().getName());
-            flatten.put(baseTag + I_PathValue.CTX_FACILITY_TAG + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, eventContext.getHealthCareFacility().getExternalRef().getId().getValue());
-        }
-        if (eventContext.getStartTime() != null)
-            flatten.put(baseTag+I_PathValue.CTX_START_TIME_TAG, eventContext.getStartTime().getValue());
-
-        if (eventContext.getEndTime() != null)
-            flatten.put(baseTag+I_PathValue.CTX_END_TIME_TAG, eventContext.getEndTime().getValue());
-
-        int index = 0;
-
-        if (eventContext.getParticipations() != null) {
-            for (Participation participation : eventContext.getParticipations()) {
-                flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.PARTICIPATION_FUNCTION_SUBTAG, participation.getFunction().getValue());
-                PartyIdentified partyIdentified = (PartyIdentified)participation.getPerformer();
-                flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, partyIdentified.getName());
-                flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, participation.getPerformer().getExternalRef().getId().getValue());
-                flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.PARTICIPATION_MODE_SUBTAG, participation.getMode().toString());
-                index++;
+        if (eventContext != null) {
+            String baseTag = I_PathValue.CONTEXT_TAG;
+            if (eventContext.getHealthCareFacility() != null) {
+                flatten.put(baseTag + I_PathValue.CTX_FACILITY_TAG + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, eventContext.getHealthCareFacility().getName());
+                flatten.put(baseTag + I_PathValue.CTX_FACILITY_TAG + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, eventContext.getHealthCareFacility().getExternalRef().getId().getValue());
             }
-        }
+            if (eventContext.getStartTime() != null)
+                flatten.put(baseTag + I_PathValue.CTX_START_TIME_TAG, eventContext.getStartTime().getValue());
 
-        if (eventContext.getOtherContext() != null){
-            CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-            Map<String, Object>retmap = inspector.processItem(eventContext.getOtherContext());
-            mapInspector.inspect(retmap, true); //clear the stack before inspecting
-            Map<String, String> otherContextMapFlat = mapInspector.getStackFlatten();
-            for (String path: otherContextMapFlat.keySet()){
-                //we strip the 'items[at0001]' part from the path...
-                flatten.put(I_PathValue.OTHER_CONTEXT_TAG+"[at0001]"+path.substring(path.indexOf("]")+1), otherContextMapFlat.get(path));
+            if (eventContext.getEndTime() != null)
+                flatten.put(baseTag + I_PathValue.CTX_END_TIME_TAG, eventContext.getEndTime().getValue());
+
+            int index = 0;
+
+            if (eventContext.getParticipations() != null) {
+                for (Participation participation : eventContext.getParticipations()) {
+                    flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.PARTICIPATION_FUNCTION_SUBTAG, participation.getFunction().getValue());
+                    PartyIdentified partyIdentified = (PartyIdentified) participation.getPerformer();
+                    flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, partyIdentified.getName());
+                    flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, participation.getPerformer().getExternalRef().getId().getValue());
+                    flatten.put(baseTag + I_PathValue.ENTRY_PARTICIPATION + ":" + index + I_PathValue.PARTICIPATION_MODE_SUBTAG, participation.getMode().toString());
+                    index++;
+                }
             }
+
+            if (eventContext.getOtherContext() != null) {
+                I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
+                Map<String, Object> retmap = inspector.processItem(eventContext.getOtherContext());
+                mapInspector.inspect(retmap, true); //clear the stack before inspecting
+                Map<String, String> otherContextMapFlat = mapInspector.getStackFlatten();
+                for (String path : otherContextMapFlat.keySet()) {
+                    //we strip the 'items[at0001]' part from the path...
+                    flatten.put(I_PathValue.OTHER_CONTEXT_TAG + "[at0001]" + path.substring(path.indexOf("]") + 1), otherContextMapFlat.get(path));
+                }
+            }
+
+            if (eventContext.getLocation() != null)
+                flatten.put(baseTag + I_PathValue.CTX_LOCATION_TAG, eventContext.getLocation());
+            if (eventContext.getSetting() != null)
+                flatten.put(baseTag + I_PathValue.CTX_SETTING_TAG, eventContext.getSetting().toString());
         }
-
-        if (eventContext.getLocation()!= null)
-            flatten.put(baseTag + I_PathValue.CTX_LOCATION_TAG, eventContext.getLocation());
-        if (eventContext.getSetting() != null)
-            flatten.put(baseTag + I_PathValue.CTX_SETTING_TAG, eventContext.getSetting().toString());
-
         if (composition.getComposer() != null) {
             PartyIdentified composer = (PartyIdentified)composition.getComposer();
             flatten.put(I_PathValue.COMPOSER_TAG + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, composer.getName());

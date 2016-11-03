@@ -20,6 +20,7 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
+import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.datastructure.history.History;
 import org.openehr.rm.datastructure.history.PointEvent;
@@ -29,6 +30,7 @@ import org.openehr.rm.datatypes.text.DvText;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ETHERCIS Project ehrservice
@@ -36,6 +38,17 @@ import java.util.List;
  */
 public class LocatableHelper {
 
+    public static final String AND_NAME_VALUE_TOKEN = "and name/value=";
+    public static final String COMMA_TOKEN = ",";
+    public static final String INDEX_PREFIX_TOKEN = "#";
+    public static final String OPEN_BRACKET = "[";
+    public static final String CLOSE_BRACKET = "]";
+    public static final String FORWARD_SLASH = "/";
+
+    private RMDataSerializer rmDataSerializer = new RMDataSerializer();
+
+    public LocatableHelper() {
+    }
 
     /**
      * convenience method to clone a Locatable
@@ -43,9 +56,20 @@ public class LocatableHelper {
      * @return
      * @throws java.io.IOException
      */
-    public static Locatable clone(Locatable aLocatable) throws IOException {
+    public Locatable clone(Locatable aLocatable) throws IOException {
         return RMDataSerializer.unserialize(RMDataSerializer.serialize(aLocatable));
     }
+
+    public Locatable clone(String path, Locatable aLocatable) throws IOException {
+        Object serialized = rmDataSerializer.serialize(path, aLocatable);
+        Object unserialized = RMDataSerializer.unserialize(serialized);
+
+        if (!aLocatable.getClass().equals(unserialized.getClass()))
+            throw new IllegalArgumentException("INTERNAL: Class to clone does not match cached: expected:"+aLocatable.getClass()+", found:"+unserialized.getClass());
+
+        return (Locatable)unserialized;
+    }
+
 
     public static String incrementPathNodeId(String fromPathId){
         Integer id = Integer.parseInt(fromPathId.substring(2)); //skip the "at" bit
@@ -72,7 +96,7 @@ public class LocatableHelper {
                 }
                 else {
                     //check if it contains a '#'
-                    if (nodeId.contains("#")){
+                    if (nodeId.contains(INDEX_PREFIX_TOKEN)){
                         ;
                     }
                 }
@@ -84,7 +108,7 @@ public class LocatableHelper {
     private static String extractLastAtPath(String itemPath){
         if (itemPath.contains("[at")) {
             String path = LocatableHelper.simplifyPath(itemPath);
-            return path.substring(path.lastIndexOf("[") + 1, path.lastIndexOf("]"));
+            return path.substring(path.lastIndexOf(OPEN_BRACKET) + 1, path.lastIndexOf(CLOSE_BRACKET));
         }
         else
             return "at0000";
@@ -126,7 +150,7 @@ public class LocatableHelper {
             }
             else {
                 if (!lastNodeId.contains("name")){
-                    if (!clone.getName().getValue().contains("#")) {
+                    if (!clone.getName().getValue().contains(INDEX_PREFIX_TOKEN)) {
 //                        lastNodeId = LocatableHelper.incrementPathNodeId(lastNodeId);
                     }
                     else{
@@ -134,10 +158,10 @@ public class LocatableHelper {
                     }
                 }
                 else {
-                    if (lastNodeId.contains(" and name/value"))
-                        lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(" and name/value"));
-                    else if (lastNodeId.contains(","))
-                        lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(","));
+                    if (lastNodeId.contains(AND_NAME_VALUE_TOKEN))
+                        lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(AND_NAME_VALUE_TOKEN));
+                    else if (lastNodeId.contains(COMMA_TOKEN))
+                        lastNodeId = lastNodeId.substring(0, lastNodeId.indexOf(COMMA_TOKEN));
 
                 }
 
@@ -185,17 +209,17 @@ public class LocatableHelper {
 
         String pathSegment = segments.get(segments.size() - 1);
 
-        int index = pathSegment.indexOf("[");
+        int index = pathSegment.indexOf(OPEN_BRACKET);
         String expression = null;
         String attributeName = null;
 
         // has [....] predicate expression
         if(index > 0) {
 
-            assert(pathSegment.indexOf("]") > index);
+            assert(pathSegment.indexOf(CLOSE_BRACKET) > index);
 
             attributeName = pathSegment.substring(0, index);
-            expression = pathSegment.substring(index + 1,pathSegment.indexOf("]"));
+            expression = pathSegment.substring(index + 1,pathSegment.indexOf(CLOSE_BRACKET));
         } else {
             attributeName = pathSegment;
         }
@@ -212,17 +236,17 @@ public class LocatableHelper {
         List<String> segments = Locatable.dividePathIntoSegments(path);
         String pathSegment = segments.get(segments.size() - 1);
 
-        int index = pathSegment.indexOf("[");
+        int index = pathSegment.indexOf(OPEN_BRACKET);
 
         if (index < 0)
             return null; //path such as /ism_transition f.ex.
 
-        String expression = pathSegment.substring(index + 1,pathSegment.indexOf("]"));
+        String expression = pathSegment.substring(index + 1,pathSegment.indexOf(CLOSE_BRACKET));
 
         String archetypeNodeId;
         String name = null;
 
-        if(expression.contains(" AND ") || expression.contains(" and ") || expression.contains(",")) {
+        if(expression.contains(" AND ") || expression.contains(" and ") || expression.contains(COMMA_TOKEN)) {
 
         // OG - 20100401: Fixed bug where the name contained 'AND' or 'and',
         // i.e. 'MEDICINSK BEHANDLING'.
@@ -231,7 +255,7 @@ public class LocatableHelper {
         } else if (expression.contains("and")){
             index = expression.indexOf(" and ");
         } else
-            index = expression.indexOf(",");
+            index = expression.indexOf(COMMA_TOKEN);
 
 
             archetypeNodeId = expression.substring(0, index).trim();
@@ -261,15 +285,15 @@ public class LocatableHelper {
             //get the corresponding name if any
             String childPath = "";
             for (String pathSegment: Locatable.dividePathIntoSegments(diffPath)) {
-                childPath += "/"+pathSegment;
+                childPath += FORWARD_SLASH +pathSegment;
                 String name = LocatableHelper.indentifyName(pathSegment);
                 if (name != null) {
                     String strippedPath = "";
                     //strip the name part from the path
-                    if (childPath.contains("and name/value="))
-                        strippedPath = childPath.substring(0, childPath.lastIndexOf("and name/value=")) + "]";
-                    else if (childPath.contains(","))
-                        strippedPath = childPath.substring(0, childPath.lastIndexOf(",")) + "]";
+                    if (childPath.contains(AND_NAME_VALUE_TOKEN))
+                        strippedPath = childPath.substring(0, childPath.lastIndexOf(AND_NAME_VALUE_TOKEN)) + CLOSE_BRACKET;
+                    else if (childPath.contains(COMMA_TOKEN))
+                        strippedPath = childPath.substring(0, childPath.lastIndexOf(COMMA_TOKEN)) + CLOSE_BRACKET;
 
                     //update the name accordingly
                     Locatable childSegment = (Locatable)node.itemAtPath(strippedPath);
@@ -281,6 +305,8 @@ public class LocatableHelper {
 
                 }
             }
+            //new path for this adjusted item
+            String newPath = String.join("/", Locatable.dividePathIntoSegments(diffPath));
         }
     }
 
@@ -294,13 +320,13 @@ public class LocatableHelper {
 
         List<String> segments = Locatable.dividePathIntoSegments(unresolvedPath);
         String last = segments.get(segments.size() - 1);
-        if (last.contains(" and name/value=") || last.contains(",")){
-            last = last.contains(" and name/value=") ? last.substring(0, last.indexOf(" and name/value="))+"]" : last.substring(0, last.indexOf(","))+"]";
+        if (last.contains(AND_NAME_VALUE_TOKEN) || last.contains(COMMA_TOKEN)){
+            last = last.contains(AND_NAME_VALUE_TOKEN) ? last.substring(0, last.indexOf(AND_NAME_VALUE_TOKEN))+ CLOSE_BRACKET : last.substring(0, last.indexOf(COMMA_TOKEN))+ CLOSE_BRACKET;
         }
 
         StringBuffer tentativePath = new StringBuffer();
         for (int i = 0; i < segments.size() - 1; i++ ){
-            tentativePath.append(segments.get(i)+"/");
+            tentativePath.append(segments.get(i)+ FORWARD_SLASH);
         }
         tentativePath.append(last);
 
@@ -318,13 +344,13 @@ public class LocatableHelper {
 
         List<String> segments = Locatable.dividePathIntoSegments(unresolvedPath);
         String last = segments.get(segments.size() - 1);
-        if (last.contains(" and name/value=")){
-            last = last.substring(0, last.indexOf(" and name/value="))+"]";
+        if (last.contains(AND_NAME_VALUE_TOKEN)){
+            last = last.substring(0, last.indexOf(AND_NAME_VALUE_TOKEN))+ CLOSE_BRACKET;
         }
 
         StringBuffer tentativePath = new StringBuffer();
         for (int i = 0; i < segments.size() - 1; i++ ){
-            tentativePath.append(segments.get(i)+"/");
+            tentativePath.append(segments.get(i)+ FORWARD_SLASH);
         }
         tentativePath.append(last);
 
@@ -362,14 +388,14 @@ public class LocatableHelper {
             parentAtPath = locatable.itemAtPath(parentPath);
         }
 
-        return new NodeItem((Locatable)parentAtPath, lastPath, "/"+identifyAttribute(lastPath));
+        return new NodeItem((Locatable)parentAtPath, lastPath, FORWARD_SLASH +identifyAttribute(lastPath));
    }
 
     public static Locatable getLocatableParent(Locatable locatable, String path) {
         List<String> segments = Locatable.dividePathIntoSegments(path);
 
         for (int i = segments.size() - 1; i >= 0; i --){
-            String parentPath = "/"+String.join("/", segments.subList(0, i));
+            String parentPath = FORWARD_SLASH +String.join(FORWARD_SLASH, segments.subList(0, i));
             if (locatable.itemAtPath(parentPath) instanceof Locatable)
                 return (Locatable)locatable.itemAtPath(parentPath);
         }
@@ -380,11 +406,29 @@ public class LocatableHelper {
         List<String> segments = Locatable.dividePathIntoSegments(path);
 
         for (int i = segments.size() - 1; i >= 0; i --){
-            String parentPath = "/"+String.join("/", segments.subList(0, i));
+            String parentPath = FORWARD_SLASH +String.join(FORWARD_SLASH, segments.subList(0, i));
             if (locatable.itemAtPath(parentPath) instanceof Locatable)
                 return parentPath;
         }
         return null;
+    }
+
+    private static Object matchingItemInList(List<Locatable> itemList, String path){
+        if (path.contains(COMMA_TOKEN) || path.contains(AND_NAME_VALUE_TOKEN)){
+            List<String> segments = Locatable.dividePathIntoSegments(path);
+            String lastNodeid = segments.get(segments.size() - 1);
+
+            if (lastNodeid.contains(AND_NAME_VALUE_TOKEN) || lastNodeid.contains(COMMA_TOKEN)){
+                if (lastNodeid.contains(INDEX_PREFIX_TOKEN)) {
+                    String nameValueToken = trimIndexValue(extractNameValueToken(lastNodeid)).trim();
+                    for (Locatable locatable: itemList){
+                        if (locatable.getName().getValue().equals(nameValueToken))
+                            return locatable;
+                    }
+                }
+            }
+        }
+        return itemList.get(0); //default
     }
 
     /**
@@ -394,7 +438,7 @@ public class LocatableHelper {
      * @return
      * @throws Exception
      */
-   public static Locatable cloneChildAtPath(Locatable node, String childPath)  throws Exception {
+   public Locatable cloneChildAtPath(Locatable node, String childPath)  throws Exception {
        if (childPath != null) { //identify a clonable child for this parent
            String attribute = identifyAttribute(childPath);
 
@@ -410,8 +454,10 @@ public class LocatableHelper {
                if (item instanceof List){
                    List<Locatable> itemList = (List)item;
                    if (itemList.size() > 0) {
-                       Object toClone = itemList.get(0);
-                       Locatable cloned = clone((Locatable) toClone);
+//                       Object toClone = itemList.get(0);
+                       Object toClone = matchingItemInList(itemList, childPath);
+//                       Locatable cloned = clone((Locatable) toClone);
+                       Locatable cloned = clone(childPath, (Locatable) toClone);
                        String name = indentifyName(childPath);
                        if (name != null)
                            cloned.setName(new DvText(name));
@@ -443,19 +489,20 @@ public class LocatableHelper {
     public static String simplifyPath(String path){
         //if the last path is qualified with a name/value, check if a similar item exists
         StringBuffer tentativePath = new StringBuffer();
-        tentativePath.append("/");
+        tentativePath.append(FORWARD_SLASH);
 
         List<String> segments = Locatable.dividePathIntoSegments(path);
         for (int i = 0; i < segments.size(); i++){
             String segment = segments.get(i);
-            if (segment.contains(" and name/value=") || segment.contains(",")){
-                tentativePath.append(segment.contains(" and name/value=") ? segment.split(" and name/value=")[0] : segment.split(",")[0]);
-                tentativePath.append("]");
+            if (segment.contains(AND_NAME_VALUE_TOKEN) || segment.contains(COMMA_TOKEN)){
+                String trimmedNodeId = segment.contains(AND_NAME_VALUE_TOKEN) ? segment.split(AND_NAME_VALUE_TOKEN)[0] : segment.split(COMMA_TOKEN)[0];
+                tentativePath.append(trimmedNodeId.trim());
+                tentativePath.append(CLOSE_BRACKET);
             }
             else
                 tentativePath.append(segment);
             if (i < segments.size() - 1)
-                tentativePath.append("/");
+                tentativePath.append(FORWARD_SLASH);
         }
 
         return tentativePath.toString();
@@ -471,10 +518,10 @@ public class LocatableHelper {
         List<String> segments = Locatable.dividePathIntoSegments(path);
         for (int i = 0; i < segments.size(); i++){
             String segment = segments.get(i);
-            if (segment.contains(" and name/value=")||segment.contains(",")){
+            if (segment.contains(AND_NAME_VALUE_TOKEN)||segment.contains(COMMA_TOKEN)){
 
-                String namePart = segment.contains(" and name/value=") ? segment.split(" and name/value=")[1] : segment.split(",")[1];
-                if (namePart.contains("#"))
+                String namePart = segment.contains(AND_NAME_VALUE_TOKEN) ? segment.split(AND_NAME_VALUE_TOKEN)[1] : segment.split(COMMA_TOKEN)[1];
+                if (namePart.contains(INDEX_PREFIX_TOKEN))
                     return true;
             }
         }
@@ -483,7 +530,7 @@ public class LocatableHelper {
     }
 
     public static Object itemAtPath(Locatable locatable, String path){
-        return locatable.itemAtPath(path.replaceAll(" and name/value=", ","));
+        return locatable.itemAtPath(path.replaceAll(AND_NAME_VALUE_TOKEN, COMMA_TOKEN));
     }
 
     /**
@@ -492,16 +539,29 @@ public class LocatableHelper {
      * @return
      */
     public static Integer retrieveIndexValue(String nodeId) {
-        if (nodeId.contains("#")){
-            Integer indexValue = Integer.valueOf((nodeId.split("#")[1]).split("']")[0]);
+        if (nodeId.contains(INDEX_PREFIX_TOKEN)){
+            Integer indexValue = Integer.valueOf((nodeId.split(INDEX_PREFIX_TOKEN)[1]).split("']")[0]);
             return indexValue;
         }
         return null;
     }
 
+    public static String trimIndexValue(String nodeid) {
+        if (nodeid.contains(INDEX_PREFIX_TOKEN)){
+            return nodeid.substring(0, nodeid.indexOf(INDEX_PREFIX_TOKEN));
+        }
+        return nodeid;
+    }
+
     public static String trimNameValue(String nodeid){
-        if (nodeid.contains(" and name/value") || nodeid.contains(","))
-            return nodeid.substring(0, nodeid.indexOf(nodeid.contains(" and name/value") ? " and name/value" : ","))+"]";
+        if (nodeid.contains(AND_NAME_VALUE_TOKEN) || nodeid.contains(COMMA_TOKEN))
+            return (nodeid.substring(0, nodeid.indexOf(nodeid.contains(AND_NAME_VALUE_TOKEN) ? AND_NAME_VALUE_TOKEN : COMMA_TOKEN)).trim()+ CLOSE_BRACKET).trim();
+        return nodeid.trim();
+    }
+
+    public static String extractNameValueToken(String nodeid){
+        if (nodeid.contains("'"))
+            return nodeid.substring(nodeid.indexOf("'") + 1, nodeid.lastIndexOf("'"));
         return nodeid;
     }
 

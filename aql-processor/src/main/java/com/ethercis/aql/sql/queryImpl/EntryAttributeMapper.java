@@ -109,18 +109,18 @@ public class EntryAttributeMapper {
                         fields.set(match+1, "/value");
                 }
             }
-            match = firstOccurence(0, fields, "name");
-            if (match != null) {
-                if (match < fields.size() - 1) {
-                    if (fields.get(match + 1).equals("name")) {
-                        fields.set(match + 1, "/name");
-                    }
-                }
-                else if (match+1 == fields.size()){
-                    //set it with a "/"
-                    fields.set(match, "/name");
-                }
-            }
+//            match = firstOccurence(0, fields, "name");
+//            if (match != null) {
+//                if (match < fields.size() - 1) {
+//                    if (fields.get(match + 1).equals("name")) {
+//                        fields.set(match + 1, "/name");
+//                    }
+//                }
+//                else if (match+1 == fields.size()){
+//                    //set it with a "/"
+//                    fields.set(match, "/name");
+//                }
+//            }
         }
 
         //prefix the first element

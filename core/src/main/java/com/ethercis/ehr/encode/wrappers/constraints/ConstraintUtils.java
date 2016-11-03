@@ -175,6 +175,8 @@ public class ConstraintUtils {
 
         if (lenient) return "";
 
+        if (constraintMapper == null) return "";
+
         int valcount = 0;
 
         for (Map.Entry<String, ConstraintMapper.CardinalityItem> entry: constraintMapper.getCardinalityList().entrySet()){
@@ -268,6 +270,8 @@ public class ConstraintUtils {
 
     public String validateElements() throws Exception {
         if (lenient) return "";
+
+        if (constraintMapper == null) return "";
 
         StringBuffer validationException = new StringBuffer();
 

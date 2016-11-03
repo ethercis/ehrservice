@@ -28,7 +28,17 @@ import java.util.UUID;
  */
 public interface I_QueryImpl {
 
-    Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias);
+    boolean isEhrIdFiltered();
+
+    boolean isCompositionIdFiltered();
+
+    boolean isContainsJqueryPath();
+
+    boolean isUseEntry();
+
+    enum Clause {SELECT, WHERE, ORDERBY, FROM}
+
+    Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause);
 
     Field<?> whereField(UUID compositionId, String identifier, VariableDefinition variableDefinition);
 }

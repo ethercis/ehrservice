@@ -2,13 +2,11 @@ package com.ethercis.rm;
 
 import com.ethercis.ehr.building.*;
 import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
 import com.ethercis.ehr.util.LocatableHelper;
 import com.ethercis.ehr.util.RMDataSerializer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Before;
@@ -21,9 +19,7 @@ import org.openehr.rm.composition.content.entry.Evaluation;
 import org.openehr.rm.datastructure.history.History;
 import org.openehr.rm.datastructure.history.PointEvent;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -42,6 +38,7 @@ I_KnowledgeCache knowledge;
         props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
 
         Pattern include = Pattern.compile(".*");
@@ -89,15 +86,15 @@ I_KnowledgeCache knowledge;
 		
 		
 //		assertNotNull(newact.parentPath(null));
-		
-		CompositionSerializer inspector = new CompositionSerializer();
-		Map<String, Object>retmap = inspector.process(eval);
-		MapUtils.debugPrint(new PrintStream(System.out), "DEBUG_STRUCTURE", retmap);
-		
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-		Gson gson = builder.setPrettyPrinting().create();
-		String mapjson = gson.toJson(retmap);
+
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance();
+        String mapjson = inspector.dbEncode(eval);
+//		MapUtils.debugPrint(new PrintStream(System.out), "DEBUG_STRUCTURE", retmap);
+//
+//		GsonBuilder builder = new GsonBuilder();
+//		builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
+//		Gson gson = builder.setPrettyPrinting().create();
+//		String mapjson = gson.toJson(retmap);
 		System.out.println(mapjson);
 
         //----------------------------------------
@@ -122,19 +119,19 @@ I_KnowledgeCache knowledge;
 	}
 
 
-//    @Test
+    @Test
     public void testSerializer() throws Exception {
-        String templateId = "test data types";
+        String templateId = "COLNEC_history_of_past_illness.v0";
 
 //        I_ResourceService service = (I_ResourceService) ClusterInfo.getRegisteredService(controller, "ResourceService", "1.0", new Object[] {null});
         LocatableBuilder builder = new LocatableBuilder(knowledge);
 
         //build the archetype map manually...
 //        knowledge = service.getKnowledgeManager();
-        knowledge.retrieveArchetype("openEHR-EHR-EVALUATION.evaluation_test_data_types.v1");
-        knowledge.retrieveArchetype("openEHR-EHR-CLUSTER.cluster_test_data_types.v1");
+//        knowledge.retrieveArchetype("openEHR-EHR-EVALUATION.evaluation_test_data_types.v1");
+//        knowledge.retrieveArchetype("openEHR-EHR-CLUSTER.cluster_test_data_types.v1");
 
-        Locatable obj = builder.createInstance(templateId, GenerationStrategy.MAXIMUM);
+        Locatable obj = builder.createOetInstance(templateId, GenerationStrategy.MAXIMUM);
         assertNotNull(obj);
 
         //do some traversal
@@ -156,6 +153,7 @@ I_KnowledgeCache knowledge;
 
     @Test
     public void testLocallySerialized() throws Exception {
+        LocatableHelper locatableHelper = new LocatableHelper();
         String templateId = "section  observation test";
 
 //        I_ResourceService service = (I_ResourceService) ClusterInfo.getRegisteredService(controller, "ResourceService", "1.0", new Object[] {null});
@@ -169,7 +167,7 @@ I_KnowledgeCache knowledge;
         knowledge.retrieveArchetype("openEHR-EHR-SECTION.visual_acuity_simple_test.v1");
         knowledge.retrieveArchetype("openEHR-EHR-OBSERVATION.visual_acuity.v1");
 
-        Locatable obj = builder.createInstance(templateId, GenerationStrategy.MAXIMUM);
+        Locatable obj = builder.createOetInstance(templateId, GenerationStrategy.MAXIMUM);
         assertNotNull(obj);
 
         //do some traversal
@@ -184,7 +182,7 @@ I_KnowledgeCache knowledge;
 
         History history = ((PointEvent)item).getParent();
 
-        PointEvent newEvent = (PointEvent) LocatableHelper.clone(((Locatable)item));
+        PointEvent newEvent = (PointEvent) locatableHelper.clone(((Locatable)item));
 
         LocatableHelper.insertHistoryEvent(history, newEvent);
 
@@ -196,7 +194,7 @@ I_KnowledgeCache knowledge;
 
         content.setEntryData(composition);
 
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
 
         Map retmap = inspector.process(composition);
 
@@ -204,7 +202,7 @@ I_KnowledgeCache knowledge;
 
         //rebuild a new composition from the saved data set
 
-//        Composition newComposition = (Composition)builder.createInstance(templateId, GenerationStrategy.MAXIMUM);
+//        Composition newComposition = (Composition)builder.createOetInstance(templateId, GenerationStrategy.MAXIMUM);
 
         I_ContentBuilder newContent = I_ContentBuilder.getInstance(null, I_ContentBuilder.OET, knowledge, templateId);
 

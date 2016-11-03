@@ -93,6 +93,8 @@ public class PvCompoHandler extends PathValue {
             changed = true;
 
         for (I_EntryAccess entryAccess: compositionAccess.getContent()) {
+//            templateId = entryAccess.getTemplateId();
+//            Composition newComposition = build(global, content);
             Composition composition = entryAccess.getComposition();
             if (assignItemStructure(CONTENT_TAG, composition, keyValues)) {
                 changed = true;

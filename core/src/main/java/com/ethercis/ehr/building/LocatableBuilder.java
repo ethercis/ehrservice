@@ -43,11 +43,14 @@ public class LocatableBuilder {
      * @return
      * @throws Exception
      */
-    public Locatable createInstance(String templateId, GenerationStrategy strategy) throws Exception {
+    public Locatable createOetInstance(String templateId, GenerationStrategy strategy) throws Exception {
         Flattener flattener = new Flattener();
 //        I_KnowledgeManager knowledgeManager = resourceService.getKnowledgeManager();
 
         TEMPLATE template = knowledgeManager.retrieveOpenehrTemplate(templateId);
+
+        if (template == null)
+            throw new IllegalArgumentException("Could not resolve template:"+templateId);
 
         Archetype instance = flattener.toFlattenedArchetype(template, knowledgeManager.getArchetypeMap());
 

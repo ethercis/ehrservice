@@ -1,6 +1,7 @@
 package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
 import junit.framework.TestCase;
@@ -43,7 +44,7 @@ public class OPTBuilderTest extends TestCase {
 
         assertNotNull(composition);
 
-        CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH, true);
+        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH, true);
 
         Map serialized = compositionSerializer.process(composition);
 

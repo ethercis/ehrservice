@@ -19,16 +19,27 @@ package com.ethercis.aql.sql;
 
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.compiler.TopAttributes;
+import com.ethercis.aql.sql.binding.FromBinder;
+import com.ethercis.aql.sql.binding.JoinBinder;
 import com.ethercis.aql.sql.binding.OrderByBinder;
 import com.ethercis.aql.sql.binding.SelectBinder;
+import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
+import com.ethercis.aql.sql.queryImpl.ContainsSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Perform an assembled SQL query depending on its strategy
@@ -49,16 +60,42 @@ public class QueryProcessor  {
     DSLContext context;
     Logger logger = LogManager.getLogger(QueryProcessor.class);
 
+    private class QuerySteps {
+        private SelectQuery selectQuery;
+        private Condition whereCondition;
+        private String templateId;
+        private CompositionAttributeQuery compositionAttributeQuery;
+
+        public QuerySteps(SelectQuery selectQuery, Condition whereCondition, String templateId, CompositionAttributeQuery compositionAttributeQuery) {
+            this.selectQuery = selectQuery;
+            this.whereCondition = whereCondition;
+            this.templateId = templateId;
+            this.compositionAttributeQuery = compositionAttributeQuery;
+        }
+
+        public SelectQuery getSelectQuery() {
+            return selectQuery;
+        }
+
+        public Condition getWhereCondition() {
+            return whereCondition;
+        }
+
+        public String getTemplateId() {
+            return templateId;
+        }
+
+        public CompositionAttributeQuery getCompositionAttributeQuery() {
+            return compositionAttributeQuery;
+        }
+    }
+
     public QueryProcessor(DSLContext context){
         this.context = context;
     }
 
-//    public QueryProcessor(I_DomainAccess domainAccess){
-////        super(domainAccess);
-////    }
-
     public List<Record> execute(QueryParser queryParser, String serverNodeId) throws SQLException {
-        SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId);
+
         Result<Record> result = null;
         TopAttributes topAttributes = queryParser.getTopAttributes();
         Integer count = null;
@@ -68,46 +105,85 @@ public class QueryProcessor  {
 //TODO: OPTIMIZATION: resolve path for COMPOSITION only and generate a corresponding WHERE clause to use in getInSet()
 // selectBinder.getPathResolver().resolvePaths();
 //
-        if (queryParser.hasPathExpr()) {
-            Result<?> records = queryParser.getInSet();
-            if (!records.isEmpty()) {
-                for (Record record : queryParser.getInSet()) {
-                    UUID comp_id = (UUID) record.getValue("comp_id");
-                    SelectQuery<?> select = selectBinder.bind(comp_id);
-                    Result<Record> intermediary = (Result<Record>) select.fetch();
-                    if (result != null) {
-                        result.addAll(intermediary);
-                    } else if (intermediary != null) {
-                        result = intermediary;
+        //store locally assembled queries for each template (and reuse it instead of rebuilding it!)
+        SelectBinder.OptimizationMode optimizationMode = SelectBinder.OptimizationMode.TEMPLATE_BATCH;
+        Map<String, QuerySteps> cacheQuery = new HashMap<>();
+
+        if (queryParser.hasContainsExpression()) {
+            ContainsSet containsSet = new ContainsSet(queryParser.getContainClause(), context);
+            Result<?> containmentRecords = containsSet.getInSet();
+            if (!containmentRecords.isEmpty()) {
+                for (Record containmentRecord : containmentRecords) {
+                    UUID comp_id = (UUID) containmentRecord.getValue(CONTAINMENT.COMP_ID.getName());
+                    String template_id = (String) containmentRecord.getValue(ENTRY.TEMPLATE_ID.getName());
+                    String label = containmentRecord.getValue(CONTAINMENT.LABEL.getName()).toString();
+                    String entry_root = containmentRecord.getValue(ContainsSet.ENTRY_ROOT, String.class);
+
+                    SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, optimizationMode, entry_root);
+
+                    SelectQuery<?> select;
+                    if (cacheQuery.containsKey(template_id)) {
+                        continue;
+
+                    }
+                    else {
+                        select = selectBinder.bind(template_id, comp_id, label, entry_root);
+                        //OPTIMIZATION 1: if expression does not require jquery resolution (template dependent), get the result in one go
+//                        if (!selectBinder.containsJQueryPath()){ //can retrieve the whole set now
+//                            result = fetchResultSet(select, result);
+//                            break;
+//                        }
+                        cacheQuery.put(template_id, new QuerySteps(select, selectBinder.getWhereConditions(null), template_id, selectBinder.getCompositionAttributeQuery()));
                     }
                 }
 
-                OrderByBinder orderByBinder = new OrderByBinder(queryParser);
-                //at this stage we can apply aggregate functions if any
-                if (!result.isEmpty()) {
-                    Table<?> table = DSL.table(result);
-                    SelectQuery<Record> selectQuery = context.selectQuery();
-                    selectQuery.addSelect(table.fields());
-                    if (selectBinder.hasEhrIdExpression()) {
-                        Name name = DSL.name(selectBinder.getEhrIdAlias());
-                        Field<?> ehrIdField = table.field(name);
-                        selectQuery.addDistinctOn(ehrIdField);
-                    }
-                    selectQuery.addFrom(table);
-                    if (orderByBinder.hasOrderBy())
-                        selectQuery.addOrderBy(orderByBinder.getOrderByFields());
-                    if (count != null)
-                        selectQuery.addLimit(count);
+                //assemble the query from the cache
+                if (!cacheQuery.isEmpty()) {
+                    SelectQuery unionSetQuery = context.selectQuery();
+                    boolean first = true;
+                    for (QuerySteps queryStep : cacheQuery.values()) {
+                        if (optimizationMode.equals(SelectBinder.OptimizationMode.NONE)) {
+                            SelectQuery select = queryStep.getSelectQuery();
+                            select.bind(1, null);
+                            Select subselect = containsSet.getSelect();
+                            select.addConditions(Operator.OR, (ENTRY.COMPOSITION_ID.in(subselect)));
+                        } else if (optimizationMode.equals(SelectBinder.OptimizationMode.TEMPLATE_BATCH)) {
+                            SelectQuery select = queryStep.getSelectQuery();
+                            select.addConditions(ENTRY.TEMPLATE_ID.eq(queryStep.getTemplateId()));
+                            Condition condition = queryStep.getWhereCondition();
+                            if (condition != null)
+                                select.addConditions(Operator.AND, condition);
+                            select.addFrom(ENTRY);
+                            new JoinBinder().addJoinClause(select, queryStep.getCompositionAttributeQuery());
 
-                    return selectQuery.fetch();
+                            if (first) {
+                                unionSetQuery = select;
+                                first = false;
+                            }
+                            else
+                                unionSetQuery.union(select);
+                        }
+
+                    }
+
+                    //more experimental stuff (to avoid the internal table below...)
+                    OrderByBinder orderByBinder = new OrderByBinder(queryParser);
+                    if (orderByBinder.hasOrderBy())
+                        unionSetQuery.addOrderBy(orderByBinder.getOrderByFields());
+                    if (count != null)
+                        unionSetQuery.addLimit(count);
+                    result = fetchResultSet(unionSetQuery, result);
+                }
+                return result;
                 }
                 else
                     return result;
-            }
         }
         else {
-//            SelectQuery<?> select = selectBinder.bind(queryParser.getInSet(count));
+            SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, SelectBinder.OptimizationMode.TEMPLATE_BATCH, null);
             SelectQuery<?> select = selectBinder.bind(queryParser.getInSetExpression(), count, queryParser.getOrderAttributes());
+            new FromBinder().addFromClause(select, selectBinder.getCompositionAttributeQuery(), queryParser);
+            new JoinBinder().addJoinClause(select, selectBinder.getCompositionAttributeQuery());
             result = (Result<Record>)select.fetch();
         }
         return result;
@@ -115,5 +191,15 @@ public class QueryProcessor  {
 
     public Result<?> perform(Select<?> select) throws SQLException {
         return select.fetch();
+    }
+
+    private Result<Record> fetchResultSet(Select<?> select, Result<Record> result) throws SQLException {
+        Result<Record> intermediary = (Result<Record>) select.fetch();
+        if (result != null) {
+            result.addAll(intermediary);
+        } else if (intermediary != null) {
+            result = intermediary;
+        }
+        return result;
     }
 }

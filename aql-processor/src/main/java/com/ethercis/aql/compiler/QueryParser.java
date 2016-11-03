@@ -33,11 +33,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jooq.DSLContext;
-import org.jooq.Result;
-import org.jooq.SelectQuery;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 
 import java.util.List;
+
+import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * Wrap the walkers for pass1 and pass2 as well as invoke the WHERE visitor<p>
@@ -63,10 +64,11 @@ public class QueryParser {
     private IdentifierMapper identifierMapper;
     ParseTreeWalker walker = new ParseTreeWalker();
     List<VariableDefinition> variables;
-    private boolean requirePathResolution = false; //true if expression has CONTAINS
+    private boolean requiresContainResolution = false; //true if expression has CONTAINS
     private TopAttributes topAttributes;
     private List<OrderAttribute> orderAttributes;
     private FunctionDefinition functionDefinitions;
+    private  boolean useSimpleCompositionContainment = false;
 
     private DSLContext context;
 
@@ -107,10 +109,10 @@ public class QueryParser {
         for (ContainmentSet containmentSet: nestedSets){
             if (containmentSet != null) {
                 if (containmentSet.getContainmentList().size() > 1) {
-                    requirePathResolution = true;
+                    requiresContainResolution = true;
                     break;
                 } else if (containmentSet.getContainmentList().size() == 1 && !((Containment) containmentSet.getContainmentList().get(0)).getClassName().equals("COMPOSITION")) {
-                    requirePathResolution = true;
+                    requiresContainResolution = true;
                     break;
                 }
             }
@@ -121,6 +123,7 @@ public class QueryParser {
         this.containClause = containBinder.bind();
 
         containQuery = containBinder.bind(context);
+        useSimpleCompositionContainment = containBinder.isUseSimpleCompositionContainment();
     }
 
     public void pass2(){
@@ -164,8 +167,22 @@ public class QueryParser {
         return containClause;
     }
 
-    public Result<?> getInSet(){
-        return containQuery.fetch();
+    public SelectQuery<?> getContainQuery() {
+        return containQuery;
+    }
+
+    //    public Result<?> getInSet(){
+//        return containQuery.fetch();
+//    }
+
+    public Result<?> getInSet() {
+        return context
+                .selectDistinct(CONTAINMENT.COMP_ID, ENTRY.TEMPLATE_ID)
+                .from(CONTAINMENT)
+                .join(ENTRY)
+                .on(CONTAINMENT.COMP_ID.eq(ENTRY.COMPOSITION_ID))
+                .where(CONTAINMENT.COMP_ID.in(DSL.field(containClause)))
+                .fetch();
     }
 
     public Result<?> getInSet(Integer limit){
@@ -180,8 +197,8 @@ public class QueryParser {
         return containQuery;
     }
 
-    public boolean hasPathExpr() {
-        return requirePathResolution;
+    public boolean hasContainsExpression() {
+        return requiresContainResolution;
     }
 
     public List getWhereClause() {
@@ -206,5 +223,9 @@ public class QueryParser {
 
     public boolean hasDefinedFunctions(){
         return functionDefinitions.size() > 0;
+    }
+
+    public boolean isUseSimpleCompositionContainment() {
+        return useSimpleCompositionContainment;
     }
 }

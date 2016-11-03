@@ -5,7 +5,8 @@ import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.building.OetBinding;
 import com.ethercis.ehr.building.XMLBinding;
 import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.wrappers.json.writer.DvDateTimeAdapter;
+import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.json.JsonUtil;
 import com.ethercis.ehr.keyvalues.EcisFlattener;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
@@ -68,8 +69,8 @@ public class CompWalkerTest {
 		assertNotNull(rmObj);
 		assertEquals("Composition",rmObj.getClass().getSimpleName());
 		assertNotNull(((Composition) rmObj).getContent());
-		
-		CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
 		Map<String, Object>retmap = inspector.process((Composition) rmObj);
 		MapUtils.debugPrint(new PrintStream(System.out), "DEBUG_STRUCTURE", retmap);
 		
@@ -119,7 +120,7 @@ public class CompWalkerTest {
 
         assertNotNull(composition);
 
-        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
         Map<String, Object>retmap = inspector.process(composition);
 
         MapInspector mapInspector = new MapInspector();

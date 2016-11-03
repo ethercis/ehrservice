@@ -17,6 +17,7 @@
 package com.ethercis.dao.access.jooq;
 
 import com.ethercis.dao.access.interfaces.*;
+import com.ethercis.dao.access.query.AsyncSqlQuery;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.jooq.pg.enums.EntryType;
 import com.ethercis.jooq.pg.tables.records.EntryHistoryRecord;
@@ -43,6 +44,9 @@ import org.postgresql.util.PGobject;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.ethercis.jooq.pg.Tables.*;
 
@@ -487,33 +491,7 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
     }
 
     public static Map<String, Object> queryJSON(I_DomainAccess domainAccess, String queryString) throws Exception {
-        Result<Record> records;
-        try {
-            records = domainAccess.getContext().fetch(queryString);
-        } catch (DataAccessException e) {
-            String message = e.getCause().getMessage();
-            throw new IllegalArgumentException("SQL exception:"+message.replaceAll("\n", ","));
-
-        }
-
-        Map<String, Object> resultMap = new HashMap<>();
-
-        resultMap.put("executedSQL", queryString);
-
-        List<Map> resultList = new ArrayList<>();
-
-        for (Record record: records) {
-            Map<String, Object> fieldMap = new HashMap<>();
-            for (Field field : records.fields()) {
-                fieldMap.put(field.getName(), record.getValue(field));
-            }
-
-            resultList.add(fieldMap);
-        }
-
-        resultMap.put("resultSet", resultList);
-
-        return resultMap;
+        return new AsyncSqlQuery(domainAccess, queryString).fetch();
     }
 
     public static Map<String, Object> queryAqlJson(I_DomainAccess domainAccess, String queryString) throws Exception {

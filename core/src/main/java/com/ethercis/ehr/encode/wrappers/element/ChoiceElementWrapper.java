@@ -35,15 +35,16 @@ import java.util.List;
 public class ChoiceElementWrapper extends ElementWrapper {
 
     private List<String> choiceRmClasses;
-    transient RMObjectBuilder builder;
+//    transient RMObjectBuilder builder;
 
-    public ChoiceElementWrapper(Element element, CComplexObject ccobj, List<String> choiceRmClasses, RMObjectBuilder builder) throws Exception {
+    public ChoiceElementWrapper(Element element, CComplexObject ccobj, List<String> choiceRmClasses) throws Exception {
         super(element, ccobj);
         this.choiceRmClasses = choiceRmClasses;
-        this.builder = builder;
+//        this.builder = builder;
     }
 
     public Class getChoice(int i) throws RMObjectBuildingException {
+        RMObjectBuilder builder = RMObjectBuilder.getInstance();
         if (i < 0 || i >= choiceRmClasses.size())
             return null;
 
@@ -80,6 +81,7 @@ public class ChoiceElementWrapper extends ElementWrapper {
         //generate a dummy instance to allow parsing
         Class instrument = VBeanUtil.findInstrumentalizedClass(instrumentalizedClass);
         try {
+            //TODO: handle properly DvInterval<DvOrdered> f.ex. "@4|20,kg/m2::25,kg/m2"
             Method generate = instrument.getMethod("generate", null);
             DataValue dummy = (DataValue)generate.invoke(null, null);
             DataValue dataValue = dummy.parse(valueToParse.substring(valueToParse.indexOf("|")+1));
