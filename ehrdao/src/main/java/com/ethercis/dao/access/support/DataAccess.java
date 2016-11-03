@@ -255,7 +255,8 @@ public abstract class DataAccess implements I_DomainAccess {
                 logger.info("Pool max idle: "+max_idle);
             }
 
-//            dataSource.setValidationQuery("SELECT 1");
+            if (testOnBorrow != null && testOnBorrow)
+                dataSource.setValidationQuery("SELECT 1");
 //            dataSource.setDataSourceName("ecis-"+url); //JNDI
             if (testOnBorrow != null) {
                 logger.info("Pool setDefaultTestOnBorrow: "+testOnBorrow);
