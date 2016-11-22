@@ -109,7 +109,7 @@ public class QueryCompilerPass1 extends AqlBaseListener {
         String className = archetypedClassExprContext.IDENTIFIER(0).getSymbol().getText().toUpperCase();
 
         String symbol = archetypedClassExprContext.IDENTIFIER(1).getSymbol().getText();
-        //TODO:
+
         String archetypeId = archetypedClassExprContext.ARCHETYPEID().getText();
 
         Containment containment = new Containment(className, symbol, archetypeId);

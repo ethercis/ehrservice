@@ -28,16 +28,15 @@ import com.ethercis.aql.sql.queryImpl.ContainsSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import org.jooq.RenderContext;
 
 import static com.ethercis.jooq.pg.Tables.*;
 
@@ -52,11 +51,12 @@ import static com.ethercis.jooq.pg.Tables.*;
  *     <li>If the query contains only static fields (columns), a single query execution is done.
  *     </ul>
  * </p>
- * TODO: optimize the query with path expression
+ *
  * Created by christian on 4/28/2016.
  */
 public class QueryProcessor  {
 
+    private boolean explain = false;
     DSLContext context;
     Logger logger = LogManager.getLogger(QueryProcessor.class);
 
@@ -94,15 +94,21 @@ public class QueryProcessor  {
         this.context = context;
     }
 
-    public List<Record> execute(QueryParser queryParser, String serverNodeId) throws SQLException {
+    public QueryProcessor(DSLContext context, boolean explain){
+        this(context);
+        this.explain = explain;
+    }
+
+    public Object execute(QueryParser queryParser, String serverNodeId, boolean explain) throws SQLException {
 
         Result<Record> result = null;
+        List<Object> explainList = new ArrayList<>();
         TopAttributes topAttributes = queryParser.getTopAttributes();
         Integer count = null;
         if (topAttributes != null)
             count = topAttributes.getWindow();
 
-//TODO: OPTIMIZATION: resolve path for COMPOSITION only and generate a corresponding WHERE clause to use in getInSet()
+//
 // selectBinder.getPathResolver().resolvePaths();
 //
         //store locally assembled queries for each template (and reuse it instead of rebuilding it!)
@@ -172,21 +178,37 @@ public class QueryProcessor  {
                         unionSetQuery.addOrderBy(orderByBinder.getOrderByFields());
                     if (count != null)
                         unionSetQuery.addLimit(count);
-                    result = fetchResultSet(unionSetQuery, result);
+                    if (!explain)
+                        result = fetchResultSet(unionSetQuery, result);
+                    else
+                        buildExplain(unionSetQuery, explainList);
                 }
-                return result;
-                }
+                if (explain)
+                    return explainList;
                 else
                     return result;
+                }
+            else {
+                if (explain)
+                    return explainList;
+                else
+                    return result;
+            }
         }
         else {
             SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, SelectBinder.OptimizationMode.TEMPLATE_BATCH, null);
             SelectQuery<?> select = selectBinder.bind(queryParser.getInSetExpression(), count, queryParser.getOrderAttributes());
             new FromBinder().addFromClause(select, selectBinder.getCompositionAttributeQuery(), queryParser);
             new JoinBinder().addJoinClause(select, selectBinder.getCompositionAttributeQuery());
-            result = (Result<Record>)select.fetch();
+            if (!explain)
+                result = (Result<Record>)select.fetch();
+            else
+                buildExplain(select, explainList);
         }
-        return result;
+        if (explain)
+            return explainList;
+        else
+            return result;
     }
 
     public Result<?> perform(Select<?> select) throws SQLException {
@@ -201,5 +223,17 @@ public class QueryProcessor  {
             result = intermediary;
         }
         return result;
+    }
+
+    private List buildExplain(Select<?> select, List explainList){
+        DSLContext pretty = DSL.using(context.dialect(), new Settings().withRenderFormatted(true));
+        String sql = pretty.render(select);
+        List<String> details = new ArrayList<>();
+        details.add(sql);
+        for (Param<?> parameter: select.getParams().values()){
+            details.add(parameter.getValue().toString());
+        }
+        explainList.add(details);
+        return explainList;
     }
 }

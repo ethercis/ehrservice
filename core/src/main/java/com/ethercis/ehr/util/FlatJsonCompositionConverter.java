@@ -44,6 +44,7 @@ public class FlatJsonCompositionConverter implements I_FlatJsonCompositionConver
     private Unmarshaller unmarshaller;
     private Marshaller marshaller;
     private I_KnowledgeCache knowledge;
+    I_ContentBuilder contentBuilder;
 
     protected FlatJsonCompositionConverter(I_KnowledgeCache knowledgeCache, CompositionConverter compositionConverter) throws Exception {
         this.converter = compositionConverter;
@@ -104,7 +105,7 @@ public class FlatJsonCompositionConverter implements I_FlatJsonCompositionConver
 
         //rebuild from map
         String templateId = operationaltemplate.getTemplateId().getValue();
-        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+        contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
 
         org.openehr.jaxb.rm.Composition newComposition;
         try {
@@ -173,5 +174,10 @@ public class FlatJsonCompositionConverter implements I_FlatJsonCompositionConver
         //perform conversion
         Map<String, Object> map = converter.fromComposition(jaxbTemplate, jaxbComposition);
         return map;
+    }
+
+    @Override
+    public Map<String, Integer> getItemArrayPathMap(){
+        return contentBuilder.getArrayItemPathMap();
     }
 }

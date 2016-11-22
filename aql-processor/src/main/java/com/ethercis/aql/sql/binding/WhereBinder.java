@@ -223,7 +223,6 @@ public class WhereBinder {
                         break;
 
                     default:
-                        //TODO: deal with composite composition uid/value example: '08fd487b-765a-41b4-9501-334d48dc2b00::local.ethercis.com::1'
                         item = hackItem(taggedBuffer, (String) item);
                         taggedBuffer.append((String) item);
                         break;

@@ -8,7 +8,7 @@
 // modified to support ANTLR4
 // removed dependencies on specific packages
 //-------------------------------------------
-// TODO: fix Lexer conflict on boolean operators
+
 grammar Aql;
 
 query	:	queryExpr ;

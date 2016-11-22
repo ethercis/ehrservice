@@ -17,6 +17,7 @@
 package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.PartyIdentifiedAccess;
+import org.jooq.Result;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.datatypes.basic.DvIdentifier;
 import org.openehr.rm.support.identification.GenericID;
@@ -212,6 +213,7 @@ public interface I_PartyIdentifiedAccess extends I_SimpleCRUD<I_PartyIdentifiedA
     static org.openehr.rm.common.generic.PartyIdentified retrievePartyIdentified(I_DomainAccess domainAccess, UUID id){
         return PartyIdentifiedAccess.retrievePartyIdentified(domainAccess, id);
     }
+
 
     /**
      * retrieve an identified party from its identifier list. The list can be partial.

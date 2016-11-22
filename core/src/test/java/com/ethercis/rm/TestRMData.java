@@ -184,7 +184,7 @@ I_KnowledgeCache knowledge;
 
         PointEvent newEvent = (PointEvent) locatableHelper.clone(((Locatable)item));
 
-        LocatableHelper.insertHistoryEvent(history, newEvent);
+        locatableHelper.insertHistoryEvent(history, newEvent);
 
         Object newitem = composition.itemAtPath("/content[openEHR-EHR-SECTION.visual_acuity_simple_test.v1 and name/value='Visual Acuity Simple Test']/items[at0025]/items[openEHR-EHR-OBSERVATION.visual_acuity.v1 and name/value='Visual Acuity']/data[at0001]/events[at0003 and name/value='Visual Acuity Measurement']");
 

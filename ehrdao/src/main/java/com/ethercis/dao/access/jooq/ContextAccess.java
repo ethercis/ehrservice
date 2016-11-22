@@ -16,11 +16,10 @@
  */
 package com.ethercis.dao.access.jooq;
 
-import com.ethercis.dao.access.interfaces.I_ContextAccess;
-import com.ethercis.dao.access.interfaces.I_DomainAccess;
-import com.ethercis.dao.access.interfaces.I_PartyIdentifiedAccess;
+import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
+import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.jooq.pg.tables.records.*;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +28,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.jooq.DSLContext;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.common.generic.PartyProxy;
@@ -76,6 +76,10 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
 
     public ContextAccess(I_DomainAccess domainAccess){
         super(domainAccess.getContext(), domainAccess.getKnowledgeManager());
+    }
+
+    public ContextAccess(){
+        super(null, null);
     }
 
     @Override
@@ -151,6 +155,41 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
     @Override
     public UUID commit(Timestamp transactionTime) throws Exception {
         eventContextRecord.setSysTransaction(transactionTime);
+        UUID uuid = UUID.randomUUID();
+        InsertQuery<?> insertQuery = context.insertQuery(EVENT_CONTEXT);
+        insertQuery.addValue(EVENT_CONTEXT.ID, uuid);
+        insertQuery.addValue(EVENT_CONTEXT.COMPOSITION_ID, DSL.field(DSL.val(eventContextRecord.getCompositionId())));
+        insertQuery.addValue(EVENT_CONTEXT.START_TIME, DSL.field(DSL.val(eventContextRecord.getStartTime())));
+        insertQuery.addValue(EVENT_CONTEXT.START_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getStartTimeTzid())));
+        insertQuery.addValue(EVENT_CONTEXT.END_TIME, DSL.field(DSL.val(eventContextRecord.getEndTime())));
+        insertQuery.addValue(EVENT_CONTEXT.END_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getEndTimeTzid())));
+        insertQuery.addValue(EVENT_CONTEXT.FACILITY, eventContextRecord.getFacility());
+        insertQuery.addValue(EVENT_CONTEXT.LOCATION, DSL.field(DSL.val(eventContextRecord.getLocation())));
+//        Field jsonbOtherContext = DSL.field(EVENT_CONTEXT.OTHER_CONTEXT+"::jsonb");
+        if (eventContextRecord.getOtherContext() != null)
+            insertQuery.addValue(EVENT_CONTEXT.OTHER_CONTEXT, (Object)DSL.field(DSL.val(eventContextRecord.getOtherContext())+"::jsonb"));
+        insertQuery.addValue(EVENT_CONTEXT.SETTING, DSL.field(DSL.val(eventContextRecord.getSetting())));
+        insertQuery.addValue(EVENT_CONTEXT.SYS_TRANSACTION, DSL.field(DSL.val(eventContextRecord.getSysTransaction())));
+
+        Integer result = insertQuery.execute();
+
+//        eventContextRecord.store();
+
+        if (!participations.isEmpty()) {
+            participations.forEach(participation -> {
+                        participation.setEventContext(eventContextRecord.getId());
+                        participation.setSysTransaction(transactionTime);
+                        participation.store();
+                    }
+            );
+        }
+        
+        return uuid;
+    }
+
+    @Deprecated
+    public UUID commit_DEPRECATED(Timestamp transactionTime) throws Exception {
+        eventContextRecord.setSysTransaction(transactionTime);
 
         //use a SQL query for storing since JSONB is not natively supported by jOOQ 3.5
         String sql = "INSERT INTO ehr.event_context (composition_id, start_time, start_time_tzid, end_time, end_time_tzid, facility, location, other_context, setting, sys_transaction) " +
@@ -173,6 +212,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
 
 //        eventContextRecord.store();
         ResultSet resultSet = insertStatement.executeQuery();
+
         UUID uuid = null;
         String returnString  = null;
         if (resultSet != null && resultSet.next()){
@@ -192,6 +232,8 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
             );
         }
 
+        connection.close();
+
         if (uuid != null)
             return uuid;
         else
@@ -205,6 +247,51 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
 
     @Override
     public Boolean update(Timestamp transactionTime) throws SQLException {
+        //updateComposition participations
+        for (ParticipationRecord participationRecord: participations){
+            participationRecord.setSysTransaction(transactionTime);
+            if (participationRecord.changed()){
+                //check if commit or updateComposition (exists or not...)
+                if (getContext().fetchExists(PARTICIPATION, PARTICIPATION.ID.eq(participationRecord.getId()))) {
+                    participationRecord.update();
+                }
+                else {
+                    participationRecord.store();
+                }
+            }
+        }
+        //ignore the temporal field since it is maintained by an external trigger!
+        eventContextRecord.changed(EVENT_CONTEXT.SYS_PERIOD, false);
+
+        //ignore other_context for the time being...
+//        eventContextRecord.changed(EVENT_CONTEXT.OTHER_CONTEXT, false);
+        eventContextRecord.setSysTransaction(transactionTime);
+        
+        UpdateQuery<?> updateQuery = context.updateQuery(EVENT_CONTEXT);
+
+        updateQuery.addValue(EVENT_CONTEXT.COMPOSITION_ID, DSL.field(DSL.val(eventContextRecord.getCompositionId())));
+        updateQuery.addValue(EVENT_CONTEXT.START_TIME, DSL.field(DSL.val(eventContextRecord.getStartTime())));
+        updateQuery.addValue(EVENT_CONTEXT.START_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getStartTimeTzid())));
+        updateQuery.addValue(EVENT_CONTEXT.END_TIME, DSL.field(DSL.val(eventContextRecord.getEndTime())));
+        updateQuery.addValue(EVENT_CONTEXT.END_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getEndTimeTzid())));
+        updateQuery.addValue(EVENT_CONTEXT.FACILITY, eventContextRecord.getFacility());
+        updateQuery.addValue(EVENT_CONTEXT.LOCATION, DSL.field(DSL.val(eventContextRecord.getLocation())));
+//        Field jsonbOtherContext = DSL.field(EVENT_CONTEXT.OTHER_CONTEXT+"::jsonb");
+        if (eventContextRecord.getOtherContext() != null)
+            updateQuery.addValue(EVENT_CONTEXT.OTHER_CONTEXT.cast(Object.class), (Object)DSL.field(DSL.val(eventContextRecord.getOtherContext())+"::jsonb"));
+        updateQuery.addValue(EVENT_CONTEXT.SETTING, DSL.field(DSL.val(eventContextRecord.getSetting())));
+        updateQuery.addValue(EVENT_CONTEXT.SYS_TRANSACTION, DSL.field(DSL.val(eventContextRecord.getSysTransaction())));
+        updateQuery.addConditions(EVENT_CONTEXT.ID.eq(getId()));
+
+        Boolean result = updateQuery.execute()  > 0;
+
+        return result;
+//        return eventContextRecord.update() > 0;
+    }
+
+
+    @Deprecated
+    public Boolean update_deprecated(Timestamp transactionTime) throws SQLException {
         //updateComposition participations
         for (ParticipationRecord participationRecord: participations){
             participationRecord.setSysTransaction(transactionTime);
@@ -253,8 +340,11 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
         updateStatement.setObject(10, eventContextRecord.getSysTransaction());
         updateStatement.setObject(11, getId());
 
-        return updateStatement.execute();
+        Boolean result = updateStatement.execute();
 
+        connection.close();
+
+        return result;
 //        return eventContextRecord.update() > 0;
     }
 
@@ -303,6 +393,19 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
     public static I_ContextAccess retrieveInstance(I_DomainAccess domainAccess, UUID id){
         ContextAccess contextAccess = new ContextAccess(domainAccess);
         contextAccess.eventContextRecord = domainAccess.getContext().fetchOne(EVENT_CONTEXT, EVENT_CONTEXT.ID.eq(id));
+        return contextAccess;
+    }
+
+    public static I_ContextAccess retrieveInstance(I_DomainAccess domainAccess, Result<?> records){
+        ContextAccess contextAccess = new ContextAccess(domainAccess);
+        EventContextRecord eventContextRecord = domainAccess.getContext().newRecord(EVENT_CONTEXT);
+        eventContextRecord.setStartTime((Timestamp)records.getValue(0, I_CompositionAccess.F_CONTEXT_START_TIME));
+        eventContextRecord.setStartTimeTzid((String)records.getValue(0, I_CompositionAccess.F_CONTEXT_START_TIME_TZID));
+        eventContextRecord.setEndTime((Timestamp)records.getValue(0, I_CompositionAccess.F_CONTEXT_END_TIME));
+        eventContextRecord.setEndTimeTzid((String)records.getValue(0, I_CompositionAccess.F_CONTEXT_END_TIME_TZID));
+        eventContextRecord.setLocation((String)records.getValue(0, I_CompositionAccess.F_CONTEXT_LOCATION));
+        eventContextRecord.setOtherContext(records.getValue(0, I_CompositionAccess.F_CONTEXT_OTHER_CONTEXT));
+
         return contextAccess;
     }
 
@@ -405,6 +508,79 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
                 decodeDvDateTime(eventContextRecord.getEndTime(), eventContextRecord.getEndTimeTzid()),
                 participationList.isEmpty() ? null: participationList,
                 eventContextRecord.getLocation() == null ? null : eventContextRecord.getLocation(),
+                concept,
+                null, //other context...
+                terminologyService);
+
+    }
+
+
+    public EventContext mapRmEventContext(Result<?> records){
+
+        TerminologyService terminologyService = TerminologyServiceWrapper.getInstance();
+
+        //get the facility entry
+//        PartyIdentifiedRecord partyIdentifiedRecord = context.fetchOne(PARTY_IDENTIFIED, PARTY_IDENTIFIED.ID.eq(eventContextRecord.getFacility()));
+        //facility identifiers
+        PartyIdentified healthCareFacility = null;
+
+        if (records.size() > 0) {
+            List<DvIdentifier> identifiers = new ArrayList<>();
+
+//            context.fetch(IDENTIFIER, IDENTIFIER.PARTY.eq(partyIdentifiedRecord.getId())).forEach(record -> {
+//                DvIdentifier dvIdentifier = new DvIdentifier(record.getIssuer(), record.getAssigner(), record.getIdValue(), record.getTypeName());
+//                identifiers.add(dvIdentifier);
+//            });
+
+            //get PartyRef values from record
+            healthCareFacility = I_PartyIdentifiedFacilityAccess.retrievePartyIdentified(records);
+        }
+
+        List<Participation> participationList = new ArrayList<>();
+        //get the participations
+        for (Record record: records){
+            if (record.getValue(I_CompositionAccess.F_PARTICIPATION_FUNCTION) != null){
+                //performer bit
+                PartyProxy performer = I_PartyIdentifiedPerformerAccess.retrievePartyIdentified(record);
+                DvInterval<DvDateTime> startTime = null;
+                if (record.getValue(I_CompositionAccess.F_PARTICIPATION_START_TIME) != null) { //start time null value is allowed for participation
+                    startTime = new DvInterval<>(decodeDvDateTime((Timestamp)record.getValue(I_CompositionAccess.F_PARTICIPATION_START_TIME), (String)record.getValue(I_CompositionAccess.F_PARTICIPATION_START_TIME_TZID)), null);
+                }
+                DvCodedText mode = decodeDvCodedText((String)record.getValue(I_CompositionAccess.F_PARTICIPATION_MODE));
+
+                Participation participation = new Participation(performer,
+                        new DvText((String)record.getValue(I_CompositionAccess.F_PARTICIPATION_FUNCTION)),
+                        mode,
+                        startTime,
+                        terminologyService);
+
+                participationList.add(participation);
+            }
+        }
+
+        Integer conceptId = (Integer)records.getValue(0, I_CompositionAccess.F_CONCEPT_ID);
+        String description = (String) records.getValue(0, I_CompositionAccess.F_CONCEPT_DESCRIPTION);
+
+        DvCodedText concept = new DvCodedText(description, new CodePhrase("openehr", conceptId.toString()));
+
+        //retrieve the setting
+//        UUID settingUuid = eventContextRecord.getSetting();
+//
+//        ConceptRecord conceptRecord = context.fetchOne(CONCEPT, CONCEPT.ID.eq(settingUuid).and(CONCEPT.LANGUAGE.eq("en")));
+//
+//        if (conceptRecord != null){
+//            concept = new DvCodedText(conceptRecord.getDescription(), new CodePhrase("openehr", conceptRecord.getConceptid().toString()));
+//        }
+//        else
+//        {
+//            concept = new DvCodedText("event", new CodePhrase("openehr", "433"));
+//        }
+
+        return new EventContext(healthCareFacility,
+                decodeDvDateTime((Timestamp)records.getValue(0, I_CompositionAccess.F_CONTEXT_START_TIME), (String)records.getValue(0, I_CompositionAccess.F_CONTEXT_START_TIME_TZID)),
+                decodeDvDateTime((Timestamp)records.getValue(0, I_CompositionAccess.F_CONTEXT_END_TIME), (String)records.getValue(0, I_CompositionAccess.F_CONTEXT_END_TIME_TZID)),
+                participationList.isEmpty() ? null: participationList,
+                records.getValue(0, I_CompositionAccess.F_CONTEXT_LOCATION) == null ? null : (String)records.getValue(0, I_CompositionAccess.F_CONTEXT_LOCATION),
                 concept,
                 null, //other context...
                 terminologyService);

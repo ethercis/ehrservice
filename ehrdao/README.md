@@ -74,4 +74,4 @@ Known issues
 - Default System settings retrieval is not OS dependent (SystemAccess)
 - Composition update using canonical XML is not supported (it is all or nothing)
 - Jsonb data type is dealt with the SQL way... JSON type should be handled as described in
-  `https://github.com/jOOQ/jOOQ/issues/2788`
+  `https://github.com/jOOQ/jOOQ/issues/2788`

@@ -58,8 +58,19 @@ public class AqlQueryHandler extends DataAccess {
         queryParser.pass1();
         queryParser.pass2();
 
-        List<Record> records = queryProcessor.execute(queryParser, getServerNodeId());
+        List<Record> records = (List<Record>) queryProcessor.execute(queryParser, getServerNodeId(), false);
         return records;
+    }
+
+    public List<Object> explain(String query) throws SQLException {
+        QueryProcessor queryProcessor = new QueryProcessor(getContext());
+        QueryParser queryParser = new QueryParser(getContext(), query);
+
+        queryParser.pass1();
+        queryParser.pass2();
+
+        List explain = (List) queryProcessor.execute(queryParser, getServerNodeId(), true);
+        return explain;
     }
 
     public String dump(String query) {

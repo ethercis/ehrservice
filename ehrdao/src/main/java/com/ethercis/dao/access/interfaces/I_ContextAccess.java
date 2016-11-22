@@ -17,6 +17,7 @@
 package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.ContextAccess;
+import org.jooq.Result;
 import org.openehr.rm.composition.EventContext;
 
 import java.sql.Timestamp;
@@ -54,6 +55,10 @@ public interface I_ContextAccess extends I_SimpleCRUD<I_ContextAccess, UUID> {
         return ContextAccess.retrieveInstance(domainAccess , id);
     }
 
+    public static I_ContextAccess retrieveInstance(I_DomainAccess domainAccess, Result<?> records){
+        return ContextAccess.retrieveInstance(domainAccess , records);
+    }
+
     /**
      * quick delete...
      * @param domainAccess SQL context
@@ -65,6 +70,8 @@ public interface I_ContextAccess extends I_SimpleCRUD<I_ContextAccess, UUID> {
     }
 
     EventContext mapRmEventContext();
+
+    EventContext mapRmEventContext(Result<?> records);
 
     String getOtherContextJson();
 

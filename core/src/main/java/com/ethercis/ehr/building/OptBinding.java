@@ -35,6 +35,7 @@ import org.openehr.am.archetype.constraintmodel.CComplexObject;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.composition.content.entry.ISMTransition;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datatypes.basic.DvBoolean;
@@ -730,8 +731,15 @@ public class OptBinding extends RmBinding {
             if(valueMap.get(DESCRIPTION) == null) {
                 valueMap.put(DESCRIPTION, new ItemTree(DEFAULT_NODE_ID, new DvText(DEFAULT_DESCRIPTION_NAME), null));
             }
+			if(valueMap.get(ISM_TRANSITION) == null) {
+				DvCodedText currentState = new DvCodedText("Initial", "openehr", "524");
+				DvCodedText transition = new DvCodedText("Initiate", "openehr", "535");
+				DvCodedText step = new DvCodedText("Plan", "local", "at0001");
+				valueMap.put(ISM_TRANSITION, new ISMTransition(currentState, transition, step, TerminologyServiceWrapper.getInstance()));
+			}
 
-        } else if ("ISM_TRANSITION".equals(rmTypeName)){
+
+		} else if ("ISM_TRANSITION".equals(rmTypeName)){
 			//do not assume a default for careflow_step
 			if (!valueMap.containsKey(CAREFLOW_STEP))
 				valueMap.put(CAREFLOW_STEP, new DvCodedText(DEFAULT_CAREFLOW_STEP, "local", "0000"));

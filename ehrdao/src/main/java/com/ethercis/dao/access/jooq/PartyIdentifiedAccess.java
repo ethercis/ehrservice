@@ -454,5 +454,40 @@ public class PartyIdentifiedAccess extends DataAccess implements I_PartyIdentifi
         return partyIdentified;
     }
 
+    public static org.openehr.rm.common.generic.PartyIdentified retrievePartyIdentified(String name, String ref_scheme, String ref_namespace, String ref_value, String ref_type){
+        PartyRef partyRef = null;
+
+        //rebuild an identified party
+        List<DvIdentifier> identifierList = new ArrayList<>();
+
+//        domainAccess.getContext().fetch(IDENTIFIER, IDENTIFIER.PARTY.eq(id)).forEach(record -> {
+//            DvIdentifier identifier = new DvIdentifier(record.getIssuer(), record.getAssigner(), record.getIdValue(), record.getTypeName());
+//            identifierList.add(identifier);
+//        });
+
+//        PartyIdentifiedRecord identifiedRecord = domainAccess.getContext().fetchOne(PARTY_IDENTIFIED, PARTY_IDENTIFIED.ID.eq(id));
+
+        if (ref_type != null){
+            if (ref_value != null && ref_scheme != null) {
+                GenericID genericID = new GenericID(ref_value, ref_scheme);
+                partyRef = new PartyRef(genericID, ref_namespace, ref_type);
+            }
+            else
+            {
+                ObjectID objectID = new HierObjectID("ref");
+                partyRef = new PartyRef(objectID, ref_namespace, ref_type);
+            }
+        }
+
+        if (name == null && partyRef == null)
+            return null;
+
+        PartyIdentified partyIdentified = new PartyIdentified(partyRef,
+                name,
+                identifierList.isEmpty() ? null : identifierList);
+
+        return partyIdentified;
+    }
+
 
 }

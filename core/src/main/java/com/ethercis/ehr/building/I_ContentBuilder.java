@@ -115,6 +115,8 @@ public interface I_ContentBuilder {
 
     Composition buildCompositionFromJson(String jsonData) throws Exception;
 
+    Object insertCloneInPath(Locatable locatable, Map<String, Object> definition, String path) throws Exception;
+
     Composition importCanonicalXML(InputStream inputStream) throws Exception;
 
     Composition importAsRM(Composition composition) throws Exception;
@@ -154,4 +156,6 @@ public interface I_ContentBuilder {
     Boolean isLenient();
 
     ConstraintMapper getConstraintMapper();
+
+    Map<String, Integer> getArrayItemPathMap();
 }

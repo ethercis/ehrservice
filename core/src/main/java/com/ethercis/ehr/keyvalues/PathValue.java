@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.SystemValue;
+import org.openehr.rm.RMObject;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
@@ -56,6 +57,7 @@ import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.UIDBasedID;
 import org.openehr.rm.support.terminology.TerminologyService;
+import org.openehr.terminology.SimpleTerminologyService;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -90,7 +92,7 @@ public class PathValue implements I_PathValue {
     protected String location = null;
     protected DvCodedText setting = null;
     protected ItemStructure otherContext = null;
-    protected Map<String, String> otherContextMap = new HashMap<>();
+    protected Map<String, Object> otherContextMap = new HashMap<>();
 
     protected List<String> doneOtherParticipationList = new ArrayList<>();
 
@@ -107,6 +109,8 @@ public class PathValue implements I_PathValue {
     protected boolean modifiedContext = false;
     protected boolean modifiedContent = false;
     protected boolean modifiedAttributes = false;
+
+    protected I_ContentBuilder contentBuilder;
 
     public PathValue(I_KnowledgeCache cache, String templateId, Properties properties) {
 
@@ -127,6 +131,11 @@ public class PathValue implements I_PathValue {
         }
     }
 
+    public PathValue(I_ContentBuilder contentBuilder, I_KnowledgeCache cache, String templateId, Properties properties) {
+        this(cache, templateId, properties);
+        this.contentBuilder = contentBuilder;
+    }
+
     /**
      * Use for updates
      * @param properties
@@ -144,15 +153,15 @@ public class PathValue implements I_PathValue {
     }
 
 
-    public Composition assign(Map<String, String> keyValues) throws Exception {
-        Map<String, String> mapContent = new HashMap<>();
+    public Composition assign(Map<String, Object> keyValues) throws Exception {
+        Map<String, Object> mapContent = new HashMap<>();
         Boolean hasContext = false;
         Boolean hasComposer = false;
 
         //traverse the queue
 
         for (String path : keyValues.keySet()) {
-            String value = keyValues.get(path);
+            String value = (String)keyValues.get(path);
 
             if (path.startsWith(CONTENT_TAG)) {
                 mapContent.put(path, value);
@@ -203,7 +212,7 @@ public class PathValue implements I_PathValue {
         if (category != null) map.put(SystemValue.CATEGORY, category);
         if (uid != null) map.put(SystemValue.UID, uid);
 
-        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(map, knowledge, templateId);
+        contentBuilder = I_ContentBuilder.getInstance(map, knowledge, templateId);
         Composition composition = contentBuilder.generateNewComposition();
 
         ConstraintUtils constraintUtils = new ConstraintUtils(contentBuilder.isLenient(), composition, contentBuilder.getConstraintMapper());
@@ -221,7 +230,7 @@ public class PathValue implements I_PathValue {
         return composition;
     }
 
-    public Boolean update(Composition composition, Map<String, String> keyValues) throws Exception {
+    public Boolean update(Composition composition, Map<String, Object> keyValues) throws Exception {
 
         modifiedContent = modifiedAttributes = modifiedContext = false;
 
@@ -236,7 +245,7 @@ public class PathValue implements I_PathValue {
         return modifiedContext || modifiedAttributes || modifiedContent;
     }
 
-    public Boolean updateEventContext(EventContext eventContext, Map<String, String> keyValues) throws Exception {
+    public Boolean updateEventContext(EventContext eventContext, Map<String, Object> keyValues) throws Exception {
 
         boolean modified = false;
         boolean doneParticipation = false;
@@ -250,7 +259,7 @@ public class PathValue implements I_PathValue {
 
             modified = true;
 
-            String value = keyValues.get(path);
+            String value = (String)keyValues.get(path);
             String attribute = path.substring(CONTEXT_TAG.length());
 
             if (path.matches(CONTEXT_TAG + PARTICIPATION_REGEXP))
@@ -306,7 +315,7 @@ public class PathValue implements I_PathValue {
                 case CTX_OTHER_CONTEXT_TAG:
                     log.debug("Assign Other context with path:" + path);
 //                    path = path.substring(path.indexOf("]")); //should be in the form: /other_context[at0001]/... strip the prefix
-                    Map<String, String> valuemap = new HashMap<>();
+                    Map<String, Object> valuemap = new HashMap<>();
                     valuemap.put(path, value);
                     assignItemStructure(OTHER_CONTEXT_TAG, eventContext.getOtherContext(), valuemap);
                     break;
@@ -317,11 +326,11 @@ public class PathValue implements I_PathValue {
         return modified;
     }
 
-    private boolean updateCompositionAttributes(Composition composition, Map<String, String> keyValues) throws Exception {
+    private boolean updateCompositionAttributes(Composition composition, Map<String, Object> keyValues) throws Exception {
         boolean modified = false;
 
         for (String path : keyValues.keySet()) {
-            String value = keyValues.get(path);
+            String value = (String)keyValues.get(path);
 
             if (LANGUAGE_TAG.equals(path)) {
                 composition.setLanguage(parseLanguageAttribute(value));
@@ -369,7 +378,7 @@ public class PathValue implements I_PathValue {
         return new CodePhraseVBean(new CodePhrase("local", "1")).parse(value, defaultTerminologyLanguage);
     }
 
-    protected String buildParticipationCode(Map<String, String> pathValues, String baseTag){
+    protected String buildParticipationCode(Map<String, Object> pathValues, String baseTag){
         String value = pathValues.get(baseTag+PARTICIPATION_FUNCTION_SUBTAG)+"|"+
                 pathValues.get(baseTag+IDENTIFIER_PARTY_ID_SUBTAG)+"::"+
                 pathValues.get(baseTag+IDENTIFIER_PARTY_NAME_SUBTAG)+"|"+
@@ -383,7 +392,7 @@ public class PathValue implements I_PathValue {
      * @param
      * @return
      */
-    private boolean assignContextAttribute(Map<String, String> pathValues){
+    private boolean assignContextAttribute(Map<String, Object> pathValues){
         List<String> participations = new ArrayList<>();
         Boolean hasContext = false;
         Boolean hasFacility = false;
@@ -396,7 +405,7 @@ public class PathValue implements I_PathValue {
 
             hasContext = true;
 
-            String value = pathValues.get(path);
+            String value = (String)pathValues.get(path);
             String attribute = path.substring(CONTEXT_TAG.length());
 
             if (path.matches(CONTEXT_TAG+PARTICIPATION_REGEXP))
@@ -452,7 +461,7 @@ public class PathValue implements I_PathValue {
         return hasContext;
     }
 
-    private void assignEntryAttribute(Map<String, String> pathValues, Entry entry, String path, String attribute, String value){
+    private void assignEntryAttribute(Map<String, Object> pathValues, Entry entry, String path, String attribute, String value){
         boolean isComposite = false; //true if it has subtags
 
         if (!ArrayUtils.contains(ENTRY_TAGS, attribute)){
@@ -537,8 +546,10 @@ public class PathValue implements I_PathValue {
             adapted = ElementWrapper.getAdaptedValue(elementWrapper);
             if (adapted instanceof DvCodedTextVBean)
                 parsed = (DataValue) adapted.parse(valueToParse, defaultTerminologyLocal);
-            else
+            else {
+                //TODO: make some wild guess on the data type: ex. Date, Time, DateTime etc.
                 parsed = (DataValue) adapted.parse(valueToParse);
+            }
         }
 
         if (adapted == null || parsed == null)
@@ -555,13 +566,13 @@ public class PathValue implements I_PathValue {
         return parsed;
     }
 
-    private DataValue assignElementValue(ElementWrapper elementWrapper, Map<String, String> attributeSet) throws Exception {
+    private DataValue assignElementValue(ElementWrapper elementWrapper, Map<String, Object> attributeSet) throws Exception {
 
         I_VBeanWrapper adapted = null;
         DataValue parsed;
 
         if ((attributeSet.size() == 1 || (attributeSet.size() == 2 && attributeSet.containsKey("name"))) && attributeSet.containsKey("value")){ //single value can be parsed
-            return assignElementValue(elementWrapper, attributeSet.get("value"));
+            return assignElementValue(elementWrapper, (String)attributeSet.get("value"));
         }
 
 //        if (elementWrapper instanceof ChoiceElementWrapper) {
@@ -598,16 +609,16 @@ public class PathValue implements I_PathValue {
     }
 
 
-    public boolean assignItemStructure(String filterTag, Locatable locatable, Map<String, String> pathValues) throws Exception {
+    public boolean assignItemStructure(String filterTag, Locatable locatable, Map<String, Object> pathValues) throws Exception {
 
         boolean modified = false;
 
-        SortedMap<String, String> sortedMap = new TreeMap<>();
+        SortedMap<String, Object> sortedMap = new TreeMap<>();
         sortedMap.putAll(pathValues);
         String[] keySetArray = sortedMap.keySet().toArray(new String[]{});
-        Map<String, String> attributeSet = null;
+        Map<String, Object> attributeSet = null;
 
-        ContentUtil contentUtil = new ContentUtil();
+//        ContentUtil contentUtil = new ContentUtil(templateId);
 
         for (int pathIterator = 0; pathIterator < sortedMap.keySet().size(); pathIterator++) {
 
@@ -630,26 +641,6 @@ public class PathValue implements I_PathValue {
             String attributeKey = null;
             String locatablePath = path;
 
-            //identify if this path consists of composite attributes: ex. <path...>[at00xy]|attribute1
-//            if (locatablePath.contains("]|")){
-//                attributeSet = new HashMap<>();
-//                String[] segments = path.split("\\]\\|");
-//                locatablePath = segments[0]+"]";
-//                attribute = segments[1];
-//                attributeSet.put(attribute, sortedMap.get(path));
-//
-//                //if composite value set get the map of attributes with their value
-//                int j = pathIterator + 1; //look ahead
-//                while (j < keySetArray.length && keySetArray[j].contains(locatablePath) && keySetArray[j].contains("]|")) {
-//                    //grab the next attribute for this path
-//                    segments = keySetArray[j].split("\\]\\|");
-//                    locatablePath = segments[0] + "]";
-//                    attribute = segments[1];
-//                    attributeSet.put(attribute, sortedMap.get(keySetArray[j]));
-//                    j++;
-//                }
-//                pathIterator = j-1; //skip what has been processed.
-//            } else
             if (lastTag.contains("|")){ //a leaf node followed by an attribute
                 attributeSet = new HashMap<>();
                 String[] segments = lastTag.split("\\|");
@@ -691,23 +682,6 @@ public class PathValue implements I_PathValue {
 //            Object itemAtPath = locatable.itemAtPath(locatablePath);
             Object itemAtPath = LocatableHelper.itemAtPath(locatable, locatablePath);
 
-
-//            if (itemAtPath == null) {
-//                log.debug("Item could not be located, cloning required:" + locatablePath);
-//                LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, locatablePath);
-//                if (parent != null) {
-//                    Locatable cloned = LocatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
-//                    LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), null);
-//                }
-//                itemAtPath = locatable.itemAtPath(locatablePath);
-//
-//                if (itemAtPath == null)
-//                    throw new InternalError("Oops, could not clone item at:" + locatablePath);
-//
-//            }
-
-
-
             if (itemAtPath == null){
                 //build a definition based on the provided path...
                 String lastPathSegment = locatablePath.substring(locatablePath.lastIndexOf("[")+1, locatablePath.lastIndexOf("]"));
@@ -731,12 +705,12 @@ public class PathValue implements I_PathValue {
                     }
                 }
 //                definition.put(CompositionSerializer.TAG_NAME, "");
-                itemAtPath = contentUtil.insertCloneInPath(locatable, definition, locatablePath);
+                itemAtPath = contentBuilder.insertCloneInPath(locatable, definition, locatablePath);
             }
 
             String valueToParse = null;
             if (attributeSet == null)
-                valueToParse = sortedMap.get(path);
+                valueToParse = (String)sortedMap.get(path);
 
             if (itemAtPath instanceof ElementWrapper) {
                 DataValue parsed = null;
@@ -751,27 +725,38 @@ public class PathValue implements I_PathValue {
                 ((ElementWrapper)itemAtPath).getAdaptedElement().setValue(parsed);
                 ((ElementWrapper)itemAtPath).setDirtyBit(true);
             } else if (itemAtPath instanceof Activity) {
-                assignActivityAttribute((Activity) itemAtPath, attribute, sortedMap.get(attributeKey));
+                assignActivityAttribute((Activity) itemAtPath, attribute, (String)sortedMap.get(attributeKey));
             }
             else if (itemAtPath instanceof Entry){
-                assignEntryAttribute(sortedMap, (Entry) itemAtPath, path, attribute, sortedMap.get(attributeKey));
+                assignEntryAttribute(sortedMap, (Entry) itemAtPath, path, attribute, (String)sortedMap.get(attributeKey));
             }
             else if (itemAtPath instanceof DataValue){
-//                Map<String, Object> valueMap = new HashMap<>();
-//                valueMap.put(CompositionSerializer.TAG_VALUE, attributeSet);
-//                VBeanUtil.getInstance(VBeanUtil.findInstrumentalizedClass(itemAtPath), valueMap);
                 //check who is the parent of this datavalue
                 String parentPath = LocatableHelper.getLocatableParentPath(locatable, locatablePath);
                 Locatable parent = (Locatable) locatable.itemAtPath(parentPath);
                 //get the complete attribute identifier
                 String attributePath = locatablePath.substring(parentPath.length());
-                DataValue dataValue = ((DataValue)itemAtPath).parse(attributeSet.get("value"));
-                parent.set(attributePath, dataValue);
-//                for (Map.Entry<String, String> entry: attributeSet.entrySet()) {
-//                    String attributeSetter = "set"+entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
-//                    Method setter = itemAtPath.getClass().getDeclaredMethod(attributeSetter, new Class[]{String.class});
-//                    setter.invoke(itemAtPath, entry.getValue());
-//                }
+                if (attributeSet.size() == 1 || (attributeSet.size() == 2 && attributeSet.containsKey("name"))) {
+                    DataValue dataValue = ((DataValue) itemAtPath).parse((String)attributeSet.get("value"));
+                    parent.set(attributePath, dataValue);
+                }
+                else { //use RMBuilder for more complex value types: DV_PARSABLE etc.
+                    RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+                    if (!attributeSet.containsKey("charset")){
+                        CodePhrase charset = new CodePhrase("IANA_character-sets","UTF-8");
+                        attributeSet.put("charset", charset);
+                    }
+                    if (!attributeSet.containsKey("language")){
+                        CodePhrase lang = new CodePhrase("ISO_639-1", "en");
+                        attributeSet.put("language", lang);
+                    }
+                    if (!attributeSet.containsKey("terminologyService")){
+                        TerminologyService terminologyService = SimpleTerminologyService.getInstance();
+                        attributeSet.put("terminologyService", terminologyService);
+                    }
+                    RMObject object = rmObjectBuilder.construct(itemAtPath.getClass().getSimpleName(), attributeSet);
+                    parent.set(attributePath, object);
+                }
             }
             else {
                 log.warn("Unhandled path value:"+path);
@@ -781,7 +766,7 @@ public class PathValue implements I_PathValue {
     }
 
 
-    public static Object decodeValue(String dvClassName, Map<String, String> dvMap, Map<String, String> args) throws Exception {
+    public static Object decodeValue(String dvClassName, Map<String, String> dvMap, Map<String, Object> args) throws Exception {
         Map<String, Object> values = new HashMap<>();
         for (String atributeName: args.keySet()){
             //get the corresponding definition

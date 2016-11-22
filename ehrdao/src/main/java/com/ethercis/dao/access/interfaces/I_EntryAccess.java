@@ -17,6 +17,7 @@
 package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.EntryAccess;
+import org.jooq.Result;
 import org.openehr.rm.composition.Composition;
 
 import java.util.List;
@@ -66,6 +67,10 @@ public interface I_EntryAccess extends I_SimpleCRUD<I_EntryAccess, UUID> {
      */
     public static List<I_EntryAccess> retrieveInstanceInComposition(I_DomainAccess domainAccess, I_CompositionAccess compositionAccess) throws Exception {
         return EntryAccess.retrieveInstanceInComposition(domainAccess, compositionAccess);
+    }
+
+    public static List<I_EntryAccess> retrieveInstanceInComposition(I_DomainAccess domainAccess, Result<?> records) throws Exception {
+        return EntryAccess.retrieveInstanceInComposition(domainAccess, records);
     }
 
     public static List<I_EntryAccess> retrieveInstanceInCompositionVersion(I_DomainAccess domainAccess, I_CompositionAccess compositionHistoryAccess, int version) throws Exception {
@@ -207,6 +212,10 @@ public interface I_EntryAccess extends I_SimpleCRUD<I_EntryAccess, UUID> {
      * @throws Exception
      */
     public static Map<String, Object> queryAqlJson(I_DomainAccess domainAccess, String query) throws Exception {
-        return EntryAccess.queryAqlJson(domainAccess, query);
+        return EntryAccess.queryAqlJson(domainAccess, query, false);
+    }
+
+    public static Map<String, Object> explainAqlJson(I_DomainAccess domainAccess, String query) throws Exception {
+        return EntryAccess.queryAqlJson(domainAccess, query, true);
     }
 }

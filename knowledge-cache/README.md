@@ -56,4 +56,4 @@ Known issues
 
 2015/12/23
 
-- at the moment only ADL 1.4 is supported
+- at the moment only ADL 1.4 is supported

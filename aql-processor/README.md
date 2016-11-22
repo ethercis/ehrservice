@@ -44,4 +44,4 @@ Tests
 
 Known issues
 ============
-This currently supports a limited set of AQL operators
+This currently supports a limited set of AQL operators

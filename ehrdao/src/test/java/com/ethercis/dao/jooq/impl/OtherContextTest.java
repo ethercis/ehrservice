@@ -23,7 +23,7 @@ import java.util.UUID;
  * Created by Christian Chevalley on 10/7/2015.
  */
 public class OtherContextTest extends AccessTestCase {
-    Map<String, String> kvPairs = new HashMap<>();
+    Map<String, Object> kvPairs = new HashMap<>();
 
     private UUID ehrIdUUID;
     private UUID systemUUID;

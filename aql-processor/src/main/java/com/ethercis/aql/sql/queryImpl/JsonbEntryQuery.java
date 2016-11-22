@@ -240,7 +240,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         itemPath = wrapQuery(itemPath, JSONBSelector_COMPOSITION_OPEN, JSONBSelector_CLOSE);
 
         if (itemPathArray.get(itemPathArray.size() - 1).contains("magnitude")){ //force explicit type cast for DvQuantity
-            itemPath = "("+itemPath+")::float";
+            itemPath = "("+itemPath+")::numeric";
         }
 
 

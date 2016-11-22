@@ -45,8 +45,10 @@ public class ChoiceElementWrapper extends ElementWrapper {
 
     public Class getChoice(int i) throws RMObjectBuildingException {
         RMObjectBuilder builder = RMObjectBuilder.getInstance();
-        if (i < 0 || i >= choiceRmClasses.size())
-            return null;
+        if (i < 0 || i >= choiceRmClasses.size()) {
+            throw new RMObjectBuildingException("The choice index ("+(i+1)+") is not within boundaries, max:"+choiceRmClasses.size());
+//            return null;
+        }
 
         String rmClass = choiceRmClasses.get(i);
 

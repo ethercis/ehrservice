@@ -54,6 +54,7 @@ public abstract class RmBinding implements I_RmBinding {
     protected static final String START_TIME = "start_time";
     protected static final String SETTING = "setting";
     protected static final String DESCRIPTION = "description";
+    protected static final String ISM_TRANSITION = "ism_transition";
     protected static final String MAGNITUDE = "magnitude";
     protected static final String TEMPLATE_ID = "template_id";
     protected static final String ACTION_ARCHETYPE_ID = "action_archetype_id";

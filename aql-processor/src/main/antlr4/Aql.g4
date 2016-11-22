@@ -92,7 +92,6 @@ identifiedExpr
 //	    : identifiedEquality (AND identifiedEquality)*;
 //	    : identifiedEquality (AND identifiedExpr)*;
 
-//TODO: the NOT token is not correctly interpreted (greedy match issue)
 identifiedEquality 
         : NOT? identifiedOperand COMPARABLEOPERATOR identifiedOperand
 	    | NOT? identifiedOperand MATCHES OPEN_CURLY matchesOperand CLOSE_CURLY

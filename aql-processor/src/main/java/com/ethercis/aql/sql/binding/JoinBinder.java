@@ -121,7 +121,7 @@ public class JoinBinder implements I_JoinBinder {
         if (composerJoined) return;
         joinComposition(selectQuery, compositionAttributeQuery);
         Table<PartyIdentifiedRecord> composerTable = compositionAttributeQuery.getComposerRef();
-        selectQuery.addJoin(compositionRecordTable,
+        selectQuery.addJoin(composerTable,
                 DSL.field(compositionRecordTable.field(COMPOSITION.COMPOSER.getName(), UUID.class))
                         .eq(DSL.field(composerTable.field(PARTY_IDENTIFIED.ID.getName(), UUID.class))));
         composerJoined = true;

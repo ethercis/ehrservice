@@ -48,7 +48,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class PathValueTest {
     I_KnowledgeCache knowledge;
-    Map<String, String> kvPairs = new HashMap<>();
+    Map<String, Object> kvPairs = new HashMap<>();
 
 
     @Before
@@ -174,7 +174,7 @@ public class PathValueTest {
 
         PathValue pathValue = new PathValue(null);
 
-        Map<String, String> updateValues = new HashMap<>();
+        Map<String, Object> updateValues = new HashMap<>();
 
         updateValues.put("/context/end_time", "2014-09-28T11:18:17.352+07:00");
         updateValues.put("/context/participation|function", "Cantine");
@@ -244,7 +244,7 @@ public class PathValueTest {
         for (String testfile: new String[]{"ecisflat", "ecisflat2"}) {
             FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/adverse_reaction_list."+testfile+".json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/blood_pressure.ecisflat.json");
-            Map<String, String> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
+            Map<String, Object> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
             Composition composition = pathValue.assign(valuePairs);
             assertNotNull(composition);
             //serialize this composition  for persistence
@@ -270,18 +270,23 @@ public class PathValueTest {
 
     @Test
     public void testSerialize() throws Exception {
-        String templateId = "COLNEC_history_of_past_illness.v0";
+//        String templateId = "COLNEC_history_of_past_illness.v0";
+//        String templateId = "COLNEC Medication";
+        String templateId = "COLNEC Care Plan.v1";
 //        String templateId = "Vital Signs Encounter (Composition)";
+//        String templateId = "COLNEC_Goal.v0";
         PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Vital Signs Encounter (Composition).raw.kvp.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_Goals.v0.kvp.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.kvp.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.fault.ecisflat.json");
-        Map<String, String> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.fault.ecisflat.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/beam_instruction_test.ecisflat.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC Care Plan.v1.post2.json");
+        Map<String, Object> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
         Composition composition = pathValue.assign(valuePairs);
         assertNotNull(composition);
         //serialize this composition  for persistence
-        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.RAW);
+        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
 //        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();
         String dbEncoded = compositionSerializer.dbEncode(composition);
         System.out.print(dbEncoded);
@@ -292,18 +297,18 @@ public class PathValueTest {
         assertNotNull(rawEncoded);
 
         //rebuild the composition from the encoded structure
-//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
-//        Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
-//        assertNotNull(retrieved);
-//        //export flat
-//        Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
-//
-//        String jsonString = gson.toJson(testRetMap);
-//
-//        System.out.println(jsonString);
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
+        Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
+        assertNotNull(retrieved);
+        //export flat
+        Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
+
+        GsonBuilder builder = new GsonBuilder();
+        gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        String jsonString = gson.toJson(testRetMap);
+
+        System.out.println(jsonString);
     }
 
     DataValue dataValue;

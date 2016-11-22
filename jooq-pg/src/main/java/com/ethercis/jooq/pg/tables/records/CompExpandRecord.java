@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CompExpandRecord extends TableRecordImpl<CompExpandRecord> {
 
-	private static final long serialVersionUID = 1987005104;
+	private static final long serialVersionUID = -1327016398;
 
 	/**
 	 * Setter for <code>ehr.comp_expand.ehr_id</code>.
@@ -393,20 +393,6 @@ public class CompExpandRecord extends TableRecordImpl<CompExpandRecord> {
 		return (String) getValue(25);
 	}
 
-	/**
-	 * Setter for <code>ehr.comp_expand.other_details</code>.
-	 */
-	public void setOtherDetails(Object value) {
-		setValue(26, value);
-	}
-
-	/**
-	 * Getter for <code>ehr.comp_expand.other_details</code>.
-	 */
-	public Object getOtherDetails() {
-		return (Object) getValue(26);
-	}
-
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
@@ -421,7 +407,7 @@ public class CompExpandRecord extends TableRecordImpl<CompExpandRecord> {
 	/**
 	 * Create a detached, initialised CompExpandRecord
 	 */
-	public CompExpandRecord(UUID ehrId, String subjectExternalrefIdValue, String subjectExternalrefIdNamespace, UUID compositionId, String templateId, String archetypeId, Object entry, String compositionName, String language, Integer territory, Timestamp startTime, String startTimeTzid, Timestamp endTime, String endTimeTzid, Object otherContext, String ctxLocation, String facilityName, String facilityRef, String facilityScheme, String facilityNamespace, String facilityType, String composerName, String composerRef, String composerScheme, String composerNamespace, String composerType, Object otherDetails) {
+	public CompExpandRecord(UUID ehrId, String subjectExternalrefIdValue, String subjectExternalrefIdNamespace, UUID compositionId, String templateId, String archetypeId, Object entry, String compositionName, String language, Integer territory, Timestamp startTime, String startTimeTzid, Timestamp endTime, String endTimeTzid, Object otherContext, String ctxLocation, String facilityName, String facilityRef, String facilityScheme, String facilityNamespace, String facilityType, String composerName, String composerRef, String composerScheme, String composerNamespace, String composerType) {
 		super(CompExpand.COMP_EXPAND);
 
 		setValue(0, ehrId);
@@ -450,6 +436,5 @@ public class CompExpandRecord extends TableRecordImpl<CompExpandRecord> {
 		setValue(23, composerScheme);
 		setValue(24, composerNamespace);
 		setValue(25, composerType);
-		setValue(26, otherDetails);
 	}
 }

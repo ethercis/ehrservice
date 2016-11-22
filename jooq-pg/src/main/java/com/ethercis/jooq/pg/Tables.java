@@ -25,10 +25,11 @@ import com.ethercis.jooq.pg.tables.Language;
 import com.ethercis.jooq.pg.tables.Participation;
 import com.ethercis.jooq.pg.tables.ParticipationHistory;
 import com.ethercis.jooq.pg.tables.PartyIdentified;
+import com.ethercis.jooq.pg.tables.SessionLog;
 import com.ethercis.jooq.pg.tables.Status;
-import com.ethercis.jooq.pg.tables.StatusDetails;
 import com.ethercis.jooq.pg.tables.StatusHistory;
 import com.ethercis.jooq.pg.tables.System;
+import com.ethercis.jooq.pg.tables.TemplateMeta;
 import com.ethercis.jooq.pg.tables.TerminologyProvider;
 import com.ethercis.jooq.pg.tables.Territory;
 
@@ -154,14 +155,14 @@ public class Tables {
 	public static final PartyIdentified PARTY_IDENTIFIED = com.ethercis.jooq.pg.tables.PartyIdentified.PARTY_IDENTIFIED;
 
 	/**
+	 * The table ehr.session_log
+	 */
+	public static final SessionLog SESSION_LOG = com.ethercis.jooq.pg.tables.SessionLog.SESSION_LOG;
+
+	/**
 	 * specifies an ehr modality and ownership (patient)
 	 */
 	public static final Status STATUS = com.ethercis.jooq.pg.tables.Status.STATUS;
-
-	/**
-	 * The table ehr.status_details
-	 */
-	public static final StatusDetails STATUS_DETAILS = com.ethercis.jooq.pg.tables.StatusDetails.STATUS_DETAILS;
 
 	/**
 	 * The table ehr.status_history
@@ -172,6 +173,11 @@ public class Tables {
 	 * system table for reference
 	 */
 	public static final System SYSTEM = com.ethercis.jooq.pg.tables.System.SYSTEM;
+
+	/**
+	 * The table ehr.template_meta
+	 */
+	public static final TemplateMeta TEMPLATE_META = com.ethercis.jooq.pg.tables.TemplateMeta.TEMPLATE_META;
 
 	/**
 	 * openEHR identified terminology provider

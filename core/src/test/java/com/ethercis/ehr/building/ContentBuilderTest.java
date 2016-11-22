@@ -99,8 +99,9 @@ public class ContentBuilderTest extends TestCase {
      * generate a composition from an Operational Template (OPT)
      */
     public void testSerializeComposition() throws Exception {
+        String templateId = "COLNEC Personal Activity Action.v1";
 //        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "ECIS EVALUATION TEST");
-        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, "COLNEC Medication");
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
 //        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(I_ContentBuilder.OPT, knowledge, "action test");
 
         Composition composition = contentBuilder.generateNewComposition();
@@ -585,7 +586,7 @@ public class ContentBuilderTest extends TestCase {
         Object generated = contentBuilder.generate();
 
 //        content.setEntryData(composition);
-        PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
+        PathValue pathValue = new PathValue(contentBuilder, knowledge, templateId, new Properties());
 
         pathValue.assignItemStructure("/items[openEHR-EHR-ITEM_TREE.weird_type_1.v0 and name/value='Weird type 1']", (Locatable)generated, setQueryBodyWeirdTypes());
 
@@ -857,6 +858,7 @@ public class ContentBuilderTest extends TestCase {
     @Test
     public void testFlatJson() throws Exception {
         String templateId = "COLNEC Medication";
+
 //        String templateId = "IDCR Problem List.v1";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);

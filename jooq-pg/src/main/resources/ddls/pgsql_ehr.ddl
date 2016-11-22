@@ -303,6 +303,14 @@ create TABLE ehr.containment (
 CREATE INDEX label_idx ON ehr.containment USING BTREE(label);
 CREATE INDEX comp_id_idx ON ehr.containment USING BTREE(comp_id);
 
+-- meta data
+CREATE TABLE ehr.template_meta (
+  template_id TEXT,
+  array_path TEXT[] -- list of paths containing an item list with list size > 1
+);
+
+CREATE INDEX template_meta_idx ON ehr.template_meta(template_id);
+
 -- simple cross reference table to link INSTRUCTIONS with ACTIONS or other COMPOSITION
 CREATE TABLE ehr.compo_xref (
   master_uuid UUID REFERENCES ehr.composition(id),
@@ -310,6 +318,17 @@ CREATE TABLE ehr.compo_xref (
   sys_transaction TIMESTAMP NOT NULL
 );
 CREATE INDEX ehr_compo_xref ON ehr.compo_xref USING BTREE (master_uuid);
+
+-- log user sessions with logon id, session id and other parameters
+CREATE TABLE ehr.session_log (
+  id UUID primary key DEFAULT uuid_generate_v4(),
+  subject_id TEXT NOT NULL,
+  node_id TEXT,
+  session_id TEXT,
+  session_name TEXT,
+  session_time TIMESTAMP,
+  ip_address TEXT
+);
 
 -- views to abstract querying
 -- EHR STATUS

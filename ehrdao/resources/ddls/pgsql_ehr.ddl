@@ -1,4 +1,4 @@
--- Generate EtherCIS tables for PostgreSQL 9.3
+-- Generate EtherCIS tables for PostgreSQL 9.4
 -- Author: Christian Chevalley
 --
 --
@@ -8,6 +8,7 @@
 --
 --    alter table com.ethercis.ehr.consult_req_attachement
 --        drop constraint FKC199A3AA4204581F;
+-- Rev 1.1 2/8/16 CCH
 --
 drop schema if exists ehr cascade;
 -- drop schema if exists common cascade;
@@ -353,7 +354,23 @@ CREATE OR REPLACE VIEW ehr.comp_expand AS
     INNER JOIN ehr.status status ON status.ehr_id = ehr.id
     LEFT JOIN ehr.party_identified party ON status.party = party.id
     -- LEFT JOIN ehr.system sys ON ctx.setting = sys.id
-    LEFT JOIN ehr.party_identified fclty ON ctx.facility = fclty.id
+    LEFT JOIN ehr.party_identified fclty ON ctx.facility = fclty.id;
+
+
+CREATE OR REPLACE VIEW ehr.status_details AS
+  SELECT
+    ehr.id AS ehr_id,
+    status.is_modifiable AS is_modifiable,
+    status.is_queryable AS is_queryable,
+    status.other_details AS other_details,
+    party_identified.name AS party_name,
+    party_identified.party_ref_namespace,
+    party_identified.party_ref_scheme,
+    party_identified.party_ref_type
+  FROM ehr.ehr
+  INNER JOIN ehr.status status ON ehr.id = status.ehr_id
+  INNER JOIN ehr.party_identified ON party_identified.id = status.party;
+
 
 
 -- AUDIT TRAIL has been replaced by CONTRIBUTION

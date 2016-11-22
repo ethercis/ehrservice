@@ -101,6 +101,7 @@ public class ContainmentAccess extends DataAccess implements I_ContainmentAccess
         return update();
     }
 
+    //TODO: changes this to work on template instead and avoid the loop for writing!
     private void commitContainments() throws SQLException {
         if (ltree == null){
             throw new IllegalArgumentException("Containment label tree is not initialized, aborting");

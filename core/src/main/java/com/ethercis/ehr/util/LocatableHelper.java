@@ -29,8 +29,7 @@ import org.openehr.rm.datatypes.text.DvText;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ETHERCIS Project ehrservice
@@ -46,6 +45,8 @@ public class LocatableHelper {
     public static final String FORWARD_SLASH = "/";
 
     private RMDataSerializer rmDataSerializer = new RMDataSerializer();
+
+    private Map<String, Integer> arrayItemPathMap = new HashMap<>(); //contains the list of array insertion paths for a template
 
     public LocatableHelper() {
     }
@@ -77,7 +78,7 @@ public class LocatableHelper {
         return newNodeId;
     }
 
-    public static void insertHistoryEvent(History history, PointEvent event){
+    public  void insertHistoryEvent(History history, PointEvent event){
         insertCloneInList(history, event, "/events", null);
     }
 
@@ -122,7 +123,7 @@ public class LocatableHelper {
      * @param insertionPath
      * @param itemPath
      */
-    public  static void insertCloneInList(Locatable parent, Locatable clone, String insertionPath, String itemPath){
+    public  void insertCloneInList(Locatable parent, Locatable clone, String insertionPath, String itemPath){
         //get the list of sibling at insertionPath
         Object objectList = parent.itemAtPath(insertionPath);
 
@@ -565,4 +566,14 @@ public class LocatableHelper {
         return nodeid;
     }
 
+    public Map<String, Integer> getArrayItemPathMap() {
+        return arrayItemPathMap;
+    }
+
+    public void addItemPath(String itemPath){
+        if (!arrayItemPathMap.containsKey(itemPath))
+            arrayItemPathMap.put(itemPath, 1);
+        else
+            arrayItemPathMap.put(itemPath, arrayItemPathMap.get(itemPath) + 1);
+    }
 }

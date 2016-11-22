@@ -123,7 +123,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         assertNotNull(retrieved);
 
         //updateComposition its context
-        Map<String, String> kvPairs = new HashMap<>();
+        Map<String, Object> kvPairs = new HashMap<>();
 
         kvPairs.put("/context/health_care_facility|name", "Northumbria Community NHS");
         kvPairs.put("/context/health_care_facility|identifier", "999999-345");
@@ -178,7 +178,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
 
     @Test
     public void testCreateComposition(){
-        Map<String, String> kvPairs = new HashMap<>();
+        Map<String, Object> kvPairs = new HashMap<>();
 
         kvPairs.put("/context/health_care_facility|name", "Northumbria Community NHS");
         kvPairs.put("/context/health_care_facility|identifier", "999999-345");
@@ -231,20 +231,21 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
     //    @Test
     public void testCreateComposition2() throws Exception {
 //        Map<String, String> kvPairs = new HashMap<>();
-
-        String templateId = "COLNEC Medication";
+        String templateId = "COLNEC Health Risk Assessment.v1";
+//        String templateId = "COLNEC Medication";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
+        Files.readAllLines(Paths.get("C:\\Development\\Dropbox\\eCIS_Development\\test\\health_risk_assessment.ecisflat.json")).forEach(line -> sb.append(line));
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
-        Files.readAllLines(Paths.get("/Development/Dropbox/COLNEC/colnec_medication.ecisflat.json"), Charset.defaultCharset()).forEach(line -> sb.append(line));
+//        Files.readAllLines(Paths.get("/Development/Dropbox/COLNEC/colnec_medication.ecisflat.json"), Charset.defaultCharset()).forEach(line -> sb.append(line));
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
         builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
         Gson gson = builder.setPrettyPrinting().create();
 
-        Map<String, String> kvPairs = gson.fromJson(sb.toString(), HashMap.class);
+        Map<String, Object> kvPairs = gson.fromJson(sb.toString(), HashMap.class);
 
         PvCompoHandler pvCompoHandler = new PvCompoHandler(testDomainAccess, templateId, null);
         UUID compositionId = pvCompoHandler.storeComposition(ehrIdUUID, kvPairs);
@@ -291,6 +292,19 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
 
 
 
+    }
+
+    public void testRetrieveCompositionNew() throws Exception {
+        UUID uuid = UUID.fromString("55032019-e6e4-4395-adce-e9f475b419c0");
+        I_CompositionAccess compositionAccess = I_CompositionAccess.retrieveInstance2(testDomainAccess, uuid);
+
+        List<I_EntryAccess> contents = compositionAccess.getContent();
+        Composition composition = contents.get(0).getComposition();
+        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, false, CompositionSerializer.WalkerOutputMode.PATH);
+        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
+        Gson gson = builder.setPrettyPrinting().create();
+        String json = gson.toJson(testRetMap);
+        System.out.println(json);
     }
 
 

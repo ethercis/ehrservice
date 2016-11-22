@@ -36,8 +36,8 @@ import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
-import org.jooq.DSLContext;
-import org.jooq.Record;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.datastructure.itemstructure.ItemStructure;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
@@ -172,6 +172,40 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         ehrRecord.setDateCreated(transactionTime);
 //        ehrRecord.setDateCreatedTzid(transactionTime.toLocalDateTime().getZone().getID());
         ehrRecord.store();
+        
+        if (isNew && statusRecord != null) {
+            UUID uuid = UUID.randomUUID();
+            InsertQuery<?> insertQuery = context.insertQuery(STATUS);
+            insertQuery.addValue(STATUS.ID, uuid);
+            insertQuery.addValue(STATUS.EHR_ID, ehrRecord.getId());
+            insertQuery.addValue(STATUS.IS_QUERYABLE, statusRecord.getIsQueryable());
+            insertQuery.addValue(STATUS.IS_MODIFIABLE, statusRecord.getIsModifiable());
+            insertQuery.addValue(STATUS.PARTY, statusRecord.getParty());
+//            Field otherDetailsField = DSL.field(STATUS.OTHER_DETAILS+"::jsonb");
+            if (otherDetails != null) {
+                insertQuery.addValue(STATUS.OTHER_DETAILS, (Object)DSL.field(DSL.val(serializeOtherDetails())+"::jsonb"));
+            }
+            else if (otherDetailsSerialized != null)
+                insertQuery.addValue(STATUS.OTHER_DETAILS, (Object)DSL.field(DSL.val(otherDetailsSerialized)+"::jsonb"));
+
+            insertQuery.addValue(STATUS.SYS_TRANSACTION, transactionTime);
+
+            Integer result = insertQuery.execute();
+
+            if (result == 0)
+                throw new IllegalArgumentException("Could not store Ehr Status");
+//            statusRecord.store();
+        }
+
+        return ehrRecord.getId();
+    }
+
+    @Deprecated
+    public UUID commit_deprecated(Timestamp transactionTime) throws Exception {
+
+        ehrRecord.setDateCreated(transactionTime);
+//        ehrRecord.setDateCreatedTzid(transactionTime.toLocalDateTime().getZone().getID());
+        ehrRecord.store();
 
         if (isNew && statusRecord != null) {
             String sql = "INSERT INTO ehr.status (ehr_id, is_queryable, is_modifiable, party, other_details, sys_transaction) " +
@@ -204,6 +238,8 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
                 retval = resultSet.getString(1);
             }
 
+            connection.close();
+
             if (retval == null)
                 throw new IllegalArgumentException("Could not store Ehr Status");
 //            statusRecord.store();
@@ -211,6 +247,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
 
         return ehrRecord.getId();
     }
+
 
     @Override
     public UUID commit() throws Exception {
@@ -242,6 +279,42 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         boolean result = false;
 
         if (force || statusRecord.changed()){
+
+            UpdateQuery<?> updateQuery = context.updateQuery(STATUS);
+            updateQuery.addValue(STATUS.EHR_ID, ehrRecord.getId());
+            updateQuery.addValue(STATUS.IS_QUERYABLE, statusRecord.getIsQueryable());
+            updateQuery.addValue(STATUS.IS_MODIFIABLE, statusRecord.getIsModifiable());
+            updateQuery.addValue(STATUS.PARTY, statusRecord.getParty());
+
+//            Field otherDetailsField = DSL.field(STATUS.OTHER_DETAILS+"::jsonb");
+            if (otherDetails != null) {
+                updateQuery.addValue(STATUS.OTHER_DETAILS, (Object)DSL.field(DSL.val(serializeOtherDetails())+"::jsonb"));
+            }
+            else if (otherDetailsSerialized != null)
+                updateQuery.addValue(STATUS.OTHER_DETAILS, (Object)DSL.field(DSL.val(otherDetailsSerialized)+"::jsonb"));
+
+            updateQuery.addValue(STATUS.SYS_TRANSACTION, transactionTime);
+            updateQuery.addConditions(STATUS.ID.eq(statusRecord.getId()));
+
+            result |= updateQuery.execute() > 0;
+        }
+
+        if (force || ehrRecord.changed()){
+            DateTime committedDateTime = DateTime.now();
+            ehrRecord.setDateCreated(new Timestamp(committedDateTime.getMillis()));
+            ehrRecord.setDateCreatedTzid(committedDateTime.getZone().getID());
+            result |= ehrRecord.update() > 0;
+
+        }
+
+        return result;
+    }
+
+    @Deprecated
+    public Boolean update_deprecated(Timestamp transactionTime, boolean force) throws Exception {
+        boolean result = false;
+
+        if (force || statusRecord.changed()){
             String sql = "UPDATE ehr.status SET " +
                     "is_queryable = ?, " +
                     "is_modifiable = ?," +
@@ -268,6 +341,8 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
 
 //            result |= statusRecord.update() > 0;
             result |= updateStatement.execute();
+
+            connection.close();
         }
 
         if (force || ehrRecord.changed()){

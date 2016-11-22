@@ -37,6 +37,10 @@ public class ContentUtil extends ContentBuilder {
         this(null, null, null);
     }
 
+    public ContentUtil(String templateId) throws Exception {
+        this(null, null, templateId);
+    }
+
     @Override
     public Composition generateNewComposition() throws Exception {
         return null;

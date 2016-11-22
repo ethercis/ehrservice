@@ -38,5 +38,5 @@ public interface I_JoinBinder {
     Table<EhrRecord> ehrRecordTable = EHR.as(EHR_JOIN);
     Table<PartyIdentifiedRecord> composerRef = PARTY_IDENTIFIED.as("composer_ref");
     Table<PartyIdentifiedRecord> subjectRef = PARTY_IDENTIFIED.as("subject_ref");
-    Table<PartyIdentifiedRecord> facilityRef = PARTY_IDENTIFIED.as("composer_ref");
+    Table<PartyIdentifiedRecord> facilityRef = PARTY_IDENTIFIED.as("facility_ref");
 }

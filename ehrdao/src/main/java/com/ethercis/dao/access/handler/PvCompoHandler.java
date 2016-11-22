@@ -34,7 +34,7 @@ import java.util.UUID;
  * ETHERCIS Project ehrservice
  * Created by Christian Chevalley on 10/7/2015.
  */
-public class PvCompoHandler extends PathValue {
+public class PvCompoHandler extends PathValue implements I_CompositionMetaData {
 
     private I_CompositionAccess compositionAccess;
     private final I_DomainAccess domainAccess;
@@ -51,11 +51,11 @@ public class PvCompoHandler extends PathValue {
         this.domainAccess = domainAccess;
     }
 
-    public UUID storeComposition(UUID ehrId, Map<String, String> keyValues) throws Exception {
+    public UUID storeComposition(UUID ehrId, Map<String, Object> keyValues) throws Exception {
         return storeComposition(ehrId, keyValues, null, null, null);
     }
 
-    public UUID storeComposition(UUID ehrId, Map<String, String> keyValues, UUID committerId, UUID systemId, String description) throws Exception {
+    public UUID storeComposition(UUID ehrId, Map<String, Object> keyValues, UUID committerId, UUID systemId, String description) throws Exception {
 
         Composition composition = assign(keyValues);
 
@@ -69,7 +69,7 @@ public class PvCompoHandler extends PathValue {
         return compositionAccess.commit(committerId, systemId, description);
     }
 
-    public Boolean updateComposition(Map<String, String> keyValues, UUID committerId, UUID systemId, String description) throws Exception {
+    public Boolean updateComposition(Map<String, Object> keyValues, UUID committerId, UUID systemId, String description) throws Exception {
 
         boolean changed = false;
         boolean changedContext = false;
@@ -120,11 +120,11 @@ public class PvCompoHandler extends PathValue {
         return true; //nothing to do...
     }
 
-    private boolean updateCompositionAttributes(Map<String, String> keyValues) throws Exception {
+    private boolean updateCompositionAttributes(Map<String, Object> keyValues) throws Exception {
         boolean modified = false;
 
         for (String path : keyValues.keySet()) {
-            String value = keyValues.get(path);
+            String value = (String)keyValues.get(path);
 
             if (LANGUAGE_TAG.equals(path)) {
                 compositionAccess.setLanguageCode(parseLanguageAttribute(value).getCodeString());
@@ -156,4 +156,9 @@ public class PvCompoHandler extends PathValue {
         return modified;
     }
 
+
+    @Override
+    public Map<String, Integer> getItemArrayPathMap() {
+        return contentBuilder.getArrayItemPathMap();
+    }
 }

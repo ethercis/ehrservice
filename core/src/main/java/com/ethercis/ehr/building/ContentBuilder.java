@@ -83,8 +83,6 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     protected ConstraintMapper constraintMapper;
     protected boolean lenient = false;
 
-    private Map<String, Object> serializedCache;
-
     private LocatableHelper locatableHelper = new LocatableHelper();
 
     //public static final String TAG_OBJECT =  "/$OBJECT$";
@@ -98,7 +96,6 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             lenient = Boolean.parseBoolean(System.getProperty("validation.lenient"));
             log.info("ContentBuilder validation set to: "+(lenient ? "lenient" : "active"));
         }
-        this.serializedCache = new HashMap<>();
     }
 
     @Override
@@ -152,40 +149,44 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         return newName;
     }
 
+    @Override
     public Object insertCloneInPath(Locatable locatable, Map<String, Object> definition, String path) throws Exception {
         log.debug("Item could not be located, cloning required:" + path);
 
         //check for potential sibling
-        String siblingPath = LocatableHelper.siblingPath(path);
+        String siblingPath = locatableHelper.siblingPath(path);
 //        Locatable sibling = (Locatable) locatable.itemAtPath(siblingPath);
-        Locatable sibling = (Locatable) LocatableHelper.itemAtPath(locatable, siblingPath);
+        Locatable sibling = (Locatable) locatableHelper.itemAtPath(locatable, siblingPath);
 
         if (sibling != null){
             LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
 //            Locatable cloned = LocatableHelper.clone(sibling);
             Locatable cloned = locatableHelper.clone(siblingPath, sibling);
+            String parentPath = Locatable.parentPath(path);
             if (definition.containsKey(CompositionSerializer.TAG_NAME)) {
                 DvText newName = getNewName(definition);
                 cloned.setName(newName);
             }
             else
-                LocatableHelper.adjustChildrenNames(cloned, Locatable.parentPath(path), path);
+                locatableHelper.adjustChildrenNames(cloned, parentPath, path);
 
-            LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), path);
+            locatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), path);
+            locatableHelper.addItemPath(LocatableHelper.simplifyPath(parentPath));
             log.debug("Inserted sibling at path:" + path);
         }
         else {
             LocatableHelper.NodeItem parent = LocatableHelper.backtrackItemAtPath(locatable, path);
             if (parent != null) {
                 Locatable cloned = locatableHelper.cloneChildAtPath(parent.getNode(), parent.getChildPath());
-                LocatableHelper.adjustChildrenNames(cloned, parent.getChildPath(), path);
-                LocatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), parent.getChildPath());
+                locatableHelper.adjustChildrenNames(cloned, parent.getChildPath(), path);
+                locatableHelper.insertCloneInList(parent.getNode(), cloned, parent.getInsertionPath(), parent.getChildPath());
+                locatableHelper.addItemPath(LocatableHelper.simplifyPath(parent.getChildPath()));
             }
 //            sibling = (Locatable) locatable.itemAtPath(siblingPath);
         }
         //reference the newly created child
 //        Object itemAtPath = locatable.itemAtPath(path);
-        Object itemAtPath = LocatableHelper.itemAtPath(locatable, path);
+        Object itemAtPath = locatableHelper.itemAtPath(locatable, path);
 
         //TODO: set a termination to avoid endless loop...
         //TODO: fail on /content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value='Laboratory test tracker']/ism_transition
@@ -219,7 +220,12 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
             Object object = definition.get(MapInspector.TAG_OBJECT);
 
-            if (object == null) continue; //no assignment
+            if (object == null) {
+                if (definition.containsKey(CompositionSerializer.TAG_VALUE))
+                    object = definition.get(CompositionSerializer.TAG_VALUE);
+                else
+                    continue; //no assignment
+            }
 
             //assignment
             String lastTag = path.substring(path.lastIndexOf("/"));
@@ -229,6 +235,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                     lastTag.equals(CompositionSerializer.TAG_WIDTH) ||
                     lastTag.equals(CompositionSerializer.TAG_MATH_FUNCTION) ||
                     lastTag.equals(CompositionSerializer.TAG_NARRATIVE) ||
+                    lastTag.equals(CompositionSerializer.TAG_ACTION_ARCHETYPE_ID) ||
                     lastTag.equals(I_PathValue.ORIGIN_TAG)){
                 path = path.substring(0, path.lastIndexOf("/"));
             }
@@ -262,6 +269,9 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                 Activity activity = (Activity)itemAtPath;
                 if (object instanceof DvParsable) {
                     activity.setTiming((DvParsable) object);
+                }
+                else if (lastTag.equals(CompositionSerializer.TAG_ACTION_ARCHETYPE_ID)) {
+                    activity.setActionArchetypeId((String) object);
                 }
 
             } else if (itemAtPath instanceof Instruction) {
@@ -711,6 +721,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
         log.debug("set values [ms]:"+(end - start)/1000000);
 
+        this.composition = newComposition;
+
         return newComposition;
     }
 
@@ -874,5 +886,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     @Override
     public ConstraintMapper getConstraintMapper(){
         return constraintMapper;
+    }
+
+    @Override
+    public Map<String, Integer> getArrayItemPathMap(){
+        return locatableHelper.getArrayItemPathMap();
     }
 }

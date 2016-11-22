@@ -18,6 +18,7 @@ package com.ethercis.dao.access.support;
 
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.cpdsadapter.DriverAdapterCPDS;
 import org.apache.commons.dbcp2.datasources.SharedPoolDataSource;
 import org.apache.commons.lang.StringUtils;
@@ -207,6 +208,129 @@ public abstract class DataAccess implements I_DomainAccess {
         if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS)))
             setMaxPreparedStatements = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS));
 
+        Boolean removeAbandonnned = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED)))
+            removeAbandonnned = Boolean.getBoolean((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED));
+        Integer removeAbandonnnedTimeout = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED_TIMEOUT)))
+            removeAbandonnnedTimeout = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED_TIMEOUT));
+        Boolean logAbandoned = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_LOG_ABANDONNED)))
+            logAbandoned = Boolean.getBoolean((String)properties.get(I_DomainAccess.KEY_LOG_ABANDONNED));
+        Boolean autoReconnect = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_AUTO_RECONNECT)))
+            autoReconnect = Boolean.getBoolean((String)properties.get(I_DomainAccess.KEY_AUTO_RECONNECT));
+
+        Integer initialConnections = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS)))
+            initialConnections = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS));
+
+        if (!dialect.equals(SQLDialect.POSTGRES))
+            throw new IllegalArgumentException("At this stage only POSTGRES dialect is supported, please check your configuration");
+
+        try {
+            logger.info("DBCP2_POOL BasicDataSource (http://commons.apache.org/proper/commons-dbcp/configuration.html)");
+
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName("org.postgresql.Driver");
+            dataSource.setUrl(url);
+            logger.info("url: " + url);
+            dataSource.setUsername(login);
+            dataSource.setPassword(password);
+            if (setMaxPreparedStatements != null){
+                dataSource.setMaxOpenPreparedStatements(setMaxPreparedStatements);
+                logger.info("setMaxOpenPreparedStatements: "+setMaxPreparedStatements);
+            }
+            if (setPoolPreparedStatements != null){
+                dataSource.setPoolPreparedStatements(setPoolPreparedStatements);
+                logger.info("setPoolPreparedStatements: "+setPoolPreparedStatements);
+            }
+
+            dataSource.setMaxTotal(max_connection);
+            dataSource.setMaxWaitMillis(waitMs);
+
+            if (max_idle != null){
+                dataSource.setMaxIdle(max_idle);
+                logger.info("Pool max idle: "+max_idle);
+            }
+
+            if (testOnBorrow != null && testOnBorrow) {
+                dataSource.setValidationQuery("SELECT 1");
+                dataSource.setTestOnReturn(true);
+                dataSource.setTestWhileIdle(true);
+                dataSource.setTestOnBorrow(true);
+                logger.info("Pool setDefaultTestOnBorrow: "+testOnBorrow);
+            }
+//            dataSource.setDataSourceName("ecis-"+url); //JNDI
+
+            if (max_active != null) {
+                logger.info("Pool max active: "+max_active);
+                dataSource.setMaxTotal(max_active);
+            }
+
+            if (removeAbandonnned != null) {
+                logger.info("setRemoveAbandonedOnBorrow: "+removeAbandonnned);
+                dataSource.setRemoveAbandonedOnBorrow(removeAbandonnned);
+            }
+
+            if (removeAbandonnnedTimeout != null) {
+                logger.info("removeAbandonnnedTimeout: "+removeAbandonnnedTimeout);
+                dataSource.setRemoveAbandonedTimeout(removeAbandonnnedTimeout);
+            }
+
+            if (logAbandoned != null) {
+                logger.info("logAbandoned: "+logAbandoned);
+                dataSource.setLogAbandoned(logAbandoned);
+            }
+
+            if (initialConnections != null) {
+                logger.info("setInitialSize (initialConnections): "+initialConnections);
+                dataSource.setInitialSize(initialConnections);
+            }
+
+            this.context = DSL.using(dataSource, dialect);
+
+            logger.info("Pool max_connections: " + max_connection);
+            logger.info("Pool max_wait_millisec: " + waitMs);
+            logger.info("");
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("DBCP2_POOL: Exception occurred while connecting:"+e);
+        }
+    }
+
+
+    private void setDBCP2SharedDataSourceParameters(Map<String, Object> properties) throws Exception {
+        SQLDialect dialect = SQLDialect.valueOf((String)properties.get(I_DomainAccess.KEY_DIALECT));
+        String url = (String)properties.get(I_DomainAccess.KEY_URL);
+        String login = (String)properties.get(I_DomainAccess.KEY_LOGIN);
+        String password = (String)properties.get(I_DomainAccess.KEY_PASSWORD);
+//        String database = (String)properties.get(I_DomainAccess.KEY_DATABASE);
+////        String schema = (String)properties.get(I_DomainAccess.KEY_SCHEMA);
+        Integer max_connection = 10;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION)))
+            max_connection = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
+        Long waitMs = 50L;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_WAIT_MS)))
+            waitMs = Long.parseLong((String) properties.get(I_DomainAccess.KEY_WAIT_MS));
+
+        //more optional parameters
+        Integer max_idle = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_IDLE)))
+            max_idle = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_IDLE));
+        Integer max_active = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_ACTIVE)))
+            max_active = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_ACTIVE));
+        Boolean testOnBorrow = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_TEST_ON_BORROW)))
+            testOnBorrow = Boolean.parseBoolean((String) properties.get(I_DomainAccess.KEY_TEST_ON_BORROW));
+        Boolean setPoolPreparedStatements = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS)))
+            setPoolPreparedStatements = Boolean.parseBoolean((String)properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS));
+        Integer setMaxPreparedStatements = null;
+        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS)))
+            setMaxPreparedStatements = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS));
+
 //        Boolean removeAbandonnned = null;
 //        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED)))
 //            removeAbandonnned = Boolean.getBoolean((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED));
@@ -255,8 +379,12 @@ public abstract class DataAccess implements I_DomainAccess {
                 logger.info("Pool max idle: "+max_idle);
             }
 
-            if (testOnBorrow != null && testOnBorrow)
+            if (testOnBorrow != null && testOnBorrow) {
                 dataSource.setValidationQuery("SELECT 1");
+                dataSource.setDefaultTestOnReturn(true);
+                dataSource.setDefaultTestWhileIdle(true);
+                dataSource.setDefaultTestOnBorrow(true);
+            }
 //            dataSource.setDataSourceName("ecis-"+url); //JNDI
             if (testOnBorrow != null) {
                 logger.info("Pool setDefaultTestOnBorrow: "+testOnBorrow);

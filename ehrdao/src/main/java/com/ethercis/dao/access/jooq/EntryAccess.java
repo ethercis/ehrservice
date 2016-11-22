@@ -27,7 +27,6 @@ import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.jooq.*;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
@@ -44,9 +43,6 @@ import org.postgresql.util.PGobject;
 
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.ethercis.jooq.pg.Tables.*;
 
@@ -277,6 +273,57 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         return content;
     }
 
+    public static List<I_EntryAccess> retrieveInstanceInComposition(I_DomainAccess domainAccess, Result<?> records) throws Exception {
+
+//        Result<EntryRecord> entryRecords = domainAccess.getContext().selectFrom(ENTRY).where(ENTRY.COMPOSITION_ID.eq(compositionAccess.getId())).fetch();
+
+        //build the list of parameters to recreate the composition
+        Map<SystemValue, Object> values = new HashMap<>();
+        values.put(SystemValue.COMPOSER, I_PartyIdentifiedComposerAccess.retrievePartyIdentified(records));
+        I_ContextAccess contextAccess = I_ContextAccess.retrieveInstance(domainAccess, records);
+        values.put(SystemValue.CONTEXT, contextAccess.mapRmEventContext(records));
+        values.put(SystemValue.LANGUAGE, I_RmBinding.makeLanguageCodePhrase((String)records.getValue(0, I_CompositionAccess.F_LANGUAGE)));
+//        String territory2letters = domainAccess.getContext().fetchOne(TERRITORY, TERRITORY.CODE.eq(compositionAccess.getTerritoryCode())).getTwoletter();
+        values.put(SystemValue.TERRITORY, I_RmBinding.makeTerritoryCodePhrase((String)records.getValue(0, I_CompositionAccess.F_TERRITORY_CODE)));
+
+        List<I_EntryAccess> content = new ArrayList<>();
+
+        try {
+            EntryAccess entryAccess = new EntryAccess(domainAccess);
+
+            for (Record record: records){
+                //set the record UID in the composition
+                //set the current version number as the count of historical record + 1
+//                Integer version = I_CompositionAccess.getLastVersionNumber(domainAccess, compositionAccess.getId());
+                values.put(SystemValue.UID,
+                        new ObjectVersionID(record.getValue(ENTRY.COMPOSITION_ID.getName()).toString()
+                                ,domainAccess.getServerNodeId()
+                                , record.getValue(I_CompositionAccess.F_VERSION).toString()));
+
+                I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(values, domainAccess.getKnowledgeManager(), record.getValue(I_CompositionAccess.F_ENTRY_TEMPLATE, String.class));
+//                EntryAccess entry = new EntryAccess();
+//                entryAccess.entryRecord = record;
+                entryAccess.composition = contentBuilder.buildCompositionFromJson(((PGobject) record.getValue(I_CompositionAccess.F_ENTRY)).getValue());
+                entryAccess.entryRecord = domainAccess.getContext().newRecord(ENTRY);
+                entryAccess.entryRecord.setTemplateId(record.getValue(I_CompositionAccess.F_ENTRY_TEMPLATE, String.class));
+                entryAccess.entryRecord.setCompositionId(record.getValue(ENTRY.COMPOSITION_ID.getName(), UUID.class));
+
+                if (record.getValue(I_CompositionAccess.F_CONTEXT_OTHER_CONTEXT) != null)
+                    contentBuilder.bindOtherContextFromJson(entryAccess.composition, ((PGobject)record.getValue(I_CompositionAccess.F_CONTEXT_OTHER_CONTEXT)).getValue());
+
+                content.add(entryAccess);
+//                entry.committed = true;
+            }
+        }
+        catch (Exception e){
+            log.error("DB inconsistency:"+e);
+            throw new IllegalArgumentException("DB inconsistency:"+e);
+        }
+
+        return content;
+    }
+
+
     public static List<I_EntryAccess> retrieveInstanceInCompositionVersion(I_DomainAccess domainAccess, I_CompositionAccess compositionHistoryAccess, int version) throws Exception {
 
         Result<EntryHistoryRecord> entryHistoryRecords = domainAccess.getContext().
@@ -369,6 +416,43 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         //ignore the temporal field since it is maintained by an external trigger!
         entryRecord.changed(ENTRY.SYS_PERIOD, false);
 
+        UpdateQuery<?> updateQuery = context.updateQuery(ENTRY);
+        updateQuery.addValue(ENTRY.COMPOSITION_ID, getCompositionId());
+        updateQuery.addValue(ENTRY.SEQUENCE, DSL.field(DSL.val(getSequence())));
+        updateQuery.addValue(ENTRY.TEMPLATE_ID, DSL.field(DSL.val(getTemplateId())));
+
+        updateQuery.addValue(ENTRY.ITEM_TYPE, DSL.field(DSL.val(EntryType.valueOf(getItemType()))));
+        updateQuery.addValue(ENTRY.ARCHETYPE_ID, DSL.field(DSL.val(getArchetypeId())));
+        updateQuery.addValue(ENTRY.CATEGORY, DSL.field(DSL.val(getCategory())));
+        updateQuery.addValue(ENTRY.ENTRY_, (Object) DSL.field(DSL.val(getEntryJson())+"::jsonb"));
+        updateQuery.addValue(ENTRY.SYS_TRANSACTION, DSL.field(DSL.val(transactionTime)));
+        updateQuery.addConditions(ENTRY.ID.eq(getId()));
+
+
+        log.debug("Update done...");
+
+        if (containmentAccess != null) {
+            containmentAccess.setCompositionId(entryRecord.getCompositionId());
+            containmentAccess.update();
+        }
+
+        Boolean result =  updateQuery.execute() > 0;
+
+        return result;
+    }
+
+    @Deprecated
+    public Boolean update_deprecated(Timestamp transactionTime, boolean force) throws Exception {
+
+        log.debug("updating entry with force flag:"+force+" and changed flag:"+entryRecord.changed());
+        if (!(force || entryRecord.changed())) {
+            log.debug("No updateComposition took place, returning...");
+            return false;
+        }
+
+        //ignore the temporal field since it is maintained by an external trigger!
+        entryRecord.changed(ENTRY.SYS_PERIOD, false);
+
         //for the time being use a straight SQL with typecast...
         String sql = "UPDATE ehr.entry SET sequence = ?, " +
                 "composition_id = ?, " +
@@ -399,7 +483,11 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
             containmentAccess.update();
         }
 
-        return updateStatement.execute();
+        Boolean result =  updateStatement.execute();
+
+        connection.close();
+
+        return result;
     }
 
     @Override
@@ -494,15 +582,29 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         return new AsyncSqlQuery(domainAccess, queryString).fetch();
     }
 
-    public static Map<String, Object> queryAqlJson(I_DomainAccess domainAccess, String queryString) throws Exception {
-        List<Record> records;
-        try {
-            AqlQueryHandler queryHandler = new AqlQueryHandler(domainAccess);
-            records = queryHandler.process(queryString);
-        } catch (DataAccessException e) {
-            String message = e.getCause().getMessage();
-            throw new IllegalArgumentException("AQL exception:"+message.replaceAll("\n", ","));
+    public static Map<String, Object> queryAqlJson(I_DomainAccess domainAccess, String queryString, boolean explain) throws Exception {
+        List<Record> records = null;
+        List details = null;
 
+        if (!explain) {
+            try {
+                AqlQueryHandler queryHandler = new AqlQueryHandler(domainAccess);
+                records = queryHandler.process(queryString);
+            } catch (DataAccessException e) {
+                String message = e.getCause().getMessage();
+                throw new IllegalArgumentException("AQL exception:" + message.replaceAll("\n", ","));
+
+            }
+        }
+        else {
+            try {
+                AqlQueryHandler queryHandler = new AqlQueryHandler(domainAccess);
+                details = queryHandler.explain(queryString);
+            } catch (DataAccessException e) {
+                String message = e.getCause().getMessage();
+                throw new IllegalArgumentException("AQL exception:" + message.replaceAll("\n", ","));
+
+            }
         }
 
         Map<String, Object> resultMap = new HashMap<>();
@@ -510,19 +612,23 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         resultMap.put("executedAQL", queryString);
 
         List<Map> resultList = new ArrayList<>();
+        if (!explain) {
+            if (records != null) {
+                for (Record record : records) {
+                    Map<String, Object> fieldMap = new HashMap<>();
+                    for (Field field : record.fields()) {
+                        fieldMap.put(field.getName(), record.getValue(field));
+                    }
 
-        if (records != null) {
-            for (Record record : records) {
-                Map<String, Object> fieldMap = new HashMap<>();
-                for (Field field : record.fields()) {
-                    fieldMap.put(field.getName(), record.getValue(field));
+                    resultList.add(fieldMap);
                 }
-
-                resultList.add(fieldMap);
             }
-        }
 
-        resultMap.put("resultSet", resultList);
+            resultMap.put("resultSet", resultList);
+        }
+        else {
+            resultMap.put("explain", details);
+        }
 
         return resultMap;
     }

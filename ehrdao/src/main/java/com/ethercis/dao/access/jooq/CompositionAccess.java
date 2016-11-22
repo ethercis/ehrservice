@@ -26,8 +26,8 @@ import com.ethercis.ehr.util.EhrException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
-import org.jooq.DSLContext;
-import org.jooq.Record;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.common.generic.PartyProxy;
 import org.openehr.rm.composition.Composition;
@@ -169,6 +169,10 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 
     @Override
     public UUID getContextId() {
+        if (compositionRecord == null)
+            return null;
+        if (compositionRecord.getId() == null)
+            return null;
         return context.fetchOne(EVENT_CONTEXT, EVENT_CONTEXT.COMPOSITION_ID.eq(compositionRecord.getId())).getId();
     }
 
@@ -235,6 +239,14 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
     @Override
     public void setCompositionRecord(CompositionRecord record){
         this.compositionRecord = record;
+    }
+
+    @Override
+    public void setCompositionRecord(Result<?> records){
+        compositionRecord = context.newRecord(compositionRef);
+        compositionRecord.setId((UUID) records.getValue(0, F_COMPOSITION_ID));
+        compositionRecord.setLanguage((String)records.getValue(0, F_LANGUAGE));
+//        compositionRecord.setTerritory((Integer)records.getValue(0, F_TERRITORY_CODE));
     }
 
     @Override
@@ -477,6 +489,8 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
             compositionHistoryAccess.setContributionAccess(contributionAccess);
         }
 
+        connection.close();
+
         return compositionHistoryAccess;
     }
 
@@ -522,6 +536,94 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 
         return compositionAccess;
     }
+
+    /**
+     * use faster SQL query (one query)
+     * @param domainAccess
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public static I_CompositionAccess retrieveInstance2(I_DomainAccess domainAccess, UUID id) throws Exception {
+        I_CompositionAccess compositionAccess = new CompositionAccess(domainAccess);
+
+        SelectQuery<?> selectQuery = domainAccess.getContext().selectQuery();
+
+        selectQuery.addSelect(
+                ENTRY.COMPOSITION_ID.as(F_COMPOSITION_ID),
+                        DSL.field("1 + COALESCE(("+
+                                  DSL.selectCount()
+                                        .from(COMPOSITION_HISTORY)
+                                        .where(COMPOSITION_HISTORY.ID.eq(compositionRef.field(COMPOSITION.ID.getName(), UUID.class)))
+                                        .groupBy(COMPOSITION_HISTORY.ID)
+                                   +"), 0)").as(F_VERSION),
+
+                ENTRY.ENTRY_.as(F_ENTRY),
+                ENTRY.TEMPLATE_ID.as(F_ENTRY_TEMPLATE),
+                compositionRef.field(COMPOSITION.LANGUAGE.getName()).as(F_LANGUAGE),
+                territoryRef.field(TERRITORY.TWOLETTER.getName()).as(F_TERRITORY_CODE),
+                composerRef.field(PARTY_IDENTIFIED.NAME.getName()).as(F_COMPOSER_NAME),
+                composerRef.field(PARTY_IDENTIFIED.PARTY_REF_SCHEME.getName()).as(F_COMPOSER_REF_SCHEME),
+                composerRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE.getName()).as(F_COMPOSER_REF_NAMESPACE),
+                composerRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE.getName()).as(F_COMPOSER_REF_VALUE),
+                composerRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE.getName()).as(F_COMPOSER_REF_TYPE),
+                composerId.field(IDENTIFIER.ID_VALUE.getName()).as(F_COMPOSER_ID_VALUE),
+                composerId.field(IDENTIFIER.ISSUER.getName()).as(F_COMPOSER_ID_ISSUER),
+                composerId.field(IDENTIFIER.TYPE_NAME.getName()).as(F_COMPOSER_ID_TYPE_NAME),
+                eventContextRef.field(EVENT_CONTEXT.START_TIME.getName()).as(F_CONTEXT_START_TIME),
+                eventContextRef.field(EVENT_CONTEXT.START_TIME_TZID.getName()).as(F_CONTEXT_START_TIME_TZID),
+                eventContextRef.field(EVENT_CONTEXT.END_TIME.getName()).as(F_CONTEXT_END_TIME),
+                eventContextRef.field(EVENT_CONTEXT.END_TIME_TZID.getName()).as(F_CONTEXT_END_TIME_TZID),
+                eventContextRef.field(EVENT_CONTEXT.LOCATION.getName()).as(F_CONTEXT_LOCATION),
+                eventContextRef.field(EVENT_CONTEXT.OTHER_CONTEXT.getName()).as(F_CONTEXT_OTHER_CONTEXT),
+                conceptRef.field(CONCEPT.CONCEPTID.getName()).as(F_CONCEPT_ID),
+                conceptRef.field(CONCEPT.DESCRIPTION.getName()).as(F_CONCEPT_DESCRIPTION),
+                facilityRef.field(PARTY_IDENTIFIED.NAME.getName()).as(F_FACILITY_NAME),
+                facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_SCHEME.getName()).as(F_FACILITY_REF_SCHEME),
+                facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE.getName()).as(F_FACILITY_REF_NAMESPACE),
+                facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE.getName()).as(F_FACILITY_REF_VALUE),
+                facilityRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE.getName()).as(F_FACILITY_REF_TYPE),
+                facilityId.field(IDENTIFIER.ID_VALUE.getName()).as(F_FACILITY_ID_VALUE),
+                facilityId.field(IDENTIFIER.ISSUER.getName()).as(F_FACILITY_ID_ISSUER),
+                facilityId.field(IDENTIFIER.TYPE_NAME.getName()).as(F_FACILITY_ID_TYPE_NAME),
+                participationRef.field(PARTICIPATION.FUNCTION.getName()).as(F_PARTICIPATION_FUNCTION),
+                participationRef.field(PARTICIPATION.MODE.getName()).as(F_PARTICIPATION_MODE),
+                participationRef.field(PARTICIPATION.START_TIME.getName()).as(F_PARTICIPATION_START_TIME),
+                participationRef.field(PARTICIPATION.START_TIME_TZID.getName()).as(F_PARTICIPATION_START_TIME_TZID),
+                performerRef.field(PARTY_IDENTIFIED.NAME.getName()).as(F_PERFORMER_NAME),
+                performerRef.field(PARTY_IDENTIFIED.PARTY_REF_SCHEME.getName()).as(F_PERFORMER_REF_SCHEME),
+                performerRef.field(PARTY_IDENTIFIED.PARTY_REF_NAMESPACE.getName()).as(F_PERFORMER_REF_NAMESPACE),
+                performerRef.field(PARTY_IDENTIFIED.PARTY_REF_VALUE.getName()).as(F_PERFORMER_REF_VALUE),
+                performerRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE.getName()).as(F_PERFORMER_REF_TYPE)
+        );
+        selectQuery.addFrom(ENTRY);
+        selectQuery.addJoin(compositionRef,compositionRef.field(COMPOSITION.ID.getName(), UUID.class).eq(ENTRY.COMPOSITION_ID));
+        selectQuery.addJoin(composerRef,composerRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class).eq(compositionRef.field(COMPOSITION.COMPOSER.getName(), UUID.class)));
+        selectQuery.addJoin(composerId, JoinType.LEFT_OUTER_JOIN, composerId.field(IDENTIFIER.PARTY.getName(), UUID.class).eq(composerRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class)));
+        selectQuery.addJoin(eventContextRef,eventContextRef.field(EVENT_CONTEXT.COMPOSITION_ID.getName(), UUID.class).eq(ENTRY.COMPOSITION_ID));
+        selectQuery.addJoin(facilityRef, JoinType.LEFT_OUTER_JOIN, facilityRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.FACILITY.getName(), UUID.class)));
+        selectQuery.addJoin(facilityId, JoinType.LEFT_OUTER_JOIN, facilityId.field(IDENTIFIER.PARTY.getName(), UUID.class).eq(facilityRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class)));
+        selectQuery.addJoin(participationRef, JoinType.LEFT_OUTER_JOIN, participationRef.field(PARTICIPATION.EVENT_CONTEXT.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.ID.getName(), UUID.class)));
+        selectQuery.addJoin(performerRef,JoinType.LEFT_OUTER_JOIN, performerRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class).eq(participationRef.field(PARTICIPATION.PERFORMER.getName(), UUID.class)));
+        selectQuery.addJoin(territoryRef, territoryRef.field(TERRITORY.CODE.getName(), Integer.class).eq(compositionRef.field(COMPOSITION.TERRITORY)));
+        selectQuery.addJoin(conceptRef, conceptRef.field(CONCEPT.ID.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.SETTING)));
+        selectQuery.addConditions(ENTRY.COMPOSITION_ID.eq(id));
+
+        Result<?> records = selectQuery.fetch();
+
+        if (records.size() == 0)
+            return null;
+
+        compositionAccess.setCompositionRecord(records);
+        compositionAccess.setContent(I_EntryAccess.retrieveInstanceInComposition(domainAccess, records));
+//        compositionAccess.setCommitted(true);
+        //retrieve the corresponding contribution
+        I_ContributionAccess contributionAccess = I_ContributionAccess.retrieveInstance(domainAccess, compositionAccess.getContributionVersionId());
+        compositionAccess.setContributionAccess(contributionAccess);
+
+        return compositionAccess;
+    }
+
 
     public static Map<UUID, I_CompositionAccess> retrieveCompositionsInContributionVersion(I_DomainAccess domainAccess, UUID contribution, Integer versionNumber){
         Map<UUID, I_CompositionAccess> compositions = new HashMap<>();

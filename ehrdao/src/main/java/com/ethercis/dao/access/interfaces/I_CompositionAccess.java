@@ -18,11 +18,14 @@ package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.CompositionAccess;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.jooq.pg.tables.records.CompositionRecord;
-import com.ethercis.jooq.pg.tables.records.TerritoryRecord;
+import com.ethercis.jooq.pg.tables.EventContext;
+import com.ethercis.jooq.pg.tables.Identifier;
+import com.ethercis.jooq.pg.tables.Participation;
+import com.ethercis.jooq.pg.tables.records.*;
 import com.ethercis.ehr.util.EhrException;
 import org.joda.time.DateTime;
 import org.jooq.Result;
+import org.jooq.Table;
 import org.openehr.rm.composition.Composition;
 
 import java.sql.Timestamp;
@@ -30,14 +33,83 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.ethercis.jooq.pg.Tables.LANGUAGE;
-import static com.ethercis.jooq.pg.Tables.TERRITORY;
+import static com.ethercis.jooq.pg.Tables.*;
+import static com.ethercis.jooq.pg.Tables.EHR;
+import static com.ethercis.jooq.pg.Tables.PARTY_IDENTIFIED;
 
 /**
  * Composition Access Layer Interface<br>
  * Interface CRUD and specific methods
  */
 public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, UUID> {
+
+    //definitions of aliases used in joins
+    String COMPOSITION_JOIN = "composition_join";
+    String COMPOSER_JOIN = "composer_ref";
+    String COMPOSER_ID = "composer_id";
+    String FACILITY_JOIN = "facility_ref";
+    String FACILITY_ID = "facility_id";
+    String EVENT_CONTEXT_JOIN = "event_context_ref";
+    String PARTICIPATION_JOIN = "participation_ref";
+    String PERFORMER_JOIN = "performer_ref";
+    String TERRITORY_JOIN = "territory_ref";
+    String CONCEPT_JOIN = "concept_ref";
+
+    String F_VERSION = "version";
+    String F_COMPOSITION_ID = "composition_id";
+    String F_ENTRY = "jsonb_entry";
+    String F_ENTRY_TEMPLATE = "template_id";
+    String F_LANGUAGE = "language";
+    String F_TERRITORY = "territory";
+    String F_TERRITORY_CODE = "territory_code";
+    String F_COMPOSER_NAME = "composer_name";
+    String F_COMPOSER_REF_VALUE = "composer_ref_value";
+    String F_COMPOSER_REF_SCHEME = "composer_ref_scheme";
+    String F_COMPOSER_REF_NAMESPACE = "composer_ref_namespace";
+    String F_COMPOSER_REF_TYPE = "composer_ref_type";
+    String F_COMPOSER_ID_VALUE = "composer_id_value";
+    String F_COMPOSER_ID_ISSUER = "composer_id_issuer";
+    String F_COMPOSER_ID_TYPE_NAME = "composer_id_type_name";
+    String F_CONTEXT_START_TIME = "context_start_time";
+    String F_CONTEXT_START_TIME_TZID = "context_start_time_tzid";
+    String F_CONTEXT_END_TIME = "context_end_time";
+    String F_CONTEXT_END_TIME_TZID = "context_end_time_tzid";
+    String F_CONTEXT_LOCATION = "context_location";
+    String F_CONTEXT_OTHER_CONTEXT = "context_other_context";
+    String F_FACILITY_NAME = "facility_name";
+    String F_FACILITY_REF_VALUE = "facility_ref_value";
+    String F_FACILITY_REF_SCHEME = "facility_ref_scheme";
+    String F_FACILITY_REF_NAMESPACE = "facility_ref_namespace";
+    String F_FACILITY_REF_TYPE = "facility_ref_type";
+    String F_FACILITY_ID_VALUE = "facility_id_value";
+    String F_FACILITY_ID_ISSUER = "facility_id_issuer";
+    String F_FACILITY_ID_TYPE_NAME = "facility_id_type_name";
+    String F_PARTICIPATION_FUNCTION = "participation_function";
+    String F_PARTICIPATION_MODE = "participation_mode";
+    String F_PARTICIPATION_START_TIME = "participation_start_time";
+    String F_PARTICIPATION_START_TIME_TZID = "participation_start_time_tzid";
+    String F_PERFORMER_NAME = "performer_name";
+    String F_PERFORMER_REF_VALUE = "performer_ref_value";
+    String F_PERFORMER_REF_SCHEME = "performer_ref_scheme";
+    String F_PERFORMER_REF_NAMESPACE = "performer_ref_namespace";
+    String F_PERFORMER_REF_TYPE = "performer_ref_type";
+    String F_PERFORMER_ID_VALUE = "performer_id_value";
+    String F_PERFORMER_ID_ISSUER = "performer_id_issuer";
+    String F_PERFORMER_ID_TYPE_NAME = "performer_id_type_name";
+    String F_CONCEPT_ID = "concept_id";
+    String F_CONCEPT_DESCRIPTION = "concept_description";
+    
+
+    Table<CompositionRecord> compositionRef = COMPOSITION.as(COMPOSITION_JOIN);
+    Table<PartyIdentifiedRecord> composerRef = PARTY_IDENTIFIED.as(COMPOSER_JOIN);
+    Table<IdentifierRecord> composerId = IDENTIFIER.as(COMPOSER_ID);
+    Table<PartyIdentifiedRecord> facilityRef = PARTY_IDENTIFIED.as(FACILITY_JOIN);
+    Table<IdentifierRecord> facilityId = IDENTIFIER.as(FACILITY_ID);
+    Table<EventContextRecord> eventContextRef = EVENT_CONTEXT.as(EVENT_CONTEXT_JOIN);
+    Table<ParticipationRecord> participationRef = PARTICIPATION.as(PARTICIPATION_JOIN);
+    Table<PartyIdentifiedRecord> performerRef = PARTY_IDENTIFIED.as(PERFORMER_JOIN);
+    Table<TerritoryRecord> territoryRef = TERRITORY.as(TERRITORY_JOIN);
+    Table<ConceptRecord> conceptRef = CONCEPT.as(CONCEPT_JOIN);
 
     /**
      * Get a new Composition Access Instance
@@ -100,6 +172,10 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
      */
     static I_CompositionAccess retrieveInstance(I_DomainAccess domainAccess, UUID id) throws Exception {
         return CompositionAccess.retrieveInstance(domainAccess, id);
+    }
+
+    static I_CompositionAccess retrieveInstance2(I_DomainAccess domainAccess, UUID id) throws Exception {
+        return CompositionAccess.retrieveInstance2(domainAccess, id);
     }
 
     /**
@@ -271,6 +347,8 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
     void setContributionId(UUID contributionVersionId);
 
     void setCompositionRecord(CompositionRecord record);
+
+    void setCompositionRecord(Result<?> records);
 
     void setComposition(Composition composition);
 

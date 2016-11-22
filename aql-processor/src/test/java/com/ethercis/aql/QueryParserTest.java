@@ -405,6 +405,23 @@ public class QueryParserTest {
                 "and e/ehr_status/subject/external_ref/id/value  = '9999999000' " +
                 "and e/ehr_status/subject/external_ref/namespace = 'uk.nhs.nhs_number' ";
 
+
+        //use to test array (itemlist) handling
+        query = "select" +
+                "   a/uid/value as uid,  " +
+                "   a/context/start_time/value as date_created,  " +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as" +
+                "              test_name,  " +
+                "               a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken,  " +
+                "               c/items[at0002]/items[at0001]/name as what,  " +
+                "               c/items[at0002]/items[at0001]/value/magnitude as value,  " +
+                "               c/items[at0002]/items[at0001]/value/units as units  from EHR e  " +
+                "               contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]  " +
+                "               contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]  " +
+                "               contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0] where  " +
+                "                   a/name/value='Laboratory test report'  " +
+                "                   AND e/ehr_status/subject/external_ref/id/value = '9999999000'" +
+                "                   and c/items[at0002]/items[at0001]/name='Sodium'";
 //
 ////                " d/items[at0057]/items[at0064]/items[at0065]/value/value as medication " +
 //
@@ -424,7 +441,7 @@ public class QueryParserTest {
 //                " contains INSTRUCTION a_i[openEHR-EHR-INSTRUCTION.medication.v1] " +
 //                " contains DESCRIPTION d[openEHR-EHR-ITEM_TREE.medication_mod.v1]" +
 //                " orderby start_time DESC ";
-////
+//
 //
 //        query = "select " +
 //                "e/ehr_id/value as ehr_id, " +
@@ -485,13 +502,28 @@ public class QueryParserTest {
 //                "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude > 130\n" +
 //                "                  ORDERBY date_created ASC ";
 
+//        query = "select a/uid/value as uid, \n" +
+//                "a/composer/name as author, \n" +
+//                "a/context/start_time/value as date_created, \n" +
+//                "b_a/data[at0001]/items[at0002]/value/value as cause, \n" +
+//                "b_a/data[at0001]/items[at0002]/value/defining_code/code_string as cause_code, \n" +
+//                "b_a/data[at0001]/items[at0002]/value/defining_code/terminology_id/value as cause_terminology, \n" +
+//                "b_a/data[at0001]/items[at0009]/items[at0011]/value/value as reaction, \n" +
+//                "b_a/data[at0001]/items[at0009]/items[at0011]/value/defining_code/codeString as reaction_code, \n" +
+//                "b_a/data[at0001]/items[at0009]/items[at0011]/value/terminology_id/value as reaction_terminology \n" +
+//                "from EHR e [ehr_id/value = 'bb872277-40c4-44fb-8691-530be31e1ee9'] \n" +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1]\n" +
+//                " contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]\n" +
+//                " where a/name/value='Adverse reaction list'";
+
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);
 
         queryParser.pass1();
         queryParser.pass2();
 
-        List<Record> records = queryProcessor.execute(queryParser, serverNodeId);
+//        List<Record> records = (List<Record>)queryProcessor.execute(queryParser, serverNodeId, false);
+        String records = (String)queryProcessor.execute(queryParser, serverNodeId, true);
 
         if (records != null && !records.isEmpty()){
             System.out.println(records);

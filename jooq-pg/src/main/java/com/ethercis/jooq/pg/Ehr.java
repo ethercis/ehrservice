@@ -24,10 +24,11 @@ import com.ethercis.jooq.pg.tables.Language;
 import com.ethercis.jooq.pg.tables.Participation;
 import com.ethercis.jooq.pg.tables.ParticipationHistory;
 import com.ethercis.jooq.pg.tables.PartyIdentified;
+import com.ethercis.jooq.pg.tables.SessionLog;
 import com.ethercis.jooq.pg.tables.Status;
-import com.ethercis.jooq.pg.tables.StatusDetails;
 import com.ethercis.jooq.pg.tables.StatusHistory;
 import com.ethercis.jooq.pg.tables.System;
+import com.ethercis.jooq.pg.tables.TemplateMeta;
 import com.ethercis.jooq.pg.tables.TerminologyProvider;
 import com.ethercis.jooq.pg.tables.Territory;
 
@@ -54,7 +55,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Ehr extends SchemaImpl {
 
-	private static final long serialVersionUID = 1535427257;
+	private static final long serialVersionUID = -1127169427;
 
 	/**
 	 * The reference instance of <code>ehr</code>
@@ -98,10 +99,11 @@ public class Ehr extends SchemaImpl {
 			Participation.PARTICIPATION,
 			ParticipationHistory.PARTICIPATION_HISTORY,
 			PartyIdentified.PARTY_IDENTIFIED,
+			SessionLog.SESSION_LOG,
 			Status.STATUS,
-			StatusDetails.STATUS_DETAILS,
 			StatusHistory.STATUS_HISTORY,
 			System.SYSTEM,
+			TemplateMeta.TEMPLATE_META,
 			TerminologyProvider.TERMINOLOGY_PROVIDER,
 			Territory.TERRITORY);
 	}

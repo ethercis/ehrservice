@@ -34,7 +34,7 @@ import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * map an AQL datavalue expression into a SQL field
- * TODO: used external representation to make it more flexible...
+ *
  * Created by christian on 5/6/2016.
  */
 public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImpl, I_JoinBinder {
