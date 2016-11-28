@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ecis-ehrservice">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../eCIS-LIB/applib/ecis-ehrservice.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

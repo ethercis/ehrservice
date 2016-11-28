@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="xmlbeans-2.5.0">
+    <CLASSES>
+      <root url="jar://$ETH_SYSLIB$/xmlbeans-2.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

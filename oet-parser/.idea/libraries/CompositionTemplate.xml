@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="CompositionTemplate">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Dropbox/eCIS_Development/eCIS-LIB/CompositionTemplate.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Dropbox/eCIS_Development/eCIS-LIB/composition_xml.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

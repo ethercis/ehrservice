@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ecis-openehr">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Dropbox/eCIS_Development/eCIS-LIB/applib/ecis-openehr.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

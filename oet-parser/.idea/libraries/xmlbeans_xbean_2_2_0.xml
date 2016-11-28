@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="xmlbeans:xbean:2.2.0" type="repository">
+    <properties maven-id="xmlbeans:xbean:2.2.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/xmlbeans/xbean/2.2.0/xbean-2.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
