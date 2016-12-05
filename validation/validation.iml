@@ -39,7 +39,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.2.0" level="application" />
-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit4">
         <CLASSES>

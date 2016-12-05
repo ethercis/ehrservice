@@ -90,7 +90,7 @@ public class MigrateEntry {
         I_CompositionSerializer serializer = I_CompositionSerializer.getInstance();
         return serializer.dbEncode(composition);
 //        CompositionSerializer inspector = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-//        Map<String, Object> retMap = inspector.process(composition);
+//        Map<String, Object> retMap = inspector.invalidateContent(composition);
 //        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
 ////        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
 //        //choose this option to ease reading and debugging... but not for storing into DB

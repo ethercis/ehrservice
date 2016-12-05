@@ -81,8 +81,10 @@ public interface I_ContentBuilder {
     static I_ContentBuilder getInstance(Map<SystemValue, Object> values, I_KnowledgeCache knowledgeCache, String templateId) throws Exception {
         Object template = knowledgeCache.retrieveTemplate(templateId);
 
-        if (template == null)
-            throw new IllegalArgumentException("Could not retrieve a template matching id:"+templateId);
+        if (template == null) {
+            //assume dummy content builder used for update etc.
+            return new OptContentBuilder((OPERATIONALTEMPLATE)template, values, knowledgeCache, templateId);
+        }
 
         if (template != null){
             if (template instanceof OPERATIONALTEMPLATE)

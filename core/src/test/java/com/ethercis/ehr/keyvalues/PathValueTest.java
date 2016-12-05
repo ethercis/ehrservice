@@ -1,7 +1,7 @@
 package com.ethercis.ehr.keyvalues;
 
-import com.ethercis.ehr.building.ContentBuilder;
 import com.ethercis.ehr.building.I_ContentBuilder;
+import com.ethercis.ehr.building.util.ContentHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.FieldUtil;
@@ -272,19 +272,26 @@ public class PathValueTest {
     public void testSerialize() throws Exception {
 //        String templateId = "COLNEC_history_of_past_illness.v0";
 //        String templateId = "COLNEC Medication";
-        String templateId = "COLNEC Care Plan.v1";
+//        String templateId = "COLNEC Care Plan.v1";
 //        String templateId = "Vital Signs Encounter (Composition)";
-//        String templateId = "COLNEC_Goal.v0";
+        String templateId = "COLNEC_Goal.v0";
+//        String templateId = "IDCR Problem List.v1";
         PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Vital Signs Encounter (Composition).raw.kvp.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_Goals.v0.kvp.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.kvp.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_history_of_past_illness.v0.fault.ecisflat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/beam_instruction_test.ecisflat.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC Care Plan.v1.post2.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC Care Plan.v1.post2.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.put.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/e8fe7d12-c1e7-46af-b9af-7a28be5a3bcf.put.json");
         Map<String, Object> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
         Composition composition = pathValue.assign(valuePairs);
         assertNotNull(composition);
+
+        ContentHelper compositionHelper = new ContentHelper();
+//        compositionHelper.invalidateContent(composition);
+
         //serialize this composition  for persistence
         I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
 //        I_CompositionSerializer compositionSerializer = I_CompositionSerializer.getInstance();

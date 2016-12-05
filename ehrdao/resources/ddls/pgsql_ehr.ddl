@@ -206,7 +206,7 @@ create table ehr.composition (
     in_contribution UUID references ehr.contribution(id) ON DELETE CASCADE , -- in contribution version
     active boolean default true, -- true if this composition is still valid (e.g. not replaced yet)
     is_persistent boolean default true,
-    language varchar(5) references ehr.language(code), -- pointer to the language codeset. Indicates what broad category this Composition is belogs to, e.g. �persistent� - of longitudinal validity, �event�, �process� etc.
+    language varchar(5) references ehr.language(code), -- pointer to the language codeset. Indicates what broad category this Composition is belogs to, e.g. �persistent� - of longitudinal validity, �event�, �invalidateContent� etc.
     territory int references ehr.territory(code), -- Name of territory in which this Composition was written. Coded fromBinder openEHR �countries� code set, which is an expression of the ISO 3166 standard.
     composer UUID not null references ehr.party_identified(id), -- points to the PARTY_PROXY who has created the composition
     sys_transaction TIMESTAMP NOT NULL,

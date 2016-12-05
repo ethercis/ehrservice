@@ -161,7 +161,12 @@ public class PathValue implements I_PathValue {
         //traverse the queue
 
         for (String path : keyValues.keySet()) {
-            String value = (String)keyValues.get(path);
+            String value;
+            try {
+                value = (String) keyValues.get(path);
+            }catch (Exception e){
+                throw new IllegalArgumentException("Value could not be interpreted, path:"+path+ ", found:"+keyValues.get(path));
+            }
 
             if (path.startsWith(CONTENT_TAG)) {
                 mapContent.put(path, value);

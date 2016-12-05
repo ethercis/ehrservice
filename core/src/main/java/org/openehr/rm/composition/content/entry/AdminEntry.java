@@ -36,7 +36,7 @@ import org.openehr.rm.support.terminology.TerminologyService;
 
 /**
  * Entry subtype for administrative information, i.e. information about setting up 
- * the clinical process, but not itself clinically relevant. Archetypes will define
+ * the clinical invalidateContent, but not itself clinically relevant. Archetypes will define
  * contained information
  * 
  * @author Yin Su Lim

@@ -380,7 +380,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 	}
 	/**
-	 * main entry method, process a composition.
+	 * main entry method, invalidateContent a composition.
 	 * @param composition
 	 * @return
 	 * @throws Exception
@@ -403,9 +403,11 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 		putObject(composition, ctree, getNodeTag(TAG_COMPOSITION, composition, ctree), ltree);
 		//store locally the tree root
-		String path = (String) ctree.keySet().toArray()[0];
-		treeRootArchetype = ItemStack.normalizeLabel(path);
-		treeRootClass = ItemStack.getLabelType(path);
+		if (ctree.size() > 0) {
+			String path = (String) ctree.keySet().toArray()[0];
+			treeRootArchetype = ItemStack.normalizeLabel(path);
+			treeRootClass = ItemStack.getLabelType(path);
+		}
 
 		return ctree;
 	}
@@ -441,7 +443,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	}
 
 	/**
-	 * main entry method, process an arbitrary entry (evaluation, observation, instruction, action)
+	 * main entry method, invalidateContent an arbitrary entry (evaluation, observation, instruction, action)
 	 * @param entry
 	 * @param entryTag
 	 * @return

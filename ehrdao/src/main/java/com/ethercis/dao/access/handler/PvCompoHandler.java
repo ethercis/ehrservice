@@ -18,6 +18,7 @@ package com.ethercis.dao.access.handler;
 
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.ehr.building.I_ContentBuilder;
+import com.ethercis.ehr.building.util.ContentHelper;
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.keyvalues.PathValue;
 import org.joda.time.DateTime;
@@ -96,6 +97,10 @@ public class PvCompoHandler extends PathValue implements I_CompositionMetaData {
 //            templateId = entryAccess.getTemplateId();
 //            Composition newComposition = build(global, content);
             Composition composition = entryAccess.getComposition();
+            if (contentBuilder == null){
+                contentBuilder = I_ContentBuilder.getInstance(knowledge, entryAccess.getTemplateId());
+            }
+            new ContentHelper().invalidateContent(composition);
             if (assignItemStructure(CONTENT_TAG, composition, keyValues)) {
                 changed = true;
                 entryAccess.setCompositionData(entryAccess.getTemplateId(), composition);

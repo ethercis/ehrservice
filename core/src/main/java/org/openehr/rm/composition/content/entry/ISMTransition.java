@@ -70,7 +70,7 @@ public final class ISMTransition extends RMObject {
 	}
 
 	/**
-	 * The step in the careflow process which occurred as part of generating
+	 * The step in the careflow invalidateContent which occurred as part of generating
 	 * this action, e.g. "dispense", "start_administration". This attribute 
 	 * represents the clinical label for the activity, as opposed to 
 	 * currentState which represents the state machine computable form.

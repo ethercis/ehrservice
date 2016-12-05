@@ -79,7 +79,7 @@ public class VBeanUtil {
 			Class<?> instrClazz = Class.forName(INSTRUMENT_PACKAGE +"."+clazzname+ INSTRUMENT_SUFFIX);
 			return instrClazz;
 		} catch (ClassNotFoundException e) {
-            log.warn("Could not process an instrument for class "+clazzname);
+            log.warn("Could not invalidateContent an instrument for class "+clazzname);
 			return null;
 		}
 	}
@@ -90,7 +90,7 @@ public class VBeanUtil {
 			Class<?> instrClazz = Class.forName(INSTRUMENT_PACKAGE +"."+clazzname+ INSTRUMENT_SUFFIX);
 			return instrClazz;
 		} catch (ClassNotFoundException e) {
-			log.warn("Could not process an instrument for class "+clazzname);
+			log.warn("Could not invalidateContent an instrument for class "+clazzname);
 			return null;
 		}
 	}

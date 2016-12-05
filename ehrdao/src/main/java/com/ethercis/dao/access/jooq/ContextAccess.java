@@ -278,7 +278,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
         updateQuery.addValue(EVENT_CONTEXT.LOCATION, DSL.field(DSL.val(eventContextRecord.getLocation())));
 //        Field jsonbOtherContext = DSL.field(EVENT_CONTEXT.OTHER_CONTEXT+"::jsonb");
         if (eventContextRecord.getOtherContext() != null)
-            updateQuery.addValue(EVENT_CONTEXT.OTHER_CONTEXT.cast(Object.class), (Object)DSL.field(DSL.val(eventContextRecord.getOtherContext())+"::jsonb"));
+            updateQuery.addValue(EVENT_CONTEXT.OTHER_CONTEXT, (Object) DSL.field(DSL.val(eventContextRecord.getOtherContext().toString())+"::jsonb"));
         updateQuery.addValue(EVENT_CONTEXT.SETTING, DSL.field(DSL.val(eventContextRecord.getSetting())));
         updateQuery.addValue(EVENT_CONTEXT.SYS_TRANSACTION, DSL.field(DSL.val(eventContextRecord.getSysTransaction())));
         updateQuery.addConditions(EVENT_CONTEXT.ID.eq(getId()));

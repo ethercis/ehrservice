@@ -26,7 +26,7 @@ public class DvProportionConstraintsTest {
         constraints = new DvProportionVConstraints(RMObjectBuilder.getInstance(), (DvProportion)testProportion.getAdaptee());
 //        properties.add(new CDvProportionItem(new Interval<Double>(new Double(0), new Double(100)), "mg"));
 
-        //TODO process where is the bloody CDvProportion class or create one!
+        //TODO invalidateContent where is the bloody CDvProportion class or create one!
         //@see https://github.com/openEHR/arch_ed-dotnet/blob/master/ArchetypeEditor/DataConstraints/ProportionConstraint.vb
 
 //        CObject numeratorChild = new CPrimitiveObject("/path", );

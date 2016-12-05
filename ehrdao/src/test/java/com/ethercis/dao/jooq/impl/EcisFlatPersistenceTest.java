@@ -256,7 +256,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         //serialize it
 
 //        CompositionSerializer compositionSerializer = new CompositionSerializer(CompositionSerializer.WalkerOutputMode.PATH);
-//        Map<String, Object> serialized = compositionSerializer.process(composition);
+//        Map<String, Object> serialized = compositionSerializer.invalidateContent(composition);
 //        String json = gson.toJson(serialized);
         I_CompositionSerializer serializer = I_CompositionSerializer.getInstance();
         System.out.println(serializer.dbEncode(composition));

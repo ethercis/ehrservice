@@ -462,7 +462,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         IdentifierRecord identifierRecord = context.fetchOne(IDENTIFIER, IDENTIFIER.ID_VALUE.eq(subjectId).and(IDENTIFIER.ISSUER.eq(issuerSpace)));
 
         if (identifierRecord == null)
-            throw new IllegalArgumentException("Could not process an identified party for code:"+subjectId+" issued by:"+issuerSpace);
+            throw new IllegalArgumentException("Could not invalidateContent an identified party for code:"+subjectId+" issued by:"+issuerSpace);
 
         try {
             record = context.select(STATUS.EHR_ID).from(STATUS)
