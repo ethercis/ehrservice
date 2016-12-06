@@ -151,7 +151,7 @@ public final class Instruction extends CareEntry {
         }
         for (Link link : getLinks()) {
             if ("next actions".equals(link.getMeaning().getValue())) {
-                // todo: how to invalidateContent Instruction from link ?
+                // todo: how to process Instruction from link ?
                 //list.add(link)
             }
         }

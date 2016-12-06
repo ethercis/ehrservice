@@ -158,18 +158,18 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
         UUID uuid = UUID.randomUUID();
         InsertQuery<?> insertQuery = context.insertQuery(EVENT_CONTEXT);
         insertQuery.addValue(EVENT_CONTEXT.ID, uuid);
-        insertQuery.addValue(EVENT_CONTEXT.COMPOSITION_ID, DSL.field(DSL.val(eventContextRecord.getCompositionId())));
-        insertQuery.addValue(EVENT_CONTEXT.START_TIME, DSL.field(DSL.val(eventContextRecord.getStartTime())));
-        insertQuery.addValue(EVENT_CONTEXT.START_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getStartTimeTzid())));
-        insertQuery.addValue(EVENT_CONTEXT.END_TIME, DSL.field(DSL.val(eventContextRecord.getEndTime())));
-        insertQuery.addValue(EVENT_CONTEXT.END_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getEndTimeTzid())));
+        insertQuery.addValue(EVENT_CONTEXT.COMPOSITION_ID, eventContextRecord.getCompositionId());
+        insertQuery.addValue(EVENT_CONTEXT.START_TIME, eventContextRecord.getStartTime());
+        insertQuery.addValue(EVENT_CONTEXT.START_TIME_TZID, eventContextRecord.getStartTimeTzid());
+        insertQuery.addValue(EVENT_CONTEXT.END_TIME, eventContextRecord.getEndTime());
+        insertQuery.addValue(EVENT_CONTEXT.END_TIME_TZID, eventContextRecord.getEndTimeTzid());
         insertQuery.addValue(EVENT_CONTEXT.FACILITY, eventContextRecord.getFacility());
-        insertQuery.addValue(EVENT_CONTEXT.LOCATION, DSL.field(DSL.val(eventContextRecord.getLocation())));
+        insertQuery.addValue(EVENT_CONTEXT.LOCATION, eventContextRecord.getLocation());
 //        Field jsonbOtherContext = DSL.field(EVENT_CONTEXT.OTHER_CONTEXT+"::jsonb");
         if (eventContextRecord.getOtherContext() != null)
             insertQuery.addValue(EVENT_CONTEXT.OTHER_CONTEXT, (Object)DSL.field(DSL.val(eventContextRecord.getOtherContext())+"::jsonb"));
-        insertQuery.addValue(EVENT_CONTEXT.SETTING, DSL.field(DSL.val(eventContextRecord.getSetting())));
-        insertQuery.addValue(EVENT_CONTEXT.SYS_TRANSACTION, DSL.field(DSL.val(eventContextRecord.getSysTransaction())));
+        insertQuery.addValue(EVENT_CONTEXT.SETTING, eventContextRecord.getSetting());
+        insertQuery.addValue(EVENT_CONTEXT.SYS_TRANSACTION, eventContextRecord.getSysTransaction());
 
         Integer result = insertQuery.execute();
 
@@ -269,18 +269,18 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
         
         UpdateQuery<?> updateQuery = context.updateQuery(EVENT_CONTEXT);
 
-        updateQuery.addValue(EVENT_CONTEXT.COMPOSITION_ID, DSL.field(DSL.val(eventContextRecord.getCompositionId())));
-        updateQuery.addValue(EVENT_CONTEXT.START_TIME, DSL.field(DSL.val(eventContextRecord.getStartTime())));
-        updateQuery.addValue(EVENT_CONTEXT.START_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getStartTimeTzid())));
-        updateQuery.addValue(EVENT_CONTEXT.END_TIME, DSL.field(DSL.val(eventContextRecord.getEndTime())));
-        updateQuery.addValue(EVENT_CONTEXT.END_TIME_TZID, DSL.field(DSL.val(eventContextRecord.getEndTimeTzid())));
+        updateQuery.addValue(EVENT_CONTEXT.COMPOSITION_ID, eventContextRecord.getCompositionId());
+        updateQuery.addValue(EVENT_CONTEXT.START_TIME, eventContextRecord.getStartTime());
+        updateQuery.addValue(EVENT_CONTEXT.START_TIME_TZID, eventContextRecord.getStartTimeTzid());
+        updateQuery.addValue(EVENT_CONTEXT.END_TIME, eventContextRecord.getEndTime());
+        updateQuery.addValue(EVENT_CONTEXT.END_TIME_TZID, eventContextRecord.getEndTimeTzid());
         updateQuery.addValue(EVENT_CONTEXT.FACILITY, eventContextRecord.getFacility());
-        updateQuery.addValue(EVENT_CONTEXT.LOCATION, DSL.field(DSL.val(eventContextRecord.getLocation())));
+        updateQuery.addValue(EVENT_CONTEXT.LOCATION, eventContextRecord.getLocation());
 //        Field jsonbOtherContext = DSL.field(EVENT_CONTEXT.OTHER_CONTEXT+"::jsonb");
         if (eventContextRecord.getOtherContext() != null)
             updateQuery.addValue(EVENT_CONTEXT.OTHER_CONTEXT, (Object) DSL.field(DSL.val(eventContextRecord.getOtherContext().toString())+"::jsonb"));
-        updateQuery.addValue(EVENT_CONTEXT.SETTING, DSL.field(DSL.val(eventContextRecord.getSetting())));
-        updateQuery.addValue(EVENT_CONTEXT.SYS_TRANSACTION, DSL.field(DSL.val(eventContextRecord.getSysTransaction())));
+        updateQuery.addValue(EVENT_CONTEXT.SETTING, eventContextRecord.getSetting());
+        updateQuery.addValue(EVENT_CONTEXT.SYS_TRANSACTION, eventContextRecord.getSysTransaction());
         updateQuery.addConditions(EVENT_CONTEXT.ID.eq(getId()));
 
         Boolean result = updateQuery.execute()  > 0;

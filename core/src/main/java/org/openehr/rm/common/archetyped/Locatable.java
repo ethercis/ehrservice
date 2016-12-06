@@ -114,7 +114,7 @@ public abstract class Locatable extends Pathable implements Settable, Cloneable 
     /**
      * Runtime name of this fragment, used to build runtime paths.
      * This is the term provided via a clinical application or batch
-     * invalidateContent to name this EHR construct: its retention in the EHR
+     * process to name this EHR construct: its retention in the EHR
      * faithfully preserves the original label by which this entry
      * was known to end users.
      *

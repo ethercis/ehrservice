@@ -46,7 +46,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  *     The strategy depends on whether the query contains elements which path depends on the context
  *     (e.g. a composition).
  *     <ul>
- *     <li>If a query contains path expression that need to be resolved, the query invalidateContent consists in
+ *     <li>If a query contains path expression that need to be resolved, the query process consists in
  *     evaluating the path for each composition (iteration)
  *     <li>If the query contains only static fields (columns), a single query execution is done.
  *     </ul>

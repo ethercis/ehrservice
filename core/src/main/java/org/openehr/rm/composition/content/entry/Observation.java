@@ -127,7 +127,7 @@ public final class Observation extends CareEntry {
 
     /**
      * The state of subject of this observation during the observation
-     * invalidateContent, in the form of a history of values which may be of any
+     * process, in the form of a history of values which may be of any
      * complexity. Optional.
      *
      * @return state null if unspecified

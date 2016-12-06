@@ -152,7 +152,7 @@ public class XMLBinding {
 					}
 				}
 				if (!found) {
-					throw new XMLBindingException("Could not invalidateContent XXXDocument.addNewXXX() method to invoke");
+					throw new XMLBindingException("Could not process XXXDocument.addNewXXX() method to invoke");
 				}
 			} else {
 				xmlClass = Class.forName(XML_BINDING_PACKAGE + 	xmlClassName.toUpperCase());

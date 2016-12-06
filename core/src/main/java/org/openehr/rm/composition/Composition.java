@@ -169,7 +169,7 @@ public final class Composition extends Locatable {
 
     /**
      * Indicates what broad category this Composition is belogs to,
-     * eg "persistent" - of longitudinal validity, "event", "invalidateContent" etc
+     * eg "persistent" - of longitudinal validity, "event", "process" etc
      *
      * @return category
      */

@@ -108,7 +108,7 @@ public class TreeMapBinding {
 
 
 	/**
-	 * main entry method, invalidateContent a composition.
+	 * main entry method, process a composition.
 	 * @param composition
 	 * @return
 	 * @throws Exception

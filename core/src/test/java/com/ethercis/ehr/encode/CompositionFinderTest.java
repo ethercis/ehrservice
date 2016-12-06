@@ -51,6 +51,6 @@ public class CompositionFinderTest extends TestCase {
 
 //        CompositionFinder compositionFinder = new CompositionFinder();
 //
-//        compositionFinder.invalidateContent(composition);
+//        compositionFinder.process(composition);
     }
 }

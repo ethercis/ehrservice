@@ -998,7 +998,7 @@ public class OptBinding extends RmBinding {
 				log.debug("NodeId is null : " + cobj);
 				return null;
 			}
-			log.debug("Some value cannot invalidateContent because is not CARCHETYPEROOT or CCOMPLEXOBJECT : "
+			log.debug("Some value cannot process because is not CARCHETYPEROOT or CCOMPLEXOBJECT : "
 					+ cobj);
 
 			return null;
