@@ -38,6 +38,7 @@ public class SectionSerializer extends DvTypeSerializer<Section> {
 	}
 
 	public SectionSerializer() {
+		super();
 	}
 
 	@Override

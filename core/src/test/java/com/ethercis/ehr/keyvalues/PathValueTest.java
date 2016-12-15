@@ -274,8 +274,10 @@ public class PathValueTest {
 //        String templateId = "COLNEC Medication";
 //        String templateId = "COLNEC Care Plan.v1";
 //        String templateId = "Vital Signs Encounter (Composition)";
-        String templateId = "COLNEC_Goal.v0";
+//        String templateId = "COLNEC_Goal.v0";
 //        String templateId = "IDCR Problem List.v1";
+        String templateId = "RIPPLE - Minimal referral.v0";
+
         PathValue pathValue = new PathValue(knowledge, templateId, new Properties());
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Vital Signs Encounter (Composition).raw.kvp.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_Goals.v0.kvp.json");
@@ -284,7 +286,9 @@ public class PathValueTest {
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/beam_instruction_test.ecisflat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC Care Plan.v1.post2.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.put.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/e8fe7d12-c1e7-46af-b9af-7a28be5a3bcf.put.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/e8fe7d12-c1e7-46af-b9af-7a28be5a3bcf.put.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/RIPPLE_minimal_referral.v0.kv.json");
+
         Map<String, Object> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
         Composition composition = pathValue.assign(valuePairs);
         assertNotNull(composition);

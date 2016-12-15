@@ -61,13 +61,14 @@ public class MigrateEntryTest {
         props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
         props.put("knowledge.forcecache", "true");
         props.put("knowledge.cachelocatable", "false");
-        props.put("db.port", 5434);
+//        props.put("db.port", 5434);
+        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
 
 //        UUID uuid = UUID.fromString("2e3c7d66-76eb-4ff9-9afd-c87ecf820583");
-        UUID uuid = UUID.fromString("bb87de63-37b2-4ef3-9311-e5fe9ac1d9ef");
+        UUID uuid = UUID.fromString("54a60023-cb29-40f8-a2a2-d116e2c24fbd");
 
         MigrateEntry migrateEntry = new MigrateEntry(props);
-        String out = migrateEntry.migrateEntry(props, uuid, true);
+        String out = migrateEntry.migrateEntry(props, uuid, false);
         System.out.println(out);
 
     }

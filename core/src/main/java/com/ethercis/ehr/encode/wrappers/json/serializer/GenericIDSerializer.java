@@ -40,6 +40,7 @@ public class GenericIDSerializer extends DvTypeSerializer<GenericID> {
 	}
 
 	public GenericIDSerializer() {
+		super();
 	}
 
 	@Override

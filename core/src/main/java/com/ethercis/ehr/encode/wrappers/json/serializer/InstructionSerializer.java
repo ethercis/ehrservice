@@ -37,6 +37,7 @@ public class InstructionSerializer extends DvTypeSerializer<Instruction> {
 	}
 
 	public InstructionSerializer() {
+		super();
 	}
 
 	@Override

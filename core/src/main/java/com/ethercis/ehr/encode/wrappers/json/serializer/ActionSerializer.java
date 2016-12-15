@@ -39,6 +39,7 @@ public class ActionSerializer extends DvTypeSerializer<Action> {
 	}
 
 	public ActionSerializer() {
+		super();
 	}
 
 	@Override

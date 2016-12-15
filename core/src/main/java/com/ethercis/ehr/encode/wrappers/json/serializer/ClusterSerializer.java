@@ -38,6 +38,7 @@ public class ClusterSerializer extends DvTypeSerializer<Cluster> {
 	}
 
 	public ClusterSerializer() {
+		super();
 	}
 
 	@Override

@@ -660,7 +660,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			Action action = (Action) item;
 
 			if (action.getProtocol() != null)
-				putObject(action, ltree, getNodeTag(TAG_PROTOCOL, action, ltree), traverse(action.getProtocol(), TAG_PROTOCOL));
+				putObject(action, ltree, getNodeTag(TAG_PROTOCOL, action.getProtocol(), ltree), traverse(action.getProtocol(), TAG_PROTOCOL));
 			
 			if (action.getDescription() != null)
 				putObject(action, ltree, getNodeTag(TAG_DESCRIPTION, action.getDescription(), ltree), traverse(action.getDescription(), TAG_DESCRIPTION));
@@ -701,7 +701,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			//CHC: 160531 add explicit name
 			if (action.getName() != null) encodeNodeMetaData(ltree, action);
 
-			if (ltree.size() > 0)
+			if (ltree.size() > 2) //ism_transition is always set (comes from the template initially)
 				retmap = ltree;
 			else
 				retmap = null;

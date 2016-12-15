@@ -99,6 +99,10 @@ public class QueryProcessor  {
         this.explain = explain;
     }
 
+    public Object execute(QueryParser queryParser, String serverNodeId) throws SQLException {
+        return execute(queryParser, serverNodeId, false);
+    }
+
     public Object execute(QueryParser queryParser, String serverNodeId, boolean explain) throws SQLException {
 
         Result<Record> result = null;

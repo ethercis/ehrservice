@@ -42,6 +42,7 @@ public class EvaluationSerializer extends DvTypeSerializer<Evaluation> {
 	}
 
 	public EvaluationSerializer() {
+		super();
 	}
 
 	@Override

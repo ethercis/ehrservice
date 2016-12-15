@@ -38,6 +38,7 @@ public class PartyIdentifiedSerializer extends DvTypeSerializer<PartyIdentified>
 	}
 
 	public PartyIdentifiedSerializer() {
+		super();
 	}
 
 	@Override

@@ -36,6 +36,7 @@ public class PointEventSerializer extends DvTypeSerializer<PointEvent> {
 	}
 
 	public PointEventSerializer() {
+		super();
 	}
 
 	@Override

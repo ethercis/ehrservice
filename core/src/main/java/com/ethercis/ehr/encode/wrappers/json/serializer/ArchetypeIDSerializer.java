@@ -40,6 +40,7 @@ public class ArchetypeIDSerializer extends DvTypeSerializer<ArchetypeID> {
 	}
 
 	public ArchetypeIDSerializer() {
+		super();
 	}
 
 	@Override

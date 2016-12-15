@@ -55,6 +55,7 @@ public class ElementWrapperSerializer extends DvTypeSerializer<ElementWrapper> {
 	}
 
 	public ElementWrapperSerializer() {
+		super();
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class QueryParserTest {
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
 //        String url = "jdbc:postgresql://localhost:5434/ethercis";
-        String url = "jdbc:postgresql://192.168.2.104:5432/ethercis";
+        String url = "jdbc:postgresql://192.168.2.113:5432/ethercis";
         String login = "postgres";
         String password = "postgres";
 
@@ -516,14 +516,60 @@ public class QueryParserTest {
 //                " contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]\n" +
 //                " where a/name/value='Adverse reaction list'";
 
+//        query = "select a/uid/value as uid, a/composer/name\n" +
+//                "as author, a/context/start_time/value as date_created,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0057]/value/value as conclusion,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/value as status,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[at0002]/items[at0001]/name/value as labResultName,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[at0002]/items[at0001]/name/defining_code/code_string as labResultCode,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[at0002]/items[at0001]/value/magnitude as labResultValue,\n" +
+//                "a_a/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]/items[at0002]/items[at0001]/value/units as labResultUnits\n" +
+//                "from EHR e [ehr_id/value = 'cd8abecd-9925-4313-86af-93aab4930eae']\n" +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]\n" +
+//                "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]\n" +
+//                "where a/name/value='Laboratory test report'";
+
+        query = "select a/uid/value as uid, a/composer/name as\n" +
+                "author, a/context/start_time/value as date_created,\n" +
+                "b_a/data[at0001]/items[at0003]/value/value as priority_place_of_care,\n" +
+                "b_a/data[at0001]/items[at0015]/value/value as priority_place_of_death,\n" +
+                "b_a/data[at0001]/items[at0029]/value/value as priority_comment,\n" +
+                "b_b/data[at0001]/items[at0003]/value/value as treatment_decision,\n" +
+                "b_b/data[at0001]/items[at0002]/value/value as treatment_date_of_decision,\n" +
+                "b_b/data[at0001]/items[at0021]/value/value as treatment_comment,\n" +
+                "b_c/data[at0001]/items[at0003]/value/value as cpr_decision,\n" +
+                "b_c/data[at0001]/items[at0002]/value/value as cpr_date_of_decision,\n" +
+                "b_c/data[at0001]/items[at0021]/value/value as cpr_comment from EHR e\n" +
+                "[ehr_id/value = 'cd8abecd-9925-4313-86af-93aab4930eae'] contains\n" +
+                "COMPOSITION a[openEHR-EHR-COMPOSITION.care_plan.v1] contains\n" +
+                "(EVALUATION b_a[openEHR-EHR-EVALUATION.care_preference_uk.v1] or\n" +
+                "EVALUATION b_b[openEHR-EHR-EVALUATION.advance_decision_refuse_treatment_uk.v1]\n" +
+                "or EVALUATION b_c[openEHR-EHR-EVALUATION.cpr_decision_uk.v1])\n" +
+                "where a/name/value='End of Life Patient Preferences'";
+
+        query = "select\n" +
+                " a/uid/value as uid,\n" +
+                " a/composer/name as author,\n" +
+                " a/context/start_time/value as date_created,\n" +
+                " b_a/description[at0001]/items[at0011]/value/value as service_team,\n" +
+                " b_a/description[at0001]/items[at0026]/value/lower/value as appointment_date,\n" +
+                " b_a/protocol[at0015]/items[openEHR-EHR-CLUSTER.address.v1]/items[at0001]/items[at0002]/value/value\n" +
+                "as location\n" +
+                "from EHR e\n" +
+                "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1]\n" +
+                "  contains ACTION b_a[openEHR-EHR-ACTION.referral_uk.v1]\n" +
+                "where a/name/value='Referral'";
+
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);
 
         queryParser.pass1();
         queryParser.pass2();
 
-//        List<Record> records = (List<Record>)queryProcessor.execute(queryParser, serverNodeId, false);
-        String records = (String)queryProcessor.execute(queryParser, serverNodeId, true);
+        List<Record> records = (List<Record>)queryProcessor.execute(queryParser, serverNodeId, false);
+//        String records = (String)queryProcessor.execute(queryParser, serverNodeId, true);
 
         if (records != null && !records.isEmpty()){
             System.out.println(records);

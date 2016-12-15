@@ -38,6 +38,7 @@ public class EventContextSerializer extends DvTypeSerializer<EventContext> {
 	}
 
 	public EventContextSerializer() {
+		super();
 	}
 
 	@Override

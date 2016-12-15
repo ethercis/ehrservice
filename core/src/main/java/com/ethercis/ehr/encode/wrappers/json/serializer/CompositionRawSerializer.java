@@ -39,6 +39,7 @@ public class CompositionRawSerializer extends DvTypeSerializer<Composition> {
 	}
 
 	public CompositionRawSerializer() {
+		super();
 	}
 
 	@Override

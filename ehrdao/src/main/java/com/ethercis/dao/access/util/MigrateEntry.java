@@ -118,6 +118,10 @@ public class MigrateEntry {
     public static  String migrateEntry(Properties properties, UUID entryId, boolean debug) throws Exception {
         setupDomainAccess(properties);
         I_EntryAccess entryAccess = I_EntryAccess.retrieveInstance(domainAccess, entryId);
+
+        if (entryAccess == null)
+            throw new IllegalArgumentException("Could not retrieve entry id:"+entryId);
+
         String templateId = entryAccess.getTemplateId();
 
         if (entryAccess != null){
@@ -235,7 +239,7 @@ public class MigrateEntry {
             else {
                 UUID entryId = null;
                 if (commandLine.hasOption("uuid"))
-                    entryId = UUID.fromString(commandLine.getOptionValue("ckm_opt", null));
+                    entryId = UUID.fromString(commandLine.getOptionValue("uuid", null));
                 migrateEntry(properties, entryId, debug);
 
             }

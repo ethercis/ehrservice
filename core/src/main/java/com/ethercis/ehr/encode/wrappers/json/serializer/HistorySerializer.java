@@ -37,6 +37,7 @@ public class HistorySerializer extends DvTypeSerializer<History> {
 	}
 
 	public HistorySerializer() {
+		super();
 	}
 
 	@Override

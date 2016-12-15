@@ -31,6 +31,18 @@ import java.util.StringTokenizer;
  */
 public class EntryAttributeMapper {
 
+    public static final String ISM_TRANSITION = "ism_transition";
+    public static final String NAME = "name";
+    public static final String OTHER_PARTICIPATIONS = "other_participations";
+    public static final String SLASH_VALUE = "/value";
+    public static final String VALUE = "value";
+    public static final String DEFINING_CODE = "defining_code";
+    public static final String SLASH = "/";
+    public static final String COMMA = ",";
+    public static final String LOWER = "lower";
+    public static final String UPPER = "upper";
+    public static final String INTERVAL = "interval";
+
     //from Locatable
     private static String toCamelCase(String underscoreSeparated) {
         if( ! underscoreSeparated.contains("_")) {
@@ -66,7 +78,7 @@ public class EntryAttributeMapper {
     public static String map(String attribute){
         List<String> fields = new ArrayList<>();
 
-        fields.addAll(Arrays.asList(attribute.split("/")));
+        fields.addAll(Arrays.asList(attribute.split(SLASH)));
         fields.remove(0);
 
         int floor = 1;
@@ -75,38 +87,47 @@ public class EntryAttributeMapper {
             return null; //this happens when a non specified value is queried f.e. the whole json body
 
         //deals with the tricky ones first...
-        if (fields.get(0).equals("ism_transition")){
+        if (fields.get(0).equals(ISM_TRANSITION)){
             //get the next key and concatenate...
             String subfield = fields.get(1);
             fields.remove(0);
-            fields.set(0, "ism_transition/" + subfield);
-            if (!fields.get(1).equals("name")){
-                fields.add(1, "/value");
+            fields.set(0, ISM_TRANSITION+ SLASH + subfield);
+            if (!fields.get(1).equals(NAME)){
+                fields.add(1, SLASH_VALUE);
             }
             floor = 2;
-        } else if (fields.get(0).equals("other_participations")){ //insert a tag value
-            fields.set(0, "other_participations");
+        } else if (fields.get(0).equals(OTHER_PARTICIPATIONS)){ //insert a tag value
+            fields.set(0, OTHER_PARTICIPATIONS);
             fields.add(1, "0");
-            fields.add(2, "/value");
+            fields.add(2, SLASH_VALUE);
             floor = 3;
+        } else if (fields.get(0).equals(NAME)){
+            if (fields.get(1).equals(VALUE)){
+                fields.remove(1);
+            } else if (fields.get(1).equals(DEFINING_CODE)){
+                fields.remove(0);
+            }
         }
         else { //this deals with the "/value,value"
-            Integer match = firstOccurence(0, fields, "value");
+            Integer match = firstOccurence(0, fields, VALUE);
 //            Integer match = fields.stream().filter(m -> m.equals("value"));
             if (match != null){ //deals with "/value/value"
-                if (match == 0 && fields.size() == 2 && fields.get(1).equals("value")){
+                if (match == 0 && fields.size() == 2 && fields.get(1).equals(VALUE)){
 //                    fields.add(1, "/value");
                     ;
                 }
+                else if (match == 0 && fields.size() >= 2 && (fields.get(1).contains(LOWER) || fields.get(1).contains(UPPER))){ //interval
+                    fields.add(1, INTERVAL);
+                }
                 else if (match != 0) {
-                    fields.set(match, "/value");
+                    fields.set(match, SLASH_VALUE);
                     if (match == fields.size() - 1)
-                        fields.add("value");
+                        fields.add(VALUE);
                 }
                 else if (match + 1 < fields.size() - 1){
-                    Integer first = firstOccurence(match+1, fields, "value");
+                    Integer first = firstOccurence(match+1, fields, VALUE);
                     if ( first != null && first == match+1)
-                        fields.set(match+1, "/value");
+                        fields.set(match+1, SLASH_VALUE);
                 }
             }
 //            match = firstOccurence(0, fields, "name");
@@ -124,7 +145,7 @@ public class EntryAttributeMapper {
         }
 
         //prefix the first element
-        fields.set(0, "/"+fields.get(0));
+        fields.set(0, SLASH +fields.get(0));
 
         //deals with the remainder of the array
         for (int i = floor; i < fields.size(); i++){
@@ -132,7 +153,7 @@ public class EntryAttributeMapper {
         }
 
         //elegant...
-        String encoded = StringUtils.join(fields, ",");
+        String encoded = StringUtils.join(fields, COMMA);
 
         return encoded;
     }

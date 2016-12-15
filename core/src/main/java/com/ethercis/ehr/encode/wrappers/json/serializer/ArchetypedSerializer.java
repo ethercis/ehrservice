@@ -37,6 +37,7 @@ public class ArchetypedSerializer extends DvTypeSerializer<Archetyped> {
 	}
 
 	public ArchetypedSerializer() {
+		super();
 	}
 
 	@Override

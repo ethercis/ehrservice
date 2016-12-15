@@ -40,6 +40,7 @@ public class PartyRefSerializer extends DvTypeSerializer<PartyRef> {
 	}
 
 	public PartyRefSerializer() {
+		super();
 	}
 
 	@Override

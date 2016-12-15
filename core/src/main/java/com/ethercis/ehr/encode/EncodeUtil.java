@@ -65,14 +65,14 @@ public class EncodeUtil {
      * @return GsonBuilder
      */
     public static GsonBuilder getGsonBuilderInstance(){
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
-        builder.registerTypeAdapter(DvDate.class, new DvDateAdapter());
-        builder.registerTypeAdapter(DvTime.class, new DvTimeAdapter());
-        builder.registerTypeAdapter(DvDuration.class, new DvDurationAdapter());
-        builder.registerTypeAdapter(DvText.class, new DvTextAdapter());
-        builder.registerTypeAdapter(DvCodedText.class, new DvCodedTextAdapter());
-        builder.registerTypeAdapter(CodePhrase.class, new CodePhraseAdapter());
+        GsonBuilder builder = new GsonBuilder()
+        .registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter())
+        .registerTypeAdapter(DvDate.class, new DvDateAdapter())
+        .registerTypeAdapter(DvTime.class, new DvTimeAdapter())
+        .registerTypeAdapter(DvDuration.class, new DvDurationAdapter())
+        .registerTypeAdapter(DvText.class, new DvTextAdapter())
+        .registerTypeAdapter(DvCodedText.class, new DvCodedTextAdapter())
+        .registerTypeAdapter(CodePhrase.class, new CodePhraseAdapter());
         return builder;
     }
 

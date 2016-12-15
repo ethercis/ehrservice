@@ -38,6 +38,7 @@ public class ObservationSerializer extends DvTypeSerializer<Observation> {
 	}
 
 	public ObservationSerializer() {
+		super();
 	}
 
 	@Override
