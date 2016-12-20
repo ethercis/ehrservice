@@ -20,7 +20,6 @@ package com.ethercis.validation.wrappers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.rm.datatypes.text.DvCodedText;
-import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
 import org.openehr.schemas.v1.CONSTRAINTREF;
@@ -31,18 +30,18 @@ import java.util.Map;
 /**
  * Created by christian on 8/10/2016.
  */
-public class CDvText extends CConstraint implements I_CArchetypeConstraintValidate {
+public class CDvCodedText extends CConstraint implements I_CArchetypeConstraintValidate {
 
-    Logger logger = LogManager.getLogger(CDvText.class);
+    Logger logger = LogManager.getLogger(CDvCodedText.class);
 
-    protected CDvText(Map<String, Map<String, String>> localTerminologyLookup) {
+    protected CDvCodedText(Map<String, Map<String, String>> localTerminologyLookup) {
         super(localTerminologyLookup);
     }
 
     @Override
     public void validate(String path, Object aValue, ARCHETYPECONSTRAINT archetypeconstraint) throws Exception {
 
-        DvText checkValue = (DvText)aValue;
+        DvCodedText checkValue = (DvCodedText)aValue;
 
         if (!(archetypeconstraint instanceof CSINGLEATTRIBUTE))
             ValidationException.raise(path, "Constraint for DvCodedText is not applicable:"+archetypeconstraint, "SYS01");
@@ -59,6 +58,10 @@ public class CDvText extends CConstraint implements I_CArchetypeConstraintValida
             ValidationException.raise(path, "Constraint child is not a code phrase constraint:" + object, "SYS01");
         }
         CCODEPHRASE ccodephrase = (CCODEPHRASE)object;
+
+        if (checkValue.getDefiningCode().getTerminologyId() != null)
+            if (checkValue.getDefiningCode().getCodeString() == null)
+                ValidationException.raise(path, "A code is required when a terminology is specified:"+checkValue, "TEXT01");
 
         if (ccodephrase.getCodeListArray().length == 0)
             return;

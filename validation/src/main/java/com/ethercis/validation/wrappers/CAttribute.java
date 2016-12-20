@@ -22,6 +22,7 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.xmlbeans.SchemaType;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.datatypes.basic.DataValue;
+import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.schemas.v1.*;
 
@@ -47,9 +48,12 @@ public class CAttribute extends CConstraint  implements I_CArchetypeConstraintVa
         SchemaType type = I_CArchetypeConstraintValidate.findSchemaType(I_CArchetypeConstraintValidate.getXmlType(archetypeconstraint));
         Object attribute = archetypeconstraint.changeType(type);
 
-        if (((CATTRIBUTE)attribute).getRmAttributeName().equals("defining_code") && aValue instanceof DvText){
+        if (((CATTRIBUTE)attribute).getRmAttributeName().equals("defining_code")){
+            if (aValue instanceof DvCodedText)
             //process this DvText as a DvCodedText
-            new CDvText(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
+                new CDvCodedText(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
+            else if (aValue instanceof DvText)
+                new CDvText(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
             return;
         }
 

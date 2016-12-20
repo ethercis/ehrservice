@@ -732,13 +732,16 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testThinkEhrLib3() throws Exception {
-        String templateId = "IDCR - Laboratory Order.v0";
+//        String templateId = "IDCR - Laboratory Order.v0";
+        String templateId = "LCR Medication List.v0";
+
 //        String templateId = "IDCR Problem List.v1";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/LCR_Medication_List.v0.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR_adverse_reaction_listv1.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);

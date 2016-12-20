@@ -89,10 +89,12 @@
                     <artifactSet>
                         <excludes>
                             <exclude>ethercis:ecis-core</exclude>
+                            <!--<exclude>ethercis:ecis-ehrdao</exclude>-->
                             <exclude>ethercis:jooq-pg</exclude>
                             <exclude>ethercis:aql-processor</exclude>
-                            <exclude>ethercis:ecis-knowledge-cache</exclude>
                             <exclude>ethercis:ecis-transform</exclude>
+                            <exclude>ethercis:ecis-validation</exclude>
+                            <exclude>ethercis:ecis-knowledge-cache</exclude>
                             <exclude>junit:junit</exclude>
                             <exclude>jmock:*</exclude>
                             <exclude>*:xml-apis</exclude>
