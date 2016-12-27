@@ -448,7 +448,12 @@ public class LocatableHelper {
                Class clazz = node.getClass();
                String getterName = "get"+node.toFirstUpperCaseCamelCase(attribute);
 
-               Method getter = clazz.getMethod(getterName, null);
+               Method getter;
+               try {
+                   getter = clazz.getMethod(getterName, null);
+               } catch (NoSuchMethodException nsme){
+                   throw new IllegalArgumentException("Could not set attribute:'"+attribute+"', path:"+childPath+", possible out of sync template");
+               }
                //get the attribute
                Object item = getter.invoke(node, null);
 

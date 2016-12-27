@@ -105,6 +105,10 @@ public class WhereBinder {
         Field<?> field;
         switch (className){
             case "COMPOSITION":
+                if (variableDefinition.getPath().startsWith("content")){
+                    field = jsonbEntryQuery.whereField(comp_id, identifier, variableDefinition);
+                    return new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
+                }
             case "EHR":
                 field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
                 if (field == null)

@@ -26,6 +26,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -73,10 +74,11 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 if (clause == Clause.WHERE)
                     compositionIdFiltered = true;
 
+                joinComposition = true;
+
                 if (withAlias)
                     return uid(compositionId, withAlias, variableDefinition.getAlias());
                 else {
-                    joinComposition = true;
                     return rawUid(compositionId, withAlias, variableDefinition.getAlias());
                 }
 //                return rawUid(compositionId, withAlias, variableDefinition.getAlias());
@@ -141,6 +143,8 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 if (clause == Clause.FROM)
                     ehrIdFiltered = true;
                 return ehrIdValue(compositionId, withAlias, variableDefinition.getAlias());
+            case "archetype_details/template_id/value":
+                return templateIdValue(compositionId, withAlias, variableDefinition.getAlias());
 
 
         }
@@ -226,7 +230,8 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     private Field<?> name(UUID compositionId, boolean alias, String aliasStr, Clause clause){
         //extract the composition name from the jsonb root key
         String trimName = "trim(LEADING '''' FROM (trim(TRAILING ''']' FROM\n" +
-                            " (regexp_split_to_array(jsonb_object_keys(entry.entry), 'and name/value=')) [2])))";
+                            " (regexp_split_to_array((select root_json_key from jsonb_object_keys("+ENTRY.ENTRY_+") root_json_key where root_json_key like '/composition%')," +
+                            " 'and name/value=')) [2])))";
         //postgresql equivalent expression
         if (alias) {
             Field<?> select = DSL.field(trimName).as(aliasStr == null ? columnAlias : aliasStr);
@@ -322,24 +327,32 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
             return DSL.field(composerRef.field(PARTY_IDENTIFIED.PARTY_REF_TYPE));
     }
 
+    private Field<?> tzNoZulu(Field<String> field){
+        return DSL.field(DSL.decode().when(field.equal("UTC"),"Z").otherwise(field));
+    }
+
+    private Field<?> prettyDateTime(Field<Timestamp> dateTime){
+        return DSL.field("to_char(" + dateTime + ",'YYYY-MM-DD\"T\"HH24:MI:SS')");
+    }
+
     private Field<?> contextStartTime(UUID compositionId,boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field("to_char(" + EVENT_CONTEXT.START_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.START_TIME_TZID)
-                    .as(aliasStr == null ? columnAlias:aliasStr);
+            Field<?> select = DSL.field(prettyDateTime(EVENT_CONTEXT.START_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.START_TIME_TZID))
+                    .as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field("to_char(" + EVENT_CONTEXT.START_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.START_TIME_TZID);
+            return DSL.field(prettyDateTime(EVENT_CONTEXT.START_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.START_TIME_TZID));
     }
 
     private Field<?> contextEndTime(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field("to_char(" + EVENT_CONTEXT.END_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.END_TIME_TZID)
+            Field<?> select = DSL.field(prettyDateTime(EVENT_CONTEXT.END_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.END_TIME_TZID))
                     .as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field("to_char(" + EVENT_CONTEXT.END_TIME + ",'YYYY-MM-DD\"T\"HH24:MI:SS')" + "||" + EVENT_CONTEXT.END_TIME_TZID);
+            return DSL.field(prettyDateTime(EVENT_CONTEXT.END_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.END_TIME_TZID));
     }
 
     private Field<?> contextLocation(UUID compositionId, boolean alias, String aliasStr){
@@ -358,6 +371,15 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         }
         else
             return DSL.field(facilityRef.field(PARTY_IDENTIFIED.NAME));
+    }
+
+    private Field<?> templateIdValue(UUID compositionId, boolean alias, String aliasStr){
+        if (alias) {
+            Field<?> select = DSL.field(ENTRY.TEMPLATE_ID).as(aliasStr == null ? columnAlias : aliasStr);
+            return select;
+        }
+        else
+            return DSL.field(ENTRY.TEMPLATE_ID);
     }
 
     private Field<?> contextFacilityRef(UUID compositionId, boolean alias, String aliasStr){

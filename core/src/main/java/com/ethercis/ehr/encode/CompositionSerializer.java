@@ -24,6 +24,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.commons.collections.map.PredicatedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.rm.RMObject;
@@ -186,17 +187,25 @@ public class CompositionSerializer implements I_CompositionSerializer {
 		if (addStructure instanceof Map && ((Map) addStructure).size() == 0)
 				return  null;
 
-		Object retStructure = null;
+//		Object retStructure = null;
 
 		try {
-			//TODO: strip 'and name/value.... from the key to insert in the tree map
-			retStructure = map.put(key, addStructure);
+			map.put(key, addStructure);
+			//add explicit name
+			if (node instanceof Locatable && map instanceof PredicatedMap && !map.containsKey(TAG_NAME)){
+				if (((Locatable) node).getName() instanceof DvCodedText) {
+					map.put(TAG_DEFINING_CODE, ((DvCodedText)((Locatable) node).getName()).getDefiningCode());
+				}
+				map.put(TAG_NAME, ((Locatable) node).getName().getValue());
+
+			}
+
 		} catch (IllegalArgumentException e) {
 			log.error("Ignoring duplicate key in path detected:" + key + " path:" + itemStack.pathStackDump() + " Exception:" + e);
 //			throw new Exception("duplicate key:"+key+", please fix the input structure");
 		}
 
-		return retStructure;
+		return map;
 	}
 	
 	protected String getNodeTag(String prefix, Locatable node, Object container) {
@@ -344,8 +353,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 	}
 
-	private void encodeNodeMetaData(Map<String, Object> map, Object... values) throws Exception {
-		return;
+	private void encodeNodeMetaData(Map<String, Object> map, Locatable locatable) throws Exception {
 		//do nothing (side effects)
 //		StringBuffer stringBuffer = new StringBuffer();
 //
@@ -363,6 +371,14 @@ public class CompositionSerializer implements I_CompositionSerializer {
 //		}
 //
 //		putObject(map, TAG_META, stringBuffer.toString());
+
+//		Map<String, Object> metaMap = new HashMap<>();
+//
+//		metaMap.put(TAG_META, new HashMap<String, Object>().put(TAG_NAME, locatable.getName()));
+//		//				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, observation.getWorkflowId(), observation.getName().getValue());
+//		putObject(map, TAG_META, )
+
+//		putObject(null, map, TAG_NAME, locatable.getName());
 
 	}
 
@@ -658,31 +674,45 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			Map<String, Object>ltree = newPathMap();
 
 			Action action = (Action) item;
+			boolean hasActiveContent = false;
 
-			if (action.getProtocol() != null)
+			if (action.getProtocol() != null) {
 				putObject(action, ltree, getNodeTag(TAG_PROTOCOL, action.getProtocol(), ltree), traverse(action.getProtocol(), TAG_PROTOCOL));
+				hasActiveContent = true;
+			}
 			
-			if (action.getDescription() != null)
+			if (action.getDescription() != null) {
 				putObject(action, ltree, getNodeTag(TAG_DESCRIPTION, action.getDescription(), ltree), traverse(action.getDescription(), TAG_DESCRIPTION));
+				hasActiveContent = true;
+			}
 			
-			if (action.getInstructionDetails() != null)
+			if (action.getInstructionDetails() != null) {
 				putObject(action, ltree, getNodeTag(TAG_INSTRUCTION, item, ltree), traverse(action.getInstructionDetails().getWfDetails(), TAG_INSTRUCTION));
+				hasActiveContent = true;
+			}
 
-			if (action.getWorkflowId() != null)
+			if (action.getWorkflowId() != null) {
 				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, action.getWorkflowId(), action.getName().getValue());
+				hasActiveContent = true;
+			}
 
-			if (action.getGuidelineId() != null)
+			if (action.getGuidelineId() != null) {
 				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, action.getGuidelineId(), action.getName().getValue());
+				hasActiveContent = true;
+			}
 
 			if (action.getTime() != null){
-				if (allElements || !action.getTime().equals(new DvDateTime(RmBinding.DEFAULT_DATE_TIME)))
+				if (allElements || !action.getTime().equals(new DvDateTime(RmBinding.DEFAULT_DATE_TIME))) {
 					encodeNodeAttribute(ltree, TAG_TIME, action.getTime(), action.getName().getValue());
+					hasActiveContent = true;
+				}
 			}
 
 			if (action.getInstructionDetails() != null){
 				InstructionDetails instructionDetails = action.getInstructionDetails();
 				encodeNodeAttribute(ltree, TAG_INSTRUCTION_DETAILS+TAG_ACTIVITY_ID, instructionDetails.getActivityId(), action.getName().getValue());
 				encodeNodeAttribute(ltree, TAG_INSTRUCTION_DETAILS+TAG_INSTRUCTION_ID, instructionDetails.getInstructionId(), action.getName().getValue());
+				hasActiveContent = true;
 			}
 
 
@@ -701,7 +731,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			//CHC: 160531 add explicit name
 			if (action.getName() != null) encodeNodeMetaData(ltree, action);
 
-			if (ltree.size() > 2) //ism_transition is always set (comes from the template initially)
+			if (hasActiveContent) //ism_transition is always set (comes from the template initially)
 				retmap = ltree;
 			else
 				retmap = null;

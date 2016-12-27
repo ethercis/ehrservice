@@ -216,6 +216,9 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             //get path from the /content part only
             String path = (String)definition.get(CompositionSerializer.TAG_PATH);
 
+            if (path == null) //meta data: name etc.
+                continue;
+
             path = path.substring(path.indexOf(CompositionSerializer.TAG_CONTENT));
 
             Object object = definition.get(MapInspector.TAG_OBJECT);
@@ -869,8 +872,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             }
             else if (name instanceof DvText || name instanceof DvCodedText)
                 item.setName((DvText)name);
-            else
-                throw new IllegalArgumentException("Could not handle name value of type:"+name);
+//            else
+//                throw new IllegalArgumentException("Could not handle name value of type:"+name);
         }
     }
 

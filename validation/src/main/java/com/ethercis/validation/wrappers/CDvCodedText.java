@@ -66,13 +66,13 @@ public class CDvCodedText extends CConstraint implements I_CArchetypeConstraintV
         if (ccodephrase.getCodeListArray().length == 0)
             return;
 
-
-        for (String termKey: ccodephrase.getCodeListArray()) {
-            String matcher = localTerminologyLookup.get(lookupPath(path)).get(termKey);
-            if (matcher.equals(checkValue.getValue()))
-                return;
-        }
-        ValidationException.raise(path, "Value does not match any defined codes,found:"+aValue, "TEXT01");
+//CHC, 21.12.16: ticket #10. Loosen validation on coded text
+//        for (String termKey: ccodephrase.getCodeListArray()) {
+//            String matcher = localTerminologyLookup.get(lookupPath(path)).get(termKey);
+//            if (matcher.equals(checkValue.getValue()))
+//                return;
+//        }
+//        ValidationException.raise(path, "Value does not match any defined codes,found:"+aValue, "TEXT01");
     }
 
     private String lookupPath(String path){

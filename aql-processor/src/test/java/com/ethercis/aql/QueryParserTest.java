@@ -531,36 +531,116 @@ public class QueryParserTest {
 //                "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]\n" +
 //                "where a/name/value='Laboratory test report'";
 
-        query = "select a/uid/value as uid, a/composer/name as\n" +
-                "author, a/context/start_time/value as date_created,\n" +
-                "b_a/data[at0001]/items[at0003]/value/value as priority_place_of_care,\n" +
-                "b_a/data[at0001]/items[at0015]/value/value as priority_place_of_death,\n" +
-                "b_a/data[at0001]/items[at0029]/value/value as priority_comment,\n" +
-                "b_b/data[at0001]/items[at0003]/value/value as treatment_decision,\n" +
-                "b_b/data[at0001]/items[at0002]/value/value as treatment_date_of_decision,\n" +
-                "b_b/data[at0001]/items[at0021]/value/value as treatment_comment,\n" +
-                "b_c/data[at0001]/items[at0003]/value/value as cpr_decision,\n" +
-                "b_c/data[at0001]/items[at0002]/value/value as cpr_date_of_decision,\n" +
-                "b_c/data[at0001]/items[at0021]/value/value as cpr_comment from EHR e\n" +
-                "[ehr_id/value = 'cd8abecd-9925-4313-86af-93aab4930eae'] contains\n" +
-                "COMPOSITION a[openEHR-EHR-COMPOSITION.care_plan.v1] contains\n" +
-                "(EVALUATION b_a[openEHR-EHR-EVALUATION.care_preference_uk.v1] or\n" +
-                "EVALUATION b_b[openEHR-EHR-EVALUATION.advance_decision_refuse_treatment_uk.v1]\n" +
-                "or EVALUATION b_c[openEHR-EHR-EVALUATION.cpr_decision_uk.v1])\n" +
-                "where a/name/value='End of Life Patient Preferences'";
+//        query = "select a/uid/value as uid, a/composer/name as\n" +
+//                "author, a/context/start_time/value as date_created,\n" +
+//                "b_a/data[at0001]/items[at0003]/value/value as priority_place_of_care,\n" +
+//                "b_a/data[at0001]/items[at0015]/value/value as priority_place_of_death,\n" +
+//                "b_a/data[at0001]/items[at0029]/value/value as priority_comment,\n" +
+//                "b_b/data[at0001]/items[at0003]/value/value as treatment_decision,\n" +
+//                "b_b/data[at0001]/items[at0002]/value/value as treatment_date_of_decision,\n" +
+//                "b_b/data[at0001]/items[at0021]/value/value as treatment_comment,\n" +
+//                "b_c/data[at0001]/items[at0003]/value/value as cpr_decision,\n" +
+//                "b_c/data[at0001]/items[at0002]/value/value as cpr_date_of_decision,\n" +
+//                "b_c/data[at0001]/items[at0021]/value/value as cpr_comment from EHR e\n" +
+//                "[ehr_id/value = 'cd8abecd-9925-4313-86af-93aab4930eae'] contains\n" +
+//                "COMPOSITION a[openEHR-EHR-COMPOSITION.care_plan.v1] contains\n" +
+//                "(EVALUATION b_a[openEHR-EHR-EVALUATION.care_preference_uk.v1] or\n" +
+//                "EVALUATION b_b[openEHR-EHR-EVALUATION.advance_decision_refuse_treatment_uk.v1]\n" +
+//                "or EVALUATION b_c[openEHR-EHR-EVALUATION.cpr_decision_uk.v1])\n" +
+//                "where a/name/value='End of Life Patient Preferences'";
+//
+//        query = "select\n" +
+//                " a/uid/value as uid,\n" +
+//                " a/composer/name as author,\n" +
+//                " a/context/start_time/value as date_created,\n" +
+//                " b_a/description[at0001]/items[at0011]/value/value as service_team,\n" +
+//                " b_a/description[at0001]/items[at0026]/value/lower/value as appointment_date,\n" +
+//                " b_a/protocol[at0015]/items[openEHR-EHR-CLUSTER.address.v1]/items[at0001]/items[at0002]/value/value\n" +
+//                "as location\n" +
+//                "from EHR e\n" +
+//                "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1]\n" +
+//                "  contains ACTION b_a[openEHR-EHR-ACTION.referral_uk.v1]\n" +
+//                "where a/name/value='Referral'";
 
         query = "select\n" +
-                " a/uid/value as uid,\n" +
-                " a/composer/name as author,\n" +
-                " a/context/start_time/value as date_created,\n" +
-                " b_a/description[at0001]/items[at0011]/value/value as service_team,\n" +
-                " b_a/description[at0001]/items[at0026]/value/lower/value as appointment_date,\n" +
-                " b_a/protocol[at0015]/items[openEHR-EHR-CLUSTER.address.v1]/items[at0001]/items[at0002]/value/value\n" +
-                "as location\n" +
+                "    a/uid/value as uid,\n" +
+                "    a/archetype_details/template_id/value,\n" +
+                "    a/composer/name as author,\n" +
+                "    a/context/start_time/value as date_created,\n" +
+                "    b_a/data[at0001]/items[at0002]/value/value as note,\n" +
+                "    b_a/name/value as type\n" +
                 "from EHR e\n" +
-                "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1]\n" +
-                "  contains ACTION b_a[openEHR-EHR-ACTION.referral_uk.v1]\n" +
-                "where a/name/value='Referral'";
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1]\n" +
+                "contains EVALUATION b_a[openEHR-EHR-EVALUATION.clinical_synopsis.v1]\n" +
+                "where a/name/value='Clinical Notes'";
+
+//        query = "select     \n" +
+//                "a/uid/value as uid,     \n" +
+//                "a/context/start_time/value as meeting_date,\n" +
+//                "a/content/items[openEHR-EHR-ACTION.service.v0]/time/value as request_date,\n" +
+//                "a_a/protocol[at0008]/items[at0011]/value/value as service_team,\n" +
+//                "a_b/data[at0001]/items[at0004]/value/value as question,\n" +
+//                "a_c/data[at0001]/items[at0002]/value/value as notes, \n" +
+//                "a/content/items[openEHR-EHR-ACTION.service.v0]/ism_transition/careflow_step/defining_code/code_string as careflow_step\n" +
+//                "from EHR e \n" +
+//                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report.v1]\n" +
+//                "contains ( \n" +
+//                " INSTRUCTION a_a[openEHR-EHR-INSTRUCTION.request.v0]" +
+//                " or EVALUATION a_b[openEHR-EHR-EVALUATION.reason_for_encounter.v1]" +
+//                " or EVALUATION a_c[openEHR-EHR-EVALUATION.recommendation.v1])\n" +
+//                "where a/name/value='MDT Output Report'" +
+//                " and a/content/items[openEHR-EHR-ACTION.service.v0]/ism_transition/careflow_step/defining_code/code_string = 'at0026'";
+
+//        query = "select a/uid/value as uid,\n" +
+//                "a/composer/name as author,\n" +
+//                "a/context/start_time/value as date_created,\n" +
+//                "a_b/data[at0001]/origin/value as sample_time,\n" +
+//                "a_b/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name,\n" +
+//                "a_b/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code/code_string as test_name_code,\n" +
+//                "a_b/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code/terminology_id/value as test_name_terminology,\n" +
+//                "a_b/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/value as status,\n" +
+//                "a_b/data[at0001]/events[at0002]/data[at0003]/items[at0057]/value/value as conclusion,\n" +
+//                "a_a/items[at0002]/name/value as Laboratory_result_header,\n" +
+//                "a_a/items[at0002]/items[at0001]/name/value as result_name,\n" +
+//                "a_a/items[at0002]/items[at0001]/name/defining_code/code_string as result_name_code,\n" +
+//                "a_a/items[at0002]/items[at0001]/name/defining_code/terminology_id/value as result_name_terminology,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/magnitude as result_magnitude,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/units as result_units,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/lower/magnitude as normal_range_lower,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/lower/units as normal_range_lower_units,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/upper/magnitude as normal_range_upper,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/upper/units as normal_range_upper_units,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/lower_included as lower_included,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/upper_included as upper_included,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/lower_unbounded as lower_unbounded,\n" +
+//                "a_a/items[at0002]/items[at0001]/value/normal_range/upper_unbounded as upper_unbounded " +
+//                "from EHR e contains COMPOSITION a contains\n" +
+//                "OBSERVATION a_b[openEHR-EHR-OBSERVATION.laboratory_test.v0] contains\n" +
+//                "CLUSTER a_a[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]";
+
+//        query = "select" +
+//                "     a/composer/name as author," +
+//                "     a/archetype_details/template_id/value," +
+//                "     a/uid/value as uid," +
+//                "     a_a/name/value as aa_name," +
+//                "     a/context/start_time/value as date_created," +
+//                "     b_a/activities[at0001]/description[at0009]/items[at0121]/value/value as referral_to," +
+//                "     b_a/activities[at0001]/description[at0009]/items[at0062]/value/value as referral_reason," +
+//                "     b_a/activities[at0001]/description[at0009]/items[at0064]/value/value as clinical_summary," +
+//                "     b_a/protocol[at0008]/items[openEHR-EHR-CLUSTER.individual_person_uk.v1]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0001]/value/value as referralFrom," +
+//                "     b_a/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1, 'Receiver']/items[at0001]/value/value as referralTo," +
+//                "     b_a/protocol[at0008]/items[at0011]/value/value as referral_ref," +
+//                "     a_a/description[at0001]/items[at0011]/value/value as Service_name," +
+//                "     a_a/description[at0001]/items[at0028]/value/value as Outcome," +
+//                "     a_a/time/value as dateOfState," +
+//                "     a_a/ism_transition/current_state/value as state," +
+//                "     a_a/ism_transition/current_state/defining_code/code_string as stateCode," +
+//                "     a_a/ism_transition/careflow_step/value as careflow," +
+//                "     a_a/ism_transition/careflow_step/defining_code/code_string as careflowCode" +
+//                "     from EHR e " +
+//                "     contains COMPOSITION a[openEHR-EHR-COMPOSITION.request.v1] contains" +
+//                "     (INSTRUCTION b_a[openEHR-EHR-INSTRUCTION.request.v0] or ACTION a_a[openEHR-EHR-ACTION.service.v0])" +
+//                "     ";
 
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);

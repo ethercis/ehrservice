@@ -17,10 +17,7 @@
 
 package com.ethercis.aql.sql.queryImpl;
 
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Result;
-import org.jooq.Select;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 
 import static com.ethercis.jooq.pg.Tables.CONTAINMENT;
@@ -44,7 +41,10 @@ public class ContainsSet {
         //jOOQ hack to support Postgres DISTINCT ON
 
         Field<?> distinctOnTemplate = DSL.field("DISTINCT ON({0}) {0}", ENTRY.TEMPLATE_ID.getDataType(), ENTRY.TEMPLATE_ID).as(ENTRY.TEMPLATE_ID);
-        Field<?> entryKey = DSL.field("jsonb_object_keys("+ENTRY.ENTRY_+")").as(ENTRY_ROOT); //calculated field
+        //(select root_json_key from jsonb_object_keys("ehr"."entry"."entry") root_json_key where root_json_key like '/composition%') as
+//        Query jsonbRootKeySelect = DSL.query("select root_json_key from jsonb_object_keys(" + ENTRY.ENTRY_ + ") root_json_key where root_json_key like '/composition%')");
+        Field<?> entryKey = DSL.field("(select root_json_key from jsonb_object_keys(" + ENTRY.ENTRY_ + ") root_json_key where root_json_key like '/composition%')").as(ENTRY_ROOT);
+//        Field<?> entryKey = DSL.field("jsonb_object_keys("+ENTRY.ENTRY_+")").as(ENTRY_ROOT); //calculated field
 
         this.select = context
                 .select(distinctOnTemplate, CONTAINMENT.COMP_ID, CONTAINMENT.LABEL, entryKey)

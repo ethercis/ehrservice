@@ -133,6 +133,10 @@ public class PathResolver {
 
 //                Result<Record> records = context.fetch(query);
 
+                    if (records.size() == 0){
+                        continue;
+                    }
+
                     resolveMap.put(resolveMapKey((String) records.getValue(0, ENTRY.TEMPLATE_ID.getName()),lquery), records.getValue(0, CONTAINMENT.PATH));
 
                     if (records.isEmpty()) {

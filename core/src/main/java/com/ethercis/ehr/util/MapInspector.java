@@ -186,7 +186,7 @@ public class MapInspector {
             else if (object != null) {
                 boolean composite = false;
                 if (map.containsKey(CompositionSerializer.TAG_NAME)) {
-                    retMap.put(path + I_PathValue.NAME_SUBTAG, (String) map.get(CompositionSerializer.TAG_NAME));
+                    retMap.put(path + I_PathValue.NAME_SUBTAG, map.get(CompositionSerializer.TAG_NAME).toString());
                     composite = true;
                 }
                 if (map.containsKey(CompositionSerializer.TAG_DEFINING_CODE)){

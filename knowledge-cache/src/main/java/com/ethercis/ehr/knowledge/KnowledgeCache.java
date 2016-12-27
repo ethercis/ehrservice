@@ -63,7 +63,13 @@ import java.util.regex.Pattern;
  */
 public class KnowledgeCache implements I_KnowledgeCache {
 
-	private Map<String, File> archetypeFileMap = new HashMap<String, File>();
+    public static final String KNOWLEDGE_FORCECACHE = "knowledge.forcecache";
+    public static final String KNOWLEDGE_CACHELOCATABLE = "knowledge.cachelocatable";
+    public static final String KNOWLEDGE_PATH_ARCHETYPE = "knowledge.path.archetype";
+    public static final String KNOWLEDGE_PATH_TEMPLATE = "knowledge.path.template";
+    public static final String KNOWLEDGE_PATH_OPT = "knowledge.path.opt";
+    public static final String KNOWLEDGE_PATH_BACKUP = "knowledge.path.backup";
+    private Map<String, File> archetypeFileMap = new HashMap<String, File>();
 	private Map<String, Archetype> atArchetypeCache = new HashMap<String, Archetype>();
 	private Map<String, File> templatesFileMap = new HashMap<String, File>();
 
@@ -114,9 +120,12 @@ public class KnowledgeCache implements I_KnowledgeCache {
     boolean cacheLocatable = false;
 
     //used by JMX to show the settings
+    private final String NULL_PATH = "";
+
     private String archetypePath;
     private String templatePath;
     private String optPath;
+    private String backupPath = NULL_PATH;
 
 
     /**
@@ -225,16 +234,16 @@ public class KnowledgeCache implements I_KnowledgeCache {
             return false;
 
         for (Entry<Object, Object> entry: props.entrySet()) {
-            if ( entry != null && ((String)entry.getKey()).compareTo("knowledge.forcecache")==0) {
+            if ( entry != null && ((String)entry.getKey()).compareTo(KNOWLEDGE_FORCECACHE)==0) {
                 forceCache = Boolean.parseBoolean((String)entry.getValue());
                 log.info("Force Cache set to:"+forceCache);
             }
-            else if ( entry != null && ((String)entry.getKey()).compareTo("knowledge.cachelocatable")==0) {
+            else if ( entry != null && ((String)entry.getKey()).compareTo(KNOWLEDGE_CACHELOCATABLE)==0) {
                 //TODO: always false for the time being since it requires deep changes in composition builder
                 cacheLocatable = Boolean.parseBoolean((String)entry.getValue());
                 log.info("Locatable caching set to:"+cacheLocatable);
             }
-            else if ( entry != null && ((String)entry.getKey()).compareTo("knowledge.path.archetype")==0) {
+            else if ( entry != null && ((String)entry.getKey()).compareTo(KNOWLEDGE_PATH_ARCHETYPE)==0) {
 
                 try {
                     archetypePath = (String) entry.getValue();
@@ -245,7 +254,7 @@ public class KnowledgeCache implements I_KnowledgeCache {
                     throw new IllegalArgumentException("Invalid archetype path:"+entry.getValue());
                 }
             }
-            else if ( entry != null && ((String)entry.getKey()).compareTo("knowledge.path.template")==0) {
+            else if ( entry != null && ((String)entry.getKey()).compareTo(KNOWLEDGE_PATH_TEMPLATE)==0) {
                 try {
                     templatePath = (String)entry.getValue();
                     log.debug("mapping template path:"+templatePath);
@@ -265,6 +274,15 @@ public class KnowledgeCache implements I_KnowledgeCache {
                     throw new IllegalArgumentException("Invalid OPT path:"+entry.getValue());
                 }
             }
+            else if ( entry != null && ((String)entry.getKey()).compareTo(KNOWLEDGE_PATH_BACKUP)==0) {
+                try {
+                    backupPath = (String)(entry.getValue());
+                    log.debug("Backup path:"+ backupPath);
+                } catch (Exception e) {
+                    log.error("Could not map backup path:" + entry.getValue());
+                    throw new IllegalArgumentException("Invalid backup path:"+entry.getValue());
+                }
+            }
         }
         return true;
     }
@@ -278,11 +296,12 @@ public class KnowledgeCache implements I_KnowledgeCache {
         if (properties == null)
             return;
 
-        forceCache = Boolean.parseBoolean((String)properties.getOrDefault("knowledge.forcecache", "false"));
-        cacheLocatable = Boolean.parseBoolean((String)properties.getOrDefault("knowledge.cachelocatable", "false"));
-        archetypePath = (String)properties.getOrDefault("knowledge.path.archetype", "");
-        templatePath = (String)properties.getOrDefault("knowledge.path.template", "");
-        optPath = (String)properties.getOrDefault("knowledge.path.opt", "");
+        forceCache = Boolean.parseBoolean((String)properties.getOrDefault(KNOWLEDGE_FORCECACHE, "false"));
+        cacheLocatable = Boolean.parseBoolean((String)properties.getOrDefault(KNOWLEDGE_CACHELOCATABLE, "false"));
+        archetypePath = (String)properties.getOrDefault(KNOWLEDGE_PATH_ARCHETYPE, "");
+        templatePath = (String)properties.getOrDefault(KNOWLEDGE_PATH_TEMPLATE, "");
+        optPath = (String)properties.getOrDefault(KNOWLEDGE_PATH_OPT, "");
+        backupPath = (String)properties.getOrDefault(KNOWLEDGE_PATH_BACKUP, "");
     }
 
 
@@ -376,9 +395,11 @@ public class KnowledgeCache implements I_KnowledgeCache {
         //check if this template already exists
         if (Files.exists(path)){
             //create a backup
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
-            Path backupPath = Paths.get(optPath + "/" + filename+"_"+formatter.print(DateTime.now()) + ".opt.bak");
-            Files.copy(path, backupPath);
+            if (!backupPath.equals(NULL_PATH)) {
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
+                Path backupRepository = Paths.get(backupPath + "/" + filename + "_" + formatter.print(DateTime.now()) + ".opt.bak");
+                Files.copy(path, backupRepository);
+            }
         }
 
         try {
@@ -391,7 +412,13 @@ public class KnowledgeCache implements I_KnowledgeCache {
         optFileMap.put(filename, path.toFile());
         atOptCache.put(filename, template);
         idxCache.put(UUID.fromString(template.getUid().getValue()), filename);
-        globalIndex.put(template.getTemplateId().getValue(), template);
+
+        String templateId = template.getTemplateId().getValue();
+
+        globalIndex.put(templateId, template);
+
+        //invalidate the cache for this template
+        invalidateCache(templateId);
 
         //retrieve the template Id for this new entry
         return template.getTemplateId().getValue();
@@ -713,6 +740,20 @@ public class KnowledgeCache implements I_KnowledgeCache {
             return false;
     }
 
+    @Override
+    public void invalidateCache(String templateId){
+        if (cacheContainsLocatable(templateId)){
+            log.info("invalidating cache for template id:"+templateId);
+            cacheSerialized.remove(templateId);
+        }
+    }
+
+    @Override
+    public void invalidateCache(){
+        log.info("invalidating the whole cache");
+        cacheSerialized.clear();
+    }
+
 	@Override
 	public Map<String, Archetype> getArchetypeMap() {
 		return atArchetypeCache;
@@ -799,6 +840,7 @@ public class KnowledgeCache implements I_KnowledgeCache {
         sb.append("\nCache Generated Locatable:"+ cacheLocatable);
         sb.append("\nArchetype Path           :"+archetypePath);
         sb.append("\nTemplate Path            :"+templatePath);
+        sb.append("\nBackup Path              :"+ (backupPath.equals(NULL_PATH) ? "*no template backup will be done*" : backupPath));
         sb.append("\nOperational Template Path:"+optPath);
         sb.append("\n");
         return sb.toString();

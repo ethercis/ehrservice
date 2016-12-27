@@ -95,6 +95,11 @@ public class SelectBinder {
             SelectQuery<?> subSelect = context.selectQuery();
             switch (className){
                 case "COMPOSITION":
+                    if (variableDefinition.getPath().startsWith("content")) {
+                        field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                        break;
+                    }
+
                 case "EHR":
                     field = compositionAttributeQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
 //                    selectFields.add(compositionAttributeQuery.selectField(comp_id, identifier, variableDefinition));

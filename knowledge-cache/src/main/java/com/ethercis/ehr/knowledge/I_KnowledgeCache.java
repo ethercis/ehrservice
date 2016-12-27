@@ -154,6 +154,10 @@ public interface I_KnowledgeCache {
 
     Boolean cacheContainsLocatable(String name);
 
+    void invalidateCache(String templateId);
+
+    void invalidateCache();
+
     public Map<String, Archetype> getArchetypeMap();
 
     Map<String, String> getOperationalTemplateMap();

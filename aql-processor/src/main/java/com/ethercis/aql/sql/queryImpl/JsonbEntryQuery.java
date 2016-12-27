@@ -223,8 +223,11 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     @Override
     public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause){
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
-        if (path == null)
-            throw new IllegalArgumentException("Could not find a path for identifier:"+variableDefinition.getIdentifier());
+        if (path == null) {
+            //return a null field
+            return DSL.field(DSL.val(null));
+//            throw new IllegalArgumentException("Could not resolve path for identifier:" + variableDefinition.getIdentifier());
+        }
         String alias = variableDefinition.getAlias();
 
         List<String> itemPathArray = new ArrayList<>();

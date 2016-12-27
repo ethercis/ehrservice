@@ -112,12 +112,14 @@ public class EntryAttributeMapper {
             Integer match = firstOccurence(0, fields, VALUE);
 //            Integer match = fields.stream().filter(m -> m.equals("value"));
             if (match != null){ //deals with "/value/value"
+                Integer ndxInterval;
                 if (match == 0 && fields.size() == 2 && fields.get(1).equals(VALUE)){
 //                    fields.add(1, "/value");
                     ;
                 }
-                else if (match == 0 && fields.size() >= 2 && (fields.get(1).contains(LOWER) || fields.get(1).contains(UPPER))){ //interval
-                    fields.add(1, INTERVAL);
+                //TODO traverse to find an interval spec and insert "interval"
+                else if ((ndxInterval = intervalValueIndex(fields)) > 0){ //interval
+                    fields.add(ndxInterval, INTERVAL);
                 }
                 else if (match != 0) {
                     fields.set(match, SLASH_VALUE);
@@ -156,5 +158,14 @@ public class EntryAttributeMapper {
         String encoded = StringUtils.join(fields, COMMA);
 
         return encoded;
+    }
+
+    private static Integer intervalValueIndex(List<String> fields){
+        for (int i = 0; i < fields.size(); i++){
+            if (fields.get(i).matches("^lower|^upper")){
+                return i;
+            }
+        }
+        return -1;
     }
 }

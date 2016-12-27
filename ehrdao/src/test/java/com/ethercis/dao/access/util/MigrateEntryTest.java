@@ -45,7 +45,7 @@ public class MigrateEntryTest {
         props.put("knowledge.forcecache", "true");
         props.put("knowledge.cachelocatable", "false");
 //        props.put("db.port", 5434);
-        props.put("url", "jdbc:postgresql://192.168.2.104:5432/ethercis");
+        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
 
         MigrateEntry migrateEntry = new MigrateEntry(props);
         migrateEntry.migrateAll(false);
@@ -62,10 +62,11 @@ public class MigrateEntryTest {
         props.put("knowledge.forcecache", "true");
         props.put("knowledge.cachelocatable", "false");
 //        props.put("db.port", 5434);
-        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
+//        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
+        props.put("url", "jdbc:postgresql://localhost:5434/ethercis");
 
 //        UUID uuid = UUID.fromString("2e3c7d66-76eb-4ff9-9afd-c87ecf820583");
-        UUID uuid = UUID.fromString("54a60023-cb29-40f8-a2a2-d116e2c24fbd");
+        UUID uuid = UUID.fromString("a2b0c1d0-dc1c-42b4-90c5-c5a91d0f3277");
 
         MigrateEntry migrateEntry = new MigrateEntry(props);
         String out = migrateEntry.migrateEntry(props, uuid, false);
