@@ -867,14 +867,18 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testFlatJson() throws Exception {
-        String templateId = "COLNEC Medication";
+//        String templateId = "COLNEC Medication";
+//        String templateId = "IDCR - Service Request.v0";
+        String templateId = "GEL - Generic Lab Report import.v0";
 
 //        String templateId = "IDCR Problem List.v1";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/COLNEC_Medication_FLAT.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/COLNEC_Medication_FLAT.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Ian-mail-27-01-17.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_26.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
 
         Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);

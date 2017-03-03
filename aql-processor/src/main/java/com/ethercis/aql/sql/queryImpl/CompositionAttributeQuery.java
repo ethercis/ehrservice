@@ -48,6 +48,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private boolean ehrIdFiltered = false; //true if the query specifies the ehr id (in the AQL FROM clause)
     private boolean compositionIdFiltered = false; //true if the query contains a where clause with composition id specified
+    private boolean compositionIdField = false;
 
     //boolean indicating the resulting joins to generate
     private boolean joinComposition = false;
@@ -67,12 +68,15 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
         //resolve composition attributes and/or context
         columnAlias = variableDefinition.getPath();
+        compositionIdField = false;
         if (columnAlias == null)
             return null;
         switch (columnAlias){
             case "uid/value":
                 if (clause == Clause.WHERE)
                     compositionIdFiltered = true;
+                else
+                    compositionIdField = true;
 
                 joinComposition = true;
 
@@ -450,18 +454,19 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 return DSL.field(ehrRecordTable.field(ehrRecordTable.field(EHR.ID.getName())));
         }
         else if (!containsEhrStatus()) {
+            joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", EHR.ID).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
-                return DSL.field(EHR.ID);
+                return DSL.field(ehrRecordTable.field(EHR.ID.getName()));
         }
         else {
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", STATUS.EHR_ID).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
-                return DSL.field(STATUS.EHR_ID);
+                return DSL.field(ehrRecordTable.field(EHR.ID.getName()));
         }
     }
 
@@ -484,6 +489,11 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     }
 
     @Override
+    public boolean isJsonDataBlock() {
+        return false;
+    }
+
+    @Override
     public boolean isEhrIdFiltered() {
         return ehrIdFiltered;
     }
@@ -500,7 +510,13 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     @Override
     public boolean isUseEntry() {
+
         return false;
+    }
+
+    @Override
+    public String getJsonbItemPath() {
+        return null;
     }
 
     public boolean isJoinComposition() {
@@ -529,6 +545,10 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     public boolean isJoinContextFacility() {
         return joinContextFacility;
+    }
+
+    public boolean isCompositionIdField() {
+        return compositionIdField;
     }
 
     public Table<PartyIdentifiedRecord> getComposerRef() {

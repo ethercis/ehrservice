@@ -17,6 +17,7 @@
 package com.ethercis.ehr.util;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.ehr.encode.wrappers.DvCodedTextVBean;
 import com.ethercis.ehr.encode.wrappers.json.writer.DvDateAdapter;
 import com.ethercis.ehr.encode.wrappers.json.writer.DvDateTimeAdapter;
 import com.ethercis.ehr.encode.VBeanUtil;
@@ -29,12 +30,15 @@ import org.apache.logging.log4j.Logger;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
+import org.openehr.rm.composition.Composition;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.encapsulated.DvParsable;
 import org.openehr.rm.datatypes.quantity.DvInterval;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
+import org.openehr.rm.datatypes.text.DvCodedText;
+import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.ObjectID;
 
 import java.io.Reader;
@@ -119,6 +123,8 @@ public class MapInspector {
     }
 
     public String simplifyPathExpressionKeepArrayIndex(String path){
+        if (path == null)
+            return null;
         if (path.contains("{{")) //annotated
             return path;
         List<String> segments = Locatable.dividePathIntoSegments(path);
@@ -186,7 +192,11 @@ public class MapInspector {
             else if (object != null) {
                 boolean composite = false;
                 if (map.containsKey(CompositionSerializer.TAG_NAME)) {
-                    retMap.put(path + I_PathValue.NAME_SUBTAG, map.get(CompositionSerializer.TAG_NAME).toString());
+                    Object nameAttribute = map.get(CompositionSerializer.TAG_NAME);
+                    if (nameAttribute instanceof String)
+                        retMap.put(path + I_PathValue.NAME_SUBTAG, nameAttribute.toString());
+                    else if (nameAttribute instanceof Map)
+                        retMap.put(path + I_PathValue.NAME_SUBTAG, ((Map)nameAttribute).get("value").toString());
                     composite = true;
                 }
                 if (map.containsKey(CompositionSerializer.TAG_DEFINING_CODE)){
@@ -273,7 +283,19 @@ public class MapInspector {
         try {
             object = method.invoke(null, attributes); //static call of method
         } catch (Exception e){
-            throw new IllegalArgumentException("Could not invoke constructor for class:"+clazz+ " attributes:"+attributes+" exception:"+e);
+            if (clazz.equals(DvCodedTextVBean.class)) { //try a DvText
+                clazz = Class.forName("com.ethercis.ehr.encode.wrappers.DvTextVBean");
+                method = clazz.getDeclaredMethod("getInstance", Map.class);
+
+                try {
+                    object = method.invoke(null, attributes);
+
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException("Could not invoke constructor for class DvText attributes:" + attributes + " exception:" + e);
+                }
+            }
+            else
+                throw new IllegalArgumentException("Could not invoke constructor for class:"+clazz+ " attributes:"+attributes+" exception:"+e);
         }
 
         try {
@@ -291,7 +313,12 @@ public class MapInspector {
 //            throw new IllegalArgumentException("Inconsistent entry PATH in JSON structure " + value);
         }
         Map<String, Object> current = stack.getFirst();
-        current.put(key, value);
+        try {
+            current.put(key, value);
+        }
+        catch (Exception e){
+            log.debug("duplicate key detected:" + key);
+        }
     }
 
     private void mapInspect(Map<String, Object> map) throws Exception {
@@ -443,6 +470,11 @@ public class MapInspector {
 
                         stack.push(participationMap);
                     }
+                }
+                else if (CompositionSerializer.TAG_NAME.equals(key)){
+                    //ignore node names (contained in item path)
+//                    Map nameValueMap = (Map)((List<Object>)value).get(0);
+//                    stack.push(nameValueMap);
                 }
                 else
                     listInspect((List<Object>) value);

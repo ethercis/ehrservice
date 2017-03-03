@@ -20,21 +20,17 @@ package com.ethercis.aql.sql.binding;
 import com.ethercis.aql.compiler.OrderAttribute;
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.containment.IdentifierMapper;
-import com.ethercis.aql.definition.FromDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
+import com.ethercis.aql.sql.postprocessing.I_RawJsonTransform;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.aql.sql.queryImpl.I_QueryImpl;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
-import com.ethercis.jooq.pg.tables.records.CompositionRecord;
-import com.ethercis.jooq.pg.tables.records.EhrRecord;
-import com.ethercis.jooq.pg.tables.records.PartyIdentifiedRecord;
-import com.ethercis.jooq.pg.tables.records.StatusRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
-import org.jooq.impl.DSL;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,6 +48,7 @@ public class SelectBinder {
     private CompositionAttributeQuery compositionAttributeQuery;
     private PathResolver pathResolver;
     protected List<VariableDefinition> selectVariableDefinitions;
+    protected List<JsonbBlockDef> jsonDataBlock = new ArrayList<>();
     private IdentifierMapper mapper;
     DSLContext context ;
     private WhereBinder whereBinder;
@@ -88,6 +85,8 @@ public class SelectBinder {
 
         SelectQuery<?> selectQuery = context.selectQuery();
 
+        boolean containsJsonDataBlock = false;
+
         for (VariableDefinition variableDefinition: selectVariableDefinitions) {
             String identifier = variableDefinition.getIdentifier();
             String className = mapper.getClassName(identifier);
@@ -106,6 +105,11 @@ public class SelectBinder {
                     break;
                 default:
                     field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                    containsJsonDataBlock  = containsJsonDataBlock | jsonbEntryQuery.isJsonDataBlock();
+                    if (jsonbEntryQuery.isJsonDataBlock()){
+                        //add this field to the list of column to format as RAW JSON
+                        jsonDataBlock.add(new JsonbBlockDef(jsonbEntryQuery.getJsonbItemPath(), field));
+                    }
 //                    selectFields.add(jsonbEntryQuery.selectField(comp_id, identifier, variableDefinition));
                     break;
             }
@@ -123,8 +127,13 @@ public class SelectBinder {
 //            selectQuery.addJoin(STATUS, JoinType.JOIN, STATUS.EHR_ID.eq(COMP_EXPAND.EHR_ID));
 //        }
 
+        if (containsJsonDataBlock){
+            //add a template column for transformation
+            selectQuery.addSelect(ENTRY.TEMPLATE_ID.as(I_RawJsonTransform.TEMPLATE_ID));
+        }
+
         if (optimizationMode.equals(OptimizationMode.NONE)) {
-            whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(comp_id));
+            whereBinder.setInitialCondition(I_JoinBinder.compositionRecordTable.field("id", UUID.class).in(comp_id));
 //        whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.eq(UUID.fromString(DSL.param("comp_id"))));
 //        selectQuery.addConditions();
             selectQuery.addConditions(whereBinder.bind(comp_id));
@@ -171,7 +180,7 @@ public class SelectBinder {
 //        selectQuery.addFrom(CompositionQuerySnippets.content(context, comp_id));
 //        completeFromClause(selectQuery);
 //        selectQuery.addFrom(COMP_EXPAND);
-        whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(inSet));
+        whereBinder.setInitialCondition(I_JoinBinder.compositionRecordTable.field("id", UUID.class).in(inSet));
 //        selectQuery.addConditions();
         selectQuery.addConditions(whereBinder.bind(null));
 
@@ -234,7 +243,8 @@ public class SelectBinder {
 
 //        selectQuery.addFrom(COMP_EXPAND);
         if (containQuery != null) {
-            whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(containQuery.asField()));
+//            whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(containQuery.asField()));
+            whereBinder.setInitialCondition(I_JoinBinder.compositionRecordTable.field("id", UUID.class).in(containQuery.asField()));
         }
         selectQuery.addConditions(whereBinder.bind(null));
 
@@ -340,5 +350,9 @@ public class SelectBinder {
 
     public CompositionAttributeQuery getCompositionAttributeQuery() {
         return compositionAttributeQuery;
+    }
+
+    public List<JsonbBlockDef> getJsonDataBlock() {
+        return jsonDataBlock;
     }
 }

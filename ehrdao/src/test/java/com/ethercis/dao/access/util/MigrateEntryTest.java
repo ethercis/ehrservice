@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 public class MigrateEntryTest {
 
     @Test
-    public void testMigrateEntry() throws Exception {
+    public void testMigrateEntries() throws Exception {
         Properties props = new Properties();
         props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
         props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
@@ -45,7 +45,9 @@ public class MigrateEntryTest {
         props.put("knowledge.forcecache", "true");
         props.put("knowledge.cachelocatable", "false");
 //        props.put("db.port", 5434);
-        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
+//        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
+//        props.put("url", "jdbc:postgresql://localhost:5434/ethercis");
+        props.put("url", "jdbc:postgresql://192.168.2.108:5432/ethercis");
 
         MigrateEntry migrateEntry = new MigrateEntry(props);
         migrateEntry.migrateAll(false);
@@ -63,13 +65,34 @@ public class MigrateEntryTest {
         props.put("knowledge.cachelocatable", "false");
 //        props.put("db.port", 5434);
 //        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
-        props.put("url", "jdbc:postgresql://localhost:5434/ethercis");
+        props.put("url", "jdbc:postgresql://192.168.2.108:5432/ethercis");
 
 //        UUID uuid = UUID.fromString("2e3c7d66-76eb-4ff9-9afd-c87ecf820583");
-        UUID uuid = UUID.fromString("a2b0c1d0-dc1c-42b4-90c5-c5a91d0f3277");
+        UUID uuid = UUID.fromString("453e7d14-763b-4ab5-8f37-8340f9f4c9f5");
 
         MigrateEntry migrateEntry = new MigrateEntry(props);
-        String out = migrateEntry.migrateEntry(props, uuid, false);
+        String out = migrateEntry.migrateEntry(props, uuid, true);
+        System.out.println(out);
+
+    }
+
+    @Test
+    public void testMigrateSingleComposition() throws Exception {
+        Properties props = new Properties();
+        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
+        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
+        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.forcecache", "true");
+        props.put("knowledge.cachelocatable", "false");
+//        props.put("db.port", 5434);
+//        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
+        props.put("url", "jdbc:postgresql://192.168.2.108:5432/ethercis");
+
+//        UUID uuid = UUID.fromString("2e3c7d66-76eb-4ff9-9afd-c87ecf820583");
+        UUID uuid = UUID.fromString("8bcf593c-893d-4325-8fcc-3fa5ca194f38");
+
+        MigrateEntry migrateEntry = new MigrateEntry(props);
+        String out = migrateEntry.migrateComposition(props, uuid, false);
         System.out.println(out);
 
     }

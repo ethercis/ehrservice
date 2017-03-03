@@ -51,4 +51,5 @@ public class RawJsonParserTest {
         Assert.assertNotNull(flatten);
         System.out.println(gson.toJson(flatten, TreeMap.class));
     }
+
 }

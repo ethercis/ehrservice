@@ -28,6 +28,8 @@ import java.util.UUID;
  */
 public interface I_QueryImpl {
 
+    boolean isJsonDataBlock();
+
     boolean isEhrIdFiltered();
 
     boolean isCompositionIdFiltered();
@@ -35,6 +37,8 @@ public interface I_QueryImpl {
     boolean isContainsJqueryPath();
 
     boolean isUseEntry();
+
+    String getJsonbItemPath();
 
     enum Clause {SELECT, WHERE, ORDERBY, FROM}
 

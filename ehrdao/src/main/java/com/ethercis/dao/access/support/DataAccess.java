@@ -429,6 +429,11 @@ public abstract class DataAccess implements I_DomainAccess {
     }
 
     @Override
+    public void setKnowledgeManager(I_KnowledgeCache knowledgeCache) {
+        knowledgeManager = knowledgeCache;
+    }
+
+    @Override
     public String getServerNodeId() {
         if (serverNodeId == null || serverNodeId.length() == 0)
             return "local.ethercis.com";

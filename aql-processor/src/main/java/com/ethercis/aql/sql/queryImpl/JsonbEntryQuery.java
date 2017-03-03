@@ -19,6 +19,7 @@ package com.ethercis.aql.sql.queryImpl;
 
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
+import com.ethercis.aql.sql.binding.I_JoinBinder;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -57,7 +58,8 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
 
     //OTHER_DETAILS (Ehr Status Query)
-    private static final String SELECT_EHR_OTHER_DETAILS_MACRO = STATUS.OTHER_DETAILS+"->('"+ CompositionSerializer.TAG_OTHER_DETAILS+"')";
+//    private static final String SELECT_EHR_OTHER_DETAILS_MACRO = STATUS.OTHER_DETAILS+"->('"+ CompositionSerializer.TAG_OTHER_DETAILS+"')";
+    private static final String SELECT_EHR_OTHER_DETAILS_MACRO = I_JoinBinder.statusRecordTable.field(STATUS.OTHER_DETAILS)+"->('"+ CompositionSerializer.TAG_OTHER_DETAILS+"')";
     private final static String JSONBSelector_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO +" #>> '{";
 //    private final static String JSONBSelector_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO +" #> '{";
     public final static String Jsquery_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO +" @@ '";
@@ -68,21 +70,30 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 //    private final static String JSONBSelector_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO +" #> '{";
     public final static String Jsquery_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO +" @@ '";
 
+    public final static String matchNodePredicate = "/(content|protocol|data|description|instruction|items|activities|activity|composition|entry|evaluation|observation|action)\\[at([(0-9)\\.]*)\\]";
+
     //Generic stuff
     private final static String JSONBSelector_CLOSE = "}'";
     public final static String Jsquery_CLOSE = " '::jsquery";
     private static final String namedItemPrefix = " and name/value='";
+    public static final String TAG_COMPOSITION = "/composition";
 
     private static boolean useEntry = false;
+
+    private String jsonbItemPath;
+
+    public static final String TAG_ACTIVITIES = "/activities";
+    public static final String TAG_EVENTS = "/events";
 
     private static final String listIdentifier[] = {
             "/content",
             "/items",
-            "/activities",
-            "/events"
+            TAG_ACTIVITIES,
+            TAG_EVENTS
     };
 
     private static boolean containsJqueryPath = false; //true if at leas one AQL path is contained in expression
+    private static boolean jsonDataBlock = false;
 
     private String entry_root;
 
@@ -92,7 +103,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     }
 
     private static boolean isList(String predicate){
-        if (predicate.equals("/activities"))
+        if (predicate.equals(TAG_ACTIVITIES))
             return false;
         for (String identifier: listIdentifier)
             if (predicate.startsWith(identifier)) return true;
@@ -105,12 +116,12 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
     //deals with special tree based entities
     private static void encodeTreeMapNodeId(List<String> jqueryPath, String nodeId){
-        if (nodeId.startsWith("/events")){
+        if (nodeId.startsWith(TAG_EVENTS)){
             //this is an exception since events are represented in an event tree
-            jqueryPath.add("/events");
+            jqueryPath.add(TAG_EVENTS);
         }
-        else if (nodeId.startsWith("/activities")){
-            jqueryPath.add("/activities");
+        else if (nodeId.startsWith(TAG_ACTIVITIES)){
+            jqueryPath.add(TAG_ACTIVITIES);
         }
     }
 
@@ -118,29 +129,31 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         //CHC 160607: this offset (1 or 0) was required due to a bug in generating the containment table
         //from a PL/pgSQL script. this is no more required
 //        int offset = (path_part == PATH_PART.IDENTIFIER_PATH_PART ? 1 : 0);
+        jsonDataBlock = false;
         int offset = 0;
         List<String> segments = Locatable.dividePathIntoSegments(path);
         List<String> jqueryPath = new ArrayList<>();
         String nodeId = null;
-        for (int i = offset; i < segments.size(); i++){
+        for (int i = offset; i < segments.size(); i++) {
             nodeId = segments.get(i);
-            if (nodeId.contains(namedItemPrefix)){
-                nodeId = nodeId.substring(0, nodeId.indexOf(namedItemPrefix))+"]";
-            }
-            else if (nodeId.contains(",")){
-                nodeId = nodeId.substring(0, nodeId.indexOf(","))+"]";
+            if (nodeId.contains(namedItemPrefix)) {
+                nodeId = nodeId.substring(0, nodeId.indexOf(namedItemPrefix)) + "]";
+            } else if (nodeId.contains(",")) {
+                nodeId = nodeId.substring(0, nodeId.indexOf(",")) + "]";
             }
 
-            nodeId = "/"+nodeId;
+            nodeId = "/" + nodeId;
 
             encodeTreeMapNodeId(jqueryPath, nodeId);
 
             jqueryPath.add(nodeId);
 
             if (isList(nodeId)) {
-                jqueryPath.add(defaultIndex);
+                if (path_part.equals(PATH_PART.VARIABLE_PATH_PART) && !(i == segments.size() - 1))
+                    jqueryPath.add(defaultIndex);
+                else if (path_part.equals(PATH_PART.IDENTIFIER_PATH_PART))
+                    jqueryPath.add(defaultIndex);
             }
-
         }
 
 //        String jquery = StringUtils.removeEnd(jqueryPath.toString(), ",");
@@ -174,6 +187,9 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 //        String jquery = StringUtils.join(jqueryPath.toArray(new String[] {}));
 
         useEntry = true;
+        if (path_part.equals(PATH_PART.VARIABLE_PATH_PART) && jqueryPath.get(jqueryPath.size() - 1).matches(matchNodePredicate)) {
+            jsonDataBlock = true;
+        }
         return jqueryPath;
     }
 
@@ -220,6 +236,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         return fieldPathItem;
     }
 
+
     @Override
     public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause){
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
@@ -232,7 +249,8 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
         List<String> itemPathArray = new ArrayList<>();
         itemPathArray.add(entry_root.replaceAll("'", "''"));
-        itemPathArray.addAll(jqueryPath(PATH_PART.IDENTIFIER_PATH_PART, path, "0"));
+        if (!path.startsWith(TAG_COMPOSITION))
+            itemPathArray.addAll(jqueryPath(PATH_PART.IDENTIFIER_PATH_PART, path, "0"));
         itemPathArray.addAll(jqueryPath(PATH_PART.VARIABLE_PATH_PART, variableDefinition.getPath(), "0"));
 
         resolveArrayIndex(itemPathArray);
@@ -259,7 +277,22 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
         containsJqueryPath = true;
         useEntry = true;
+
+        if (isJsonDataBlock()){
+            jsonbItemPath = toAqlPath(itemPathArray);
+        }
+
         return fieldPathItem;
+    }
+
+    private String toAqlPath(List<String> itemPathArray) {
+        List<String> aqlPath = new ArrayList<>();
+        for (String path: itemPathArray){
+            if (!path.startsWith(TAG_COMPOSITION) && !path.matches("[0-9]*")){
+                aqlPath.add(path);
+            }
+        }
+        return StringUtils.join(aqlPath.toArray(new String[]{}));
     }
 
     @Override
@@ -271,7 +304,8 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         List<String> itemPathArray = new ArrayList<>();
 
         itemPathArray.add(entry_root.replaceAll("'", "''"));
-        itemPathArray.addAll(jqueryPath(PATH_PART.IDENTIFIER_PATH_PART, path, "#"));
+        if (!path.startsWith(TAG_COMPOSITION))
+            itemPathArray.addAll(jqueryPath(PATH_PART.IDENTIFIER_PATH_PART, path, "#"));
         itemPathArray.addAll(jqueryPath(PATH_PART.VARIABLE_PATH_PART, variableDefinition.getPath(), "#"));
 
         StringBuffer jsqueryPath = new StringBuffer();
@@ -344,5 +378,15 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     @Override
     public boolean isUseEntry() {
         return useEntry;
+    }
+
+    @Override
+    public boolean isJsonDataBlock() {
+        return jsonDataBlock;
+    }
+
+    @Override
+    public String getJsonbItemPath() {
+        return jsonbItemPath;
     }
 }

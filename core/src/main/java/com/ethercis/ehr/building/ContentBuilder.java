@@ -45,6 +45,7 @@ import org.openehr.rm.datastructure.history.History;
 import org.openehr.rm.datastructure.history.IntervalEvent;
 import org.openehr.rm.datastructure.history.PointEvent;
 import org.openehr.rm.datastructure.itemstructure.ItemStructure;
+import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.encapsulated.DvParsable;
@@ -94,7 +95,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         //set lenient from the environment
         if (System.getProperty("validation.lenient") != null){
             lenient = Boolean.parseBoolean(System.getProperty("validation.lenient"));
-            log.info("ContentBuilder validation set to: "+(lenient ? "lenient" : "active"));
+            log.debug("ContentBuilder validation set to: "+(lenient ? "lenient" : "active"));
         }
     }
 
@@ -132,21 +133,44 @@ public abstract class ContentBuilder implements I_ContentBuilder{
     }
 
     private static DvText getNewName(Map<String, Object> definition){
-        String name = (String) definition.get(CompositionSerializer.TAG_NAME);
-        CodePhrase codePhrase = null;
-        if (definition.containsKey(CompositionSerializer.TAG_DEFINING_CODE)) { //DvCodedText for name
-            Map definingCodeMap = (LinkedTreeMap) definition.get(CompositionSerializer.TAG_DEFINING_CODE);
-            String terminologyId = (String) ((Map) definingCodeMap.get("terminologyId")).get("value");
-            String codeString = (String) definingCodeMap.get("codeString");
-            codePhrase = new CodePhrase(terminologyId, codeString);
-        }
-        DvText newName;
-        if (codePhrase != null)
-            newName = new DvCodedText(name, codePhrase);
-        else //DvText
-            newName = new DvText(name);
+        Object nameDefinition = definition.get(CompositionSerializer.TAG_NAME);
+        if (nameDefinition instanceof String) { //backward compatibility
+            String name = (String) definition.get(CompositionSerializer.TAG_NAME);
+            CodePhrase codePhrase = null;
+            if (definition.containsKey(CompositionSerializer.TAG_DEFINING_CODE)) { //DvCodedText for name
+                Map definingCodeMap = (LinkedTreeMap) definition.get(CompositionSerializer.TAG_DEFINING_CODE);
+                String terminologyId = (String) ((Map) definingCodeMap.get("terminologyId")).get("value");
+                String codeString = (String) definingCodeMap.get("codeString");
+                codePhrase = new CodePhrase(terminologyId, codeString);
+            }
+            DvText newName;
+            if (codePhrase != null)
+                newName = new DvCodedText(name, codePhrase);
+            else //DvText
+                newName = new DvText(name);
 
-        return newName;
+            return newName;
+        }
+        else if (nameDefinition instanceof Map){
+            String name = (String)((Map) nameDefinition).get("value");
+            CodePhrase codePhrase = null;
+            if (((Map) nameDefinition).containsKey(CompositionSerializer.TAG_DEFINING_CODE)) { //DvCodedText for name
+                Map definingCodeMap = (LinkedTreeMap) ((Map) nameDefinition).get(CompositionSerializer.TAG_DEFINING_CODE);
+                String terminologyId = (String) ((Map) definingCodeMap.get("terminologyId")).get("value");
+                String codeString = (String) definingCodeMap.get("codeString");
+                codePhrase = new CodePhrase(terminologyId, codeString);
+            }
+            DvText newName;
+            if (codePhrase != null)
+                newName = new DvCodedText(name, codePhrase);
+            else //DvText
+                newName = new DvText(name);
+
+            return newName;
+
+        }
+        else
+            throw new IllegalArgumentException("Could not handle name definition:"+nameDefinition);
     }
 
     @Override
@@ -166,6 +190,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             if (definition.containsKey(CompositionSerializer.TAG_NAME)) {
                 DvText newName = getNewName(definition);
                 cloned.setName(newName);
+                //change the name of the adapted element as well
+                if (cloned instanceof ElementWrapper) {
+                    Element element = ((ElementWrapper)cloned).getAdaptedElement();
+                    element.setName(newName);
+                }
             }
             else
                 locatableHelper.adjustChildrenNames(cloned, parentPath, path);
@@ -708,6 +737,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     @Override
     public Composition buildCompositionFromJson(String jsonData) throws Exception {
+        if (jsonData == null)
+            return null;
         MapInspector inspector = getMapInspector(jsonData);
 
         //TODO: use a cache mechanism for generated composition
@@ -877,6 +908,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         }
     }
 
+    @Override
     public void setLenient(boolean lenient) {
         this.lenient = lenient;
     }

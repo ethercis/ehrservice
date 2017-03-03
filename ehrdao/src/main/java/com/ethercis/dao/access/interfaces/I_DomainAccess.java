@@ -90,6 +90,7 @@ public interface I_DomainAccess {
     }
 
 
+    void setKnowledgeManager(I_KnowledgeCache knowledgeCache);
 
     String getServerNodeId();
 }

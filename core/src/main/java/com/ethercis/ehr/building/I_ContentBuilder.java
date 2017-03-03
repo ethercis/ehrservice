@@ -157,6 +157,8 @@ public interface I_ContentBuilder {
 
     Boolean isLenient();
 
+    void setLenient(boolean lenient);
+
     ConstraintMapper getConstraintMapper();
 
     Map<String, Integer> getArrayItemPathMap();

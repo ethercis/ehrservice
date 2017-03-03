@@ -52,7 +52,7 @@ public class AqlQueryHandler extends DataAccess {
     }
 
     public List<Record> process(String query) throws SQLException {
-        QueryProcessor queryProcessor = new QueryProcessor(getContext());
+        QueryProcessor queryProcessor = new QueryProcessor(getContext(), this.getKnowledgeManager());
         QueryParser queryParser = new QueryParser(getContext(), query);
 
         queryParser.pass1();

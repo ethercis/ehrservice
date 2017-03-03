@@ -20,6 +20,7 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
+import org.openehr.rm.datatypes.text.DvText;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +75,10 @@ public class DvCodedTextVBean extends DataValueAdapter implements I_VBeanWrapper
 
             CodePhrase codePhrase;
             Object definingCode = valueMap.get("definingCode");
+
+//            if (definingCode == null){
+//                return (DvCodedText)new DvText(actualValue);
+//            }
 
             if (definingCode instanceof Map) {
                 Map<String, Object> defCode = (Map<String, Object>) valueMap.get("definingCode");

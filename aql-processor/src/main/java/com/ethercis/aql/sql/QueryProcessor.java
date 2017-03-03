@@ -19,24 +19,22 @@ package com.ethercis.aql.sql;
 
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.compiler.TopAttributes;
-import com.ethercis.aql.sql.binding.FromBinder;
-import com.ethercis.aql.sql.binding.JoinBinder;
-import com.ethercis.aql.sql.binding.OrderByBinder;
-import com.ethercis.aql.sql.binding.SelectBinder;
-import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
+import com.ethercis.aql.sql.binding.*;
+import com.ethercis.aql.sql.postprocessing.I_RawJsonTransform;
+import com.ethercis.aql.sql.postprocessing.RawJsonTransform;
 import com.ethercis.aql.sql.queryImpl.ContainsSet;
+import com.ethercis.ehr.encode.rawjson.RawJsonEncoder;
+import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.jooq.pg.tables.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.lang.System;
 import java.sql.SQLException;
 import java.util.*;
-import org.jooq.RenderContext;
 
 import static com.ethercis.jooq.pg.Tables.*;
 
@@ -59,39 +57,15 @@ public class QueryProcessor  {
     private boolean explain = false;
     DSLContext context;
     Logger logger = LogManager.getLogger(QueryProcessor.class);
-
-    private class QuerySteps {
-        private SelectQuery selectQuery;
-        private Condition whereCondition;
-        private String templateId;
-        private CompositionAttributeQuery compositionAttributeQuery;
-
-        public QuerySteps(SelectQuery selectQuery, Condition whereCondition, String templateId, CompositionAttributeQuery compositionAttributeQuery) {
-            this.selectQuery = selectQuery;
-            this.whereCondition = whereCondition;
-            this.templateId = templateId;
-            this.compositionAttributeQuery = compositionAttributeQuery;
-        }
-
-        public SelectQuery getSelectQuery() {
-            return selectQuery;
-        }
-
-        public Condition getWhereCondition() {
-            return whereCondition;
-        }
-
-        public String getTemplateId() {
-            return templateId;
-        }
-
-        public CompositionAttributeQuery getCompositionAttributeQuery() {
-            return compositionAttributeQuery;
-        }
-    }
+    I_KnowledgeCache knowledgeCache = null;
 
     public QueryProcessor(DSLContext context){
         this.context = context;
+    }
+
+    public QueryProcessor(DSLContext context, I_KnowledgeCache knowledgeCache){
+        this.context = context;
+        this.knowledgeCache = knowledgeCache;
     }
 
     public QueryProcessor(DSLContext context, boolean explain){
@@ -109,6 +83,10 @@ public class QueryProcessor  {
         List<Object> explainList = new ArrayList<>();
         TopAttributes topAttributes = queryParser.getTopAttributes();
         Integer count = null;
+//        RawJsonEncoder rawJsonEncoder = new RawJsonEncoder(knowledgeCache);
+
+        boolean containsJsonbField = false;
+
         if (topAttributes != null)
             count = topAttributes.getWindow();
 
@@ -143,7 +121,14 @@ public class QueryProcessor  {
 //                            result = fetchResultSet(select, result);
 //                            break;
 //                        }
-                        cacheQuery.put(template_id, new QuerySteps(select, selectBinder.getWhereConditions(null), template_id, selectBinder.getCompositionAttributeQuery()));
+                        containsJsonbField = containsJsonbField | selectBinder.containsJQueryPath();
+
+                        cacheQuery.put(template_id,
+                                new QuerySteps(select,
+                                                selectBinder.getWhereConditions(null),
+                                                template_id,
+                                                selectBinder.getCompositionAttributeQuery(),
+                                                selectBinder.getJsonDataBlock()));
                     }
                 }
 
@@ -182,8 +167,16 @@ public class QueryProcessor  {
                         unionSetQuery.addOrderBy(orderByBinder.getOrderByFields());
                     if (count != null)
                         unionSetQuery.addLimit(count);
-                    if (!explain)
+                    if (!explain) {
                         result = fetchResultSet(unionSetQuery, result);
+                        //if any jsonb data field transform them into raw json
+                        if (containsJsonbField && knowledgeCache != null){
+                            RawJsonTransform.toRawJson(result, cacheQuery.values(), knowledgeCache);
+                            result = RawJsonTransform.deleteNamedColumn(result, I_RawJsonTransform.TEMPLATE_ID);
+                        }
+                        //TODO: remove column _TEMPLATE_ID
+//                        result.remove("_TEMPLATE_ID");
+                    }
                     else
                         buildExplain(unionSetQuery, explainList);
                 }

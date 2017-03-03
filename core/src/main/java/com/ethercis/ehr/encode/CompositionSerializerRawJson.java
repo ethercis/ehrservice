@@ -23,7 +23,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
+import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.text.DvCodedText;
 
 import java.util.Map;
@@ -84,8 +86,10 @@ public class CompositionSerializerRawJson extends CompositionSerializer {
     private String rawJsonKey(String key){
         if (key.equals(TAG_CLASS))
             return I_DvTypeAdapter.TAG_CLASS_RAW_JSON;
-        else
+        else if (key.startsWith("/"))
             return key.substring(1);
+        else
+            return key;
     }
 
     protected String getNodeTag(String prefix, Locatable node, Object container) {
@@ -162,11 +166,85 @@ public class CompositionSerializerRawJson extends CompositionSerializer {
 //        TagSetter.setTagDefinition(this, TagSetter.DefinitionSet.RAW_JSON);
 //    }
 
+    protected Map<String, Object> traverse(Item item, String tag) throws Exception {
+        Map<String, Object> retmap = null;
+
+        log.debug("traverse item:"+item);
+
+        if (item == null){
+            return null;
+        }
+
+
+//		pushPathStack(tag + "[" + item.getArchetypeNodeId() + "]");
+//        pushNamedStack(item.getName().getValue());
+
+        //for compatibility purpose, normally only ElementWrapper should be passed
+        if (item instanceof Element) {
+            itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", null);
+            retmap = setElementAttributesMap((Element) item);
+            itemStack.popStacks();
+        } else if (item instanceof ElementWrapper){
+            if (allElements || ((ElementWrapper)item).dirtyBitSet()) {
+                //TODO: add coded name item.getName().getValue()
+                itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", tag.equals(TAG_ITEMS) ? item.getName().getValue() : null);
+                retmap = setElementAttributesMap(((ElementWrapper) item).getAdaptedElement());
+                itemStack.popStacks();
+            }
+            else
+                log.debug("Ignoring unchanged element:"+item.toString());
+        }
+
+        else if (item instanceof Cluster) {
+            Map<String, Object>ltree = newMultiMap();
+//			Map<String, Object>ltree = new TreeMap<>();
+            itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", item.getName().getValue());
+
+            Cluster cluster = (Cluster) item;
+            boolean hasContent = false;
+
+            //CHC: 160531 add explicit name
+//			if (c.getName() != null) encodeNodeMetaData(ltree, item);
+
+            if (cluster.getItems() != null) {
+
+                //CHC:160914: fixed issue with cluster encoding as items (generated /value {/name... /value... /$PATH$... $CLASS$})
+                //this caused inconsistencies when running AQL queries
+                for (Item clusterItem : cluster.getItems()) {
+//					compactEntry(clusterItem, ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree), traverse(clusterItem, TAG_ITEMS));
+//					putObject(ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree), traverse(clusterItem, TAG_ITEMS));
+                    Object clusterItems = traverse(clusterItem, TAG_ITEMS);
+                    if (clusterItems != null) {
+                        if (clusterItems instanceof Map && ((Map)clusterItems).containsKey(TAG_VALUE)) {
+                            ltree.put(rawJsonKey(getNodeTag(TAG_ITEMS, clusterItem, ltree)), ((Map)clusterItems).get(TAG_VALUE));
+                        }
+                        else {
+                            ltree.put(rawJsonKey(getNodeTag(TAG_ITEMS, clusterItem, ltree)), clusterItems);
+                        }
+                    }
+                }
+                if (ltree.size() > 0) hasContent = true;
+
+                if (cluster.getName() != null) ltree.put(rawJsonKey(TAG_NAME), mapName(item.getName()));
+
+            }
+            if (hasContent)
+                retmap = ltree;
+            else
+                retmap = null;
+
+            itemStack.popStacks();
+        }
+
+        return retmap;
+    }
+
     @Override
     public String dbEncode(Locatable locatable) throws Exception {
         Map<String, Object> stringObjectMap = processItem(locatable);
         GsonBuilder builder = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.RAW_JSON);
-        Gson gson = builder.setPrettyPrinting().create();
+//        Gson gson = builder.setPrettyPrinting().create();
+        Gson gson = builder.create();
         return gson.toJson(stringObjectMap);
     }
 
@@ -174,7 +252,8 @@ public class CompositionSerializerRawJson extends CompositionSerializer {
     public String dbEncode(Composition composition) throws Exception {
         Map<String, Object> stringObjectMap = process(composition);
         GsonBuilder builder = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.RAW_JSON);
-        Gson gson = builder.setPrettyPrinting().create();
+//        Gson gson = builder.setPrettyPrinting().create();
+        Gson gson = builder.create();
 //        JsonElement jsonObject = gson.toJsonTree(composition);
         return gson.toJson(composition);
     }
@@ -183,7 +262,29 @@ public class CompositionSerializerRawJson extends CompositionSerializer {
     public String dbEncode(String tag, Locatable locatable) throws Exception {
         Map<String, Object> stringObjectMap = processItem(tag, locatable);
         GsonBuilder builder = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.RAW_JSON);
-        Gson gson = builder.setPrettyPrinting().create();
+//        Gson gson = builder.setPrettyPrinting().create();
+        Gson gson = builder.create();
         return gson.toJson(stringObjectMap);
+    }
+
+    @Override
+    public String dbEncodeContent(String tag, Locatable locatable) throws Exception {
+        Map<String, Object> stringObjectMap = processItem(tag, locatable);
+        Object content = stringObjectMap.get(tag);
+        GsonBuilder builder = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.RAW_JSON);
+//        Gson gson = builder.setPrettyPrinting().create();
+        Gson gson = builder.create();
+        return gson.toJson(content);
+    }
+
+    @Override
+    public Map<String, Object> dbEncodeAsMap(String tag, Locatable locatable) throws Exception {
+        return processItem(tag, locatable);
+    }
+
+    @Override
+    public Object dbEncodeContentAsMap(String tag, Locatable locatable) throws Exception {
+        Map<String, Object> objectMap = processItem(tag, locatable);
+        return objectMap.get(tag);
     }
 }

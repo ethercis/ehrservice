@@ -102,11 +102,12 @@ public class EntryAttributeMapper {
             fields.add(2, SLASH_VALUE);
             floor = 3;
         } else if (fields.get(0).equals(NAME)){
-            if (fields.get(1).equals(VALUE)){
-                fields.remove(1);
-            } else if (fields.get(1).equals(DEFINING_CODE)){
-                fields.remove(0);
-            }
+            fields.add(1, "0"); //name is now formatted as /name -> array of values! Required to deal with cluster items
+//            if (fields.get(1).equals(VALUE)){
+//                fields.remove(1);
+//            } else if (fields.get(1).equals(DEFINING_CODE)){
+//                fields.remove(0);
+//            }
         }
         else { //this deals with the "/value,value"
             Integer match = firstOccurence(0, fields, VALUE);
@@ -125,6 +126,9 @@ public class EntryAttributeMapper {
                     fields.set(match, SLASH_VALUE);
                     if (match == fields.size() - 1)
                         fields.add(VALUE);
+                }
+                else if (!fields.get(match + 1).equals(VALUE)){ //for example : /value/defining_code/code_string
+                    ;
                 }
                 else if (match + 1 < fields.size() - 1){
                     Integer first = firstOccurence(match+1, fields, VALUE);

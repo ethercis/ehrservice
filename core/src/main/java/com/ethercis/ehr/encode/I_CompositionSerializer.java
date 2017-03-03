@@ -68,4 +68,10 @@ public interface I_CompositionSerializer {
     String dbEncode(Composition composition) throws Exception;
 
     String dbEncode(String tag, Locatable locatable) throws Exception;
+
+    String dbEncodeContent(String tag, Locatable locatable) throws Exception;
+
+    Map<String, Object> dbEncodeAsMap(String tag, Locatable locatable) throws Exception;
+
+    Object dbEncodeContentAsMap(String tag, Locatable locatable) throws Exception;
 }

@@ -32,16 +32,23 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class FromBinder {
 
+//    private boolean compositionJoined = false;
+
     public void addFromClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery, QueryParser queryParser){
 
-        if (compositionAttributeQuery.containsEhrId()){
-            selectQuery.addFrom(EHR);
-        }
-        if (queryParser.isUseSimpleCompositionContainment()){
-            selectQuery.addJoin(I_JoinBinder.compositionRecordTable,
-                    DSL.field(I_JoinBinder.compositionRecordTable.field(COMPOSITION.EHR_ID.getName(), UUID.class))
-                        .eq(EHR.ID));
-        }
+        selectQuery.addFrom(ENTRY);
+
+//        if (compositionAttributeQuery.containsEhrId() || queryParser.isUseSimpleCompositionContainment()){
+//            selectQuery.addFrom(EHR);
+//        }
+//        if (!compositionJoined && queryParser.isUseSimpleCompositionContainment()){
+//            //check if from EHR is there
+//            selectQuery.addFrom(EHR);
+//            selectQuery.addJoin(I_JoinBinder.compositionRecordTable,
+//                    DSL.field(I_JoinBinder.compositionRecordTable.field(COMPOSITION.EHR_ID.getName(), UUID.class))
+//                        .eq(EHR.ID));
+//            compositionJoined = true;
+//        }
 
     }
 }

@@ -8,8 +8,11 @@ import com.ethercis.ehr.encode.FieldUtil;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.*;
 import com.ethercis.ehr.json.FlatJsonUtil;
+import com.ethercis.ehr.json.JsonUtil;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
+import com.ethercis.ehr.util.FlatJsonCompositionConverter;
+import com.ethercis.ehr.util.I_FlatJsonCompositionConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.joda.time.DateTime;
@@ -320,6 +323,20 @@ public class PathValueTest {
         String jsonString = gson.toJson(testRetMap);
 
         System.out.println(jsonString);
+
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+        Map<String, Object> flatMap = jsonCompositionConverter.fromComposition(templateId, retrieved);
+        flatMap.put("ctx/language", "en");
+        flatMap.put("ctx/territory", "GB");
+//        map.put("ctx/composer_name", "Silvia Blake");
+//        map.put("ctx/time", "2016-02-22T12:57:20.706Z");
+//        map.put("ctx/id_namespace", "HOSPITAL-NS");
+//        map.put("ctx/id_scheme", "HOSPITAL-NS");
+
+        String outMap = JsonUtil.toJsonString(flatMap);
+        System.out.println(outMap);
+
+
     }
 
     DataValue dataValue;

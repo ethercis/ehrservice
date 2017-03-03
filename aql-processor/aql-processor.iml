@@ -28,8 +28,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="core" />
     <orderEntry type="library" name="org.apache.commons:commons-collections4:4.0" level="application" />
-    <orderEntry type="module" module-name="knowledge-cache" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -40,17 +40,27 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="commons-lang:commons-lang:2.6" level="application" />
-    <orderEntry type="module" module-name="core" />
     <orderEntry type="library" name="postgresql-9.4-1204.jdbc42" level="project" />
     <orderEntry type="library" name="org.apache.logging.log4j:log4j-api:2.6.2" level="application" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.0" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.6.2" level="project" />
-    <orderEntry type="library" name="Maven: ethercis:ecis-core:1.1.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ethercis:ecis-knowledge-cache:1.1.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="jooq-pg" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4-1204-jdbc42" level="project" />
     <orderEntry type="library" name="Maven: org.jooq:jooq:3.7.3" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../Dropbox/eCIS_Development/eCIS-LIB/deploy/ecis-knowledge-cache-1.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="fst-2.40-onejar" level="application" />
+    <orderEntry type="module" module-name="validation" />
+    <orderEntry type="library" name="log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="commons-collections:commons-collections:3.2" level="application" />
   </component>
 </module>

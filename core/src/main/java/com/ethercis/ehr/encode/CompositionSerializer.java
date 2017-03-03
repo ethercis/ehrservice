@@ -80,7 +80,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	private String treeRootArchetype;
 
 	protected final WalkerOutputMode tag_mode; //default
-    private final boolean allElements; //default
+    protected final boolean allElements; //default
 
 //	private Gson gson = new Gson();
 
@@ -170,8 +170,37 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> newMultiMap(){
+	protected Map<String, Object> newMultiMap(){
 		return MapUtils.multiValueMap(new HashMap<String, Object>());
+	}
+
+	protected Map<String, Object> mapName(DvText aName){
+		Map<String, Object> nameMap = new HashMap<>();
+		if (aName instanceof DvCodedText) {
+			nameMap.put("defining_code", ((DvCodedText)(aName)).getDefiningCode());
+		}
+		nameMap.put("value", aName.getValue());
+		return nameMap;
+	}
+
+	private Map<String, Object> mapName(DvCodedText aName){
+		Map<String, Object> nameMap = new HashMap<>();
+		nameMap.put("defining_code", aName.getDefiningCode());
+		nameMap.put("value", aName.getValue());
+		return nameMap;
+	}
+
+	private Map<String, Object> mapName(String aName){
+		Map<String, Object> nameMap = new HashMap<>();
+		nameMap.put("value", new DvText(aName));
+		return nameMap;
+	}
+
+	private Map<String, List> nameAsValueList(Map map, Map nameValues){
+		List<Map> nameListMap = new ArrayList<>();
+		nameListMap.add(nameValues);
+		map.put(TAG_NAME, nameListMap);
+		return map;
 	}
 	/**
 	 * put a key=value pair in a map and detects duplicates.
@@ -189,15 +218,25 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 //		Object retStructure = null;
 
+		if (key.equals(TAG_NAME)){
+//			List<Map> nameListMap = new ArrayList<>();
+//			nameListMap.add((Map)addStructure);
+//			map.put(TAG_NAME, nameListMap);
+//			return map;
+			return nameAsValueList(map, (Map)addStructure);
+		}
+
 		try {
 			map.put(key, addStructure);
 			//add explicit name
 			if (node instanceof Locatable && map instanceof PredicatedMap && !map.containsKey(TAG_NAME)){
-				if (((Locatable) node).getName() instanceof DvCodedText) {
-					map.put(TAG_DEFINING_CODE, ((DvCodedText)((Locatable) node).getName()).getDefiningCode());
-				}
-				map.put(TAG_NAME, ((Locatable) node).getName().getValue());
-
+//				Map<String, Object> nameMap = new HashMap<>();
+//				if (((Locatable) node).getName() instanceof DvCodedText) {
+//					nameMap.put(TAG_DEFINING_CODE, ((DvCodedText)((Locatable) node).getName()).getDefiningCode());
+//				}
+//				nameMap.put(TAG_VALUE, ((Locatable) node).getName().getValue());
+//				map.put(TAG_NAME, mapName(((Locatable) node).getName()));
+				nameAsValueList(map, mapName(((Locatable) node).getName()));
 			}
 
 		} catch (IllegalArgumentException e) {
@@ -335,21 +374,21 @@ public class CompositionSerializer implements I_CompositionSerializer {
      * @param value
      * @throws Exception
      */
-	private void encodeNodeAttribute(Map<String, Object> map, String tag, Object value, String name) throws Exception {
+	private void encodeNodeAttribute(Map<String, Object> map, String tag, Object value, DvText name) throws Exception {
 		Map<String, Object> valuemap = newPathMap();
 		//CHC: 160317 make name optional ex: timing
-		if (name != null)
-			putObject(value, valuemap, TAG_NAME, name);
+		if (name != null) {
+			putObject(value, valuemap, TAG_NAME, mapName(name));
+		}
 
 
 		//CHC: 160317 make value optional ex. simple name for activity
 		if (value != null) {
 			putObject(value, valuemap, TAG_CLASS, value.getClass().getSimpleName());
 			putObject(value, valuemap, TAG_VALUE, value);
+			encodePathItem(valuemap, tag);
+			putObject(value, map, tag, valuemap);
 		}
-		encodePathItem(valuemap, tag);
-
-		putObject(value, map, tag, valuemap);
 
 	}
 
@@ -378,14 +417,14 @@ public class CompositionSerializer implements I_CompositionSerializer {
 //		//				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, observation.getWorkflowId(), observation.getName().getValue());
 //		putObject(map, TAG_META, )
 
-//		putObject(null, map, TAG_NAME, locatable.getName());
+//		putObject(null, map, TAG_NAME, mapName(locatable.getName()));
 
 	}
 
 
 	private Map<String, Object> mapRmObjectAttributes(RMObject object, String name) throws Exception {
 		Map<String, Object> valuemap = newPathMap();
-		putObject(object, valuemap, TAG_NAME, name);
+		putObject(object, valuemap, TAG_NAME, mapName(name));
 		putObject(object, valuemap, TAG_CLASS, object.getClass().getSimpleName());
 
 		//assign the actual object to the value (instead of its field equivalent...)
@@ -594,10 +633,10 @@ public class CompositionSerializer implements I_CompositionSerializer {
 				putObject(observation, ltree, getNodeTag(TAG_STATE, observation.getState(), ltree), traverse(observation.getState(), TAG_STATE));
 
 			if (observation.getWorkflowId() != null)
-				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, observation.getWorkflowId(), observation.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, observation.getWorkflowId(), observation.getName());
 
 			if (observation.getGuidelineId() != null)
-				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, observation.getGuidelineId(), observation.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, observation.getGuidelineId(), observation.getName());
 
 			if (ltree.size() > 0)
 				retmap = ltree;
@@ -615,10 +654,10 @@ public class CompositionSerializer implements I_CompositionSerializer {
 				putObject(evaluation, ltree, getNodeTag(TAG_DATA, evaluation.getData(), ltree), traverse(evaluation.getData(), TAG_DATA));
 
 			if (evaluation.getWorkflowId() != null)
-				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, evaluation.getWorkflowId(), evaluation.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, evaluation.getWorkflowId(), evaluation.getName());
 
 			if (evaluation.getGuidelineId() != null)
-				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, evaluation.getGuidelineId(), evaluation.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, evaluation.getGuidelineId(), evaluation.getName());
 
 			//CHC: 160531 add explicit name
 			if (evaluation.getName() != null) encodeNodeMetaData(ltree, evaluation);
@@ -637,13 +676,13 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			if (instruction.getProtocol() != null)
 				putObject(instruction, ltree, getNodeTag(TAG_PROTOCOL, ((Instruction) item).getProtocol(), ltree), traverse(instruction.getProtocol(), TAG_PROTOCOL));
 			if (instruction.getNarrative() != null && (allElements || !instruction.getNarrative().equals(new DvText(RmBinding.DEFAULT_NARRATIVE))))
-				encodeNodeAttribute(ltree, TAG_NARRATIVE, instruction.getNarrative(), instruction.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_NARRATIVE, instruction.getNarrative(), instruction.getName());
 			if (instruction.getWorkflowId() != null)
-				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, instruction.getWorkflowId(), instruction.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, instruction.getWorkflowId(), instruction.getName());
 			if (instruction.getGuidelineId() != null)
-				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, instruction.getGuidelineId(), instruction.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, instruction.getGuidelineId(), instruction.getName());
 			if (instruction.getUid() != null)
-				encodeNodeAttribute(ltree, TAG_UID, instruction.getUid(), instruction.getUid().getValue());
+				encodeNodeAttribute(ltree, TAG_UID, instruction.getUid(), new DvText(instruction.getUid().getValue()));
 
 			if (instruction.getActivities() != null) {
 
@@ -677,42 +716,48 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			boolean hasActiveContent = false;
 
 			if (action.getProtocol() != null) {
-				putObject(action, ltree, getNodeTag(TAG_PROTOCOL, action.getProtocol(), ltree), traverse(action.getProtocol(), TAG_PROTOCOL));
-				hasActiveContent = true;
+				Object protocol = traverse(action.getProtocol(), TAG_PROTOCOL);
+				if (protocol != null) {
+					putObject(action, ltree, getNodeTag(TAG_PROTOCOL, action.getProtocol(), ltree), traverse(action.getProtocol(), TAG_PROTOCOL));
+					hasActiveContent = true;
+				}
 			}
 			
 			if (action.getDescription() != null) {
-				putObject(action, ltree, getNodeTag(TAG_DESCRIPTION, action.getDescription(), ltree), traverse(action.getDescription(), TAG_DESCRIPTION));
-				hasActiveContent = true;
+				Object description = traverse(action.getDescription(), TAG_DESCRIPTION);
+				if (description != null) {
+					putObject(action, ltree, getNodeTag(TAG_DESCRIPTION, action.getDescription(), ltree), traverse(action.getDescription(), TAG_DESCRIPTION));
+					hasActiveContent = true;
+				}
 			}
 			
 			if (action.getInstructionDetails() != null) {
 				putObject(action, ltree, getNodeTag(TAG_INSTRUCTION, item, ltree), traverse(action.getInstructionDetails().getWfDetails(), TAG_INSTRUCTION));
-				hasActiveContent = true;
+//				hasActiveContent = true;
 			}
 
 			if (action.getWorkflowId() != null) {
-				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, action.getWorkflowId(), action.getName().getValue());
-				hasActiveContent = true;
+				encodeNodeAttribute(ltree, TAG_WORKFLOW_ID, action.getWorkflowId(), action.getName());
+//				hasActiveContent = true;
 			}
 
 			if (action.getGuidelineId() != null) {
-				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, action.getGuidelineId(), action.getName().getValue());
-				hasActiveContent = true;
+				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, action.getGuidelineId(), action.getName());
+//				hasActiveContent = true;
 			}
 
 			if (action.getTime() != null){
 				if (allElements || !action.getTime().equals(new DvDateTime(RmBinding.DEFAULT_DATE_TIME))) {
-					encodeNodeAttribute(ltree, TAG_TIME, action.getTime(), action.getName().getValue());
-					hasActiveContent = true;
+					encodeNodeAttribute(ltree, TAG_TIME, action.getTime(), action.getName());
+//					hasActiveContent = true;
 				}
 			}
 
 			if (action.getInstructionDetails() != null){
 				InstructionDetails instructionDetails = action.getInstructionDetails();
-				encodeNodeAttribute(ltree, TAG_INSTRUCTION_DETAILS+TAG_ACTIVITY_ID, instructionDetails.getActivityId(), action.getName().getValue());
-				encodeNodeAttribute(ltree, TAG_INSTRUCTION_DETAILS+TAG_INSTRUCTION_ID, instructionDetails.getInstructionId(), action.getName().getValue());
-				hasActiveContent = true;
+				encodeNodeAttribute(ltree, TAG_INSTRUCTION_DETAILS+TAG_ACTIVITY_ID, instructionDetails.getActivityId(), action.getName());
+				encodeNodeAttribute(ltree, TAG_INSTRUCTION_DETAILS+TAG_INSTRUCTION_ID, instructionDetails.getInstructionId(), action.getName());
+//				hasActiveContent = true;
 			}
 
 
@@ -720,11 +765,11 @@ public class CompositionSerializer implements I_CompositionSerializer {
 				ISMTransition ismTransition = action.getIsmTransition();
 				if (ismTransition != null && ismTransition.getCareflowStep() != null && (allElements || !ismTransition.getCareflowStep().getValue().equals("DUMMY"))) {
 					if (ismTransition.getCurrentState() != null)
-						encodeNodeAttribute(ltree, TAG_ISM_TRANSITION + TAG_CURRENT_STATE, ismTransition.getCurrentState(), action.getName().getValue());
+						encodeNodeAttribute(ltree, TAG_ISM_TRANSITION + TAG_CURRENT_STATE, ismTransition.getCurrentState(), action.getName());
 					if (ismTransition.getTransition() != null)
-						encodeNodeAttribute(ltree, TAG_ISM_TRANSITION + TAG_TRANSITION, ismTransition.getTransition(), action.getName().getValue());
+						encodeNodeAttribute(ltree, TAG_ISM_TRANSITION + TAG_TRANSITION, ismTransition.getTransition(), action.getName());
 					if (ismTransition.getCareflowStep() != null)
-						encodeNodeAttribute(ltree, TAG_ISM_TRANSITION + TAG_CAREFLOW_STEP, ismTransition.getCareflowStep(), action.getName().getValue());
+						encodeNodeAttribute(ltree, TAG_ISM_TRANSITION + TAG_CAREFLOW_STEP, ismTransition.getCareflowStep(), action.getName());
 				}
 			}
 
@@ -831,7 +876,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
         }
 
 		//CHC: 160317 add explicit name for activity
-		encodeNodeAttribute(ltree, TAG_NAME, null, activity.getName().getValue());
+		encodeNodeAttribute(ltree, TAG_NAME, null, activity.getName());
 
         itemStack.pushStacks(tag + "[" + activity.getDescription().getArchetypeNodeId() + "]", activity.getDescription().getName().getValue());
 //        pushPathStack(tag + "[" + act.getDescription().getArchetypeNodeId() + "]");
@@ -875,7 +920,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 		
 		if (item.getOrigin() != null) {
 			if (allElements || !item.getOrigin().equals(new DvDateTime(OptBinding.DEFAULT_DATE_TIME)))
-				encodeNodeAttribute(ltree, TAG_ORIGIN, item.getOrigin(), item.getName().getValue());
+				encodeNodeAttribute(ltree, TAG_ORIGIN, item.getOrigin(), item.getName());
 		}
 
 		if (item.getSummary() != null)
@@ -896,9 +941,9 @@ public class CompositionSerializer implements I_CompositionSerializer {
 				if (event instanceof IntervalEvent){
 					IntervalEvent intervalEvent = (IntervalEvent)event;
 					if (intervalEvent.getWidth() != null)
-						encodeNodeAttribute(subtree, TAG_WIDTH, intervalEvent.getWidth(), event.getName().getValue());
+						encodeNodeAttribute(subtree, TAG_WIDTH, intervalEvent.getWidth(), event.getName());
 					if (intervalEvent.getMathFunction() != null)
-						encodeNodeAttribute(subtree, TAG_MATH_FUNCTION, intervalEvent.getMathFunction(), event.getName().getValue());
+						encodeNodeAttribute(subtree, TAG_MATH_FUNCTION, intervalEvent.getMathFunction(), event.getName());
 //					if (intervalEvent.getSampleCount() != null)
 //						encodeNodeAttribute(subtree, TAG_MATH_FUNCTION, intervalEvent.getMathFunction(), event.getName().getValue());
 				}
@@ -906,7 +951,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 				if (event.getTime() != null) {
 					if (!allElements || event.getTime().equals(new DvDateTime(OptBinding.DEFAULT_DATE_TIME)))
-						encodeNodeAttribute(subtree, TAG_TIME, event.getTime(), event.getName().getValue());
+						encodeNodeAttribute(subtree, TAG_TIME, event.getTime(), event.getName());
 				}
 				if (event.getData() != null)
 					putObject(event, subtree, getNodeTag(TAG_DATA, event.getData(), subtree), traverse(event.getData(), TAG_DATA));
@@ -971,7 +1016,8 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 			ItemSingle itemSingle = (ItemSingle)item;
 			//CHC: 160531 add explicit name
-			if (itemSingle.getName() != null) encodeNodeMetaData(ltree, itemSingle);
+//			if (itemSingle.getName() != null) encodeNodeMetaData(ltree, itemSingle);
+//			if (itemSingle.getName() != null) putObject(null, ltree, TAG_NAME, mapName(itemSingle.getName()));
 
 			if (itemSingle.getItem()!=null){
 				compactEntry(itemSingle, ltree, getNodeTag(TAG_ITEMS, itemSingle, ltree), traverse(itemSingle.getItem(), TAG_ITEMS));
@@ -986,7 +1032,8 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			ItemList list = (ItemList) item;
 
 			//CHC: 160531 add explicit name
-			if (list.getName() != null) encodeNodeMetaData(ltree, list);
+//			if (list.getName() != null) encodeNodeMetaData(ltree, list);
+//			if (list.getName() != null) putObject(null, ltree, TAG_NAME, mapName(list.getName()));
 
 			if (list.getItems() != null) {
 
@@ -1008,7 +1055,8 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			ItemTree tree = (ItemTree) item;
 
 			//CHC: 160531 add explicit name
-			if (tree.getName() != null) encodeNodeMetaData(ltree, tree);
+//			if (tree.getName() != null) encodeNodeMetaData(ltree, tree);
+//			if (tree.getName() != null) putObject(null, ltree, TAG_NAME, mapName(tree.getName()));
 
 			if (tree.getItems() != null) {
 
@@ -1030,7 +1078,8 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			ItemTable table = (ItemTable) item;
 
 			//CHC: 160531 add explicit name
-			if (table.getName() != null) encodeNodeMetaData(ltree, table);
+//			if (table.getName() != null) encodeNodeMetaData(ltree, table);
+			if (table.getName() != null) putObject(null, ltree, TAG_NAME, mapName(table.getName()));
 
 			if (table.getRows() != null) {
 
@@ -1084,13 +1133,13 @@ public class CompositionSerializer implements I_CompositionSerializer {
             log.debug(itemStack.pathStackDump()+"="+ element.getValue());
             Map<String, Object> valuemap = newPathMap();
             //VBeanUtil.setValueMap(valuemap, element.getValue());
-            putObject(element, valuemap, TAG_NAME, element.getName().getValue());
+            putObject(element, valuemap, TAG_NAME, mapName(element.getName()));
 
-			if (element.getName() instanceof DvCodedText) {
-				DvCodedText dvCodedText = (DvCodedText)element.getName();
-				if (dvCodedText.getDefiningCode() != null)
-					putObject(element, valuemap, TAG_DEFINING_CODE, dvCodedText.getDefiningCode());
-			}
+//			if (element.getName() instanceof DvCodedText) {
+//				DvCodedText dvCodedText = (DvCodedText)element.getName();
+//				if (dvCodedText.getDefiningCode() != null)
+//					putObject(element, valuemap, TAG_DEFINING_CODE, dvCodedText.getDefiningCode());
+//			}
 
 			putObject(element, valuemap, TAG_CLASS, getCompositeClassName(element.getValue()));
 //            putObject(valuemap, TAG_CLASS, element.getValue().getClass().getSimpleName());
@@ -1116,7 +1165,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	 * @param tag
 	 * @throws Exception
 	 */
-	private Map<String, Object> traverse(Item item, String tag) throws Exception {
+	protected Map<String, Object> traverse(Item item, String tag) throws Exception {
 		Map<String, Object> retmap = null;
 
 		log.debug("traverse item:"+item);
@@ -1147,23 +1196,38 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
         else if (item instanceof Cluster) {
 			Map<String, Object>ltree = newMultiMap();
+//			Map<String, Object>ltree = new TreeMap<>();
 			itemStack.pushStacks(tag + "[" + item.getArchetypeNodeId() + "]", item.getName().getValue());
 
-			Cluster c = (Cluster) item;
+			Cluster cluster = (Cluster) item;
+			boolean hasContent = false;
 
 			//CHC: 160531 add explicit name
-			if (c.getName() != null) encodeNodeMetaData(ltree, item);
+//			if (c.getName() != null) encodeNodeMetaData(ltree, item);
 
-			if (c.getItems() != null) {
+			if (cluster.getItems() != null) {
 
 				//CHC:160914: fixed issue with cluster encoding as items (generated /value {/name... /value... /$PATH$... $CLASS$})
 				//this caused inconsistencies when running AQL queries
-				for (Item clusterItem : c.getItems()) {
-					compactEntry(clusterItem, ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree), traverse(clusterItem, TAG_ITEMS));
-//					putObject(ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree.getClass()), traverse(clusterItem, TAG_ITEMS));
+				for (Item clusterItem : cluster.getItems()) {
+//					compactEntry(clusterItem, ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree), traverse(clusterItem, TAG_ITEMS));
+//					putObject(ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree), traverse(clusterItem, TAG_ITEMS));
+					Object clusterItems = traverse(clusterItem, TAG_ITEMS);
+					if (clusterItems != null) {
+						if (clusterItems instanceof Map && ((Map)clusterItems).containsKey(TAG_VALUE)) {
+							ltree.put(getNodeTag(TAG_ITEMS, clusterItem, ltree), ((Map)clusterItems).get(TAG_VALUE));
+						}
+						else {
+							ltree.put(getNodeTag(TAG_ITEMS, clusterItem, ltree), clusterItems);
+						}
+					}
                 }
+				if (ltree.size() > 0) hasContent = true;
+
+				if (cluster.getName() != null) ltree.put(TAG_NAME, mapName(item.getName()));
+
 			}
-			if (ltree.size() > 0)
+			if (hasContent)
 				retmap = ltree;
 			else
 				retmap = null;
@@ -1217,5 +1281,20 @@ public class CompositionSerializer implements I_CompositionSerializer {
 		GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
 		Gson gson = builder.setPrettyPrinting().create();
 		return gson.toJson(stringObjectMap);
+	}
+
+	@Override
+	public String dbEncodeContent(String tag, Locatable locatable) throws Exception{
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> dbEncodeAsMap(String tag, Locatable locatable) throws Exception {
+		return processItem(tag, locatable);
+	}
+
+	@Override
+	public Object dbEncodeContentAsMap(String tag, Locatable locatable) throws Exception {
+		return null;
 	}
 }

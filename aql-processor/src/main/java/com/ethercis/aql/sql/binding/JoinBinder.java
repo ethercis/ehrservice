@@ -43,6 +43,11 @@ public class JoinBinder implements I_JoinBinder {
     private boolean composerJoined = false;
     private boolean ehrJoined = false;
 
+    /**
+     * Warning: JOIN sequence is important!
+     * @param selectQuery
+     * @param compositionAttributeQuery
+     */
     public void addJoinClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
         if (compositionAttributeQuery.isJoinSubject()){
             joinSubject(selectQuery, compositionAttributeQuery);
@@ -53,9 +58,6 @@ public class JoinBinder implements I_JoinBinder {
         if (compositionAttributeQuery.isJoinEventContext()){
             joinEventContext(selectQuery, compositionAttributeQuery);
         }
-        if (compositionAttributeQuery.isJoinEhrStatus() || compositionAttributeQuery.containsEhrStatus()){
-            joinEhrStatus(selectQuery, compositionAttributeQuery);
-        }
         if (compositionAttributeQuery.isJoinContextFacility()){
             joinContextFacility(selectQuery, compositionAttributeQuery);
         }
@@ -64,6 +66,9 @@ public class JoinBinder implements I_JoinBinder {
         }
         if (compositionAttributeQuery.isJoinEhr()){
             joinEhr(selectQuery, compositionAttributeQuery);
+        }
+        if (compositionAttributeQuery.isJoinEhrStatus() || compositionAttributeQuery.containsEhrStatus()){
+            joinEhrStatus(selectQuery, compositionAttributeQuery);
         }
     }
 
@@ -84,9 +89,10 @@ public class JoinBinder implements I_JoinBinder {
             statusJoined = true;
         }
         else {//assume it is joined on EHR
+            joinEhr(selectQuery, compositionAttributeQuery);
             selectQuery.addJoin(statusRecordTable,
                     DSL.field(statusRecordTable.field(STATUS.EHR_ID.getName(), UUID.class))
-                            .eq(EHR.ID));
+                            .eq(DSL.field(ehrRecordTable.field(EHR.ID.getName(), UUID.class))));
             statusJoined = true;
         }
     }

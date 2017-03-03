@@ -107,6 +107,18 @@ public class MigrateEntry {
         return entryAccess.commit(Timestamp.valueOf(LocalDateTime.now()));
     }
 
+    public static  String migrateComposition(Properties properties, UUID compositionId, boolean debug) throws Exception {
+        setupDomainAccess(properties);
+
+        //get the entry id for the composition
+        UUID entryId = context.select(ENTRY.ID).from(ENTRY).where(ENTRY.COMPOSITION_ID.eq(compositionId)).fetchOne(ENTRY.ID);
+
+        if (entryId == null)
+            throw new IllegalArgumentException("Could not retrieve composition:"+compositionId);
+
+        return migrateEntry(properties, entryId, debug);
+    }
+
     /**
      * Migrates a jsonb entry structure to the new format.
      * @param properties
@@ -117,6 +129,7 @@ public class MigrateEntry {
      */
     public static  String migrateEntry(Properties properties, UUID entryId, boolean debug) throws Exception {
         setupDomainAccess(properties);
+//        System.setProperty("validation.lenient", "true");
         I_EntryAccess entryAccess = I_EntryAccess.retrieveInstance(domainAccess, entryId);
 
         if (entryAccess == null)
@@ -143,6 +156,7 @@ public class MigrateEntry {
 
     public static Composition migrate(String jsonEntry, String templateId) throws Exception {
         I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+        content.setLenient(true);
         Composition composition = content.buildCompositionFromJson(jsonEntry);
         return composition;
     }
