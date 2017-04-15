@@ -468,6 +468,12 @@ public class FilterOutNil {
         if (composition.isSetContext() && composition.getContext().isNil())
             composition.unsetContext();
 
+        if (composition.isSetContext()) {
+            EVENTCONTEXT eventcontext = composition.getContext();
+            if (eventcontext.isSetOtherContext() && eventcontext.getOtherContext().isNil())
+                eventcontext.unsetOtherContext();
+        }
+
         return composition;
     }
 

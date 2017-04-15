@@ -224,7 +224,7 @@ BACKWARD : B A C K W A R D ;
 AS : A S ;
 CONTAINS : C O N T A I N S ;
 WHERE : W H E R E ;
-ORDERBY : O R D E R B Y ;
+ORDERBY : O R D E R ' ' B Y ;
 FROM : F R O M ;
 DESCENDING : D E S C E N D I N G ;
 ASCENDING : A S C E N D I N G ;

@@ -119,6 +119,10 @@ public class XMLBinding {
 			// deal with case-sensitively challenged class name
 			xmlClassName = "EhrStatus";
 		}
+		else if ("Match".equalsIgnoreCase(className)){
+			xmlClassName = "MatchString";
+		}
+
 		Method[] methods = obj.getClass().getMethods();
 
 		try {
@@ -155,7 +159,7 @@ public class XMLBinding {
 					throw new XMLBindingException("Could not process XXXDocument.addNewXXX() method to invoke");
 				}
 			} else {
-				xmlClass = Class.forName(XML_BINDING_PACKAGE + 	xmlClassName.toUpperCase());
+				xmlClass = Class.forName(XML_BINDING_PACKAGE + 	("MatchString".equals(xmlClassName) ? xmlClassName : xmlClassName.toUpperCase()));
 
 				Class<?> factoryClass = xmlClass.getClasses()[0];
 				Method factoryMethod = factoryClass.getMethod(NEW_INSTANCE, XmlOptions.class);
@@ -167,7 +171,18 @@ public class XMLBinding {
 			Object attributeValue;
 			Method setterMethod;
 
+			if (builder.isEnumType(className)){
+				//manage the builder in a simplistic manner
+				Class enumClass = builder.retrieveRMType(className);
+				Method getterMethod = enumClass.getMethod("getValue", null);
+				return getterMethod.invoke(obj, null);
+//				setterMethod = findSetter(null, xmlClass, false);
+//				setterMethod.invoke(xmlObj, attributeValue);
+//				return xmlObj;
+			}
+
 			for (Method method : methods) {
+
 				String name = method.getName();
 
 				// cause dead-loop
@@ -438,8 +453,14 @@ public class XMLBinding {
 		return rmObj;
 	}
 
-	protected Method findSetter(String attributeName, Class<?> xmlClass, boolean isCollection) {
+	protected Method findSetter(String attributeName, Class<?> xmlClass, boolean isCollection) throws NoSuchMethodException {
+
+		if (attributeName == null){ //simple set (Enum type)
+			return xmlClass.getMethod("setStringValue", String.class);
+		}
+
 		Method[] methods = xmlClass.getMethods();
+
 		String name = "set" + attributeName.substring(0, 1).toUpperCase() +
 				attributeName.substring(1);
 

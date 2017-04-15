@@ -62,6 +62,11 @@ public class CodePhraseAdapter extends DvTypeAdapter<CodePhrase> {
 		if (adapterType==AdapterType.PG_JSONB) {
 			writer.beginObject();
 			writer.name("codeString").value(codePhrase.getCodeString());
+			writer.name("terminologyId");
+			writer.beginObject();
+			writer.name("name").value(codePhrase.getTerminologyId().name());
+			writer.name("value").value(codePhrase.getTerminologyId().getValue());
+			writer.endObject();
 			writer.endObject();
 		}
 		else if (adapterType==AdapterType.RAW_JSON){

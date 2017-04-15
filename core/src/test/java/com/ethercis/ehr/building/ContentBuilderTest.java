@@ -827,7 +827,8 @@ public class ContentBuilderTest extends TestCase {
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
 //        String document = "faulty_jaxb_itemtree.xml";
-        String document = "COLNEC-medication.xml";
+//        String document = "COLNEC-medication.xml";
+        String document = "ticket_32.xml";
         System.out.println("=============================================="+document);
         String documentPath = "C:\\Development\\Dropbox\\eCIS_Development\\test\\" + document;
         InputStream is = new FileInputStream(new File(documentPath));
@@ -869,7 +870,8 @@ public class ContentBuilderTest extends TestCase {
     public void testFlatJson() throws Exception {
 //        String templateId = "COLNEC Medication";
 //        String templateId = "IDCR - Service Request.v0";
-        String templateId = "GEL - Generic Lab Report import.v0";
+//        String templateId = "GEL - Generic Lab Report import.v0";
+        String templateId = "DiADeM Assessment.v1";
 
 //        String templateId = "IDCR Problem List.v1";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
@@ -878,11 +880,47 @@ public class ContentBuilderTest extends TestCase {
         //get a flat json test file
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/COLNEC_Medication_FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Ian-mail-27-01-17.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_26.flat.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_32.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
 
         Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
 
         assertNotNull(lastComposition);
+
+        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, Object>retmap = inspector.process(lastComposition);
+        String stringified = jsonMapToString(retmap);
+
+        assertNotNull(stringified);
+
+        //time to rebuild from serialization :)
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+        Composition newComposition = content.buildCompositionFromJson(stringified);
+
+        assertNotNull(newComposition);
+
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+        String jsonString;
+
+        //=================== FLAT JSON ==========================
+        map = jsonCompositionConverter.fromComposition(templateId, newComposition);
+
+        jsonString = gson.toJson(map);
+
+        assertNotNull(map);
+
+        System.out.println(jsonString);
+
+
+        //ECIS FLAT =============================================
+        Map<String, String> testRetMap = EcisFlattener.renderFlat(newComposition);
+
+        jsonString = gson.toJson(testRetMap);
+
+
+        System.out.println(jsonString);
+
     }
 }

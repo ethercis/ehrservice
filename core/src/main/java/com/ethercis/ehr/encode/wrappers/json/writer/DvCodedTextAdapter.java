@@ -23,6 +23,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
+import org.openehr.rm.datatypes.text.TermMapping;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -33,31 +34,31 @@ import java.lang.reflect.Type;
  */
 public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
 
-	private Gson gson;
+    private Gson gson;
 
-	public DvCodedTextAdapter(AdapterType adapterType) {
-		super(adapterType);
-		gson = new GsonBuilder()
-				.registerTypeAdapter(CodePhrase.class, new CodePhraseAdapter(adapterType))
-				.setPrettyPrinting()
-				.create();
-	}
+    public DvCodedTextAdapter(AdapterType adapterType) {
+        super(adapterType);
+        gson = new GsonBuilder()
+                .registerTypeAdapter(CodePhrase.class, new CodePhraseAdapter(adapterType))
+                .setPrettyPrinting()
+                .create();
+    }
 
-	public DvCodedTextAdapter() {
-	}
+    public DvCodedTextAdapter() {
+    }
 
-	@Override
-	public DvCodedText read(JsonReader arg0) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public DvCodedText read(JsonReader arg0) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void write(JsonWriter writer, DvCodedText dvalue) throws IOException {
-		if (dvalue == null) {
-			writer.nullValue();
-			return;
-		}
+    @Override
+    public void write(JsonWriter writer, DvCodedText dvalue) throws IOException {
+        if (dvalue == null) {
+            writer.nullValue();
+            return;
+        }
 
 //		"value": "complete blood count",
 //				"definingCode": {
@@ -67,21 +68,23 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
 //						"value": "SNOMED-CT"
 //			}
 //		}
-		if (adapterType==AdapterType.PG_JSONB) {
-			writer.beginObject();
-			writer.name("value").value(dvalue.getValue());
-			writer.name("definingCode");
-			writer.beginObject();
-			writer.name("codeString").value(dvalue.getDefiningCode().getCodeString());
-			writer.name("terminologyId");
-			writer.beginObject();
-			writer.name("name").value(dvalue.getDefiningCode().getTerminologyId().name());
-			writer.name("value").value(dvalue.getDefiningCode().getTerminologyId().getValue());
-			writer.endObject();
-			writer.endObject();
-			writer.endObject();
-		}
-		else if (adapterType==AdapterType.RAW_JSON){
+        TermMappingAdapter termMappingAdapter = new TermMappingAdapter();
+
+        if (adapterType == AdapterType.PG_JSONB) {
+            writer.beginObject();
+            writer.name("value").value(dvalue.getValue());
+            writer.name("definingCode");
+            writer.beginObject();
+            writer.name("codeString").value(dvalue.getDefiningCode().getCodeString());
+            writer.name("terminologyId");
+            writer.beginObject();
+            writer.name("name").value(dvalue.getDefiningCode().getTerminologyId().name());
+            writer.name("value").value(dvalue.getDefiningCode().getTerminologyId().getValue());
+            writer.endObject();
+            writer.endObject();
+            termMappingAdapter.write(writer, dvalue.getMappings());
+            writer.endObject();
+        } else if (adapterType == AdapterType.RAW_JSON) {
 //			writer.beginObject(); //{
 //			writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(EncodeUtil.camelToUpperSnake(dvalue));
 //			writer.name("value").value(dvalue.getValue());
@@ -98,15 +101,15 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
 //			writer.endObject(); //}
 //			writer.endObject(); //}
 //			writer.endObject(); //}
-			//===
-			writer.beginObject(); //{
-			writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(EncodeUtil.camelToUpperSnake(dvalue));
-			writer.name("value").value(dvalue.getValue());
-			CodePhrase codePhrase = dvalue.getDefiningCode();
-			writer.name("defining_code").value(gson.toJson(codePhrase));
-			writer.endObject(); //}
-		}
+            //===
+            writer.beginObject(); //{
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(EncodeUtil.camelToUpperSnake(dvalue));
+            writer.name("value").value(dvalue.getValue());
+            CodePhrase codePhrase = dvalue.getDefiningCode();
+            writer.name("defining_code").value(gson.toJson(codePhrase));
+            writer.endObject(); //}
+        }
 
-	}
+    }
 
 }

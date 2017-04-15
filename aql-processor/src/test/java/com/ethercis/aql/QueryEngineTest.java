@@ -51,8 +51,8 @@ public class QueryEngineTest {
     public void setUp(){
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
-//        String url = "jdbc:postgresql://localhost:5434/ethercis";
-        String url = "jdbc:postgresql://192.168.2.108:5432/ethercis";
+        String url = "jdbc:postgresql://localhost:5434/ethercis";
+//        String url = "jdbc:postgresql://192.168.2.108:5432/ethercis";
 //        String url = "jdbc:postgresql://192.168.2.108:5432/ethercis";
         String login = "postgres";
         String password = "postgres";
@@ -463,7 +463,7 @@ public class QueryEngineTest {
                 " contains COMPOSITION a[openEHR-EHR-COMPOSITION.prescription.v1] " +
                 " contains INSTRUCTION a_i[openEHR-EHR-INSTRUCTION.medication.v1] " +
                 " contains DESCRIPTION d[openEHR-EHR-ITEM_TREE.medication_mod.v1]" +
-                " orderby start_time DESC ";
+                " order by start_time DESC ";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

@@ -19,14 +19,17 @@ package com.ethercis.ehr.encode.wrappers;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import org.openehr.rm.datatypes.text.CodePhrase;
-import org.openehr.rm.support.identification.TerminologyID;
+import org.openehr.rm.datatypes.text.DvCodedText;
+import org.openehr.rm.datatypes.text.Match;
+import org.openehr.rm.datatypes.text.TermMapping;
+import org.openehr.terminology.SimpleTerminologyService;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CodePhraseVBean extends DataValueAdapter implements I_VBeanWrapper {
+public class TermMappingVBean extends DataValueAdapter implements I_VBeanWrapper {
 
-	public CodePhraseVBean(CodePhrase c) {
+	public TermMappingVBean(CodePhrase c) {
 		this.adaptee = c;
 	}
 	
@@ -47,25 +50,36 @@ public class CodePhraseVBean extends DataValueAdapter implements I_VBeanWrapper 
         return (CodePhrase)adaptee;
     }
 
-	public static CodePhrase getInstance(Map<String, Object> attributes){
+	public static TermMapping getInstance(Map<String, Object> attributes){
 		Object value = attributes.get(CompositionSerializer.TAG_VALUE);
 
 		if (value == null)
 			throw new IllegalArgumentException("No value in attributes");
 
-		if (value instanceof CodePhrase) return (CodePhrase)value;
+		if (value instanceof TermMapping) return (TermMapping)value;
 
 		if (value instanceof Map) {
 			Map<String, Object> valueMap = (Map) value;
 
-			String codeString = (String)valueMap.get("codeString");
-			Map terminologyIdMap = (Map)valueMap.get("terminologyId");
-			String terminologyIdValue = (String)terminologyIdMap.get("value");
-			TerminologyID terminologyId = new TerminologyID(terminologyIdValue);
+			//get term mapping attributes
+			String matchVal = (String)(valueMap).get("match");
+			//get the target as a CodePhrase
+			Map<String, Object> targetValueMap = new HashMap<>();
+			targetValueMap.put(CompositionSerializer.TAG_VALUE, valueMap.get("target"));
+			CodePhrase target = CodePhraseVBean.getInstance(targetValueMap);
+			DvCodedText purpose = null;
+			//get the purpose if any
+			if (valueMap.get("purpose") != null){
+				Map<String, Object> purposeValueMap = new HashMap<>();
+				purposeValueMap.put(CompositionSerializer.TAG_VALUE, valueMap.get("purpose"));
+				purpose = DvCodedTextVBean.getInstance(targetValueMap);
+			}
 
-			return new CodePhrase(terminologyId, codeString);
+			TermMapping termMapping = new TermMapping(target, matchVal, purpose, SimpleTerminologyService.getInstance());
+			return termMapping;
 		}
-		throw new IllegalArgumentException("Could not get instance");
+
+		return null;
 	}
 
 	public static CodePhrase generate(){

@@ -55,8 +55,10 @@ public class DvTextAdapter extends DvTypeAdapter<DvText> {
 		}
 
 		if (adapterType==AdapterType.PG_JSONB) {
+			TermMappingAdapter termMappingAdapter = new TermMappingAdapter();
 			writer.beginObject();
 			writer.name("value").value(dvalue.getValue());
+			termMappingAdapter.write(writer, dvalue.getMappings());
 			writer.endObject();
 		}
 		else if (adapterType==AdapterType.RAW_JSON){

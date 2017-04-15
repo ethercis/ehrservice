@@ -18,11 +18,12 @@ package com.ethercis.ehr.encode.wrappers;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
-import org.openehr.rm.datatypes.text.CodePhrase;
-import org.openehr.rm.datatypes.text.DvCodedText;
-import org.openehr.rm.datatypes.text.DvText;
+import org.openehr.am.template.TermMap;
+import org.openehr.rm.datatypes.text.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DvCodedTextVBean extends DataValueAdapter implements I_VBeanWrapper {
@@ -92,7 +93,22 @@ public class DvCodedTextVBean extends DataValueAdapter implements I_VBeanWrapper
             else
                 throw new IllegalArgumentException("Could not handle codephrase argument:"+definingCode);
 
-            return new DvCodedText(actualValue, codePhrase);
+            //mappings
+            DvCodedText dvCodedText = new DvCodedText(actualValue, codePhrase);
+
+            Object mappings = valueMap.get("mappings");
+            if (mappings != null && mappings instanceof List){
+                Map<String, Object> termMappingValueMap = new HashMap<>();
+                List<TermMapping> termMappings = new ArrayList<>();
+                for (Object termMap: (List)mappings){
+                    termMappingValueMap.put(CompositionSerializer.TAG_VALUE, termMap);
+                    TermMapping termMapping = TermMappingVBean.getInstance(termMappingValueMap);
+                    termMappings.add(termMapping);
+                }
+                dvCodedText.setMappings(termMappings);
+            }
+
+            return dvCodedText;
         }
 
         throw new IllegalArgumentException("Could not get instance");

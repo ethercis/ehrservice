@@ -51,10 +51,7 @@ import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
 import org.openehr.rm.datatypes.quantity.datetime.DvTime;
-import org.openehr.rm.datatypes.text.CodePhrase;
-import org.openehr.rm.datatypes.text.DvCodedText;
-import org.openehr.rm.datatypes.text.DvParagraph;
-import org.openehr.rm.datatypes.text.DvText;
+import org.openehr.rm.datatypes.text.*;
 import org.openehr.rm.datatypes.uri.DvEHRURI;
 import org.openehr.rm.datatypes.uri.DvURI;
 import org.openehr.rm.demographic.*;
@@ -127,7 +124,7 @@ public class RMObjectBuilder {
 				DvOrdinal.class,       DvQuantity.class,      DvInterval.class,      DvProportion.class,
 				ProportionKind.class,  DvDate.class,          DvDateTime.class,      DvTime.class,
 				DvDuration.class,      DvParsable.class,      DvURI.class,           DvEHRURI.class,
-				DvMultimedia.class,
+				DvMultimedia.class,    TermMapping.class,     Match.class,
 
 				// datastructure classes
 				Element.class,         Cluster.class,         ItemSingle.class,      ItemList.class,
@@ -349,6 +346,11 @@ public class RMObjectBuilder {
 		}
 		Map<String, Class<?>> map = getAttributeTypes(rmClass);
 		return map;
+	}
+
+	public boolean isEnumType(String rmClassName)throws RMObjectBuildingException{
+		Class<?> rmClass = retrieveRMType(rmClassName);
+		return rmClass.isEnum();
 	}
 
 	public String toFieldName(String input) {
