@@ -47,7 +47,7 @@ public class RawJsonParserTest {
         Gson gson = gsonBuilder.setPrettyPrinting().create();
 
         Map<String, Object> retmap = gson.fromJson(serialized, TreeMap.class);
-        Map<String, String> flatten = EcisFlattener.generateEcisFlat(retmap);
+        Map<String, String> flatten = new EcisFlattener().generateEcisFlat(retmap);
         Assert.assertNotNull(flatten);
         System.out.println(gson.toJson(flatten, TreeMap.class));
     }

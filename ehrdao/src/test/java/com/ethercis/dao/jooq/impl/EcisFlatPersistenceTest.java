@@ -262,7 +262,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         System.out.println(serializer.dbEncode(composition));
 
         //and back to ECISFLAT
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, false, CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
         String json = gson.toJson(testRetMap);
         System.out.println(json);
 
@@ -286,7 +286,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         assertNotNull(composition);
 
         //and back to ECISFLAT
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, true, CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, String> testRetMap = new EcisFlattener(true).render(composition);
         String json = gson.toJson(testRetMap);
         System.out.println(json);
 
@@ -300,7 +300,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
 
         List<I_EntryAccess> contents = compositionAccess.getContent();
         Composition composition = contents.get(0).getComposition();
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, false, CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
         GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
         Gson gson = builder.setPrettyPrinting().create();
         String json = gson.toJson(testRetMap);

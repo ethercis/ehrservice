@@ -478,7 +478,7 @@ public class LocatableHelper {
                    }
                }
                else
-                   throw new IllegalArgumentException("Ttem cannot be replicated since it is not an ItemList:"+item);
+                   throw new IllegalArgumentException("Item cannot be replicated since it is not an ItemList:"+item);
            }
 
        }

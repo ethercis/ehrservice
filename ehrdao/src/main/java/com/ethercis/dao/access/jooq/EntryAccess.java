@@ -108,16 +108,21 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         Integer categoryId = Integer.parseInt(composition.getCategory().getCode());
         record.setCategory(I_ConceptAccess.fetchConcept(this, categoryId, "en"));
 
-        Object node = composition.getContent().get(0);
+        if (composition.getContent() != null) {
+            Object node = composition.getContent().get(0);
 
-        if (node instanceof Section)
-            record.setItemType(EntryType.valueOf("section"));
-        else if (node instanceof Evaluation || node instanceof Observation || node instanceof Instruction || node instanceof Action)
-            record.setItemType(EntryType.valueOf("care_entry"));
-        else if (node instanceof AdminEntry)
-            record.setItemType(EntryType.valueOf("admin"));
+
+            if (node instanceof Section)
+                record.setItemType(EntryType.valueOf("section"));
+            else if (node instanceof Evaluation || node instanceof Observation || node instanceof Instruction || node instanceof Action)
+                record.setItemType(EntryType.valueOf("care_entry"));
+            else if (node instanceof AdminEntry)
+                record.setItemType(EntryType.valueOf("admin"));
+            else
+                ;
+        }
         else
-            ;
+            record.setItemType(EntryType.valueOf("admin"));
 
         record.setArchetypeId(composition.getArchetypeNodeId());
 
@@ -308,8 +313,9 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
                 entryAccess.entryRecord.setTemplateId(record.getValue(I_CompositionAccess.F_ENTRY_TEMPLATE, String.class));
                 entryAccess.entryRecord.setCompositionId(record.getValue(ENTRY.COMPOSITION_ID.getName(), UUID.class));
 
-                if (record.getValue(I_CompositionAccess.F_CONTEXT_OTHER_CONTEXT) != null)
-                    contentBuilder.bindOtherContextFromJson(entryAccess.composition, ((PGobject)record.getValue(I_CompositionAccess.F_CONTEXT_OTHER_CONTEXT)).getValue());
+                if (record.getValue(I_CompositionAccess.F_CONTEXT_OTHER_CONTEXT) != null) {
+                    contentBuilder.bindOtherContextFromJson(entryAccess.composition, ((PGobject) record.getValue(I_CompositionAccess.F_CONTEXT_OTHER_CONTEXT)).getValue());
+                }
 
                 content.add(entryAccess);
 //                entry.committed = true;

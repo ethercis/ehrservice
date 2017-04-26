@@ -19,7 +19,6 @@ package com.ethercis.ehr.keyvalues;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.util.MapInspector;
-import org.apache.commons.collections4.iterators.PeekingIterator;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
@@ -35,77 +34,54 @@ import java.util.Map;
 public class EcisFlattener implements I_EcisFlattener {
 
 
+    private final Boolean allElements;
+    CompositionSerializer.WalkerOutputMode mode;
 
-    public static Map<String, String> renderFlat(Composition composition) throws Exception {
-        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
+    public EcisFlattener(Boolean allElements){
+        this.allElements = allElements;
+        this.mode = CompositionSerializer.WalkerOutputMode.PATH;
+    }
+
+    public EcisFlattener(Boolean allElements, CompositionSerializer.WalkerOutputMode mode){
+        this.allElements = allElements;
+        this.mode = mode;
+    }
+
+
+    public EcisFlattener(){
+        this.allElements = false;
+        this.mode = CompositionSerializer.WalkerOutputMode.PATH;
+    }
+
+    @Override
+    public Map<String, String> render(Composition composition) throws Exception {
+        I_CompositionSerializer inspector;
+
+        if (allElements)
+            inspector = I_CompositionSerializer.getInstance(mode, allElements);
+        else
+            inspector = I_CompositionSerializer.getInstance(mode);
         Map<String, Object>retmap = inspector.process(composition);
 
         return generateEcisFlat(composition, retmap);
     }
 
-    public static Map<String, String> renderFlat(Locatable locatable) throws Exception {
-        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
+    @Override
+    public Map<String, String> render(Locatable locatable) throws Exception {
+        I_CompositionSerializer inspector;
+
+        if (allElements)
+            inspector = I_CompositionSerializer.getInstance(mode, allElements);
+        else
+            inspector = I_CompositionSerializer.getInstance(mode);
+
         Map<String, Object>retmap = inspector.processItem(locatable);
 
         return generateEcisFlat(retmap);
     }
 
-    public static Map<String, String> renderFlat(Locatable locatable, boolean allElements, CompositionSerializer.WalkerOutputMode mode) throws Exception {
-        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(mode, allElements);
-        Map<String, Object>retmap = inspector.processItem(locatable);
 
-        return generateEcisFlat(retmap);
-    }
-
-    public static Map<String, String> renderFlat(Composition composition, boolean allElements, CompositionSerializer.WalkerOutputMode mode) throws Exception {
-        I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(mode, allElements);
-        Map<String, Object>retmap = inspector.process(composition);
-
-        return generateEcisFlat(composition, retmap);
-    }
-
-    private static boolean isMetaData(String path){
-        return path.endsWith(CompositionSerializer.TAG_TIME) || path.endsWith(CompositionSerializer.TAG_ORIGIN) || path.endsWith(CompositionSerializer.TAG_TIMING);
-    }
-
-    private static String resolveMetaDataSuffix(String path){
-        String suffix = null;
-        if (path.endsWith(CompositionSerializer.TAG_TIME))
-            suffix = CompositionSerializer.TAG_TIME;
-        else if (path.endsWith(CompositionSerializer.TAG_ORIGIN))
-            suffix = CompositionSerializer.TAG_ORIGIN;
-        else if (path.endsWith(CompositionSerializer.TAG_TIMING))
-            suffix = CompositionSerializer.TAG_TIMING;
-
-        return suffix;
-    }
-
-    /**
-     * eliminate all meta-data entries not related to an actual data value entry
-     * @param sortedMap
-     * @return
-     */
-    private static Map<String,String> vacuum(Map<String, String> sortedMap){
-        PeekingIterator<String> peekingIterator = new PeekingIterator(sortedMap.keySet().iterator());
-
-        String previousPath = null;
-        while (peekingIterator.hasNext()) {
-            String path = peekingIterator.next();
-            if (isMetaData(path)) { //check if next entry is an actual child of this node
-                String suffix = resolveMetaDataSuffix(path);
-                if (suffix != null) {
-                    String pathChildTest = path.substring(0, path.lastIndexOf(suffix));
-                    //do not keep this entry since it must be preceded by an actual child path holding a value field (which we cannot assert btw)
-                    if (isMetaData(previousPath) || !previousPath.startsWith(pathChildTest))
-                        peekingIterator.remove();
-                }
-            }
-            previousPath = path;
-        }
-        return sortedMap;
-    }
-
-    private static Map<String, String> generateEcisFlat(Composition composition, Map<String, Object> compositionMap) throws Exception {
+    private Map<String, String> generateEcisFlat(Composition composition, Map<String, Object> compositionMap) throws Exception {
         MapInspector mapInspector = new MapInspector();
         mapInspector.inspect(compositionMap);
         Map<String, String> flatten = mapInspector.getStackFlatten();
@@ -138,7 +114,7 @@ public class EcisFlattener implements I_EcisFlattener {
             }
 
             if (eventContext.getOtherContext() != null) {
-                I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH);
+                I_CompositionSerializer inspector = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.PATH, allElements);
                 Map<String, Object> retmap = inspector.processItem(eventContext.getOtherContext());
                 mapInspector.inspect(retmap, true); //clear the stack before inspecting
                 Map<String, String> otherContextMapFlat = mapInspector.getStackFlatten();
@@ -167,17 +143,18 @@ public class EcisFlattener implements I_EcisFlattener {
         if (composition.getLanguage()!= null)
             flatten.put(I_PathValue.LANGUAGE_TAG, composition.getLanguage().getCodeString());
 
-        return vacuum(flatten);
+        return new Vacuum().metaClean(flatten);
 //        return flatten;
 
     }
 
-    public static Map<String, String> generateEcisFlat(Map<String, Object> locatableMap) throws Exception {
+    @Override
+    public Map<String, String> generateEcisFlat(Map<String, Object> locatableMap) throws Exception {
         MapInspector mapInspector = new MapInspector();
         mapInspector.inspect(locatableMap);
         Map<String, String> flatten = mapInspector.getStackFlatten();
 
-        return vacuum(flatten);
+        return new Vacuum().metaClean(flatten);
 //        return flatten;
     }
 }

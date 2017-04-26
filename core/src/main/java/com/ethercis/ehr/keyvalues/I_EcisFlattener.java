@@ -16,9 +16,19 @@
  */
 package com.ethercis.ehr.keyvalues;
 
+import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.composition.Composition;
+
+import java.util.Map;
+
 /**
  * ETHERCIS Project ehrservice
  * Created by Christian Chevalley on 10/5/2015.
  */
 public interface I_EcisFlattener {
+    Map<String, String> render(Composition composition) throws Exception;
+
+    Map<String, String> render(Locatable locatable) throws Exception;
+
+    Map<String, String> generateEcisFlat(Map<String, Object> locatableMap) throws Exception;
 }

@@ -453,8 +453,9 @@ public class FilterOutNil {
             }
         }
 
-        if (composition.sizeOfContentArray() == 0)
-            return null;
+//CHC:170426 a composition with no content is legit...
+//        if (composition.sizeOfContentArray() == 0)
+//            return null;
         
         if (composition.isSetArchetypeDetails() && composition.getArchetypeDetails().isNil())
             composition.unsetArchetypeDetails();

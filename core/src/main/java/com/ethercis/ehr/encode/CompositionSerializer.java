@@ -443,14 +443,16 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	@Override
 	public Map<String, Object> process(Composition composition) throws Exception {
 		ctree = newPathMap();
-		if (composition == null || composition.getContent() == null || composition.getContent().isEmpty())
+		if (composition == null  /* CHC 170426: no content is legit... || composition.getContent() == null || composition.getContent().isEmpty() */)
 			return null;
 		
 //		pushPathStack(TAG_COMPOSITION+"["+composition.getArchetypeNodeId()+"]");
 		Map<String, Object>ltree = newMultiMap();
 
-		for (ContentItem item : composition.getContent()) {
-			putObject(item, ltree, getNodeTag(TAG_CONTENT, item, ltree), traverse(item, TAG_CONTENT));
+		if (composition.getContent() != null && !composition.getContent().isEmpty()) {
+			for (ContentItem item : composition.getContent()) {
+				putObject(item, ltree, getNodeTag(TAG_CONTENT, item, ltree), traverse(item, TAG_CONTENT));
+			}
 		}
 		log.debug(ltree.toString());
 

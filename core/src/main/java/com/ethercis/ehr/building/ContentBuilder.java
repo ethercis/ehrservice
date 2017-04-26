@@ -45,6 +45,7 @@ import org.openehr.rm.datastructure.history.History;
 import org.openehr.rm.datastructure.history.IntervalEvent;
 import org.openehr.rm.datastructure.history.PointEvent;
 import org.openehr.rm.datastructure.itemstructure.ItemStructure;
+import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.basic.DataValue;
@@ -737,8 +738,9 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     @Override
     public Composition buildCompositionFromJson(String jsonData) throws Exception {
-        if (jsonData == null)
+        if (jsonData == null || jsonData.equals("null"))
             return null;
+
         MapInspector inspector = getMapInspector(jsonData);
 
         //TODO: use a cache mechanism for generated composition
@@ -789,6 +791,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         if (jsonData == null || composition == null)
             return;
         MapInspector inspector = getMapInspector(jsonData);
+        if (composition.getContext().getOtherContext() == null){
+            List<Item> items = new ArrayList<>();
+            ItemStructure otherContextStructure = new ItemTree("/items[at0001]", new DvText("Tree"), items);
+            composition.getContext().setOtherContext(otherContextStructure);
+        }
         assignValuesFromStack(composition.getContext().getOtherContext(), (ArrayDeque) inspector.getStack());
     }
 
@@ -880,7 +887,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                     composition.setUid((UIDBasedID)systemValue.getValue());
                     break;
                 case CONTEXT:
+                    ItemStructure other_context = null;
+                    if (composition.getContext().getOtherContext() != null)
+                        other_context = composition.getContext().getOtherContext();
                     composition.setContext((EventContext)systemValue.getValue());
+                    composition.getContext().setOtherContext(other_context);
                     break;
                 default:
                     throw new IllegalArgumentException("Could not handle composition attribute:"+systemValue.getKey());

@@ -86,7 +86,7 @@ public class SerializerDebug extends TestCase {
 
         System.out.println(xml);
 
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(newComposition);
+        Map<String, String> testRetMap = new EcisFlattener().render(newComposition);
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();

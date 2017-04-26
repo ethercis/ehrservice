@@ -91,7 +91,7 @@ public class PathValueTest {
 
         String entry = contentBuilder.getEntry();
 
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition);
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
@@ -156,7 +156,7 @@ public class PathValueTest {
 //        kvPairs.put("/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]/items[openEHR-EHR-SECTION.current_medication_rcp.v1]/items[openEHR-EHR-INSTRUCTION.medication_order_uk.v1]/activities[at0001]/description[at0002]/items[openEHR-EHR-CLUSTER.medication_item.v1]/items[at0001]"
         Composition composition = pathValue.assign(kvPairs);
 
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition);
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -204,7 +204,7 @@ public class PathValueTest {
         boolean result = pathValue.update(composition, updateValues);
 
         assertTrue(result);
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition);
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
         String jsonString = gson.toJson(testRetMap);
         System.out.println(jsonString);
 
@@ -225,7 +225,7 @@ public class PathValueTest {
 
         result = pathValue.update(composition, kvPairs);
         assertTrue(result);
-        testRetMap = EcisFlattener.renderFlat(composition);
+        testRetMap = new EcisFlattener().render(composition);
         jsonString = gson.toJson(testRetMap);
         System.out.println(jsonString);
 
@@ -260,7 +260,7 @@ public class PathValueTest {
             Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
             assertNotNull(retrieved);
             //export flat
-            Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
+            Map<String, String> testRetMap = new EcisFlattener().render(retrieved);
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -315,7 +315,7 @@ public class PathValueTest {
         Composition retrieved = contentBuilder.buildCompositionFromJson(dbEncoded);
         assertNotNull(retrieved);
         //export flat
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(retrieved);
+        Map<String, String> testRetMap = new EcisFlattener().render(retrieved);
 
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setPrettyPrinting().disableHtmlEscaping().create();

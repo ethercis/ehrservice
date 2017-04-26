@@ -50,7 +50,7 @@ public class CompositionUtil {
 
         for (I_EntryAccess entryAccess: compositionAccess.getContent()){
             Composition composition = entryAccess.getComposition();
-            Map<String, String> testRetMap = EcisFlattener.renderFlat(composition);
+            Map<String, String> testRetMap = new EcisFlattener().render(composition);
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -68,7 +68,7 @@ public class CompositionUtil {
 
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(map, knowledge, templateId);
         Composition composition = contentBuilder.generateNewComposition();
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition, true, mode);
+        Map<String, String> testRetMap = new EcisFlattener(true, mode).render(composition);
         return testRetMap;
     }
 

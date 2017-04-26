@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.xmlbeans.XmlOptions;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,9 +29,6 @@ import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.EventContext;
-import org.openehr.rm.datatypes.quantity.datetime.DvDate;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
-import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 import org.openehr.rm.support.identification.ObjectVersionID;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
@@ -42,7 +38,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -383,7 +378,7 @@ public class ContentBuilderTest extends TestCase {
 
             assertNotNull(importedComposition);
 
-            Map<String, String> testRetMap = EcisFlattener.renderFlat(newComposition);
+            Map<String, String> testRetMap = new EcisFlattener().render(newComposition);
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -423,7 +418,7 @@ public class ContentBuilderTest extends TestCase {
 
         System.out.println(xml);
 
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(newComposition);
+        Map<String, String> testRetMap = new EcisFlattener().render(newComposition);
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -458,7 +453,7 @@ public class ContentBuilderTest extends TestCase {
 
             System.out.println(new String(exportXml));
 
-            Map<String, String> testRetMap = EcisFlattener.renderFlat((Composition)generated, true, CompositionSerializer.WalkerOutputMode.PATH);
+            Map<String, String> testRetMap = new EcisFlattener(true).render((Composition) generated);
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -474,7 +469,7 @@ public class ContentBuilderTest extends TestCase {
 
             System.out.println(new String(exportXml));
 
-            Map<String, String> testRetMap = EcisFlattener.renderFlat((Locatable)generated, true, CompositionSerializer.WalkerOutputMode.PATH);
+            Map<String, String> testRetMap = new EcisFlattener(true).render((Locatable)generated);
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -542,7 +537,7 @@ public class ContentBuilderTest extends TestCase {
 
         assertNotNull(newComposition);
 
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(newComposition, false, CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, String> testRetMap = new EcisFlattener().render(newComposition);
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -592,7 +587,7 @@ public class ContentBuilderTest extends TestCase {
 
         assertNotNull(generated);
 
-        Map<String, String> testRetMap = EcisFlattener.renderFlat((Locatable)generated, false, CompositionSerializer.WalkerOutputMode.PATH);
+        Map<String, String> testRetMap = new EcisFlattener().render((Locatable) generated);
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
@@ -871,7 +866,8 @@ public class ContentBuilderTest extends TestCase {
 //        String templateId = "COLNEC Medication";
 //        String templateId = "IDCR - Service Request.v0";
 //        String templateId = "GEL - Generic Lab Report import.v0";
-        String templateId = "DiADeM Assessment.v1";
+//        String templateId = "DiADeM Assessment.v1";
+        String templateId = "Ripple Dashboard Cache.v1";
 
 //        String templateId = "IDCR Problem List.v1";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
@@ -880,7 +876,8 @@ public class ContentBuilderTest extends TestCase {
         //get a flat json test file
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/COLNEC_Medication_FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Ian-mail-27-01-17.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_32.flat.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_32.flat.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ripple_dashboard_cache.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
 
         Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
@@ -915,7 +912,7 @@ public class ContentBuilderTest extends TestCase {
 
 
         //ECIS FLAT =============================================
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(newComposition);
+        Map<String, String> testRetMap = new EcisFlattener().render(newComposition);
 
         jsonString = gson.toJson(testRetMap);
 
@@ -923,4 +920,13 @@ public class ContentBuilderTest extends TestCase {
         System.out.println(jsonString);
 
     }
+
+    @Test
+    public void testGenerateOtherContext() throws Exception {
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "Ripple Dashboard Cache.v1");
+
+        Locatable generated = contentBuilder.generate();
+
+        assertNotNull(generated);
+     }
 }

@@ -142,7 +142,7 @@ public class CompWalkerTest {
 
         }
 
-        Map<String, String> testRetMap = EcisFlattener.renderFlat(composition);
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
         assertNotNull(testRetMap);
     }
 
