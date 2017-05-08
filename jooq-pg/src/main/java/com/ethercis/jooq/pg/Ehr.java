@@ -19,6 +19,7 @@ import com.ethercis.jooq.pg.tables.Entry;
 import com.ethercis.jooq.pg.tables.EntryHistory;
 import com.ethercis.jooq.pg.tables.EventContext;
 import com.ethercis.jooq.pg.tables.EventContextHistory;
+import com.ethercis.jooq.pg.tables.Heading;
 import com.ethercis.jooq.pg.tables.Identifier;
 import com.ethercis.jooq.pg.tables.Language;
 import com.ethercis.jooq.pg.tables.Participation;
@@ -28,7 +29,8 @@ import com.ethercis.jooq.pg.tables.SessionLog;
 import com.ethercis.jooq.pg.tables.Status;
 import com.ethercis.jooq.pg.tables.StatusHistory;
 import com.ethercis.jooq.pg.tables.System;
-import com.ethercis.jooq.pg.tables.TemplateMeta;
+import com.ethercis.jooq.pg.tables.Template;
+import com.ethercis.jooq.pg.tables.TemplateHeadingXref;
 import com.ethercis.jooq.pg.tables.TerminologyProvider;
 import com.ethercis.jooq.pg.tables.Territory;
 
@@ -55,7 +57,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Ehr extends SchemaImpl {
 
-	private static final long serialVersionUID = -1127169427;
+	private static final long serialVersionUID = 602285548;
 
 	/**
 	 * The reference instance of <code>ehr</code>
@@ -94,6 +96,7 @@ public class Ehr extends SchemaImpl {
 			EntryHistory.ENTRY_HISTORY,
 			EventContext.EVENT_CONTEXT,
 			EventContextHistory.EVENT_CONTEXT_HISTORY,
+			Heading.HEADING,
 			Identifier.IDENTIFIER,
 			Language.LANGUAGE,
 			Participation.PARTICIPATION,
@@ -103,7 +106,8 @@ public class Ehr extends SchemaImpl {
 			Status.STATUS,
 			StatusHistory.STATUS_HISTORY,
 			System.SYSTEM,
-			TemplateMeta.TEMPLATE_META,
+			Template.TEMPLATE,
+			TemplateHeadingXref.TEMPLATE_HEADING_XREF,
 			TerminologyProvider.TERMINOLOGY_PROVIDER,
 			Territory.TERRITORY);
 	}

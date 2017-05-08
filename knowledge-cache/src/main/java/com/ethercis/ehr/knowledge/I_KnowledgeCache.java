@@ -31,6 +31,16 @@ import java.util.regex.Pattern;
 
 public interface I_KnowledgeCache {
 
+    String TEMPLATE_ID = "templateId";
+    String ERROR = "ERROR";
+    String CREATED_ON = "createdOn";
+    String LAST_ACCESS_TIME = "lastAccessTime";
+    String LAST_MODIFIED_TIME = "lastModifiedTime";
+    String PATH = "path";
+    String TEMPLATES = "templates";
+    String UID = "uid";
+    String CONCEPT = "concept";
+
     String getArchetypePath();
 
     String getOptPath();

@@ -14,6 +14,7 @@ import com.ethercis.jooq.pg.tables.Contribution;
 import com.ethercis.jooq.pg.tables.Ehr;
 import com.ethercis.jooq.pg.tables.Entry;
 import com.ethercis.jooq.pg.tables.EventContext;
+import com.ethercis.jooq.pg.tables.Heading;
 import com.ethercis.jooq.pg.tables.Identifier;
 import com.ethercis.jooq.pg.tables.Language;
 import com.ethercis.jooq.pg.tables.Participation;
@@ -21,6 +22,8 @@ import com.ethercis.jooq.pg.tables.PartyIdentified;
 import com.ethercis.jooq.pg.tables.SessionLog;
 import com.ethercis.jooq.pg.tables.Status;
 import com.ethercis.jooq.pg.tables.System;
+import com.ethercis.jooq.pg.tables.Template;
+import com.ethercis.jooq.pg.tables.TemplateHeadingXref;
 import com.ethercis.jooq.pg.tables.TerminologyProvider;
 import com.ethercis.jooq.pg.tables.Territory;
 import com.ethercis.jooq.pg.tables.records.AccessRecord;
@@ -33,6 +36,7 @@ import com.ethercis.jooq.pg.tables.records.ContributionRecord;
 import com.ethercis.jooq.pg.tables.records.EhrRecord;
 import com.ethercis.jooq.pg.tables.records.EntryRecord;
 import com.ethercis.jooq.pg.tables.records.EventContextRecord;
+import com.ethercis.jooq.pg.tables.records.HeadingRecord;
 import com.ethercis.jooq.pg.tables.records.IdentifierRecord;
 import com.ethercis.jooq.pg.tables.records.LanguageRecord;
 import com.ethercis.jooq.pg.tables.records.ParticipationRecord;
@@ -40,6 +44,8 @@ import com.ethercis.jooq.pg.tables.records.PartyIdentifiedRecord;
 import com.ethercis.jooq.pg.tables.records.SessionLogRecord;
 import com.ethercis.jooq.pg.tables.records.StatusRecord;
 import com.ethercis.jooq.pg.tables.records.SystemRecord;
+import com.ethercis.jooq.pg.tables.records.TemplateHeadingXrefRecord;
+import com.ethercis.jooq.pg.tables.records.TemplateRecord;
 import com.ethercis.jooq.pg.tables.records.TerminologyProviderRecord;
 import com.ethercis.jooq.pg.tables.records.TerritoryRecord;
 
@@ -82,12 +88,15 @@ public class Keys {
 	public static final UniqueKey<EhrRecord> EHR_PKEY = UniqueKeys0.EHR_PKEY;
 	public static final UniqueKey<EntryRecord> ENTRY_PKEY = UniqueKeys0.ENTRY_PKEY;
 	public static final UniqueKey<EventContextRecord> EVENT_CONTEXT_PKEY = UniqueKeys0.EVENT_CONTEXT_PKEY;
+	public static final UniqueKey<HeadingRecord> HEADING_PKEY = UniqueKeys0.HEADING_PKEY;
 	public static final UniqueKey<LanguageRecord> LANGUAGE_PKEY = UniqueKeys0.LANGUAGE_PKEY;
 	public static final UniqueKey<ParticipationRecord> PARTICIPATION_PKEY = UniqueKeys0.PARTICIPATION_PKEY;
 	public static final UniqueKey<PartyIdentifiedRecord> PARTY_IDENTIFIED_PKEY = UniqueKeys0.PARTY_IDENTIFIED_PKEY;
 	public static final UniqueKey<SessionLogRecord> SESSION_LOG_PKEY = UniqueKeys0.SESSION_LOG_PKEY;
 	public static final UniqueKey<StatusRecord> STATUS_PKEY = UniqueKeys0.STATUS_PKEY;
 	public static final UniqueKey<SystemRecord> SYSTEM_PKEY = UniqueKeys0.SYSTEM_PKEY;
+	public static final UniqueKey<TemplateRecord> TEMPLATE_PKEY = UniqueKeys0.TEMPLATE_PKEY;
+	public static final UniqueKey<TemplateRecord> TEMPLATE_TEMPLATE_ID_KEY = UniqueKeys0.TEMPLATE_TEMPLATE_ID_KEY;
 	public static final UniqueKey<TerminologyProviderRecord> TERMINOLOGY_PROVIDER_PKEY = UniqueKeys0.TERMINOLOGY_PROVIDER_PKEY;
 	public static final UniqueKey<TerritoryRecord> TERRITORY_PKEY = UniqueKeys0.TERRITORY_PKEY;
 
@@ -120,6 +129,8 @@ public class Keys {
 	public static final ForeignKey<ParticipationRecord, PartyIdentifiedRecord> PARTICIPATION__PARTICIPATION_PERFORMER_FKEY = ForeignKeys0.PARTICIPATION__PARTICIPATION_PERFORMER_FKEY;
 	public static final ForeignKey<StatusRecord, EhrRecord> STATUS__STATUS_EHR_ID_FKEY = ForeignKeys0.STATUS__STATUS_EHR_ID_FKEY;
 	public static final ForeignKey<StatusRecord, PartyIdentifiedRecord> STATUS__STATUS_PARTY_FKEY = ForeignKeys0.STATUS__STATUS_PARTY_FKEY;
+	public static final ForeignKey<TemplateHeadingXrefRecord, HeadingRecord> TEMPLATE_HEADING_XREF__TEMPLATE_HEADING_XREF_HEADING_CODE_FKEY = ForeignKeys0.TEMPLATE_HEADING_XREF__TEMPLATE_HEADING_XREF_HEADING_CODE_FKEY;
+	public static final ForeignKey<TemplateHeadingXrefRecord, TemplateRecord> TEMPLATE_HEADING_XREF__TEMPLATE_HEADING_XREF_TEMPLATE_ID_FKEY = ForeignKeys0.TEMPLATE_HEADING_XREF__TEMPLATE_HEADING_XREF_TEMPLATE_ID_FKEY;
 
 	// -------------------------------------------------------------------------
 	// [#1459] distribute members to avoid static initialisers > 64kb
@@ -135,12 +146,15 @@ public class Keys {
 		public static final UniqueKey<EhrRecord> EHR_PKEY = createUniqueKey(Ehr.EHR, Ehr.EHR.ID);
 		public static final UniqueKey<EntryRecord> ENTRY_PKEY = createUniqueKey(Entry.ENTRY, Entry.ENTRY.ID);
 		public static final UniqueKey<EventContextRecord> EVENT_CONTEXT_PKEY = createUniqueKey(EventContext.EVENT_CONTEXT, EventContext.EVENT_CONTEXT.ID);
+		public static final UniqueKey<HeadingRecord> HEADING_PKEY = createUniqueKey(Heading.HEADING, Heading.HEADING.CODE);
 		public static final UniqueKey<LanguageRecord> LANGUAGE_PKEY = createUniqueKey(Language.LANGUAGE, Language.LANGUAGE.CODE);
 		public static final UniqueKey<ParticipationRecord> PARTICIPATION_PKEY = createUniqueKey(Participation.PARTICIPATION, Participation.PARTICIPATION.ID);
 		public static final UniqueKey<PartyIdentifiedRecord> PARTY_IDENTIFIED_PKEY = createUniqueKey(PartyIdentified.PARTY_IDENTIFIED, PartyIdentified.PARTY_IDENTIFIED.ID);
 		public static final UniqueKey<SessionLogRecord> SESSION_LOG_PKEY = createUniqueKey(SessionLog.SESSION_LOG, SessionLog.SESSION_LOG.ID);
 		public static final UniqueKey<StatusRecord> STATUS_PKEY = createUniqueKey(Status.STATUS, Status.STATUS.ID);
 		public static final UniqueKey<SystemRecord> SYSTEM_PKEY = createUniqueKey(System.SYSTEM, System.SYSTEM.ID);
+		public static final UniqueKey<TemplateRecord> TEMPLATE_PKEY = createUniqueKey(Template.TEMPLATE, Template.TEMPLATE.UID);
+		public static final UniqueKey<TemplateRecord> TEMPLATE_TEMPLATE_ID_KEY = createUniqueKey(Template.TEMPLATE, Template.TEMPLATE.TEMPLATE_ID);
 		public static final UniqueKey<TerminologyProviderRecord> TERMINOLOGY_PROVIDER_PKEY = createUniqueKey(TerminologyProvider.TERMINOLOGY_PROVIDER, TerminologyProvider.TERMINOLOGY_PROVIDER.CODE);
 		public static final UniqueKey<TerritoryRecord> TERRITORY_PKEY = createUniqueKey(Territory.TERRITORY, Territory.TERRITORY.CODE);
 	}
@@ -171,5 +185,7 @@ public class Keys {
 		public static final ForeignKey<ParticipationRecord, PartyIdentifiedRecord> PARTICIPATION__PARTICIPATION_PERFORMER_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.PARTY_IDENTIFIED_PKEY, Participation.PARTICIPATION, Participation.PARTICIPATION.PERFORMER);
 		public static final ForeignKey<StatusRecord, EhrRecord> STATUS__STATUS_EHR_ID_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.EHR_PKEY, Status.STATUS, Status.STATUS.EHR_ID);
 		public static final ForeignKey<StatusRecord, PartyIdentifiedRecord> STATUS__STATUS_PARTY_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.PARTY_IDENTIFIED_PKEY, Status.STATUS, Status.STATUS.PARTY);
+		public static final ForeignKey<TemplateHeadingXrefRecord, HeadingRecord> TEMPLATE_HEADING_XREF__TEMPLATE_HEADING_XREF_HEADING_CODE_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.HEADING_PKEY, TemplateHeadingXref.TEMPLATE_HEADING_XREF, TemplateHeadingXref.TEMPLATE_HEADING_XREF.HEADING_CODE);
+		public static final ForeignKey<TemplateHeadingXrefRecord, TemplateRecord> TEMPLATE_HEADING_XREF__TEMPLATE_HEADING_XREF_TEMPLATE_ID_FKEY = createForeignKey(com.ethercis.jooq.pg.Keys.TEMPLATE_PKEY, TemplateHeadingXref.TEMPLATE_HEADING_XREF, TemplateHeadingXref.TEMPLATE_HEADING_XREF.TEMPLATE_ID);
 	}
 }

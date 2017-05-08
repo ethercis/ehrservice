@@ -738,10 +738,6 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     @Override
     public Composition buildCompositionFromJson(String jsonData) throws Exception {
-        if (jsonData == null || jsonData.equals("null"))
-            return null;
-
-        MapInspector inspector = getMapInspector(jsonData);
 
         //TODO: use a cache mechanism for generated composition
         //time measured is about 250 ms to generate the composition and 15ms to set the values...
@@ -750,6 +746,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         long end = System.nanoTime();
 
         log.debug("generate composition [ms]:"+(end - start)/1000000);
+
+        if (jsonData == null || jsonData.equals("null"))
+            return newComposition;  //this is a composition without content (perfectly valid...)
+
+        MapInspector inspector = getMapInspector(jsonData);
 
         start = System.nanoTime();
         assignValuesFromStack(newComposition, (ArrayDeque) inspector.getStack());

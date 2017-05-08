@@ -438,38 +438,45 @@ public class KnowledgeCache implements I_KnowledgeCache {
             OPERATIONALTEMPLATE operationaltemplate = atOptCache.get(filename);
 
             if (operationaltemplate == null){
-                entryMap.put("ERROR", "Reported error for file:"+filename+", error:"+errorMap.get(filename));
+                entryMap.put(ERROR, "Reported error for file:"+filename+", error:"+errorMap.get(filename));
                 continue;
             }
 
             if (operationaltemplate.getTemplateId() != null) {
-                entryMap.put("templateId", operationaltemplate.getTemplateId().getValue());
+                entryMap.put(TEMPLATE_ID, operationaltemplate.getTemplateId().getValue());
             }
             else {
-                entryMap.put("ERROR", "Could not get template id for template in file:"+filename);
+                entryMap.put(ERROR, "Could not get template id for template in file:"+filename);
             }
+            if (operationaltemplate.getUid() != null){
+                entryMap.put(UID, operationaltemplate.getUid().getValue());
+            }
+            if (operationaltemplate.getConcept() != null){
+                entryMap.put(CONCEPT, operationaltemplate.getConcept());
+            }
+
             Path path = Paths.get(getOptPath()+"/"+filename+".opt");
             try {
                 BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
                 ZonedDateTime creationTime = ZonedDateTime.parse(attributes.creationTime().toString()).withZoneSameInstant(zoneId);
-                entryMap.put("createdOn", creationTime.toString());
+                entryMap.put(CREATED_ON, creationTime.toString());
 
                 ZonedDateTime lastAccessTime = ZonedDateTime.parse(attributes.lastAccessTime().toString()).withZoneSameInstant(zoneId);
-                entryMap.put("lastAccessTime", lastAccessTime.toString());
+                entryMap.put(LAST_ACCESS_TIME, lastAccessTime.toString());
 
                 ZonedDateTime lastModifiedTime = ZonedDateTime.parse(attributes.lastModifiedTime().toString()).withZoneSameInstant(zoneId);
-                entryMap.put("lastModifiedTime", lastModifiedTime.toString());
+                entryMap.put(LAST_MODIFIED_TIME, lastModifiedTime.toString());
 
-                entryMap.put("path", path.toString());
+                entryMap.put(PATH, path.toString());
             }
             catch (Exception e){
-                entryMap.put("ERROR", "disconnected file? tried:"+getOptPath()+"/"+filename+".opt");
+                entryMap.put(ERROR, "disconnected file? tried:"+getOptPath()+"/"+filename+".opt");
             }
 
             collection.add(entryMap);
         }
 
-        mainMap.put("templates", collection);
+        mainMap.put(TEMPLATES, collection);
 
         return mainMap;
     }

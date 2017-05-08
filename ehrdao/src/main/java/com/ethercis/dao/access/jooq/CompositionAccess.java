@@ -606,7 +606,7 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
         selectQuery.addJoin(participationRef, JoinType.LEFT_OUTER_JOIN, participationRef.field(PARTICIPATION.EVENT_CONTEXT.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.ID.getName(), UUID.class)));
         selectQuery.addJoin(performerRef,JoinType.LEFT_OUTER_JOIN, performerRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class).eq(participationRef.field(PARTICIPATION.PERFORMER.getName(), UUID.class)));
         selectQuery.addJoin(territoryRef, territoryRef.field(TERRITORY.CODE.getName(), Integer.class).eq(compositionRef.field(COMPOSITION.TERRITORY)));
-        selectQuery.addJoin(conceptRef, conceptRef.field(CONCEPT.ID.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.SETTING)));
+        selectQuery.addJoin(conceptRef, JoinType.LEFT_OUTER_JOIN, conceptRef.field(CONCEPT.ID.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.SETTING)));
         selectQuery.addConditions(ENTRY.COMPOSITION_ID.eq(id));
 
         Result<?> records = selectQuery.fetch();

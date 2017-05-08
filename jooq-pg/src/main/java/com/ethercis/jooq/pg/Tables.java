@@ -20,6 +20,7 @@ import com.ethercis.jooq.pg.tables.Entry;
 import com.ethercis.jooq.pg.tables.EntryHistory;
 import com.ethercis.jooq.pg.tables.EventContext;
 import com.ethercis.jooq.pg.tables.EventContextHistory;
+import com.ethercis.jooq.pg.tables.Heading;
 import com.ethercis.jooq.pg.tables.Identifier;
 import com.ethercis.jooq.pg.tables.Language;
 import com.ethercis.jooq.pg.tables.Participation;
@@ -29,7 +30,8 @@ import com.ethercis.jooq.pg.tables.SessionLog;
 import com.ethercis.jooq.pg.tables.Status;
 import com.ethercis.jooq.pg.tables.StatusHistory;
 import com.ethercis.jooq.pg.tables.System;
-import com.ethercis.jooq.pg.tables.TemplateMeta;
+import com.ethercis.jooq.pg.tables.Template;
+import com.ethercis.jooq.pg.tables.TemplateHeadingXref;
 import com.ethercis.jooq.pg.tables.TerminologyProvider;
 import com.ethercis.jooq.pg.tables.Territory;
 
@@ -130,6 +132,11 @@ public class Tables {
 	public static final EventContextHistory EVENT_CONTEXT_HISTORY = com.ethercis.jooq.pg.tables.EventContextHistory.EVENT_CONTEXT_HISTORY;
 
 	/**
+	 * The table ehr.heading
+	 */
+	public static final Heading HEADING = com.ethercis.jooq.pg.tables.Heading.HEADING;
+
+	/**
 	 * specifies an identifier for a party identified, more than one identifier is possible
 	 */
 	public static final Identifier IDENTIFIER = com.ethercis.jooq.pg.tables.Identifier.IDENTIFIER;
@@ -175,9 +182,14 @@ public class Tables {
 	public static final System SYSTEM = com.ethercis.jooq.pg.tables.System.SYSTEM;
 
 	/**
-	 * The table ehr.template_meta
+	 * The table ehr.template
 	 */
-	public static final TemplateMeta TEMPLATE_META = com.ethercis.jooq.pg.tables.TemplateMeta.TEMPLATE_META;
+	public static final Template TEMPLATE = com.ethercis.jooq.pg.tables.Template.TEMPLATE;
+
+	/**
+	 * The table ehr.template_heading_xref
+	 */
+	public static final TemplateHeadingXref TEMPLATE_HEADING_XREF = com.ethercis.jooq.pg.tables.TemplateHeadingXref.TEMPLATE_HEADING_XREF;
 
 	/**
 	 * openEHR identified terminology provider

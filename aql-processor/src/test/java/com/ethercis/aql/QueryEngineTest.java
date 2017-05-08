@@ -51,8 +51,8 @@ public class QueryEngineTest {
     public void setUp(){
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
-        String url = "jdbc:postgresql://localhost:5434/ethercis";
-//        String url = "jdbc:postgresql://192.168.2.108:5432/ethercis";
+//        String url = "jdbc:postgresql://localhost:5434/ethercis";
+        String url = "jdbc:postgresql://192.168.2.113:5432/ethercis";
 //        String url = "jdbc:postgresql://192.168.2.108:5432/ethercis";
         String login = "postgres";
         String password = "postgres";
@@ -917,6 +917,26 @@ public class QueryEngineTest {
                 "    from EHR e contains COMPOSITION a contains" +
                 "     OBSERVATION a_b[openEHR-EHR-OBSERVATION.laboratory_test.v0] contains" +
                 "     CLUSTER a_a[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testQryOtherContext() throws Exception {
+        String query =
+                "select e/ehr_id/value as ehrId, " +
+                        "a/context/other_context[at0001]/items[at0005]/value/magnitude as diagnosesCount,  " +
+                        "a/context/other_context[at0001]/items[at0002]/value/magnitude as ordersCount, " +
+                        "a/context/other_context[at0001]/items[at0006]/value/value as ordersDate, " +
+                        "a/context/other_context[at0001]/items[at0004]/value/magnitude as resultsCount, " +
+                        "a/context/other_context[at0001]/items[at0009]/value/value as resultsDate, " +
+                        "a/context/other_context[at0001]/items[at0003]/value/magnitude as vitalsCount, " +
+                        "a/context/other_context[at0001]/items[at0007]/value/value as vitalsDate " +
+                        "from EHR e " +
+                        "contains COMPOSITION a[openEHR-EHR-COMPOSITION.ripple_cache.v1] ";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

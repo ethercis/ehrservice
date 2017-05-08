@@ -308,7 +308,7 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
                 I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(values, domainAccess.getKnowledgeManager(), record.getValue(I_CompositionAccess.F_ENTRY_TEMPLATE, String.class));
 //                EntryAccess entry = new EntryAccess();
 //                entryAccess.entryRecord = record;
-                entryAccess.composition = contentBuilder.buildCompositionFromJson(((PGobject) record.getValue(I_CompositionAccess.F_ENTRY)).getValue());
+                entryAccess.composition = contentBuilder.buildCompositionFromJson(record.getValue(I_CompositionAccess.F_ENTRY) == null ? null : ((PGobject) record.getValue(I_CompositionAccess.F_ENTRY)).getValue());
                 entryAccess.entryRecord = domainAccess.getContext().newRecord(ENTRY);
                 entryAccess.entryRecord.setTemplateId(record.getValue(I_CompositionAccess.F_ENTRY_TEMPLATE, String.class));
                 entryAccess.entryRecord.setCompositionId(record.getValue(ENTRY.COMPOSITION_ID.getName(), UUID.class));

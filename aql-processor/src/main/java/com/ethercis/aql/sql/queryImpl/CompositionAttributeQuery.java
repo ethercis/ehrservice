@@ -43,6 +43,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     private String serverNodeId;
     private String columnAlias;
     private boolean containsEhrStatus = false;
+    private boolean containsOtherContext = false;
     private boolean containsEhrId = false;
     private String ehrIdAlias;
 
@@ -156,6 +157,11 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         {
             joinEhrStatus = true;
             return ehrStatusOtherDetails(variableDefinition, withAlias);
+        }
+        if (columnAlias.startsWith("context/other_context"))
+        {
+            joinEventContext = true;
+            return ehrContextOtherContext(variableDefinition, withAlias);
         }
         throw new IllegalArgumentException("Could not interpret field:"+columnAlias);
     }
@@ -474,6 +480,15 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         containsEhrStatus = true;
         String variablePath = variableDefinition.getPath().substring("ehr_status/other_details".length() + 1);
         Field<?> field = JsonbEntryQuery.makeField(JsonbEntryQuery.OTHER_ITEM.OTHER_DETAILS, null, variableDefinition.getAlias(), variablePath, withAlias);
+        return field;
+    }
+
+    private Field<?> ehrContextOtherContext(VariableDefinition variableDefinition, boolean withAlias){
+        containsOtherContext = true;
+        String variablePath = variableDefinition.getPath().substring("context/other_context".length() + 1);
+        variablePath = variablePath.substring(variablePath.indexOf("]")+1);
+        String otherContextPath = "/"+variableDefinition.getPath().substring(0, variableDefinition.getPath().indexOf("]")+1);
+        Field<?> field = JsonbEntryQuery.makeField(JsonbEntryQuery.OTHER_ITEM.OTHER_CONTEXT, null, variableDefinition.getAlias(), variablePath, withAlias);
         return field;
     }
 

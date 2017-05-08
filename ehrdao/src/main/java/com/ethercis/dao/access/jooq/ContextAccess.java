@@ -155,9 +155,9 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
     @Override
     public UUID commit(Timestamp transactionTime) throws Exception {
         eventContextRecord.setSysTransaction(transactionTime);
-        UUID uuid = UUID.randomUUID();
+//        UUID uuid = UUID.randomUUID();
         InsertQuery<?> insertQuery = context.insertQuery(EVENT_CONTEXT);
-        insertQuery.addValue(EVENT_CONTEXT.ID, uuid);
+        insertQuery.addValue(EVENT_CONTEXT.ID, eventContextRecord.getId());
         insertQuery.addValue(EVENT_CONTEXT.COMPOSITION_ID, eventContextRecord.getCompositionId());
         insertQuery.addValue(EVENT_CONTEXT.START_TIME, eventContextRecord.getStartTime());
         insertQuery.addValue(EVENT_CONTEXT.START_TIME_TZID, eventContextRecord.getStartTimeTzid());
@@ -184,7 +184,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
             );
         }
         
-        return uuid;
+        return eventContextRecord.getId();
     }
 
     @Deprecated
