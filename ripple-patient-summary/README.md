@@ -1,7 +1,9 @@
-#Patient Summary Cache
+# Patient Summary Cache #
+
 The patient summary cache is an attempt to support "fixed" composition gathering summary results (f.e. number of transaction of a given type, date of last transaction etc.). In this implementation, results of aggregations are calculated at DB level. That is, EtherCIS (the middleware) does not play any role in the construction of the cache.
 
 ##Principle
+
 We build and update ONE summary cache per EHR. In other terms, one fixed composition is allocated to one EHR. The fixed composition is a simple no-content composition, calculated data is contained in an archetyped other_context structure.
 
 The calculations are performed using SQL triggers whenever a new composition is created, updated or deleted. Depending on the actual transaction type, the trigger is invoked at different level:
@@ -13,6 +15,7 @@ The calculations are performed using SQL triggers whenever a new composition is 
 		if the template is changed, the respective encoding must be adapted!
 
 ##Under The Hood
+
 Few things to know to understand how this works.
 
 This module is essentially based on two scripts generating the functions used to build and update the summaries:
@@ -34,6 +37,7 @@ NB. NULL count is defaulted to `0`. NULL date/time is defaulted to `1970-01-01 0
 
 
 ##Configuration
+
 Since the summary cache is maintained at DB level, the configuration is held in tables:
 
 - `HEADING`: contains the list of defined headings with their name and description
@@ -53,6 +57,7 @@ Several scripts and utility are provided to build the configuration:
 - `template_heading.sql`: SQL script to build `TEMPLATE_HEADING_XREF` using template id (easier to read...)
 
 ##Installation
+
 Shell script `prepare_db.sh` performs all required steps to enable a DB to support summary calculations:
 
 - create the configuration tables (as described above) and set-up the headings.
@@ -64,9 +69,11 @@ Shell script `prepare_db.sh` performs all required steps to enable a DB to suppo
 Shell script `set_template_table.sh` must be adapted to the runtime environment.
 
 ##Initialization
+
 Script `init_summary.sql` can be used to create the summaries for an existing DB
 
 ##Operation
+
 The triggers are set using script `set_cache_summary_db_triggers.sql`:
 
 - table `COMPOSITION` trigger is invoked on DELETE. It updates the summary for a delete composition transaction.
@@ -117,7 +124,9 @@ Returns a list of summaries:
 	    {....
 
 ###REST API
+
 `GET <server_url>/rest/v1/composition?uid=<composition_id>&format=[FLAT|ECISFLAT]`
+
 ####FLAT JSON
 	{
 	  "composition": {
@@ -171,5 +180,7 @@ Returns a list of summaries:
 	  "format": "ECISFLAT",
 	  "templateId": "Ripple Dashboard Cache.v1"
 	} 
+
 ###License
-See LICENSE.txt in this directory.     
+
+See LICENSE.txt in this directory.
