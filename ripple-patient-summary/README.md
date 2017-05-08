@@ -2,7 +2,7 @@
 
 The patient summary cache is an attempt to support "fixed" composition gathering summary results (f.e. number of transaction of a given type, date of last transaction etc.). In this implementation, results of aggregations are calculated at DB level. That is, EtherCIS (the middleware) does not play any role in the construction of the cache.
 
-##Principle
+## Principle
 
 We build and update ONE summary cache per EHR. In other terms, one fixed composition is allocated to one EHR. The fixed composition is a simple no-content composition, calculated data is contained in an archetyped other_context structure.
 
@@ -14,7 +14,7 @@ The calculations are performed using SQL triggers whenever a new composition is 
 		The summary composition is built at DB level. It is template dependent; 
 		if the template is changed, the respective encoding must be adapted!
 
-##Under The Hood
+## Under The Hood
 
 Few things to know to understand how this works.
 
@@ -36,7 +36,7 @@ This module is essentially based on two scripts generating the functions used to
 NB. NULL count is defaulted to `0`. NULL date/time is defaulted to `1970-01-01 00:00:00`  
 
 
-##Configuration
+## Configuration
 
 Since the summary cache is maintained at DB level, the configuration is held in tables:
 
@@ -56,7 +56,7 @@ Several scripts and utility are provided to build the configuration:
 	- `OPTPATH`: the directory path to access the operational templates. This should be the same as used by EtherCIS.
 - `template_heading.sql`: SQL script to build `TEMPLATE_HEADING_XREF` using template id (easier to read...)
 
-##Installation
+## Installation
 
 Shell script `prepare_db.sh` performs all required steps to enable a DB to support summary calculations:
 
@@ -68,11 +68,11 @@ Shell script `prepare_db.sh` performs all required steps to enable a DB to suppo
 
 Shell script `set_template_table.sh` must be adapted to the runtime environment.
 
-##Initialization
+## Initialization
 
 Script `init_summary.sql` can be used to create the summaries for an existing DB
 
-##Operation
+## Operation
 
 The triggers are set using script `set_cache_summary_db_triggers.sql`:
 
@@ -82,9 +82,9 @@ The triggers are set using script `set_cache_summary_db_triggers.sql`:
 
 NB. table `EVENT_CONTEXT` column `sys_period` is modified to be NULLABLE. This is required since summaries are non versioned objects. 
 
-##Querying
+## Querying
 
-###AQL
+### AQL
 
 	select e/ehr_id/value as ehrId, 
 		a/context/other_context[at0001]/items[at0005]/value/magnitude as diagnosesCount,
@@ -123,11 +123,11 @@ Returns a list of summaries:
 	    },
 	    {....
 
-###REST API
+### REST API
 
 `GET <server_url>/rest/v1/composition?uid=<composition_id>&format=[FLAT|ECISFLAT]`
 
-####FLAT JSON
+#### FLAT JSON
 	{
 	  "composition": {
 	    "ripple_dashboard_cache/_uid": "49e0b063-3b58-4e9d-b421-14df5c14a506::vm01.ethercis.org::1",
@@ -156,7 +156,7 @@ Returns a list of summaries:
 	  "templateId": "Ripple Dashboard Cache.v1"
 	}
 
-####ECIS FLAT
+#### ECIS FLAT
 
 	{
 	  "composition": {
@@ -181,6 +181,6 @@ Returns a list of summaries:
 	  "templateId": "Ripple Dashboard Cache.v1"
 	} 
 
-###License
+### License
 
 See LICENSE.txt in this directory.
