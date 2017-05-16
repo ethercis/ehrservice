@@ -40,6 +40,7 @@ import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.ObjectID;
+import org.openehr.rm.support.identification.PartyRef;
 
 import java.io.Reader;
 import java.lang.reflect.Method;
@@ -176,8 +177,13 @@ public class MapInspector {
                 }
                 if (participation.getMode() != null)
                      retMap.put(path + I_PathValue.PARTICIPATION_MODE_SUBTAG, participation.getMode().toString());
-
-
+            }
+            else if (object instanceof PartyIdentified){ //used for care entry provider
+                PartyIdentified partyIdentified = (PartyIdentified)object;
+                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, partyIdentified.getName());
+                retMap.put(path+I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, partyIdentified.getExternalRef().getId().getValue());
+                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAMESPACE_SUBTAG, ((PartyRef) partyIdentified.getExternalRef()).getNamespace());
+//                retMap.put(path+I_PathValue.IDENTIFIER_PARTY_SCHEME_SUBTAG, ((PartyRef)partyIdentified.getExternalRef()).getgetId().getValue());
             }
             else if (object instanceof DvParsable) {
                 retMap.put(path+I_PathValue.VALUE_SUBTAG, ((DvParsable) object).getValue());
@@ -256,7 +262,7 @@ public class MapInspector {
 
         if (attributes.containsKey(TAG_OBJECT) && attributes.get(TAG_OBJECT) != null) //the object may have been supplied depending on the context
             //make sure the created object is a DataValue, otherwise create a new one...
-            if (attributes.get(TAG_OBJECT) instanceof DataValue || attributes.get(TAG_OBJECT) instanceof ObjectID)
+            if (attributes.get(TAG_OBJECT) instanceof DataValue || attributes.get(TAG_OBJECT) instanceof ObjectID || attributes.get(TAG_OBJECT) instanceof PartyIdentified)
                 return;
 
         String className = (String)attributes.get(CompositionSerializer.TAG_CLASS);

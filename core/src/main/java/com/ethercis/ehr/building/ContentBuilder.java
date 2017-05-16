@@ -37,6 +37,7 @@ import org.apache.xmlbeans.XmlOptions;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
+import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.common.generic.PartyProxy;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.EventContext;
@@ -269,6 +270,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                     lastTag.equals(CompositionSerializer.TAG_MATH_FUNCTION) ||
                     lastTag.equals(CompositionSerializer.TAG_NARRATIVE) ||
                     lastTag.equals(CompositionSerializer.TAG_ACTION_ARCHETYPE_ID) ||
+                    lastTag.equals(CompositionSerializer.TAG_PROVIDER) ||
                     lastTag.equals(I_PathValue.ORIGIN_TAG)){
                 path = path.substring(0, path.lastIndexOf("/"));
             }
@@ -380,6 +382,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                     ((Entry) itemAtPath).setUid((HierObjectID) object);
                 } else if (lastTag.equals(CompositionSerializer.TAG_WORKFLOW_ID)) {
                     ((Entry) itemAtPath).setWorkflowId((ObjectRef) object);
+                } else if (lastTag.equals(CompositionSerializer.TAG_PROVIDER)){
+                    ((Entry)itemAtPath).setProvider((PartyIdentified)object);
                 }
             }
 

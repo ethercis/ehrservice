@@ -206,7 +206,7 @@ public abstract class Entry extends ContentItem {
         this.subject = subject;
     }
 
-    void setProvider(PartyProxy provider) {
+    public void setProvider(PartyProxy provider) {
         this.provider = provider;
     }
 

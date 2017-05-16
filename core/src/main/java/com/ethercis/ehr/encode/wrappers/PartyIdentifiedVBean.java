@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers;
 
+import com.ethercis.ehr.encode.CompositionSerializer;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.support.identification.GenericID;
 import org.openehr.rm.support.identification.HierObjectID;
@@ -78,6 +79,32 @@ public class PartyIdentifiedVBean implements I_VBeanWrapper  {
 
         PartyIdentified partyIdentified= new PartyIdentified(new PartyRef(new GenericID(identifier, scheme), namespace, type), name, null);
         return partyIdentified;
+    }
+
+    public static PartyIdentified getInstance(Map<String, Object> attributes) {
+        Object value = attributes.get(CompositionSerializer.TAG_VALUE);
+
+        if (value == null)
+            throw new IllegalArgumentException("No value in attributes");
+
+        if (value instanceof PartyIdentified) return (PartyIdentified)value;
+
+        if (!attributes.isEmpty()){
+            Map valueMap = (Map)value;
+            Map externalRefMap = (Map)valueMap.get("externalRef");
+
+            if (externalRefMap != null) {
+                String performerIdScheme = (String) ((Map) externalRefMap.get("id")).get("scheme");
+                String performerIdValue = (String) ((Map) externalRefMap.get("id")).get("value");
+                String performerNameSpace = (String) (externalRefMap.get("namespace"));
+                String performerType = (String) (externalRefMap.get("type"));
+                return new PartyIdentified(new PartyRef(new GenericID(performerIdValue, performerIdScheme), performerNameSpace, performerType), (String)valueMap.get("name"), null);
+            }
+
+            return null;
+
+        }
+        throw new IllegalArgumentException("Could not get instance");
     }
 
     public static PartyIdentified generate(){

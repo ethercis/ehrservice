@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.openehr.rm.RMObject;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
+import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.composition.content.ContentItem;
 import org.openehr.rm.composition.content.entry.*;
@@ -116,6 +117,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	public static final String TAG_WORKFLOW_ID = "/workflow_id";
 	public static final String TAG_GUIDELINE_ID = "/guideline_id";
     public static final String TAG_OTHER_PARTICIPATIONS="/other_participations";
+	public static final String TAG_PROVIDER="/provider"; //care entry provider
     public static final String TAG_UID="/uid";
 	public static final String TAG_OTHER_DETAILS = "/other_details";
 	public static final String TAG_INSTRUCTION_DETAILS="/instruction_details";
@@ -421,19 +423,29 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 	}
 
-
-	private Map<String, Object> mapRmObjectAttributes(RMObject object, String name) throws Exception {
+	private Map<String, Object> objectAttributes(RMObject object, String name) throws Exception {
 		Map<String, Object> valuemap = newPathMap();
 		putObject(object, valuemap, TAG_NAME, mapName(name));
 		putObject(object, valuemap, TAG_CLASS, object.getClass().getSimpleName());
 
 		//assign the actual object to the value (instead of its field equivalent...)
 		putObject(object, valuemap, TAG_VALUE, object);
-        encodePathItem(valuemap, null);
 
 		return valuemap;
-
 	}
+
+	private Map<String, Object> mapRmObjectAttributes(RMObject object, String name) throws Exception {
+		Map<String, Object> valuemap = objectAttributes(object, name);
+        encodePathItem(valuemap, null);
+		return valuemap;
+	}
+
+	private Map<String, Object> mapRmObjectAttributes(RMObject object, String name, String tag) throws Exception {
+		Map<String, Object> valuemap = objectAttributes(object, name);
+		encodePathItem(valuemap, tag);
+		return valuemap;
+	}
+
 	/**
 	 * main entry method, process a composition.
 	 * @param composition
@@ -855,6 +867,11 @@ public class CompositionSerializer implements I_CompositionSerializer {
 //				map.put(TAG_OTHER_PARTICIPATIONS, participation);
 			}
 			map.put(TAG_OTHER_PARTICIPATIONS, sublist);
+		}
+
+		if (item.getProvider() != null){
+			PartyIdentified provider = (PartyIdentified)item.getProvider();
+			map.put(TAG_PROVIDER, mapRmObjectAttributes(provider, provider.getName(), TAG_PROVIDER));
 		}
 
 //        if (item instanceof Instruction)
