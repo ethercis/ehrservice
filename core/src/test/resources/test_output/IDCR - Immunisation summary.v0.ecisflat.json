@@ -1,0 +1,14 @@
+{
+  "/composer|name": "aComposer",
+  "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/description[at0001]/items[at0002]|value": "Hepatitis A",
+  "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/description[at0001]/items[at0004]|value": "1",
+  "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/description[at0001]/items[at0015]|value": "Minor reaction",
+  "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/ism_transition/careflow_step|value": "local::at0010|Immunisation course refused|",
+  "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/ism_transition/current_state|value": "openehr::528|cancelled|",
+  "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/time|value": "2014-12-20T07:45:20.622Z",
+  "/context/setting": "openehr::238|other care|",
+  "/context/start_time": "1900-01-01T00:00:00Z",
+  "/language": "en",
+  "/territory": "GB"
+}
+

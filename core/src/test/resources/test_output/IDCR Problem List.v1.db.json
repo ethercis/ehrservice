@@ -1,0 +1,68 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.problem_list.v1 and name/value\u003d\u0027Problem list\u0027]": {
+    "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1]": [
+      {
+        "/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]": [
+          {
+            "/data[at0001]": {
+              "/items[at0009]": [
+                {
+                  "/$CLASS$": "DvText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value\u003d\u0027Problems and issues\u0027]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value\u003d\u0027Problem/Diagnosis\u0027]/data[at0001]/items[at0009 and name/value\u003d\u0027Clinical description\u0027]",
+                  "/name": [
+                    {
+                      "value": "Clinical description"
+                    }
+                  ],
+                  "/value": {
+                    "value": "Gastric inflamation"
+                  }
+                }
+              ],
+              "/items[at0077]": [
+                {
+                  "/$CLASS$": "DvDateTime",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value\u003d\u0027Problems and issues\u0027]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value\u003d\u0027Problem/Diagnosis\u0027]/data[at0001]/items[at0077 and name/value\u003d\u0027Date/time of onset\u0027]",
+                  "/name": [
+                    {
+                      "value": "Date/time of onset"
+                    }
+                  ],
+                  "/value": {
+                    "value": "2016-04-12T00:00:00.000+01:00",
+                    "epoch_offset": 1460415600000
+                  }
+                }
+              ],
+              "/items[at0002]": [
+                {
+                  "/$CLASS$": "DvText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value\u003d\u0027Problems and issues\u0027]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value\u003d\u0027Problem/Diagnosis\u0027]/data[at0001]/items[at0002 and name/value\u003d\u0027Problem/Diagnosis name\u0027]",
+                  "/name": [
+                    {
+                      "value": "Problem/Diagnosis name"
+                    }
+                  ],
+                  "/value": {
+                    "value": "Gastric inflamation"
+                  }
+                }
+              ]
+            },
+            "/name": [
+              {
+                "value": "Problem/Diagnosis"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Problem list"
+    }
+  ]
+}
+

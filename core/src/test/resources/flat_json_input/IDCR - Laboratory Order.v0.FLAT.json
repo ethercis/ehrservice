@@ -1,0 +1,23 @@
+{
+	"ctx/language": "en",
+	"ctx/health_care_facility|id": "999999-345",
+	"ctx/composer_name": "Dr John Smith",
+	"ctx/territory": "GB",
+	"ctx/health_care_facility|name": "Northumbria Community NHS",	
+	"ctx/id_namespace": "NHS-UK",
+	"ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+	"laboratory_order/laboratory_test_tracker/time": "2016-04-12T18:20:37.668+0100",
+	"laboratory_order/laboratory_test_tracker/ism_transition/careflow_step|value": "Test Requested",
+	"laboratory_order/laboratory_test_request/lab_request/service_requested|value": "Physio-crutches",
+	"laboratory_order/laboratory_test_tracker/test_name|code": "order4",
+	"laboratory_order/laboratory_test_request/lab_request/timing": "2016-04-12T18:20:37.668+0100",
+	"laboratory_order/laboratory_test_request/narrative": "Physio-crutches",
+	"laboratory_order/laboratory_test_request/_uid": "cf098074-7b56-4848-91a0-2e79d4691179",
+	"laboratory_order/laboratory_test_request/lab_request/service_requested|code": "order4",
+	"laboratory_order/laboratory_test_request/lab_request/service_requested|terminology": "SNOMED-CT",
+	"laboratory_order/laboratory_test_tracker/test_name|value": "Physio-crutches",
+	"laboratory_order/laboratory_test_tracker/test_name|terminology": "SNOMED-CT",
+	"laboratory_order/laboratory_test_tracker/ism_transition/careflow_step|code": "at0003",
+	"laboratory_order/laboratory_test_tracker/ism_transition/current_state|code": "526",
+	"laboratory_order/laboratory_test_tracker/ism_transition/current_state|value": "planned"
+}

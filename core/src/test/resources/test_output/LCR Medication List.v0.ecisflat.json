@@ -1,0 +1,14 @@
+{
+  "/composer|name": "aComposer",
+  "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]/items[openEHR-EHR-SECTION.current_medication_rcp.v1]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1]/items[at0001]|value": "SNOMED-CT::123456789|ww test 10|",
+  "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]/items[openEHR-EHR-SECTION.current_medication_rcp.v1]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1]/items[at0002]|value": "external::123456778|IM Intra Muscular|",
+  "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]/items[openEHR-EHR-SECTION.current_medication_rcp.v1]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1]/items[at0003]|value": "ww test 10",
+  "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]/items[openEHR-EHR-SECTION.current_medication_rcp.v1]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1]/items[at0020]|value": "10mg",
+  "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]/items[openEHR-EHR-SECTION.current_medication_rcp.v1]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1]/items[at0021]|value": "10 hours",
+  "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]/items[openEHR-EHR-SECTION.current_medication_rcp.v1]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1]/items[at0046]/items[at0039]|value": "2016-12-24T08:30:00.000Z",
+  "/context/setting": "openehr::238|other care|",
+  "/context/start_time": "1900-01-01T00:00:00Z",
+  "/language": "en",
+  "/territory": "GB"
+}
+

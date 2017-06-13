@@ -23,10 +23,13 @@ import com.ethercis.ehr.encode.wrappers.json.writer.DvDateTimeAdapter;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.ParticipationVBean;
 import com.ethercis.ehr.keyvalues.I_PathValue;
+import com.ethercis.ehr.keyvalues.serializer.I_SerialMap;
+import com.ethercis.ehr.keyvalues.serializer.SerialMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openehr.rm.RMObject;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
@@ -159,75 +162,80 @@ public class MapInspector {
     public Map<String, String> getStackFlatten(){
         Map<String, String> retMap = new TreeMap<>();
 
-        for (Object o : stack) {
-            Map<String, Object> map = (Map) o;
+        for (Object valueDefinition : stack) {
+            Map<String, Object> map = (Map) valueDefinition;
             String path = simplifyPathExpressionKeepArrayIndex((String) map.get(CompositionSerializer.TAG_PATH));
             //transform the path expression, remove ' and name/value='
 
             Object object = map.get(CompositionSerializer.TAG_VALUE);
-            if (object instanceof Participation) {
-                Participation participation = (Participation) object;
 
-                retMap.put(path + I_PathValue.PARTICIPATION_FUNCTION_SUBTAG, participation.getFunction().getValue());
-                PartyIdentified performer = (PartyIdentified) participation.getPerformer();
-                if (performer!=null) {
-                    retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, performer.getName());
-                    if (performer.getExternalRef() != null)
-                        retMap.put(path + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, performer.getExternalRef().getId().getValue());
-                }
-                if (participation.getMode() != null)
-                     retMap.put(path + I_PathValue.PARTICIPATION_MODE_SUBTAG, participation.getMode().toString());
-            }
-            else if (object instanceof PartyIdentified){ //used for care entry provider
-                PartyIdentified partyIdentified = (PartyIdentified)object;
-                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, partyIdentified.getName());
-                retMap.put(path+I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, partyIdentified.getExternalRef().getId().getValue());
-                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAMESPACE_SUBTAG, ((PartyRef) partyIdentified.getExternalRef()).getNamespace());
-//                retMap.put(path+I_PathValue.IDENTIFIER_PARTY_SCHEME_SUBTAG, ((PartyRef)partyIdentified.getExternalRef()).getgetId().getValue());
-            }
-            else if (object instanceof DvParsable) {
-                retMap.put(path+I_PathValue.VALUE_SUBTAG, ((DvParsable) object).getValue());
-                retMap.put(path+I_PathValue.FORMALISM_SUBTAG, ((DvParsable)object).getFormalism());
-            }
-            else if (object instanceof DvInterval) {
-                DvInterval interval = (DvInterval) object;
-                String lowerValue = (interval.getLower() != null ? interval.getLower().toString() : "[null]");
-                String upperValue = (interval.getUpper() != null ? interval.getUpper().toString() : "[null]");
-                retMap.put(path, lowerValue +"::"+upperValue);
-            }
-            else if (object != null) {
-                boolean composite = false;
-                if (map.containsKey(CompositionSerializer.TAG_NAME)) {
-                    Object nameAttribute = map.get(CompositionSerializer.TAG_NAME);
-                    if (nameAttribute instanceof String)
-                        retMap.put(path + I_PathValue.NAME_SUBTAG, nameAttribute.toString());
-                    else if (nameAttribute instanceof Map)
-                        retMap.put(path + I_PathValue.NAME_SUBTAG, ((Map)nameAttribute).get("value").toString());
-                    composite = true;
-                }
-                if (map.containsKey(CompositionSerializer.TAG_DEFINING_CODE)){
-                    retMap.put(path + I_PathValue.DEFINING_CODE_SUBTAG, ((CodePhrase)map.get(CompositionSerializer.TAG_DEFINING_CODE)).toString());
-                    composite = true;
-                }
-                if (composite){
-                    String classname = (String)map.get(CompositionSerializer.TAG_CLASS);
-                    if (!isStructural(classname)) {
-                        if (map.containsKey(TAG_OBJECT)){
-//                            Object = (DataValue) map.get(TAG_OBJECT);
-                            retMap.put(path + I_PathValue.VALUE_SUBTAG, map.get(TAG_OBJECT).toString());
-                        }
-                        else
-                            retMap.put(path + I_PathValue.VALUE_SUBTAG, object.toString());
-                    }
-                    else
-                        retMap.put(path + I_PathValue.VALUE_SUBTAG, object.toString());
-                }
-                else {
-                    retMap.put(path, object.toString());
-                }
-            }
-            else
-                log.error("no mapping for object map:" + map);
+            I_SerialMap serialMap = new SerialMap(object, map, path);
+
+            retMap.putAll(serialMap.encode());
+
+//            if (object instanceof Participation) {
+//                Participation participation = (Participation) object;
+//
+//                retMap.put(path + I_PathValue.PARTICIPATION_FUNCTION_SUBTAG, participation.getFunction().getValue());
+//                PartyIdentified performer = (PartyIdentified) participation.getPerformer();
+//                if (performer!=null) {
+//                    retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, performer.getName());
+//                    if (performer.getExternalRef() != null)
+//                        retMap.put(path + I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, performer.getExternalRef().getId().getValue());
+//                }
+//                if (participation.getMode() != null)
+//                     retMap.put(path + I_PathValue.PARTICIPATION_MODE_SUBTAG, participation.getMode().toString());
+//            }
+//            else if (object instanceof PartyIdentified){ //used for care entry provider
+//                PartyIdentified partyIdentified = (PartyIdentified)object;
+//                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAME_SUBTAG, partyIdentified.getName());
+//                retMap.put(path+I_PathValue.IDENTIFIER_PARTY_ID_SUBTAG, partyIdentified.getExternalRef().getId().getValue());
+//                retMap.put(path + I_PathValue.IDENTIFIER_PARTY_NAMESPACE_SUBTAG, ((PartyRef) partyIdentified.getExternalRef()).getNamespace());
+////                retMap.put(path+I_PathValue.IDENTIFIER_PARTY_SCHEME_SUBTAG, ((PartyRef)partyIdentified.getExternalRef()).getgetId().getValue());
+//            }
+//            else if (object instanceof DvParsable) {
+//                retMap.put(path+I_PathValue.VALUE_SUBTAG, ((DvParsable) object).getValue());
+//                retMap.put(path+I_PathValue.FORMALISM_SUBTAG, ((DvParsable)object).getFormalism());
+//            }
+//            else if (object instanceof DvInterval) {
+//                DvInterval interval = (DvInterval) object;
+//                String lowerValue = (interval.getLower() != null ? interval.getLower().toString() : "[null]");
+//                String upperValue = (interval.getUpper() != null ? interval.getUpper().toString() : "[null]");
+//                retMap.put(path, lowerValue +"::"+upperValue);
+//            }
+//            else if (object != null) {
+//                boolean composite = false;
+//                if (map.containsKey(CompositionSerializer.TAG_NAME)) {
+//                    Object nameAttribute = map.get(CompositionSerializer.TAG_NAME);
+//                    if (nameAttribute instanceof String)
+//                        retMap.put(path + I_PathValue.NAME_SUBTAG, nameAttribute.toString());
+//                    else if (nameAttribute instanceof Map)
+//                        retMap.put(path + I_PathValue.NAME_SUBTAG, ((Map)nameAttribute).get("value").toString());
+//                    composite = true;
+//                }
+//                if (map.containsKey(CompositionSerializer.TAG_DEFINING_CODE)){
+//                    retMap.put(path + I_PathValue.DEFINING_CODE_SUBTAG, ((CodePhrase)map.get(CompositionSerializer.TAG_DEFINING_CODE)).toString());
+//                    composite = true;
+//                }
+//                if (composite){
+//                    String classname = (String)map.get(CompositionSerializer.TAG_CLASS);
+//                    if (!isStructural(classname)) {
+//                        if (map.containsKey(TAG_OBJECT)){
+////                            Object = (DataValue) map.get(TAG_OBJECT);
+//                            retMap.put(path + I_PathValue.VALUE_SUBTAG, map.get(TAG_OBJECT).toString());
+//                        }
+//                        else
+//                            retMap.put(path + I_PathValue.VALUE_SUBTAG, object.toString());
+//                    }
+//                    else
+//                        retMap.put(path + I_PathValue.VALUE_SUBTAG, object.toString());
+//                }
+//                else {
+//                    retMap.put(path, object.toString());
+//                }
+//            }
+//            else
+//                log.error("no mapping for object map:" + map);
         }
         return retMap;
     }

@@ -1,0 +1,34 @@
+{
+  "adverse_reaction_list/language|code": "en",
+  "adverse_reaction_list/language|terminology": "ISO_639-1",
+  "adverse_reaction_list/territory|code": "GB",
+  "adverse_reaction_list/territory|terminology": "ISO_3166-1",
+  "adverse_reaction_list/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "adverse_reaction_list/context/setting|code": "238",
+  "adverse_reaction_list/context/setting|value": "other care",
+  "adverse_reaction_list/context/setting|terminology": "openehr",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/_provider|id": "http://showcase.1.rippleosi.org/1234567",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/_provider|id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/_provider|id_namespace": "NHS-UK",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/_provider|name": "iHEALTHLINK Discharge",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|code": "91936005",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|value": "allergy to penicillin",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|terminology": "SNOMED-CT",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/manifestation:0|code": "28926001",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/manifestation:0|value": "eruption due to drug",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/manifestation:0|terminology": "SNOMED-CT",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/comment": "History unclear",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/language|code": "en",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/language|terminology": "ISO_639-1",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/encoding|code": "UTF-8",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/encoding|terminology": "IANA_character-sets",
+  "adverse_reaction_list/composer|name": "aComposer"
+}
+

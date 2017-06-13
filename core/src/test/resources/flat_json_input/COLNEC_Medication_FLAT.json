@@ -1,0 +1,23 @@
+{
+  "ctx/composer_name": "Christian",
+  "ctx/health_care_facility|id": "999999-345",
+  "ctx/health_care_facility|name": "Northumbria Community NHS",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2016-09-15T00:11:02.518+02:00",
+  "prescription/medications/medication_order/medication_activity:0/name_of_medication": "Sorbitol Strong",
+  "prescription/medications/medication_order/medication_activity:0/dose_unit|code": "at0001",
+  "prescription/medications/medication_order/medication_activity:0/dose_unit|terminology": "local",
+  "prescription/medications/medication_order/medication_activity:0/dose_unit|value": "tablet",
+  "prescription/medications/medication_order/medication_activity:0/strength_per_dose_unit/value|magnitude": 1000.0,
+  "prescription/medications/medication_order/medication_activity:0/strength_per_dose_unit/value|unit": "mg",
+  "prescription/medications/medication_order/medication_activity:0/timing/relative/timing|magnitude": 0.5,
+  "prescription/medications/medication_order/medication_activity:0/timing/relative/timing|unit": "h",
+  "prescription/medications/medication_order/medication_activity:0/timing/relative/event": "CMA",
+  "prescription/medications/medication_order/medication_activity:0/timing2": "local",
+  "prescription/medications/medication_order/medication_activity:0/timing2|formalism": "openehr",
+  "prescription/medications/medication_order/narrative": "prescription",
+  "prescription/medications/medication_order/_uid": "fb1880f4-e3db-4310-a125-08b75d39cdf4"
+}

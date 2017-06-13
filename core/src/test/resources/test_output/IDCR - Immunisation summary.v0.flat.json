@@ -1,0 +1,40 @@
+{
+  "immunisation_summary/language|code": "en",
+  "immunisation_summary/language|terminology": "ISO_639-1",
+  "immunisation_summary/territory|code": "GB",
+  "immunisation_summary/territory|terminology": "ISO_3166-1",
+  "immunisation_summary/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "immunisation_summary/context/setting|code": "238",
+  "immunisation_summary/context/setting|value": "other care",
+  "immunisation_summary/context/setting|terminology": "openehr",
+  "immunisation_summary/immunisation_procedure:0/ism_transition/current_state|code": "528",
+  "immunisation_summary/immunisation_procedure:0/ism_transition/current_state|value": "cancelled",
+  "immunisation_summary/immunisation_procedure:0/ism_transition/current_state|terminology": "openehr",
+  "immunisation_summary/immunisation_procedure:0/ism_transition/careflow_step|code": "at0010",
+  "immunisation_summary/immunisation_procedure:0/ism_transition/careflow_step|value": "Immunisation course refused",
+  "immunisation_summary/immunisation_procedure:0/ism_transition/careflow_step|terminology": "local",
+  "immunisation_summary/immunisation_procedure:0/immunisation_name": "Hepatitis A",
+  "immunisation_summary/immunisation_procedure:0/series_number": 1,
+  "immunisation_summary/immunisation_procedure:0/comment": "Minor reaction",
+  "immunisation_summary/immunisation_procedure:0/time": {
+    "iMillis": 1419061520622,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "immunisation_summary/immunisation_procedure:0/language|code": "en",
+  "immunisation_summary/immunisation_procedure:0/language|terminology": "ISO_639-1",
+  "immunisation_summary/immunisation_procedure:0/encoding|code": "UTF-8",
+  "immunisation_summary/immunisation_procedure:0/encoding|terminology": "IANA_character-sets",
+  "immunisation_summary/composer|name": "aComposer"
+}
+

@@ -1,0 +1,13 @@
+{
+  "ctx/composer_name": "Dr Tony Shannon",
+  "ctx/health_care_facility|id": "999999-345",
+  "ctx/health_care_facility|name": "Home",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2016-02-24T00:11:02.518+02:00",
+  "clinical_notes/clinical_synopsis:0/_name|value": "SOAP Note",
+   "clinical_notes/clinical_synopsis:0/notes": "S: Patient was very concerned about her welfare, no specific complaints, but some mild symptoms of depression (poor sleep, low energy levels etc)\nO: Comfortable: Vitals Normal BP 120/80; \nA; Social concerns and mild anxiety\nP; refer to Mental Health Team & Social Services for better support. DC with sister today."
+}
+

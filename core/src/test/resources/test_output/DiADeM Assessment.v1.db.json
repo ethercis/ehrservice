@@ -1,0 +1,749 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.encounter.v1 and name/value\u003d\u0027DiADeM Assessment\u0027]": {
+    "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0]": [
+      {
+        "/data[at0001]": {
+          "/events": {
+            "/events[at0002]": [
+              {
+                "/data[at0003]": {
+                  "/items[at0009]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0009 and name/value\u003d\u0027Exclusion criteria\u0027]",
+                      "/name": [
+                        {
+                          "value": "Exclusion criteria"
+                        }
+                      ],
+                      "/value": {
+                        "value": "True",
+                        "definingCode": {
+                          "codeString": "at0014",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0031]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0031 and name/value\u003d\u0027Blood tests available\u0027]",
+                      "/name": [
+                        {
+                          "value": "Blood tests available"
+                        }
+                      ],
+                      "/value": {
+                        "value": "Not available at assessment",
+                        "definingCode": {
+                          "codeString": "at0046",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0041]": [
+                    {
+                      "/$CLASS$": "DvText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0041 and name/value\u003d\u0027Blood test recommendation\u0027]",
+                      "/name": [
+                        {
+                          "value": "Blood test recommendation"
+                        }
+                      ],
+                      "/value": {
+                        "value": "Consider Referral for Blood Test"
+                      }
+                    }
+                  ],
+                  "/items[at0022]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0022 and name/value\u003d\u0027Interpretation\u0027]",
+                      "/name": [
+                        {
+                          "value": "Interpretation"
+                        }
+                      ],
+                      "/value": {
+                        "value": "Diagnosis of dementia indicated",
+                        "definingCode": {
+                          "codeString": "at0029",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0043]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0043 and name/value\u003d\u0027Assessment location type\u0027]",
+                      "/name": [
+                        {
+                          "value": "Assessment location type"
+                        }
+                      ],
+                      "/value": {
+                        "value": "Nursing Home",
+                        "definingCode": {
+                          "codeString": "at0044",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        },
+                        "mappings": [
+                          {
+                            "match": "\u003d",
+                            "target": {
+                              "codeString": "160733006",
+                              "terminologyId": {
+                                "name": "SNOMED-CT",
+                                "value": "SNOMED-CT"
+                              }
+                            }
+                          },
+                          {
+                            "match": "\u003d",
+                            "target": {
+                              "codeString": "13F61",
+                              "terminologyId": {
+                                "name": "READ",
+                                "value": "READ"
+                              }
+                            }
+                          },
+                          {
+                            "match": "\u003d",
+                            "target": {
+                              "codeString": "XalmT",
+                              "terminologyId": {
+                                "name": "CTV3",
+                                "value": "CTV3"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "/items[at0004]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0004 and name/value\u003d\u0027Functional impairment\u0027]",
+                      "/name": [
+                        {
+                          "value": "Functional impairment"
+                        }
+                      ],
+                      "/value": {
+                        "value": "True",
+                        "definingCode": {
+                          "codeString": "at0006",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0038]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0038 and name/value\u003d\u0027Cognitive impairment\u0027]",
+                      "/name": [
+                        {
+                          "value": "Cognitive impairment"
+                        }
+                      ],
+                      "/value": {
+                        "value": "True",
+                        "definingCode": {
+                          "codeString": "at0039",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0008]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0008 and name/value\u003d\u0027Investigations\u0027]",
+                      "/name": [
+                        {
+                          "value": "Investigations"
+                        }
+                      ],
+                      "/value": {
+                        "value": "True",
+                        "definingCode": {
+                          "codeString": "at0012",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0007]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0007 and name/value\u003d\u0027Corroborating history\u0027]",
+                      "/name": [
+                        {
+                          "value": "Corroborating history"
+                        }
+                      ],
+                      "/value": {
+                        "value": "True",
+                        "definingCode": {
+                          "codeString": "at0011",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "/name": [
+                  {
+                    "value": "Point in time"
+                  }
+                ],
+                "/time": {
+                  "/$CLASS$": "DvDateTime",
+                  "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/time",
+                  "/name": [
+                    {
+                      "value": "Point in time"
+                    }
+                  ],
+                  "/value": {
+                    "value": "2017-03-17T10:31:22.651Z",
+                    "epoch_offset": 1489746682651
+                  }
+                }
+              }
+            ]
+          },
+          "/name": [
+            {
+              "value": "Event Series"
+            }
+          ],
+          "/origin": {
+            "/$CLASS$": "DvDateTime",
+            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value\u003d\u0027YHSCN - DiADeM assessment\u0027]/data[at0001]/origin",
+            "/name": [
+              {
+                "value": "Event Series"
+              }
+            ],
+            "/value": {
+              "value": "2017-03-17T17:31:22.651+07:00",
+              "epoch_offset": 1489746682651
+            }
+          }
+        },
+        "/name": [
+          {
+            "value": "YHSCN - DiADeM assessment"
+          }
+        ]
+      }
+    ],
+    "/content[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1]": [
+      {
+        "/data[at0001]": {
+          "/items[openEHR-EHR-CLUSTER.individual_person_uk.v1]": [
+            {
+              "/items[openEHR-EHR-CLUSTER.person_name.v1]": [
+                {
+                  "/name": [
+                    {
+                      "value": "Person name"
+                    }
+                  ],
+                  "/items[at0001]": [
+                    {
+                      "/$CLASS$": "DvText",
+                      "/$PATH$": "/content[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027GP\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.individual_person_uk.v1 and name/value\u003d\u0027GP Details\u0027]/items[openEHR-EHR-CLUSTER.person_name.v1 and name/value\u003d\u0027Person name\u0027]/items[at0001 and name/value\u003d\u0027GP name\u0027]",
+                      "/name": [
+                        {
+                          "value": "GP name"
+                        }
+                      ],
+                      "/value": {
+                        "value": "Dr Dread"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "/name": [
+                {
+                  "value": "GP Details"
+                }
+              ],
+              "/items[openEHR-EHR-CLUSTER.comms_contact_uk.v1]": [
+                {
+                  "/name": [
+                    {
+                      "value": "Comms contact details"
+                    }
+                  ],
+                  "/items[at0002]": [
+                    {
+                      "/$CLASS$": "DvText",
+                      "/$PATH$": "/content[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027GP\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.individual_person_uk.v1 and name/value\u003d\u0027GP Details\u0027]/items[openEHR-EHR-CLUSTER.comms_contact_uk.v1 and name/value\u003d\u0027Comms contact details\u0027]/items[at0002 and name/value\u003d\u0027GP email\u0027]",
+                      "/name": [
+                        {
+                          "value": "GP email"
+                        }
+                      ],
+                      "/value": {
+                        "value": "applicationinsight@gmail.com"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "/name": [
+          {
+            "value": "GP"
+          }
+        ]
+      },
+      {
+        "/data[at0001]": {
+          "/items[at0030]": [
+            {
+              "/$CLASS$": "DvText",
+              "/$PATH$": "/content[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Informant\u0027]/data[at0001]/items[at0030 and name/value\u003d\u0027Relationship\u0027]",
+              "/name": [
+                {
+                  "value": "Relationship"
+                }
+              ],
+              "/value": {
+                "value": "Patient\u0027s close relative"
+              }
+            }
+          ],
+          "/items[openEHR-EHR-CLUSTER.individual_person_uk.v1]": [
+            {
+              "/items[openEHR-EHR-CLUSTER.person_name.v1]": [
+                {
+                  "/name": [
+                    {
+                      "value": "Person name"
+                    }
+                  ],
+                  "/items[at0001]": [
+                    {
+                      "/$CLASS$": "DvText",
+                      "/$PATH$": "/content[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Informant\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.individual_person_uk.v1 and name/value\u003d\u0027Informant details\u0027]/items[openEHR-EHR-CLUSTER.person_name.v1 and name/value\u003d\u0027Person name\u0027]/items[at0001 and name/value\u003d\u0027Informant name\u0027]",
+                      "/name": [
+                        {
+                          "value": "Informant name"
+                        }
+                      ],
+                      "/value": {
+                        "value": "My Granny "
+                      }
+                    }
+                  ]
+                }
+              ],
+              "/name": [
+                {
+                  "value": "Informant details"
+                }
+              ]
+            }
+          ]
+        },
+        "/name": [
+          {
+            "value": "Informant"
+          }
+        ]
+      }
+    ],
+    "/content[openEHR-EHR-ACTION.informed_consent.v1]": [
+      {
+        "/description[at0001]": {
+          "/items[at0002]": [
+            {
+              "/$CLASS$": "DvText",
+              "/$PATH$": "/content[openEHR-EHR-ACTION.informed_consent.v1 and name/value\u003d\u0027Consent\u0027]/description[at0001]/items[at0002 and name/value\u003d\u0027Assessment\u0027]",
+              "/name": [
+                {
+                  "value": "Assessment"
+                }
+              ],
+              "/value": {
+                "value": "Consent for DiADeM Assessment"
+              }
+            }
+          ]
+        },
+        "/ism_transition/careflow_step": {
+          "/$CLASS$": "DvCodedText",
+          "/$PATH$": "/content[openEHR-EHR-ACTION.informed_consent.v1 and name/value\u003d\u0027Consent\u0027]/ism_transition/careflow_step",
+          "/name": [
+            {
+              "value": "Consent"
+            }
+          ],
+          "/value": {
+            "value": "Informed Consent Provided",
+            "definingCode": {
+              "codeString": "at0015",
+              "terminologyId": {
+                "name": "local",
+                "value": "local"
+              }
+            }
+          }
+        },
+        "/ism_transition/current_state": {
+          "/$CLASS$": "DvCodedText",
+          "/$PATH$": "/content[openEHR-EHR-ACTION.informed_consent.v1 and name/value\u003d\u0027Consent\u0027]/ism_transition/current_state",
+          "/name": [
+            {
+              "value": "Consent"
+            }
+          ],
+          "/value": {
+            "value": "active",
+            "definingCode": {
+              "codeString": "245",
+              "terminologyId": {
+                "name": "openehr",
+                "value": "openehr"
+              }
+            }
+          }
+        },
+        "/name": [
+          {
+            "value": "Consent"
+          }
+        ],
+        "/other_participations": [
+          {
+            "/$CLASS$": "Participation",
+            "/$PATH$": "/content[openEHR-EHR-ACTION.informed_consent.v1 and name/value\u003d\u0027Consent\u0027]",
+            "/name": [
+              {
+                "value": {
+                  "value": "other participation"
+                }
+              }
+            ],
+            "/value": {
+              "performer": {
+                "name": "Patient\u0027s Care Home staff member"
+              },
+              "function": {
+                "value": "Source of consent"
+              },
+              "mode": {
+                "value": "not specified",
+                "definingCode": {
+                  "codeString": "193",
+                  "terminologyId": {
+                    "name": "openehr",
+                    "value": "openehr"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "/time": {
+          "/$CLASS$": "DvDateTime",
+          "/$PATH$": "/content[openEHR-EHR-ACTION.informed_consent.v1 and name/value\u003d\u0027Consent\u0027]/time",
+          "/name": [
+            {
+              "value": "Consent"
+            }
+          ],
+          "/value": {
+            "value": "2000-01-01T11:11:11.000Z",
+            "epoch_offset": 946725071000
+          }
+        }
+      }
+    ],
+    "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0]": [
+      {
+        "/data[at0001]": {
+          "/events": {
+            "/events[at0002]": [
+              {
+                "/data[at0003]": {
+                  "/items[at0033]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0033 and name/value\u003d\u0027Interpretation\u0027]",
+                      "/name": [
+                        {
+                          "value": "Interpretation"
+                        }
+                      ],
+                      "/value": {
+                        "value": "Cognitive impairment indicated",
+                        "definingCode": {
+                          "codeString": "at0034",
+                          "terminologyId": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0010]": [
+                    {
+                      "/$CLASS$": "DvOrdinal",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0010 and name/value\u003d\u0027About what time?\u0027]",
+                      "/name": [
+                        {
+                          "value": "About what time?"
+                        }
+                      ],
+                      "/value": {
+                        "value": 3,
+                        "symbol": {
+                          "value": "Incorrect",
+                          "definingCode": {
+                            "codeString": "at0012",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "limitsIndex": -1
+                      }
+                    }
+                  ],
+                  "/items[at0021]": [
+                    {
+                      "/$CLASS$": "DvOrdinal",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0021 and name/value\u003d\u0027Repeat address phrase\u0027]",
+                      "/name": [
+                        {
+                          "value": "Repeat address phrase"
+                        }
+                      ],
+                      "/value": {
+                        "value": 10,
+                        "symbol": {
+                          "value": "5 errors",
+                          "definingCode": {
+                            "codeString": "at0027",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "limitsIndex": -1
+                      }
+                    }
+                  ],
+                  "/items[at0013]": [
+                    {
+                      "/$CLASS$": "DvOrdinal",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0013 and name/value\u003d\u0027Count backwards\u0027]",
+                      "/name": [
+                        {
+                          "value": "Count backwards"
+                        }
+                      ],
+                      "/value": {
+                        "value": 4,
+                        "symbol": {
+                          "value": "More than 1 error",
+                          "definingCode": {
+                            "codeString": "at0016",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "limitsIndex": -1
+                      }
+                    }
+                  ],
+                  "/items[at0004]": [
+                    {
+                      "/$CLASS$": "DvOrdinal",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0004 and name/value\u003d\u0027What year?\u0027]",
+                      "/name": [
+                        {
+                          "value": "What year?"
+                        }
+                      ],
+                      "/value": {
+                        "value": 4,
+                        "symbol": {
+                          "value": "Incorrect",
+                          "definingCode": {
+                            "codeString": "at0006",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "limitsIndex": -1
+                      }
+                    }
+                  ],
+                  "/items[at0017]": [
+                    {
+                      "/$CLASS$": "DvOrdinal",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0017 and name/value\u003d\u0027Months in reverse\u0027]",
+                      "/name": [
+                        {
+                          "value": "Months in reverse"
+                        }
+                      ],
+                      "/value": {
+                        "value": 4,
+                        "symbol": {
+                          "value": "More than 1 error",
+                          "definingCode": {
+                            "codeString": "at0020",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "limitsIndex": -1
+                      }
+                    }
+                  ],
+                  "/items[at0028]": [
+                    {
+                      "/$CLASS$": "DvCount",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0028 and name/value\u003d\u0027Total score\u0027]",
+                      "/name": [
+                        {
+                          "value": "Total score"
+                        }
+                      ],
+                      "/value": {
+                        "magnitude": 28,
+                        "accuracy": 0.0,
+                        "accuracyPercent": false
+                      }
+                    }
+                  ],
+                  "/items[at0007]": [
+                    {
+                      "/$CLASS$": "DvOrdinal",
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/data[at0003]/items[at0007 and name/value\u003d\u0027What month?\u0027]",
+                      "/name": [
+                        {
+                          "value": "What month?"
+                        }
+                      ],
+                      "/value": {
+                        "value": 3,
+                        "symbol": {
+                          "value": "Incorrect",
+                          "definingCode": {
+                            "codeString": "at0009",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "limitsIndex": -1
+                      }
+                    }
+                  ]
+                },
+                "/name": [
+                  {
+                    "value": "Point in time"
+                  }
+                ],
+                "/time": {
+                  "/$CLASS$": "DvDateTime",
+                  "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/events[at0002 and name/value\u003d\u0027Point in time\u0027]/time",
+                  "/name": [
+                    {
+                      "value": "Point in time"
+                    }
+                  ],
+                  "/value": {
+                    "value": "2017-03-17T10:31:22.651Z",
+                    "epoch_offset": 1489746682651
+                  }
+                }
+              }
+            ]
+          },
+          "/name": [
+            {
+              "value": "Event Series"
+            }
+          ],
+          "/origin": {
+            "/$CLASS$": "DvDateTime",
+            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value\u003d\u00276 CIT Assessment\u0027]/data[at0001]/origin",
+            "/name": [
+              {
+                "value": "Event Series"
+              }
+            ],
+            "/value": {
+              "value": "2017-03-17T17:31:22.651+07:00",
+              "epoch_offset": 1489746682651
+            }
+          }
+        },
+        "/name": [
+          {
+            "value": "6 CIT Assessment"
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "DiADeM Assessment"
+    }
+  ]
+}
+

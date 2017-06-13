@@ -171,6 +171,25 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             return newName;
 
         }
+        else if (nameDefinition instanceof List){
+            nameDefinition = ((List) nameDefinition).get(0);
+            String name = (String)((Map) nameDefinition).get("value");
+            CodePhrase codePhrase = null;
+            if (((Map) nameDefinition).containsKey(CompositionSerializer.TAG_DEFINING_CODE)) { //DvCodedText for name
+                Map definingCodeMap = (LinkedTreeMap) ((Map) nameDefinition).get(CompositionSerializer.TAG_DEFINING_CODE);
+                String terminologyId = (String) ((Map) definingCodeMap.get("terminologyId")).get("value");
+                String codeString = (String) definingCodeMap.get("codeString");
+                codePhrase = new CodePhrase(terminologyId, codeString);
+            }
+            DvText newName;
+            if (codePhrase != null)
+                newName = new DvCodedText(name, codePhrase);
+            else //DvText
+                newName = new DvText(name);
+
+            return newName;
+
+        }
         else
             throw new IllegalArgumentException("Could not handle name definition:"+nameDefinition);
     }

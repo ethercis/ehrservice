@@ -1,0 +1,20 @@
+{ 
+     "ctx/composer_name": "Dr Tony Shannon",
+      "ctx/health_care_facility|id": "999999-345",
+      "ctx/health_care_facility|name": "Rippleburgh GP Practice",
+      "ctx/id_namespace": "NHS-UK",
+      "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+      "ctx/language": "en",
+      "ctx/territory": "GB",
+      "ctx/time": "2016-12-19T09:26:02Z",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|value":"ww test 10",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|code": "123456789",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|terminology": "SNOMED-CT",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|code": "123456778",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|value": "IM Intra Muscular",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_amount_description": "10mg",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_timing_description": "10 hours",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/course_details/start_datetime": "2016-12-24T08:30:00Z",
+      "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_directions_description": "ww test 10"
+}
+

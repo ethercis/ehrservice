@@ -1,0 +1,75 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.problem_list.v1 and name/value\u003d\u0027Problem list\u0027]": {
+    "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1]": [
+      {
+        "/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]": [
+          {
+            "/data[at0001]": {
+              "/items[at0009]": [
+                {
+                  "/$CLASS$": "DvText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value\u003d\u0027Problems and issues\u0027]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value\u003d\u0027Problem/Diagnosis\u0027]/data[at0001]/items[at0009 and name/value\u003d\u0027Clinical description\u0027]",
+                  "/name": [
+                    {
+                      "value": "Clinical description"
+                    }
+                  ],
+                  "/value": {
+                    "value": "ww test problem 02 description"
+                  }
+                }
+              ],
+              "/items[at0077]": [
+                {
+                  "/$CLASS$": "DvDateTime",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value\u003d\u0027Problems and issues\u0027]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value\u003d\u0027Problem/Diagnosis\u0027]/data[at0001]/items[at0077 and name/value\u003d\u0027Date/time of onset\u0027]",
+                  "/name": [
+                    {
+                      "value": "Date/time of onset"
+                    }
+                  ],
+                  "/value": {
+                    "value": "2016-12-31T00:00:00.000+07:00",
+                    "epoch_offset": 1483117200000
+                  }
+                }
+              ],
+              "/items[at0002]": [
+                {
+                  "/$CLASS$": "DvCodedText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value\u003d\u0027Problems and issues\u0027]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value\u003d\u0027Problem/Diagnosis\u0027]/data[at0001]/items[at0002 and name/value\u003d\u0027Problem/Diagnosis name\u0027]",
+                  "/name": [
+                    {
+                      "value": "Problem/Diagnosis name"
+                    }
+                  ],
+                  "/value": {
+                    "value": "ww test problem 02",
+                    "definingCode": {
+                      "codeString": "12393890",
+                      "terminologyId": {
+                        "name": "SNOMED-CT",
+                        "value": "SNOMED-CT"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "/name": [
+              {
+                "value": "Problem/Diagnosis"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Problem list"
+    }
+  ]
+}
+

@@ -1,0 +1,25 @@
+{
+  "clinical_notes/language|code": "en",
+  "clinical_notes/language|terminology": "ISO_639-1",
+  "clinical_notes/territory|code": "GB",
+  "clinical_notes/territory|terminology": "ISO_3166-1",
+  "clinical_notes/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "clinical_notes/context/setting|code": "238",
+  "clinical_notes/context/setting|value": "other care",
+  "clinical_notes/context/setting|terminology": "openehr",
+  "clinical_notes/clinical_synopsis:0/_name|value": "SOAP Note",
+  "clinical_notes/clinical_synopsis:0/notes": "S: Patient was very concerned about her welfare, no specific complaints, but some mild symptoms of depression (poor sleep, low energy levels etc)\nO: Comfortable: Vitals Normal BP 120/80; \nA; Social concerns and mild anxiety\nP; refer to Mental Health Team & Social Services for better support. DC with sister today.",
+  "clinical_notes/clinical_synopsis:0/language|code": "en",
+  "clinical_notes/clinical_synopsis:0/language|terminology": "ISO_639-1",
+  "clinical_notes/clinical_synopsis:0/encoding|code": "UTF-8",
+  "clinical_notes/clinical_synopsis:0/encoding|terminology": "IANA_character-sets",
+  "clinical_notes/composer|name": "aComposer"
+}
+

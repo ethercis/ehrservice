@@ -1,0 +1,9 @@
+{
+  "/composer|name": "aComposer",
+  "/content[openEHR-EHR-EVALUATION.clinical_synopsis.v1]/data[at0001]/items[at0002]|value": "S: Patient was very concerned about her welfare, no specific complaints, but some mild symptoms of depression (poor sleep, low energy levels etc)\nO: Comfortable: Vitals Normal BP 120/80; \nA; Social concerns and mild anxiety\nP; refer to Mental Health Team & Social Services for better support. DC with sister today.",
+  "/context/setting": "openehr::238|other care|",
+  "/context/start_time": "1900-01-01T00:00:00Z",
+  "/language": "en",
+  "/territory": "GB"
+}
+

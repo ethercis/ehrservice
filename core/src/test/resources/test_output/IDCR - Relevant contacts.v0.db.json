@@ -1,0 +1,143 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.health_summary.v1 and name/value\u003d\u0027Relevant Contacts List\u0027]": {
+    "/content[openEHR-EHR-SECTION.relevant_contacts_rcp.v1]": [
+      {
+        "/items[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1]": [
+          {
+            "/data[at0001]": {
+              "/items[at0030]": [
+                {
+                  "/$CLASS$": "DvText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.relevant_contacts_rcp.v1 and name/value\u003d\u0027Relevant contacts\u0027]/items[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Relevant contact\u0027]/data[at0001]/items[at0030 and name/value\u003d\u0027Relationship/ role\u0027]",
+                  "/name": [
+                    {
+                      "value": "Relationship/ role"
+                    }
+                  ],
+                  "/value": {
+                    "value": "Father"
+                  }
+                }
+              ],
+              "/items[at0035]": [
+                {
+                  "/$CLASS$": "DvCodedText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.relevant_contacts_rcp.v1 and name/value\u003d\u0027Relevant contacts\u0027]/items[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Relevant contact\u0027]/data[at0001]/items[at0035 and name/value\u003d\u0027Relationship category\u0027]",
+                  "/name": [
+                    {
+                      "value": "Relationship category"
+                    }
+                  ],
+                  "/value": {
+                    "value": "Relative",
+                    "definingCode": {
+                      "codeString": "at0039",
+                      "terminologyId": {
+                        "name": "local",
+                        "value": "local"
+                      }
+                    }
+                  }
+                }
+              ],
+              "/items[openEHR-EHR-CLUSTER.individual_person_uk.v1]": [
+                {
+                  "/items[openEHR-EHR-CLUSTER.person_name.v1]": [
+                    {
+                      "/name": [
+                        {
+                          "value": "Person name"
+                        }
+                      ],
+                      "/items[at0001]": [
+                        {
+                          "/$CLASS$": "DvText",
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.relevant_contacts_rcp.v1 and name/value\u003d\u0027Relevant contacts\u0027]/items[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Relevant contact\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.individual_person_uk.v1 and name/value\u003d\u0027Individual person\u0027]/items[openEHR-EHR-CLUSTER.person_name.v1 and name/value\u003d\u0027Person name\u0027]/items[at0001 and name/value\u003d\u0027Unstructured name\u0027]",
+                          "/name": [
+                            {
+                              "value": "Unstructured name"
+                            }
+                          ],
+                          "/value": {
+                            "value": "ww testname02"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "/name": [
+                    {
+                      "value": "Individual person"
+                    }
+                  ],
+                  "/items[openEHR-EHR-CLUSTER.telecom_uk.v1]": [
+                    {
+                      "/name": [
+                        {
+                          "value": "Contact details"
+                        }
+                      ],
+                      "/items[at0002]": [
+                        {
+                          "/$CLASS$": "DvText",
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.relevant_contacts_rcp.v1 and name/value\u003d\u0027Relevant contacts\u0027]/items[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Relevant contact\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.individual_person_uk.v1 and name/value\u003d\u0027Individual person\u0027]/items[openEHR-EHR-CLUSTER.telecom_uk.v1 and name/value\u003d\u0027Contact details\u0027]/items[at0002 and name/value\u003d\u0027Comms description\u0027]",
+                          "/name": [
+                            {
+                              "value": "Comms description"
+                            }
+                          ],
+                          "/value": {
+                            "value": "ww test 02"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "/items[at0025]": [
+                {
+                  "/$CLASS$": "DvBoolean",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.relevant_contacts_rcp.v1 and name/value\u003d\u0027Relevant contacts\u0027]/items[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Relevant contact\u0027]/data[at0001]/items[at0025 and name/value\u003d\u0027Is next of kin?\u0027]",
+                  "/name": [
+                    {
+                      "value": "Is next of kin?"
+                    }
+                  ],
+                  "/value": {
+                    "value": true
+                  }
+                }
+              ],
+              "/items[at0017]": [
+                {
+                  "/$CLASS$": "DvText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.relevant_contacts_rcp.v1 and name/value\u003d\u0027Relevant contacts\u0027]/items[openEHR-EHR-ADMIN_ENTRY.relevant_contact_rcp.v1 and name/value\u003d\u0027Relevant contact\u0027]/data[at0001]/items[at0017 and name/value\u003d\u0027Note\u0027]",
+                  "/name": [
+                    {
+                      "value": "Note"
+                    }
+                  ],
+                  "/value": {
+                    "value": "ww test 02"
+                  }
+                }
+              ]
+            },
+            "/name": [
+              {
+                "value": "Relevant contact"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Relevant Contacts List"
+    }
+  ]
+}
+

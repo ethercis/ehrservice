@@ -1,0 +1,14 @@
+{
+  "/composer|name": "aComposer",
+  "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/data[at0001]/items[at0002]|value": "SNOMED-CT::91936005|allergy to penicillin|",
+  "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/data[at0001]/items[at0009]/items[at0011]|value": "SNOMED-CT::28926001|eruption due to drug|",
+  "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/data[at0001]/items[at0009]/items[at0032]|value": "History unclear",
+  "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/provider|identifier": "http://showcase.1.rippleosi.org/1234567",
+  "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/provider|name": "iHEALTHLINK Discharge",
+  "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/provider|namespace": "NHS-UK",
+  "/context/setting": "openehr::238|other care|",
+  "/context/start_time": "1900-01-01T00:00:00Z",
+  "/language": "en",
+  "/territory": "GB"
+}
+

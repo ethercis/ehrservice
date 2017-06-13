@@ -1,0 +1,18 @@
+{
+  "/composer|name": "aComposer",
+  "/content[openEHR-EHR-ACTION.laboratory_test.v1]/description[at0001]/items[at0017]|value": "SNOMED-CT::order4|Physio-crutches|",
+  "/content[openEHR-EHR-ACTION.laboratory_test.v1]/ism_transition/careflow_step|value": "local::at0003|Test Requested|",
+  "/content[openEHR-EHR-ACTION.laboratory_test.v1]/ism_transition/current_state|value": "openehr::526|planned|",
+  "/content[openEHR-EHR-ACTION.laboratory_test.v1]/time|value": "2016-04-12T18:20:37.668+01:00",
+  "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]/activities[at0001]/action_archetype_id": "/.*/",
+  "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]/activities[at0001]/description[at0009]/items[at0121]|value": "SNOMED-CT::order4|Physio-crutches|",
+  "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]/activities[at0001]/timing|formalism": "timing",
+  "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]/activities[at0001]/timing|value": "2016-04-12T18:20:37.668+0100",
+  "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]/narrative|value": "Physio-crutches",
+  "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]/uid|value": "cf098074-7b56-4848-91a0-2e79d4691179",
+  "/context/setting": "openehr::238|other care|",
+  "/context/start_time": "1900-01-01T00:00:00Z",
+  "/language": "en",
+  "/territory": "GB"
+}
+

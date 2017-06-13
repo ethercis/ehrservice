@@ -1,0 +1,36 @@
+{
+  "prescription/language|code": "en",
+  "prescription/language|terminology": "ISO_639-1",
+  "prescription/territory|code": "GB",
+  "prescription/territory|terminology": "ISO_3166-1",
+  "prescription/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "prescription/context/setting|code": "238",
+  "prescription/context/setting|value": "other care",
+  "prescription/context/setting|terminology": "openehr",
+  "prescription/medications/medication_order/_uid": "fb1880f4-e3db-4310-a125-08b75d39cdf4",
+  "prescription/medications/medication_order/medication_activity:0/name_of_medication": "Sorbitol Strong",
+  "prescription/medications/medication_order/medication_activity:0/strength_per_dose_unit/value|magnitude": 1000.0,
+  "prescription/medications/medication_order/medication_activity:0/strength_per_dose_unit/value|unit": "mg",
+  "prescription/medications/medication_order/medication_activity:0/dose_unit|code": "at0001",
+  "prescription/medications/medication_order/medication_activity:0/dose_unit|value": "tablet",
+  "prescription/medications/medication_order/medication_activity:0/dose_unit|terminology": "local",
+  "prescription/medications/medication_order/medication_activity:0/timing/relative/timing|magnitude": 0.5,
+  "prescription/medications/medication_order/medication_activity:0/timing/relative/timing|unit": "h",
+  "prescription/medications/medication_order/medication_activity:0/timing/relative/event": "CMA",
+  "prescription/medications/medication_order/medication_activity:0/timing2": "local",
+  "prescription/medications/medication_order/medication_activity:0/timing2|formalism": "openehr",
+  "prescription/medications/medication_order/narrative": "prescription",
+  "prescription/medications/medication_order/language|code": "en",
+  "prescription/medications/medication_order/language|terminology": "ISO_639-1",
+  "prescription/medications/medication_order/encoding|code": "UTF-8",
+  "prescription/medications/medication_order/encoding|terminology": "IANA_character-sets",
+  "prescription/composer|name": "aComposer"
+}
+

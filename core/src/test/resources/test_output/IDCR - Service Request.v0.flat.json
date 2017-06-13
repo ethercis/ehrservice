@@ -1,0 +1,52 @@
+{
+  "request_for_service/language|code": "en",
+  "request_for_service/language|terminology": "ISO_639-1",
+  "request_for_service/territory|code": "GB",
+  "request_for_service/territory|terminology": "ISO_3166-1",
+  "request_for_service/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "request_for_service/context/setting|code": "238",
+  "request_for_service/context/setting|value": "other care",
+  "request_for_service/context/setting|terminology": "openehr",
+  "request_for_service/referral_details/service_request:0/_uid": "d4a3f731-86bf-4590-891c-3fc336b95559",
+  "request_for_service/referral_details/service_request:0/request:0/service_name": "Social work allocation request",
+  "request_for_service/referral_details/service_request:0/request:0/reason_for_request": "General frailty",
+  "request_for_service/referral_details/service_request:0/request:0/timing": "R5/2016-10-04T21:00:00Z/P1M",
+  "request_for_service/referral_details/service_request:0/request:0/timing|formalism": "timing",
+  "request_for_service/referral_details/service_request:0/requestor/person_name/unstructured_name": "Gareth Crooks",
+  "request_for_service/referral_details/service_request:0/receiver_identifier": "REQ1453456",
+  "request_for_service/referral_details/service_request:0/receiver/name_of_organisation": "Calderdale",
+  "request_for_service/referral_details/service_request:0/narrative": "Social work allocation request",
+  "request_for_service/referral_details/service_request:0/language|code": "en",
+  "request_for_service/referral_details/service_request:0/language|terminology": "ISO_639-1",
+  "request_for_service/referral_details/service_request:0/encoding|code": "UTF-8",
+  "request_for_service/referral_details/service_request:0/encoding|terminology": "IANA_character-sets",
+  "request_for_service/referral_details/service:0/ism_transition/current_state|code": "526",
+  "request_for_service/referral_details/service:0/ism_transition/current_state|value": "planned",
+  "request_for_service/referral_details/service:0/ism_transition/current_state|terminology": "openehr",
+  "request_for_service/referral_details/service:0/ism_transition/careflow_step|code": "at0026",
+  "request_for_service/referral_details/service:0/ism_transition/careflow_step|value": "Service request sent",
+  "request_for_service/referral_details/service:0/ism_transition/careflow_step|terminology": "local",
+  "request_for_service/referral_details/service:0/service_name": "Social work allocation request",
+  "request_for_service/referral_details/service:0/receiver_identifier": "REQ1453456",
+  "request_for_service/referral_details/service:0/time": {
+    "iMillis": 1475615179081,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "request_for_service/referral_details/service:0/language|code": "en",
+  "request_for_service/referral_details/service:0/language|terminology": "ISO_639-1",
+  "request_for_service/referral_details/service:0/encoding|code": "UTF-8",
+  "request_for_service/referral_details/service:0/encoding|terminology": "IANA_character-sets",
+  "request_for_service/composer|name": "aComposer"
+}
+

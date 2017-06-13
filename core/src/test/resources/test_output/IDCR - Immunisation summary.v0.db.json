@@ -1,0 +1,78 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.health_summary.v1 and name/value\u003d\u0027Immunisation summary\u0027]": {
+    "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]": [
+      {
+        "/description[at0001]": {
+          "/items[at0002]": [
+            {
+              "/$CLASS$": "DvText",
+              "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value\u003d\u0027Immunisation procedure\u0027]/description[at0001]/items[at0002 and name/value\u003d\u0027Immunisation name\u0027]",
+              "/name": [
+                {
+                  "value": "Immunisation name"
+                }
+              ],
+              "/value": {
+                "value": "Hepatitis A"
+              }
+            }
+          ],
+          "/items[at0004]": [
+            {
+              "/$CLASS$": "DvCount",
+              "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value\u003d\u0027Immunisation procedure\u0027]/description[at0001]/items[at0004 and name/value\u003d\u0027Series number\u0027]",
+              "/name": [
+                {
+                  "value": "Series number"
+                }
+              ],
+              "/value": {
+                "magnitude": 1,
+                "accuracy": 0.0,
+                "accuracyPercent": false
+              }
+            }
+          ],
+          "/items[at0015]": [
+            {
+              "/$CLASS$": "DvText",
+              "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value\u003d\u0027Immunisation procedure\u0027]/description[at0001]/items[at0015 and name/value\u003d\u0027Comment\u0027]",
+              "/name": [
+                {
+                  "value": "Comment"
+                }
+              ],
+              "/value": {
+                "value": "Minor reaction"
+              }
+            }
+          ]
+        },
+        "/name": [
+          {
+            "value": "Immunisation procedure"
+          }
+        ],
+        "/time": {
+          "/$CLASS$": "DvDateTime",
+          "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value\u003d\u0027Immunisation procedure\u0027]/time",
+          "/name": [
+            {
+              "value": "Immunisation procedure"
+            }
+          ],
+          "/value": {
+            "value": "2014-12-20T07:45:20.622Z",
+            "epoch_offset": 1419061520622
+          }
+        }
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Immunisation summary"
+    }
+  ]
+}
+

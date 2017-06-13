@@ -1,0 +1,146 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.care_summary.v0 and name/value\u003d\u0027Current medication list\u0027]": {
+    "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]": [
+      {
+        "/items[openEHR-EHR-SECTION.current_medication_rcp.v1]": [
+          {
+            "/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1]": [
+              {
+                "/data[at0001]": {
+                  "/items[openEHR-EHR-CLUSTER.medication_item.v1]": [
+                    {
+                      "/name": [
+                        {
+                          "value": "Medication item"
+                        }
+                      ],
+                      "/items[at0020]": [
+                        {
+                          "/$CLASS$": "DvText",
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value\u003d\u0027Medication and medical devices\u0027]/items[openEHR-EHR-SECTION.current_medication_rcp.v1 and name/value\u003d\u0027Current medication\u0027]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1 and name/value\u003d\u0027Medication statement\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1 and name/value\u003d\u0027Medication item\u0027]/items[at0020 and name/value\u003d\u0027Dose amount description\u0027]",
+                          "/name": [
+                            {
+                              "value": "Dose amount description"
+                            }
+                          ],
+                          "/value": {
+                            "value": "10mg"
+                          }
+                        }
+                      ],
+                      "/items[at0021]": [
+                        {
+                          "/$CLASS$": "DvText",
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value\u003d\u0027Medication and medical devices\u0027]/items[openEHR-EHR-SECTION.current_medication_rcp.v1 and name/value\u003d\u0027Current medication\u0027]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1 and name/value\u003d\u0027Medication statement\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1 and name/value\u003d\u0027Medication item\u0027]/items[at0021 and name/value\u003d\u0027Dose timing description\u0027]",
+                          "/name": [
+                            {
+                              "value": "Dose timing description"
+                            }
+                          ],
+                          "/value": {
+                            "value": "10 hours"
+                          }
+                        }
+                      ],
+                      "/items[at0002]": [
+                        {
+                          "/$CLASS$": "DvCodedText",
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value\u003d\u0027Medication and medical devices\u0027]/items[openEHR-EHR-SECTION.current_medication_rcp.v1 and name/value\u003d\u0027Current medication\u0027]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1 and name/value\u003d\u0027Medication statement\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1 and name/value\u003d\u0027Medication item\u0027]/items[at0002 and name/value\u003d\u0027Route\u0027]",
+                          "/name": [
+                            {
+                              "value": "Route"
+                            }
+                          ],
+                          "/value": {
+                            "value": "IM Intra Muscular",
+                            "definingCode": {
+                              "codeString": "123456778",
+                              "terminologyId": {
+                                "name": "external",
+                                "value": "external"
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "/items[at0046]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Course details"
+                            }
+                          ],
+                          "/items[at0039]": [
+                            {
+                              "/$CLASS$": "DvDateTime",
+                              "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value\u003d\u0027Medication and medical devices\u0027]/items[openEHR-EHR-SECTION.current_medication_rcp.v1 and name/value\u003d\u0027Current medication\u0027]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1 and name/value\u003d\u0027Medication statement\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1 and name/value\u003d\u0027Medication item\u0027]/items[at0046 and name/value\u003d\u0027Course details\u0027]/items[at0039 and name/value\u003d\u0027Start datetime\u0027]",
+                              "/name": [
+                                {
+                                  "value": "Start datetime"
+                                }
+                              ],
+                              "/value": {
+                                "value": "2016-12-24T08:30:00.000Z",
+                                "epoch_offset": 1482568200000
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "/items[at0001]": [
+                        {
+                          "/$CLASS$": "DvCodedText",
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value\u003d\u0027Medication and medical devices\u0027]/items[openEHR-EHR-SECTION.current_medication_rcp.v1 and name/value\u003d\u0027Current medication\u0027]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1 and name/value\u003d\u0027Medication statement\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1 and name/value\u003d\u0027Medication item\u0027]/items[at0001 and name/value\u003d\u0027Medication name\u0027]",
+                          "/name": [
+                            {
+                              "value": "Medication name"
+                            }
+                          ],
+                          "/value": {
+                            "value": "ww test 10",
+                            "definingCode": {
+                              "codeString": "123456789",
+                              "terminologyId": {
+                                "name": "SNOMED-CT",
+                                "value": "SNOMED-CT"
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "/items[at0003]": [
+                        {
+                          "/$CLASS$": "DvText",
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value\u003d\u0027Medication and medical devices\u0027]/items[openEHR-EHR-SECTION.current_medication_rcp.v1 and name/value\u003d\u0027Current medication\u0027]/items[openEHR-EHR-EVALUATION.medication_statement_uk.v1 and name/value\u003d\u0027Medication statement\u0027]/data[at0001]/items[openEHR-EHR-CLUSTER.medication_item.v1 and name/value\u003d\u0027Medication item\u0027]/items[at0003 and name/value\u003d\u0027Dose directions description\u0027]",
+                          "/name": [
+                            {
+                              "value": "Dose directions description"
+                            }
+                          ],
+                          "/value": {
+                            "value": "ww test 10"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "/name": [
+                  {
+                    "value": "Medication statement"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Current medication list"
+    }
+  ]
+}
+

@@ -1,0 +1,19 @@
+{
+	"ctx/composer_name": "Dr Tony Shannon",
+      "ctx/health_care_facility|id": "999999-345",
+      "ctx/health_care_facility|name": "Rippleburgh GP Practice",
+      "ctx/id_namespace": "NHS-UK",
+      "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+      "ctx/language": "en",
+      "ctx/territory": "GB",
+      "ctx/time": "2016-12-19T11:01:38Z",
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/individual_person/person_name/unstructured_name": "ww testname02",
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/individual_person/contact_details:0/comms_description": "ww test 02",
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_category|value": "Relative",
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_category|code": "at0039",
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_category|terminology": "local",
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_role": "Father",
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/is_next_of_kin": true,
+      "relevant_contacts_list/relevant_contacts/relevant_contact:0/note": "ww test 02"
+}
+

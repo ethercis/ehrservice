@@ -1,0 +1,19 @@
+{
+  "ripple_dashboard_cache/language|code": "en",
+  "ripple_dashboard_cache/language|terminology": "ISO_639-1",
+  "ripple_dashboard_cache/territory|code": "GB",
+  "ripple_dashboard_cache/territory|terminology": "ISO_3166-1",
+  "ripple_dashboard_cache/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "ripple_dashboard_cache/context/setting|code": "238",
+  "ripple_dashboard_cache/context/setting|value": "other care",
+  "ripple_dashboard_cache/context/setting|terminology": "openehr",
+  "ripple_dashboard_cache/composer|name": "aComposer"
+}
+

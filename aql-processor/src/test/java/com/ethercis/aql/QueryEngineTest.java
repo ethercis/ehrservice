@@ -158,9 +158,9 @@ public class QueryEngineTest {
                 "  a/archetype_details/template_id/value as documentTemplate\n" +
                 "from EHR e \n" +
                 "contains COMPOSITION a "+
-//                "where a/name/value matches {'Discharge summary', 'Referral'} \n" +
-//                "and a/archetype_details/template_id/value matches {'iEHR - Healthlink - Referral.v0','iEHR - Healthlink - Discharge Sumary.v0'}\n" +
-                "orderby  a/context/start_time/value desc";
+                "where a/name/value matches {'Discharge summary', 'Referral'} \n" +
+                "and a/archetype_details/template_id/value matches {'iEHR - Healthlink - Referral.v0','iEHR - Healthlink - Discharge Sumary.v0'}\n" +
+                "order by  a/context/start_time/value desc";
         records = queryEngine.perform(query);
         assertNotNull(records);
         assertFalse(records.isEmpty());

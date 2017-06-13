@@ -1,0 +1,112 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1 and name/value\u003d\u0027Adverse reaction list\u0027]": {
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]": [
+      {
+        "/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]": [
+          {
+            "/data[at0001]": {
+              "/items[at0009]": [
+                {
+                  "/name": [
+                    {
+                      "value": "Reaction details"
+                    }
+                  ],
+                  "/items[at0011]": [
+                    {
+                      "/$CLASS$": "DvCodedText",
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1 and name/value\u003d\u0027Allergies and adverse reactions\u0027]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1 and name/value\u003d\u0027Adverse reaction risk\u0027]/data[at0001]/items[at0009 and name/value\u003d\u0027Reaction details\u0027]/items[at0011 and name/value\u003d\u0027Manifestation\u0027]",
+                      "/name": [
+                        {
+                          "value": "Manifestation"
+                        }
+                      ],
+                      "/value": {
+                        "value": "eruption due to drug",
+                        "definingCode": {
+                          "codeString": "28926001",
+                          "terminologyId": {
+                            "name": "SNOMED-CT",
+                            "value": "SNOMED-CT"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "/items[at0032]": [
+                    {
+                      "/$CLASS$": "DvText",
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1 and name/value\u003d\u0027Allergies and adverse reactions\u0027]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1 and name/value\u003d\u0027Adverse reaction risk\u0027]/data[at0001]/items[at0009 and name/value\u003d\u0027Reaction details\u0027]/items[at0032 and name/value\u003d\u0027Comment\u0027]",
+                      "/name": [
+                        {
+                          "value": "Comment"
+                        }
+                      ],
+                      "/value": {
+                        "value": "History unclear"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "/items[at0002]": [
+                {
+                  "/$CLASS$": "DvCodedText",
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1 and name/value\u003d\u0027Allergies and adverse reactions\u0027]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1 and name/value\u003d\u0027Adverse reaction risk\u0027]/data[at0001]/items[at0002 and name/value\u003d\u0027Causative agent\u0027]",
+                  "/name": [
+                    {
+                      "value": "Causative agent"
+                    }
+                  ],
+                  "/value": {
+                    "value": "allergy to penicillin",
+                    "definingCode": {
+                      "codeString": "91936005",
+                      "terminologyId": {
+                        "name": "SNOMED-CT",
+                        "value": "SNOMED-CT"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "/name": [
+              {
+                "value": "Adverse reaction risk"
+              }
+            ],
+            "/provider": {
+              "/$CLASS$": "PartyIdentified",
+              "/$PATH$": "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1 and name/value\u003d\u0027Allergies and adverse reactions\u0027]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1 and name/value\u003d\u0027Adverse reaction risk\u0027]/provider",
+              "/name": [
+                {
+                  "value": {
+                    "value": "iHEALTHLINK Discharge"
+                  }
+                }
+              ],
+              "/value": {
+                "name": "iHEALTHLINK Discharge",
+                "externalRef": {
+                  "id": {
+                    "scheme": "2.16.840.1.113883.2.1.4.3",
+                    "value": "http://showcase.1.rippleosi.org/1234567"
+                  },
+                  "namespace": "NHS-UK",
+                  "type": "ANY"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Adverse reaction list"
+    }
+  ]
+}
+

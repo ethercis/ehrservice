@@ -866,9 +866,9 @@ public class ContentBuilderTest extends TestCase {
 //        String templateId = "COLNEC Medication";
 //        String templateId = "IDCR - Service Request.v0";
 //        String templateId = "GEL - Generic Lab Report import.v0";
-//        String templateId = "DiADeM Assessment.v1";
+        String templateId = "DiADeM Assessment.v1";
 //        String templateId = "Ripple Dashboard Cache.v1";
-        String templateId = "IDCR - Adverse Reaction List.v1";
+//        String templateId = "IDCR - Adverse Reaction List.v1";
 
 //        String templateId = "IDCR Problem List.v1";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
@@ -877,9 +877,9 @@ public class ContentBuilderTest extends TestCase {
         //get a flat json test file
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/COLNEC_Medication_FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Ian-mail-27-01-17.json");
-//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_32.flat.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_32.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ripple_dashboard_cache.flat.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_37.flat.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_37.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
 
         Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);

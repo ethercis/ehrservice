@@ -1,0 +1,40 @@
+{
+  "current_medication_list/language|code": "en",
+  "current_medication_list/language|terminology": "ISO_639-1",
+  "current_medication_list/territory|code": "GB",
+  "current_medication_list/territory|terminology": "ISO_3166-1",
+  "current_medication_list/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "current_medication_list/context/setting|code": "238",
+  "current_medication_list/context/setting|value": "other care",
+  "current_medication_list/context/setting|terminology": "openehr",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|code": "123456789",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|value": "ww test 10",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|terminology": "SNOMED-CT",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|code": "123456778",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|value": "IM Intra Muscular",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|terminology": "external",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_directions_description": "ww test 10",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_amount_description": "10mg",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_timing_description": "10 hours",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/course_details/start_datetime": {
+    "iMillis": 1482568200000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/language|code": "en",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/language|terminology": "ISO_639-1",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/encoding|code": "UTF-8",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/encoding|terminology": "IANA_character-sets",
+  "current_medication_list/composer|name": "aComposer"
+}
+

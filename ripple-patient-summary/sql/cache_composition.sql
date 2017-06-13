@@ -267,6 +267,53 @@ CREATE OR REPLACE FUNCTION ehr.other_context_for_ehr(UUID)
   $other_context_ehr$
 LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION ehr.other_context_for_ehr(UUID)
+  RETURNS JSONB AS
+  $other_context_ehr$
+  DECLARE
+    ehrId ALIAS FOR $1;
+    ordersLastDate TIMESTAMPTZ;
+    ordersCount BIGINT;
+    resultsLastDate TIMESTAMPTZ;
+    resultsCount BIGINT;
+    vitalsLastDate TIMESTAMPTZ;
+    vitalsCount BIGINT;
+    diagnosesLastDate TIMESTAMPTZ;
+    diagnosesCount BIGINT;
+  BEGIN
+    select
+      count(id) FILTER (WHERE heading_code = 'ORDERS') as orders_count,
+      max(sys_transaction) FILTER (WHERE heading_code = 'ORDERS') as orders_last,
+      count(id) FILTER (WHERE heading_code = 'RESULTS') as results_count,
+      max(sys_transaction) FILTER (WHERE heading_code = 'RESULTS') as results_last,
+      count(id) FILTER (WHERE heading_code = 'VITALS') as vitals_count,
+      max(sys_transaction) FILTER (WHERE heading_code = 'ORDERS') as vitals_last,
+      count(id) FILTER (WHERE heading_code = 'DIAGNOSES') as diagnoses_count,
+      max(sys_transaction) FILTER (WHERE heading_code = 'DIAGNOSES') as diagnoses_last
+      FROM (
+          select
+          compo.ehr_id,
+          compo.id,
+          compo.sys_transaction,
+          xref.heading_code
+          from ehr.entry
+          JOIN ehr.composition compo ON entry.composition_id = compo.id
+          JOIN ehr.ehr ehr ON ehr.id = compo.ehr_id
+          JOIN ehr.template templ ON templ.template_id = entry.template_id
+          LEFT JOIN ehr.template_heading_xref xref ON xref.template_id = templ.uid
+          WHERE heading_code IS NOT NULL
+          ORDER BY ehr_id
+      ) subcount
+      WHERE ehr_id = ehrId
+      GROUP BY ehr_id
+
+  INTO ordersCount, ordersLastDate, resultsCount, resultsLastDate, vitalsCount, vitalsLastDate, diagnosesCount, diagnosesLastDate;
+    RETURN ehr.other_context_summary_field(ordersLastDate, ordersCount, resultsLastDate, resultsCount, vitalsLastDate, vitalsCount, diagnosesLastDate, diagnosesCount);
+
+  END
+  $other_context_ehr$
+LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION ehr.other_context()
   RETURNS JSONB AS
   $body$

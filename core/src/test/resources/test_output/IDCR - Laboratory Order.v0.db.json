@@ -1,0 +1,186 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.referral.v0 and name/value\u003d\u0027Laboratory order\u0027]": {
+    "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]": [
+      {
+        "/activities": {
+          "/activities[at0001]": [
+            {
+              "/action_archetype_id": "/.*/",
+              "/description[at0009]": {
+                "/items[at0121]": [
+                  {
+                    "/$CLASS$": "DvCodedText",
+                    "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value\u003d\u0027Laboratory Test request\u0027]/activities[at0001 and name/value\u003d\u0027Lab Request\u0027]/description[at0009]/items[at0121 and name/value\u003d\u0027Service requested\u0027]",
+                    "/name": [
+                      {
+                        "value": "Service requested"
+                      }
+                    ],
+                    "/value": {
+                      "value": "Physio-crutches",
+                      "definingCode": {
+                        "codeString": "order4",
+                        "terminologyId": {
+                          "name": "SNOMED-CT",
+                          "value": "SNOMED-CT"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "/name": [
+                {
+                  "value": "Lab Request"
+                }
+              ],
+              "/timing": {
+                "/$CLASS$": "DvParsable",
+                "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value\u003d\u0027Laboratory Test request\u0027]/activities[at0001 and name/value\u003d\u0027Lab Request\u0027]/timing",
+                "/value": {
+                  "value": "2016-04-12T18:20:37.668+0100",
+                  "formalism": "timing",
+                  "charset": {
+                    "codeString": "UTF-8",
+                    "terminologyId": {
+                      "name": "IANA_character-sets",
+                      "value": "IANA_character-sets"
+                    }
+                  },
+                  "language": {
+                    "codeString": "en",
+                    "terminologyId": {
+                      "name": "ISO_639-1",
+                      "value": "ISO_639-1"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "/name": [
+          {
+            "value": "Laboratory Test request"
+          }
+        ],
+        "/narrative": {
+          "/$CLASS$": "DvText",
+          "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value\u003d\u0027Laboratory Test request\u0027]/narrative",
+          "/name": [
+            {
+              "value": "Laboratory Test request"
+            }
+          ],
+          "/value": {
+            "value": "Physio-crutches"
+          }
+        },
+        "/uid": {
+          "/$CLASS$": "HierObjectID",
+          "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value\u003d\u0027Laboratory Test request\u0027]/uid",
+          "/name": [
+            {
+              "value": "cf098074-7b56-4848-91a0-2e79d4691179"
+            }
+          ],
+          "/value": {
+            "root": {
+              "value": "cf098074-7b56-4848-91a0-2e79d4691179"
+            },
+            "value": "cf098074-7b56-4848-91a0-2e79d4691179"
+          }
+        }
+      }
+    ],
+    "/content[openEHR-EHR-ACTION.laboratory_test.v1]": [
+      {
+        "/description[at0001]": {
+          "/items[at0017]": [
+            {
+              "/$CLASS$": "DvCodedText",
+              "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value\u003d\u0027Laboratory test tracker\u0027]/description[at0001]/items[at0017 and name/value\u003d\u0027Test name\u0027]",
+              "/name": [
+                {
+                  "value": "Test name"
+                }
+              ],
+              "/value": {
+                "value": "Physio-crutches",
+                "definingCode": {
+                  "codeString": "order4",
+                  "terminologyId": {
+                    "name": "SNOMED-CT",
+                    "value": "SNOMED-CT"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "/ism_transition/careflow_step": {
+          "/$CLASS$": "DvCodedText",
+          "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value\u003d\u0027Laboratory test tracker\u0027]/ism_transition/careflow_step",
+          "/name": [
+            {
+              "value": "Laboratory test tracker"
+            }
+          ],
+          "/value": {
+            "value": "Test Requested",
+            "definingCode": {
+              "codeString": "at0003",
+              "terminologyId": {
+                "name": "local",
+                "value": "local"
+              }
+            }
+          }
+        },
+        "/ism_transition/current_state": {
+          "/$CLASS$": "DvCodedText",
+          "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value\u003d\u0027Laboratory test tracker\u0027]/ism_transition/current_state",
+          "/name": [
+            {
+              "value": "Laboratory test tracker"
+            }
+          ],
+          "/value": {
+            "value": "planned",
+            "definingCode": {
+              "codeString": "526",
+              "terminologyId": {
+                "name": "openehr",
+                "value": "openehr"
+              }
+            }
+          }
+        },
+        "/name": [
+          {
+            "value": "Laboratory test tracker"
+          }
+        ],
+        "/time": {
+          "/$CLASS$": "DvDateTime",
+          "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value\u003d\u0027Laboratory test tracker\u0027]/time",
+          "/name": [
+            {
+              "value": "Laboratory test tracker"
+            }
+          ],
+          "/value": {
+            "value": "2016-04-12T18:20:37.668+01:00",
+            "epoch_offset": 1460481637668
+          }
+        }
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Laboratory order"
+    }
+  ]
+}
+

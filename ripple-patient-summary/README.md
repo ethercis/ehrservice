@@ -183,4 +183,4 @@ Returns a list of summaries:
 
 ### License
 
-See LICENSE.txt in this directory.
+See LICENSE.txt in this directory.

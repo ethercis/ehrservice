@@ -1,0 +1,35 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.encounter.v1 and name/value\u003d\u0027Clinical Notes\u0027]": {
+    "/content[openEHR-EHR-EVALUATION.clinical_synopsis.v1]": [
+      {
+        "/data[at0001]": {
+          "/items[at0002]": [
+            {
+              "/$CLASS$": "DvText",
+              "/$PATH$": "/content[openEHR-EHR-EVALUATION.clinical_synopsis.v1 and name/value\u003d\u0027SOAP Note\u0027]/data[at0001]/items[at0002 and name/value\u003d\u0027Notes\u0027]",
+              "/name": [
+                {
+                  "value": "Notes"
+                }
+              ],
+              "/value": {
+                "value": "S: Patient was very concerned about her welfare, no specific complaints, but some mild symptoms of depression (poor sleep, low energy levels etc)\nO: Comfortable: Vitals Normal BP 120/80; \nA; Social concerns and mild anxiety\nP; refer to Mental Health Team \u0026 Social Services for better support. DC with sister today."
+              }
+            }
+          ]
+        },
+        "/name": [
+          {
+            "value": "SOAP Note"
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Clinical Notes"
+    }
+  ]
+}
+

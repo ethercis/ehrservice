@@ -1,0 +1,60 @@
+{
+  "laboratory_order/language|code": "en",
+  "laboratory_order/language|terminology": "ISO_639-1",
+  "laboratory_order/territory|code": "GB",
+  "laboratory_order/territory|terminology": "ISO_3166-1",
+  "laboratory_order/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "laboratory_order/context/setting|code": "238",
+  "laboratory_order/context/setting|value": "other care",
+  "laboratory_order/context/setting|terminology": "openehr",
+  "laboratory_order/laboratory_test_request/_uid": "cf098074-7b56-4848-91a0-2e79d4691179",
+  "laboratory_order/laboratory_test_request/lab_request/service_requested|code": "order4",
+  "laboratory_order/laboratory_test_request/lab_request/service_requested|value": "Physio-crutches",
+  "laboratory_order/laboratory_test_request/lab_request/service_requested|terminology": "SNOMED-CT",
+  "laboratory_order/laboratory_test_request/lab_request/timing": "2016-04-12T18:20:37.668+0100",
+  "laboratory_order/laboratory_test_request/lab_request/timing|formalism": "timing",
+  "laboratory_order/laboratory_test_request/narrative": "Physio-crutches",
+  "laboratory_order/laboratory_test_request/language|code": "en",
+  "laboratory_order/laboratory_test_request/language|terminology": "ISO_639-1",
+  "laboratory_order/laboratory_test_request/encoding|code": "UTF-8",
+  "laboratory_order/laboratory_test_request/encoding|terminology": "IANA_character-sets",
+  "laboratory_order/laboratory_test_tracker/ism_transition/current_state|code": "526",
+  "laboratory_order/laboratory_test_tracker/ism_transition/current_state|value": "planned",
+  "laboratory_order/laboratory_test_tracker/ism_transition/current_state|terminology": "openehr",
+  "laboratory_order/laboratory_test_tracker/ism_transition/careflow_step|code": "at0003",
+  "laboratory_order/laboratory_test_tracker/ism_transition/careflow_step|value": "Test Requested",
+  "laboratory_order/laboratory_test_tracker/ism_transition/careflow_step|terminology": "local",
+  "laboratory_order/laboratory_test_tracker/test_name|code": "order4",
+  "laboratory_order/laboratory_test_tracker/test_name|value": "Physio-crutches",
+  "laboratory_order/laboratory_test_tracker/test_name|terminology": "SNOMED-CT",
+  "laboratory_order/laboratory_test_tracker/time": {
+    "iMillis": 1460481637668,
+    "iChronology": {
+      "iBase": {
+        "iBase": {
+          "iBase": {
+            "iMinDaysInFirstWeek": 4
+          }
+        },
+        "iParam": {
+          "iWallOffset": 3600000,
+          "iStandardOffset": 3600000,
+          "iID": "+01:00"
+        }
+      }
+    }
+  },
+  "laboratory_order/laboratory_test_tracker/language|code": "en",
+  "laboratory_order/laboratory_test_tracker/language|terminology": "ISO_639-1",
+  "laboratory_order/laboratory_test_tracker/encoding|code": "UTF-8",
+  "laboratory_order/laboratory_test_tracker/encoding|terminology": "IANA_character-sets",
+  "laboratory_order/composer|name": "aComposer"
+}
+

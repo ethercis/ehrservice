@@ -1,0 +1,44 @@
+{
+  "problem_list/language|code": "en",
+  "problem_list/language|terminology": "ISO_639-1",
+  "problem_list/territory|code": "GB",
+  "problem_list/territory|terminology": "ISO_3166-1",
+  "problem_list/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "problem_list/context/setting|code": "238",
+  "problem_list/context/setting|value": "other care",
+  "problem_list/context/setting|terminology": "openehr",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/problem_diagnosis_name|code": "12393890",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/problem_diagnosis_name|value": "ww test problem 02",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/problem_diagnosis_name|terminology": "SNOMED-CT",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/clinical_description": "ww test problem 02 description",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/date_time_of_onset": {
+    "iMillis": 1483117200000,
+    "iChronology": {
+      "iBase": {
+        "iBase": {
+          "iBase": {
+            "iMinDaysInFirstWeek": 4
+          }
+        },
+        "iParam": {
+          "iWallOffset": 25200000,
+          "iStandardOffset": 25200000,
+          "iID": "+07:00"
+        }
+      }
+    }
+  },
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/language|code": "en",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/language|terminology": "ISO_639-1",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/encoding|code": "UTF-8",
+  "problem_list/problems_and_issues:0/problem_diagnosis:0/encoding|terminology": "IANA_character-sets",
+  "problem_list/composer|name": "aComposer"
+}
+

@@ -1,0 +1,31 @@
+{
+  "relevant_contacts_list/language|code": "en",
+  "relevant_contacts_list/language|terminology": "ISO_639-1",
+  "relevant_contacts_list/territory|code": "GB",
+  "relevant_contacts_list/territory|terminology": "ISO_3166-1",
+  "relevant_contacts_list/context/start_time": {
+    "iMillis": -2208988800000,
+    "iChronology": {
+      "iBase": {
+        "iMinDaysInFirstWeek": 4
+      }
+    }
+  },
+  "relevant_contacts_list/context/setting|code": "238",
+  "relevant_contacts_list/context/setting|value": "other care",
+  "relevant_contacts_list/context/setting|terminology": "openehr",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/individual_person/person_name/unstructured_name": "ww testname02",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/individual_person/contact_details:0/comms_description": "ww test 02",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_category|code": "at0039",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_category|value": "Relative",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_category|terminology": "local",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/relationship_role": "Father",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/is_next_of_kin": true,
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/note": "ww test 02",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/language|code": "en",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/language|terminology": "ISO_639-1",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/encoding|code": "UTF-8",
+  "relevant_contacts_list/relevant_contacts/relevant_contact:0/encoding|terminology": "IANA_character-sets",
+  "relevant_contacts_list/composer|name": "aComposer"
+}
+
