@@ -46,6 +46,8 @@ public class QueryCompilerPass2 extends AqlBaseListener {
 
     Deque<VariableDefinition> variableStack = new ArrayDeque<>();
     Deque<OrderAttribute> orderAttributes = null;
+    Integer limitAttribute = null;
+    Integer offsetAttribute = null;
 
     TopAttributes topAttributes = null;
     FunctionDefinition functionDefinitions = new FunctionDefinition();
@@ -163,6 +165,16 @@ public class QueryCompilerPass2 extends AqlBaseListener {
     }
 
     @Override
+    public void exitOffset(AqlParser.OffsetContext ctx){
+        offsetAttribute = new Integer(ctx.INTEGER().getText());
+    }
+
+    @Override
+    public void exitLimit(AqlParser.LimitContext ctx) {
+        limitAttribute = new Integer(ctx.INTEGER().getText());
+    }
+
+    @Override
     public void exitFunction(AqlParser.FunctionContext functionContext){
         //get the function id and parameters
         logger.debug("in function");
@@ -184,5 +196,13 @@ public class QueryCompilerPass2 extends AqlBaseListener {
 
     public FunctionDefinition getFunctionDefinitions() {
         return functionDefinitions;
+    }
+
+    public Integer getLimitAttribute() {
+        return limitAttribute;
+    }
+
+    public Integer getOffsetAttribute() {
+        return offsetAttribute;
     }
 }

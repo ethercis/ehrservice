@@ -43,12 +43,12 @@ public class QueryEngineTest {
     protected Connection connection;
     protected static String serverNodeId = System.getProperty("server.node.name") == null ? "test-server" : System.getProperty("server.node.name");
 
-    private QueryEngine  queryEngine;
-    
+    private QueryEngine queryEngine;
+
     private List<Record> records;
 
     @Before
-    public void setUp(){
+    public void setUp() {
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
 //        String url = "jdbc:postgresql://localhost:5434/ethercis";
@@ -64,16 +64,14 @@ public class QueryEngineTest {
         I_KnowledgeCache knowledge;
         try {
             knowledge = new KnowledgeCache(null, props);
-        }
-        catch (Exception e){
-            throw new IllegalArgumentException("Could not set knowledge cache:"+e);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Could not set knowledge cache:" + e);
         }
 
         try {
             this.connection = DriverManager.getConnection(url, login, password);
-        }
-        catch (SQLException e){
-            throw new IllegalArgumentException("SQL exception occurred while connecting:"+e);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL exception occurred while connecting:" + e);
         }
 
         if (connection == null)
@@ -105,8 +103,8 @@ public class QueryEngineTest {
     public void testQryEhr1() throws Exception {
         String query = "select " +
                 "e/ehr_id/value as ehr_id, " +
-                "e/ehr_status/subject/external_ref/id/value as subject_id, "+
-                "e/ehr_status/subject/external_ref/namespace as subject_namespace "+
+                "e/ehr_status/subject/external_ref/id/value as subject_id, " +
+                "e/ehr_status/subject/external_ref/namespace as subject_namespace " +
                 "from EHR e " +
                 "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
                 "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] ";
@@ -138,8 +136,8 @@ public class QueryEngineTest {
     @Test
     public void testQryEhr4() throws Exception {
         String query = "select e/ehr_id/value, " +
-                "e/ehr_status/subject/external_ref/id/value as subject_id, "+
-                "e/ehr_status/subject/external_ref/namespace as subject_namespace "+
+                "e/ehr_status/subject/external_ref/id/value as subject_id, " +
+                "e/ehr_status/subject/external_ref/namespace as subject_namespace " +
                 " from EHR e";
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -157,7 +155,7 @@ public class QueryEngineTest {
                 "  a/name/value as documentType,\n" +
                 "  a/archetype_details/template_id/value as documentTemplate\n" +
                 "from EHR e \n" +
-                "contains COMPOSITION a "+
+                "contains COMPOSITION a " +
                 "where a/name/value matches {'Discharge summary', 'Referral'} \n" +
                 "and a/archetype_details/template_id/value matches {'iEHR - Healthlink - Referral.v0','iEHR - Healthlink - Discharge Sumary.v0'}\n" +
                 "order by  a/context/start_time/value desc";
@@ -179,9 +177,30 @@ public class QueryEngineTest {
                 "from EHR e " +
                 "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1] " +
                 "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0] " +
+                "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]" +
+                "where a/name/value='Laboratory test report' " +
+                "AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testQryConditional3() throws Exception {
+        String query = "select a/uid/value as uid, " +
+                "a/context/start_time/value as date_created, " +
+                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name, " +
+                "a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken, " +
+                "c/items[at0002]/items[at0001]/name/value as what, " +
+                "c/items[at0002]/items[at0001]/value/magnitude as value, " +
+                "c/items[at0002]/items[at0001]/value/units as units " +
+                "from EHR e " +
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1] " +
+                "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0] " +
                 "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]"+
                 "where a/name/value='Laboratory test report' "+
-                "AND e/ehr_status/subject/external_ref/id/value = '9999999000'";
+                "AND e/ehr_status/subject/external_ref/id/value matches {'9999999000'}";
         records = queryEngine.perform(query);
         assertNotNull(records);
         assertFalse(records.isEmpty());
@@ -238,6 +257,7 @@ public class QueryEngineTest {
 
     /**
      * TODO: see ticket #28, the expression a/context/start_time/value returns null
+     *
      * @throws Exception
      */
     @Test
@@ -287,9 +307,9 @@ public class QueryEngineTest {
 
     @Test
     public void testQryAction1() throws Exception {
-        String query =  "select a/uid/value as uid, " +
+        String query = "select a/uid/value as uid, " +
                 "a/composer/name as author, " +
-                "e/ehr_status/subject/external_ref/id/value,"+
+                "e/ehr_status/subject/external_ref/id/value," +
                 "a/context/start_time/value as date_submitted, " +
                 "b_a/description[at0001]/items[at0002]/value/value as procedure_name, " +
                 "b_a/description[at0001]/items[at0049, 'Procedure notes']/value/value as procedure_notes, " +
@@ -301,7 +321,7 @@ public class QueryEngineTest {
                 "from EHR e " +
                 "contains COMPOSITION a[openEHR-EHR-COMPOSITION.care_summary.v0] " +
                 "contains ACTION b_a[openEHR-EHR-ACTION.procedure.v1] " +
-                "where a/name/value='Procedures list' "+
+                "where a/name/value='Procedures list' " +
 //                "and a/uid/value='" + procedureId + "' " +
                 "and e/ehr_status/subject/external_ref/id/value = '9999999000'";
 //                "and e/ehr_status/subject/external_ref/id/value = '" + patientId + "'";
@@ -316,7 +336,7 @@ public class QueryEngineTest {
     @Test
     public void testQryInstruction4() throws Exception {
 
-        String query =  "select a/uid/value as uid, " +
+        String query = "select a/uid/value as uid, " +
                 "a/composer/name as author, " +
                 "b_a/other_participations/performer/name as performer, " +
                 "b_a/uid/value/value as instruction_uid, " +
@@ -424,7 +444,7 @@ public class QueryEngineTest {
     //TODO: enable queries on embedded arrays
     @Test
     public void testQryCluster1() throws Exception {
-        String         query = "select" +
+        String query = "select" +
                 "   a/uid/value as uid,  " +
                 "   a/context/start_time/value as date_created,  " +
                 "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name, " +
@@ -434,7 +454,7 @@ public class QueryEngineTest {
                 "               c/items[at0002]/items[at0001]/value/units as units  from EHR e  " +
                 "               contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]  " +
                 "               contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]  " +
-                "               contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]  " ;
+                "               contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]  ";
 //                "               where a/name/value='Laboratory test report'  " +
 //                "                   AND e/ehr_status/subject/external_ref/id/value = '9999999000'" +
 //                "                   and c/items[at0002]/items[at0001]/name='Sodium'";
@@ -475,8 +495,8 @@ public class QueryEngineTest {
     public void testQryEvaluation2() throws Exception {
         String query = "select " +
                 "e/ehr_id/value as ehr_id, " +
-                "e/ehr_status/subject/external_ref/id/value as subject_id, "+
-                "e/ehr_status/subject/external_ref/namespace as subject_namespace "+
+                "e/ehr_status/subject/external_ref/id/value as subject_id, " +
+                "e/ehr_status/subject/external_ref/namespace as subject_namespace " +
                 "from EHR e " +
                 "contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1] " +
                 "contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] ";
@@ -545,7 +565,7 @@ public class QueryEngineTest {
                 "                  and e/ehr_status/subject/external_ref/id/value='fr.asip.48221832'\n" +
                 "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude < 80\n" +
                 "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude > 130\n" +
-                "                  ORDERBY date_created ASC ";
+                "                  ORDER BY date_created ASC ";
 
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -695,6 +715,31 @@ public class QueryEngineTest {
     }
 
     @Test
+    public void testQryEvaluationOR3() throws Exception {
+        String query = "select     \n" +
+                "a/uid/value as uid,     \n" +
+                "a/context/start_time/value as meeting_date,\n" +
+                "a/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1]/time/value as request_date,\n" +
+                "a_a/protocol[at0008]/items[at0011]/value/value as service_team,\n" +
+                "a_b/data[at0001]/items[at0004]/value/value as question,\n" +
+                "a_c/data[at0001]/items[at0002]/value/value as notes, \n" +
+                "a/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1]/ism_transition/careflow_step/defining_code/code_string as careflow_step\n" +
+                "from EHR e \n" +
+                "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report.v1]\n" +
+                "contains ( \n" +
+                " INSTRUCTION a_a[openEHR-EHR-INSTRUCTION.request.v0]" +
+                " or EVALUATION a_b[openEHR-EHR-EVALUATION.reason_for_encounter.v1]" +
+                " or EVALUATION a_c[openEHR-EHR-EVALUATION.recommendation.v1])\n" +
+                "where a/name/value='MDT Output Report'" +
+                " and a/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1]/ism_transition/careflow_step/defining_code/code_string matches {'at0002','at0003'}";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
     public void testQryCluster2() throws Exception {
         String query = "select a/uid/value as uid,\n" +
                 "a/composer/name as author,\n" +
@@ -784,7 +829,7 @@ public class QueryEngineTest {
                 "  from EHR e " +
                 " contains COMPOSITION a[openEHR-EHR-COMPOSITION.request.v1] contains " +
                 "    INSTRUCTION b_a[openEHR-EHR-INSTRUCTION.request.v0]" +
-                        "     where a/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.service.v0]/ism_transition/current_state/defining_code/code_string = '526'";
+                "     where a/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.service.v0]/ism_transition/current_state/defining_code/code_string = '526'";
 
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -837,10 +882,29 @@ public class QueryEngineTest {
                 "  a/name/value as documentType,\n" +
                 "  a/archetype_details/template_id/value as documentTemplate\n" +
                 "from EHR e \n" +
-                "contains COMPOSITION a "+
-//                "where a/name/value matches {'Discharge summary', 'Referral'} \n" +
-//                "and a/archetype_details/template_id/value matches {'iEHR - Healthlink - Referral.v0','iEHR - Healthlink - Discharge Sumary.v0'}\n" +
-                "orderby  a/context/start_time/value desc";
+                "contains COMPOSITION a " +
+                "where a/name/value matches {'Discharge summary', 'Referral'} \n" +
+                "and a/archetype_details/template_id/value matches {'iEHR - Healthlink - Referral.v0','iEHR - Healthlink - Discharge Sumary.v0'}\n" +
+                "order by  a/context/start_time/value desc";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testQryLike() throws Exception {
+        String query = "select " +
+                "  a/uid/value as uid,\n" +
+                "  a/composer/name as author,\n" +
+                "  a/context/start_time/value as dateCreated,\n" +
+                "  a/name/value as documentType,\n" +
+                "  a/archetype_details/template_id/value as documentTemplate\n" +
+                "from EHR e \n" +
+                "contains COMPOSITION a " +
+                "where a/name/value like 'REFE%' \n" +
+                "order by  a/context/start_time/value desc";
 
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -937,6 +1001,32 @@ public class QueryEngineTest {
                         "a/context/other_context[at0001]/items[at0007]/value/value as vitalsDate " +
                         "from EHR e " +
                         "contains COMPOSITION a[openEHR-EHR-COMPOSITION.ripple_cache.v1] ";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testQryObservationGT_LT_Offset_limit() throws Exception {
+        String query = "select a/uid/value as uid, a/context/start_time/value as date_created,\n" +
+                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as systolic,\n" +
+                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/units as systolic_units,\n" +
+                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude as diastolic,\n" +
+                "   o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/units as diastolic_units,\n" +
+                "   o_hr/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as rate,\n" +
+                "   o_hr/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/units as rate_units\n" +
+                "   from EHR e \n" +
+                "                  contains COMPOSITION a\n" +
+                "                  contains (OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1] \n" +
+                "                  AND OBSERVATION o_hr[openEHR-EHR-OBSERVATION.heart_rate-pulse.v1])  \n" +
+                "                  where e/ehr_status/subject/external_ref/namespace='fr.asip.48221832'\n" +
+                "                  and e/ehr_status/subject/external_ref/id/value='fr.asip.48221832'\n" +
+                "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude < 80\n" +
+                "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude > 130\n" +
+                "                  limit 10 offset 10 \n" +
+                "                  ORDER BY date_created ASC ";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

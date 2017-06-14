@@ -14,7 +14,7 @@ grammar Aql;
 
 query	:	queryExpr ;
 
-queryExpr : select from (where)? (orderBy)? EOF ;
+queryExpr : select from (where)? (limit)? (offset)? (orderBy)? EOF ;
 
 select
         : SELECT selectExpr
@@ -33,6 +33,12 @@ where
 
 orderBy 
         : ORDERBY orderBySeq ;
+
+limit
+        :LIMIT INTEGER;
+
+offset
+        : OFFSET INTEGER;
 
 orderBySeq  
         : orderByExpr (COMMA orderBySeq)?;
@@ -96,6 +102,8 @@ identifiedEquality
         : NOT? identifiedOperand COMPARABLEOPERATOR identifiedOperand
 	    | NOT? identifiedOperand MATCHES OPEN_CURLY matchesOperand CLOSE_CURLY
         | NOT? identifiedOperand MATCHES REGEXPATTERN
+        | NOT? identifiedOperand LIKE STRING
+        | NOT? identifiedOperand ILIKE STRING
 //        | NOT identifiedEquality
         | NOT? IN OPEN_PAR queryExpr CLOSE_PAR
         | NOT? EXISTS identifiedPath
@@ -217,6 +225,8 @@ XOR : X O R ;
 NOT : N O T ;
 IN : I N ;
 MATCHES : M A T C H E S ;
+LIKE : L I K E ;
+ILIKE : I L I K E ;
 SELECT : S E L E C T ;
 TOP : T O P ;
 FORWARD : F O R W A R D ;
@@ -225,6 +235,8 @@ AS : A S ;
 CONTAINS : C O N T A I N S ;
 WHERE : W H E R E ;
 ORDERBY : O R D E R ' ' B Y ;
+OFFSET: O F F S E T ;
+LIMIT: L I M I T ;
 FROM : F R O M ;
 DESCENDING : D E S C E N D I N G ;
 ASCENDING : A S C E N D I N G ;

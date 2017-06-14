@@ -161,6 +161,11 @@ public class QueryProcessor  {
 
                     }
 
+                    if (queryParser.getLimitAttribute() != null || queryParser.getOffsetAttribute() != null)
+                        unionSetQuery.addLimit(queryParser.getOffsetAttribute() == null ? 0 : queryParser.getOffsetAttribute(),
+                                                queryParser.getLimitAttribute() == null ? 0 : queryParser.getLimitAttribute());
+
+
                     //more experimental stuff (to avoid the internal table below...)
                     OrderByBinder orderByBinder = new OrderByBinder(queryParser);
                     if (orderByBinder.hasOrderBy())

@@ -71,6 +71,8 @@ public class QueryParser {
     private  boolean useSimpleCompositionContainment = false;
 
     private DSLContext context;
+    private Integer limitAttribute;
+    private Integer offsetAttribute;
 
     public QueryParser(DSLContext context, String query){
         this.antlrInputStream = new ANTLRInputStream(query);
@@ -138,6 +140,8 @@ public class QueryParser {
 
         topAttributes = queryCompilerPass2.getTopAttributes();
         orderAttributes = queryCompilerPass2.getOrderAttributes();
+        limitAttribute = queryCompilerPass2.getLimitAttribute();
+        offsetAttribute = queryCompilerPass2.getOffsetAttribute();
         functionDefinitions = queryCompilerPass2.getFunctionDefinitions();
     }
 
@@ -219,6 +223,14 @@ public class QueryParser {
 
     public List<OrderAttribute> getOrderAttributes() {
         return orderAttributes;
+    }
+
+    public Integer getLimitAttribute() {
+        return limitAttribute;
+    }
+
+    public Integer getOffsetAttribute() {
+        return offsetAttribute;
     }
 
     public boolean hasDefinedFunctions(){

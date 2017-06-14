@@ -31,6 +31,14 @@ import java.util.List;
  * Created by christian on 5/18/2016.
  */
 public class WhereVisitor extends AqlBaseVisitor< List<Object>> {
+    public static final String MATCHES = "MATCHES";
+    public static final String IN = " IN ";
+    public static final String OPEN_CURL = "{";
+    public static final String OPEN_PAR = "(";
+    public static final String CLOSING_CURL = "}";
+    public static final String CLOSING_PAR = ")";
+    public static final String COMMA = ",";
+
     List whereExpression= new ArrayList<>();
 
 //    @Override
@@ -61,6 +69,51 @@ public class WhereVisitor extends AqlBaseVisitor< List<Object>> {
         return whereExpression;
     }
 
+    @Override
+    public List<Object> visitMatchesOperand(AqlParser.MatchesOperandContext context){
+        for (ParseTree tree: context.children) {
+            if (tree instanceof AqlParser.ValueListItemsContext) {
+                whereExpression.addAll(visitValueListItems((AqlParser.ValueListItemsContext) tree));
+            }
+            else if (tree instanceof AqlParser.IdentifiedEqualityContext) {
+                visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext) tree);
+            }
+        }
+
+        return whereExpression;
+    }
+
+    @Override
+    public List<Object> visitValueListItems(AqlParser.ValueListItemsContext ctx){
+        List<Object> operand = new ArrayList<>();
+        for (ParseTree tree: ctx.children){
+            if (tree instanceof AqlParser.OperandContext){
+                AqlParser.OperandContext operandContext = (AqlParser.OperandContext) tree;
+                if (operandContext.STRING() != null)
+                    operand.add(operandContext.STRING().getText());
+                else if (operandContext.BOOLEAN() != null)
+                    operand.add(operandContext.BOOLEAN().getText());
+                else if (operandContext.INTEGER() != null)
+                    operand.add(operandContext.INTEGER().getText());
+                else if (operandContext.DATE() != null)
+                    operand.add(operandContext.DATE().getText());
+                else if (operandContext.FLOAT() != null)
+                    operand.add(operandContext.FLOAT().getText());
+                else if (operandContext.PARAMETER() != null)
+                    operand.add("** unsupported operand: PARAMETER **");
+                else
+                    operand.add("** unsupported operand: "+operandContext.getText());
+                operand.add(",");
+            }
+            else if (tree instanceof AqlParser.ValueListItemsContext){
+                List<Object> token = visitValueListItems((AqlParser.ValueListItemsContext) tree);
+                for (Object item: token)
+                    operand.add(item);
+            }
+        }
+        return operand;
+    }
+
 //    @Override
 //    public List<Object> visitIdentifiedExprAnd(AqlParser.IdentifiedExprAndContext context){
 //        for (ParseTree tree: context.children) {
@@ -82,9 +135,28 @@ public class WhereVisitor extends AqlBaseVisitor< List<Object>> {
     @Override
     public List<Object> visitIdentifiedEquality(AqlParser.IdentifiedEqualityContext context){
 //        List<Object> whereExpression = new ArrayList<>();
+        boolean isMatchExpr = false;
         for (ParseTree tree: context.children){
-            if (tree instanceof TerminalNodeImpl)
-                whereExpression.add(((TerminalNodeImpl) tree).getSymbol().getText());
+            if (tree instanceof TerminalNodeImpl) {
+                String token = ((TerminalNodeImpl) tree).getSymbol().getText();
+                if (token.toUpperCase().equals(MATCHES)) {
+                    isMatchExpr = true;
+                    whereExpression.add(IN);
+                }
+                else if (token.equals(OPEN_CURL) && isMatchExpr)
+                    whereExpression.add(OPEN_PAR);
+                else if (token.equals(CLOSING_CURL) && isMatchExpr) {
+                    //if the last element in expression is a comma, overwrite it with a closing parenthesis
+                    if (whereExpression.get(whereExpression.size() -1).equals(COMMA))
+                        whereExpression.set(whereExpression.size() -1, CLOSING_PAR);
+                    else
+                        whereExpression.add(CLOSING_PAR);
+                    isMatchExpr = false; //closure
+                }
+                else
+                    whereExpression.add(token);
+
+            }
             else if (tree instanceof AqlParser.IdentifiedOperandContext){
                 AqlParser.IdentifiedOperandContext operandContext = (AqlParser.IdentifiedOperandContext)tree;
                 //translate/substitute operand
@@ -104,6 +176,9 @@ public class WhereVisitor extends AqlBaseVisitor< List<Object>> {
             }
             else if (tree instanceof AqlParser.IdentifiedEqualityContext){
                 visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext)tree);
+            }
+            else if (tree instanceof AqlParser.MatchesOperandContext){
+                visitMatchesOperand((AqlParser.MatchesOperandContext)tree);
             }
         }
 
