@@ -443,8 +443,8 @@ public class CObjectConstraintTest {
 
         try {
             new CArchetypeConstraint(null).validate("test", dvBoolean, archetypeconstraint);
+            fail("false is not allowed");
         } catch (Exception e){
-            fail(e.getMessage());
         }
     }
 
@@ -724,7 +724,7 @@ public class CObjectConstraintTest {
                         "      <v1:node_id/>\n" +
                         "      <v1:item xsi:type=\"C_BOOLEAN\">\n" +
                         "        <v1:true_valid>true</v1:true_valid>\n" +
-                        "        <v1:false_valid>false</v1:false_valid>\n" +
+                        "        <v1:false_valid>true</v1:false_valid>\n" +
                         "      </v1:item>\n" +
                         "    </v1:children>\n" +
                         "  </v1:attributes>\n" +
