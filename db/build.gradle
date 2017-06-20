@@ -1,0 +1,41 @@
+buildscript {
+    dependencies {
+        classpath "org.postgresql:postgresql:${versions.postgresql}"
+    }
+}
+
+plugins {
+    id "org.flywaydb.flyway" version "4.1.2"
+}
+
+apply plugin: 'java'
+
+dependencies {
+    compile 'org.flywaydb:flyway-core:4.1.2'
+    compile 'commons-dbutils:commons-dbutils:1.6'
+}
+
+apply plugin: 'java'
+
+flyway {
+    url = "jdbc:postgresql://$db.host/$db.name"
+    user = "$db.user"
+    password = "$db.password"
+    schemas = [ 'ehr' ]
+    locations = [
+            "filesystem:$projectDir/src/main/resources/db/migration",
+            "classpath:com/ethercis/db/migration"
+    ]
+}
+
+task('initdb', type: Exec) {
+    // TODO: make this platform independant
+    environment 'DBUSER', "$db.user"
+    environment 'DBPASS', "$db.password"
+    environment 'DBHOST', "$db.host"
+    environment 'DBNAME', "$db.name"
+    commandLine 'sh', "$projectDir/src/main/resources/db/script/initdb.sh"
+}
+
+tasks.flywayMigrate.dependsOn('initdb')
+tasks.flywayMigrate.dependsOn('jar')

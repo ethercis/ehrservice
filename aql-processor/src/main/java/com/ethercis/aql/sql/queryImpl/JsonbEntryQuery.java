@@ -243,7 +243,8 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
         if (path == null) {
             //return a null field
-            return DSL.field(DSL.val(null));
+            // TODO: should this be String???
+            return DSL.val((String)null);
 //            throw new IllegalArgumentException("Could not resolve path for identifier:" + variableDefinition.getIdentifier());
         }
         String alias = variableDefinition.getAlias();

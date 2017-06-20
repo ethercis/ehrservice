@@ -1,0 +1,48 @@
+apply plugin: 'java'
+
+dependencies {
+    compile name: 'thinkehr-framework-jsonlib', version: '2.3.0-JL32'
+
+    // *** project dependencies **
+    compile project(':ecis-knowledge-cache')
+    compile project(':ecis-validation')
+
+    // *** openehr dependencies ***
+    compile "openehr:adl-parser:${versions.openehr}"
+    compile "openehr:oet-parser:${versions.openehr}"
+    compile "openehr:rm-builder:${versions.openehr}"
+    compile "openehr:xml-serializer:${versions.openehr}"
+
+    // *** external dependencies ***
+    compile "org.apache.commons:commons-collections4:${versions.commonsCollections4}"
+    compile "commons-collections:commons-collections:${versions.commonsCollections}"
+    compile "com.google.code.gson:gson:${versions.gson}"
+    compile "com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:${versions.gsonJodaTime}"
+    compile "org.codehaus.jackson:jackson-core-asl:${versions.jackson}"
+    compile "org.codehaus.jackson:jackson-mapper-asl:${versions.jackson}"
+    compile "de.ruedigermoeller:fst:${versions.fst}"
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+
+            // these sources where moved to the reference implementation, these sources are
+            // not removed to make merging in the future easier
+            exclude '**/org/openehr/**'
+        }
+    }
+}
+idea {
+    module {
+        excludeDirs = [ file("src/main/java/org") ]
+    }
+}
+test {
+    exclude '**'
+    systemProperty 'test.knowledge.opt', file("src/test/resources/knowledge.operational_templates")
+}

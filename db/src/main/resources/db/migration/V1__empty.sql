@@ -1,0 +1,2 @@
+-- this migration is intentionally left blank
+-- flyway considers init to be version 1

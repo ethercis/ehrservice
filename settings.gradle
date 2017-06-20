@@ -1,0 +1,20 @@
+include(
+        // include the modules by module name, not directory name
+        'aql-processor',
+        'ecis-core',
+        'ecis-db',
+        'ecis-ehrdao',
+        'ecis-knowledge-cache',
+        'ecis-transform',
+        'ecis-validation',
+        'jooq-pg'
+)
+
+// if the directory name does not match the module name, update the directory name
+project(':ecis-core').projectDir = new File(rootDir, 'core')
+project(':ecis-db').projectDir = new File(rootDir, 'db')
+project(':ecis-ehrdao').projectDir = new File(rootDir, 'ehrdao')
+project(':ecis-knowledge-cache').projectDir = new File(rootDir, 'knowledge-cache')
+project(':ecis-transform').projectDir = new File(rootDir, 'transform')
+project(':ecis-validation').projectDir = new File(rootDir, 'validation')
+

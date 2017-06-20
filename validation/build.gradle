@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+dependencies {
+    // *** openehr dependencies ***
+    compile "openehr:openehr-aom:${versions.openehr}"
+    //compile project(':openehr-measure-serv')
+    //compile project(':openehr-mini-termserv')
+    compile "openehr:xml-binding:${versions.openehr}"
+    //compile project(':openehr-rm-builder')
+
+    //compile "org.slf4j:slf4j-api:${versions.slf4j}"
+    compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+}

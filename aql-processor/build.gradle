@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'antlr'
+
+dependencies {
+    // *** project dependencies **
+    compile project(':ecis-core')
+    compile project(':ecis-knowledge-cache')
+    compile project(':jooq-pg')
+
+    // *** external dependencies ***
+    compile "org.apache.commons:commons-lang3:${versions.commonsLang3}"
+    compile "org.antlr:antlr4-runtime:${versions.antlr}"
+    compile "org.apache.commons:commons-collections4:${versions.commonsCollections4}"
+    compile "org.jooq:jooq:${versions.jooq}"
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+
+    antlr "org.antlr:antlr4:${versions.antlr}"
+}
+
+generateGrammarSource {
+    arguments += [ '-visitor', '-package', 'com.ethercis.aql.parser' ]
+}
+
+test {
+    // TODO: enable tests
+    exclude '**'
+}
