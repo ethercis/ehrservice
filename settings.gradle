@@ -1,6 +1,7 @@
 include(
         // include the modules by module name, not directory name
         'aql-processor',
+        'bb-test',
         'ecis-core',
         'ecis-db',
         'ecis-ehrdao',

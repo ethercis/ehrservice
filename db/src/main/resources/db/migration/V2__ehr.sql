@@ -1,167 +1,183 @@
--- the ethercis database schema
-
--- differences:
---   extensions live in the ext schema to make flyways work easier
-
-CREATE SCHEMA IF NOT EXISTS ehr;
-
--- identification of a system
-CREATE TABLE ehr.system (
-  id           UUID PRIMARY KEY,             -- the ID
-	description  TEXT NOT NULL,
-  settings     TEXT NOT NULL UNIQUE          -- unique external ID (as set in the config)
-);
-
+-- TODO
 --
--- TERMINOLOGY
+-- This is jooq-pg/main/resources/ddls/pgsql_ehr.ddl
+-- I assume this is the proper DDL as there a many slightly different copies floating around
+--
+-- differences with standard ethercis:
+-- * replaced most VARCHAR with TEXT for those columns with no length specified in the openehr spec
+-- * moved the extensions to the ext namespace (to make using flyway easier)
 --
 
--- ISO 3166-1 countries
-CREATE TABLE ehr.territory (
-	code         INT PRIMARY KEY, -- numeric code
-	twoLetter    CHAR(2),
-	threeLetter  CHAR(3),
-	text         TEXT NOT NULL
-);
 
--- ISO 639-1 languages
-CREATE TABLE ehr.language (
-	code          VARCHAR(5) PRIMARY KEY,
-	description   TEXT NOT NULL
-);
 
--- terminology provider
-CREATE TABLE ehr.terminology_provider (
-	code       VARCHAR(20) PRIMARY KEY,
-	source     TEXT NOT NULL,
-	authority  TEXT
-);
+-- Generate EtherCIS tables for PostgreSQL 9.3
+-- Author: Christian Chevalley
+--
+--
+--
+--    alter table com.ethercis.ehr.consult_req_attachement
+--        drop constraint FKC199A3AAB95913AB;
+--
+--    alter table com.ethercis.ehr.consult_req_attachement
+--        drop constraint FKC199A3AA4204581F;
+--
+--drop schema if exists ehr cascade;
+-- drop schema if exists common cascade;
 
--- concepts
+--create schema ehr;
+
+--CREATE EXTENSION IF NOT EXISTS temporal_tables WITH SCHEMA ehr;
+
+-- required to be able to auto generate uuids
+--CREATE EXTENSION "uuid-ossp" WITH SCHEMA ehr;
+
+-- storeComposition schema common;
+
+
+-- storeComposition common_im entities
+-- CREATE TABLE "system" ---------------------------------------
+CREATE TABLE ehr.system ( 
+	id UUid PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
+	description TEXT NOT NULL,
+	settings TEXT NOT NULL
+ );
+ 
+COMMENT ON TABLE  ehr.system IS 'system table for reference';
+
+CREATE TABLE ehr.territory ( 
+	code int unique primary key, -- numeric code
+	twoLetter char(2),
+	threeLetter char(3),
+	text TEXT NOT NULL
+ );
+
+COMMENT ON TABLE  ehr.territory IS 'ISO 3166-1 countries codeset';
+
+CREATE TABLE ehr.language ( 
+	code varchar(5) unique primary key, 
+	description TEXT NOT NULL
+ );
+
+COMMENT ON TABLE  ehr.language IS 'ISO 639-1 language codeset';
+ 
+CREATE TABLE ehr.terminology_provider ( 
+	code varchar(20) unique primary key, 
+	source TEXT NOT NULL,
+	authority TEXT
+ );
+
+COMMENT ON TABLE  ehr.terminology_provider IS 'openEHR identified terminology provider';
+
 CREATE TABLE ehr.concept (
-  id          UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
-	conceptID   INT,
-	language    VARCHAR(5) REFERENCES ehr.language(code),
+  id UUID unique primary key DEFAULT ext.uuid_generate_v4(),
+	conceptID int, 
+	language varchar(5) references ehr.language(code),
 	description TEXT
+ );
+
+COMMENT ON TABLE  ehr.concept IS 'openEHR common concepts (e.g. terminology) used in the system';
+
+create table ehr.party_identified (
+	id UUID primary key DEFAULT ext.uuid_generate_v4(),
+	name TEXT,
+  -- optional party ref attributes
+  party_ref_value TEXT,
+  party_ref_scheme TEXT,
+  party_ref_namespace TEXT,
+  party_ref_type TEXT
 );
 
-
---
--- RM
---
-
---
--- PARTY_IDENTIFIED
---
--- http://www.openehr.org/releases/RM/latest/docs/common/common.html#_party_identified_class
-CREATE TABLE ehr.party_identified (
-	id                  UUID PRIMARY KEY,   -- ?? (can be refactored into a bigserial?)
-  name                TEXT,               -- PARTY_IDENTIFIED.name
-
-  party_ref_value     TEXT,               -- PARTY_PROXY.external_ref.id.value  (OBJECT_ID)
-  party_ref_scheme    TEXT,               -- PARTY_PROXY.external_ref.id.scheme (GENERIC_ID)
-  party_ref_namespace TEXT,               -- PARTY_PROXY.external_ref.namespace (OBJECT_REF)
-  party_ref_type      TEXT                -- PARTY_PROXY.external_ref.type      (OBJECT_REF)
+-- list of identifiers for a party identified
+create table ehr.identifier (
+	id_value TEXT, -- identifier value
+	issuer TEXT, -- authority responsible for the identification (ex. France ASIP, LDAP server etc.)
+  assigner TEXT, -- assigner of the identifier
+	type_name TEXT, -- coding origin f.ex. INS-C, INS-A, NHS etc.
+	party UUID not null references ehr.party_identified(id) -- entity identified with this identifier (normally a person, patient etc.)
 );
 
--- PARTY_IDENTIFIED.identifiers
-CREATE TABLE ehr.identifier (
-	id_value  TEXT, -- DV_IDENTIFIER.id
-	issuer    TEXT, -- DV_IDENTIFIER.issuer
-  assigner  TEXT, -- DV_IDENTIFIER.assigner
-	type_name TEXT, -- DV_IDENTIFIER.type
-	party     UUID NOT NULL REFERENCES ehr.party_identified(id)
-);
+COMMENT ON TABLE ehr.identifier IS 'specifies an identifier for a party identified, more than one identifier is possible';
 
-
---
--- EHR_ACCESS
---
-CREATE TABLE ehr.access (
-	id       UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
+-- defines the modality for accessing an com.ethercisrcis.ehr
+create table ehr.access (
+	id UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
 	settings TEXT,
-	scheme   TEXT
+	scheme TEXT -- name of access control scheme
+ );
+ 
+COMMENT ON TABLE ehr.access IS 'defines the modality for accessing an com.ethercis.ehr (security strategy implementation)';
+-- 
+
+-- storeComposition ehr_im entities
+-- EHR Class emr_im 4.7.1
+create table ehr.ehr (
+    id UUID NOT NULL PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
+    date_created timestamp default CURRENT_DATE,
+    date_created_tzid TEXT, -- timezone id: GMT+/-hh:mm
+    access UUID references ehr.access(id), -- access decision support (f.e. consent)
+--    status UUID references ehr.status(id),
+    system_id UUID references ehr.system(id),
+    directory UUID null
 );
+COMMENT ON TABLE ehr.ehr IS 'EHR itself';
 
---
--- EHR
--- http://www.openehr.org/releases/RM/latest/docs/ehr/ehr.html#_ehr_class
---
-CREATE TABLE ehr.ehr (
-    id                UUID PRIMARY KEY,               -- EHR.ehr_id
-    date_created      TIMESTAMP,                      -- EHR.time_created
-    date_created_tzid TEXT,                           --   timezone id
-    access            UUID REFERENCES ehr.access(id), -- EHR.ehr_access
-    system_id         UUID REFERENCES ehr.system(id), -- EHR.system_id
-    directory         UUID                            -- EHR.directory
-);
-
---
--- EHR_STATUS
--- http://www.openehr.org/releases/RM/latest/docs/ehr/ehr.html#_ehr_status_class
---
-CREATE TABLE ehr.status (
-  id              UUID PRIMARY KEY,     -- EHR_STATUS.uid
-  is_queryable    BOOLEAN,              -- EHR_STATUS.is_queryable
-  is_modifiable   BOOLEAN,              -- EHR_STATUS.is_modifiable
-  party           UUID NOT NULL REFERENCES ehr.party_identified(id),  -- EHR.subject
-  other_details   JSONB,                -- EHR_STATUS.other_details
-
-  ehr_id          UUID REFERENCES ehr.ehr(id) ON DELETE CASCADE,
+create table ehr.status (
+  id UUID NOT NULL PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
+  ehr_id UUID references ehr.ehr(id) ON DELETE CASCADE,
+  is_queryable boolean default true,
+  is_modifiable boolean default true,
+  party UUID not null references ehr.party_identified(id),  -- subject (e.g. patient)
+  other_details JSONB,
   sys_transaction TIMESTAMP NOT NULL,
-  sys_period      TSTZRANGE NOT NULL
-);
-
--- EHR_STATUS change history table
-CREATE TABLE ehr.status_history (LIKE ehr.status);
-CREATE INDEX ehr_status_history ON ehr.status_history USING BTREE (id);
-CREATE TRIGGER versioning_trigger BEFORE INSERT OR UPDATE OR DELETE ON ehr.status
-FOR EACH ROW EXECUTE PROCEDURE ext.versioning('sys_period', 'ehr.status_history', true);
-
-
-create type ehr.contribution_data_type as enum('composition', 'folder', 'ehr', 'system', 'other');
-create type ehr.contribution_state as enum('complete', 'incomplete', 'deleted');
-
--- openehr terminology group 'audit change type'
-CREATE TYPE ehr.contribution_change_type AS ENUM (
-  'creation',      -- 249
-  'amendment',     -- 250
-  'modification',  -- 251
-  'synthesis',     -- 252
-  'deleted',       -- 523
-  -- 'attestation',   -- 666  ???
-  'unknown'        -- 253
-);
-
-
-CREATE TABLE ehr.contribution (
-	id                  UUID PRIMARY KEY,                           -- CONTRIBUTION.uid
-	system_id           UUID REFERENCES ehr.system(id),             -- AUDIT_DETAILS.system_id
-	committer           UUID REFERENCES ehr.party_identified(id),   -- AUDIT_DETAILS.committer
-	time_committed      TIMESTAMP,                                  -- AUDIT_DETAILS.time_committed
-  time_committed_tzid TEXT,                                       --   timezone id
-	change_type         ehr.contribution_change_type,               -- AUDIT_DETAILS.change_type
-	description         TEXT,                                       -- AUDIT_DETAILS.description
-
-  ehr_id              UUID REFERENCES ehr.ehr(id) ON DELETE CASCADE,
-  sys_transaction     TIMESTAMP NOT NULL,
-  sys_period          TSTZRANGE NOT NULL,
-
-  -- RVE: unused?
-  contribution_type ehr.contribution_data_type, -- specifies the type of data it contains
-  state ehr.contribution_state, -- current state in lifeCycleState
-  signature TEXT
-
+  sys_period tstzrange NOT NULL -- temporal table
 );
 
 -- change history table
-CREATE TABLE ehr.contribution_history (LIKE ehr.contribution);
-CREATE INDEX ehr_contribution_history ON ehr.contribution_history USING BTREE (id);
-CREATE TRIGGER versioning_trigger BEFORE INSERT OR UPDATE OR DELETE ON ehr.contribution
-FOR EACH ROW EXECUTE PROCEDURE ext.versioning('sys_period', 'ehr.contribution_history', true);
+create table ehr.status_history (like ehr.status);
+CREATE INDEX ehr_status_history ON ehr.status_history USING BTREE (id);
 
+CREATE TRIGGER versioning_trigger BEFORE INSERT OR UPDATE OR DELETE ON ehr.status
+FOR EACH ROW EXECUTE PROCEDURE ext.versioning('sys_period', 'ehr.status_history', true);
 
+COMMENT ON TABLE ehr.status IS 'specifies an ehr modality and ownership (patient)';
 
+--storeComposition table ehr.event_participation (
+--	context UUID references ehr.event_context(id),
+--	participation UUID references ehr.participation(id)
+--);
+
+-- COMMENT ON TABLE ehr.event_participation IS 'specifies parties participating in an event context';
+
+-- TODO make it compliant with openEHR common IM section 6
+-- storeComposition table ehr.versioned (
+-- id UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),-- this is used by the object which this version def belongs to (composition etc.)
+-- object UUID not null, -- a versioning strategy identifier, can be generated by the RDBMS (PG)
+-- created timestamp default NOW()
+-- );
+
+-- COMMENT ON TABLE ehr.versioned IS 'used to reference a versioning system';
+create type ehr.contribution_data_type as enum('composition', 'folder', 'ehr', 'system', 'other');
+create type ehr.contribution_state as enum('complete', 'incomplete', 'deleted');
+create type ehr.contribution_change_type as enum('creation', 'amendment', 'modification', 'synthesis', 'Unknown', 'deleted');
+
+-- COMMON IM
+-- change control
+
+create table ehr.contribution (
+	id UUID primary key DEFAULT ext.uuid_generate_v4(),
+  ehr_id UUID references ehr.ehr(id) ON DELETE CASCADE ,
+  contribution_type ehr.contribution_data_type, -- specifies the type of data it contains
+  state ehr.contribution_state, -- current state in lifeCycleState
+  signature TEXT,
+	system_id UUID references ehr.system(id),
+	committer UUID references ehr.party_identified(id),
+	time_committed timestamp default NOW(),
+  time_committed_tzid TEXT, -- timezone id
+	change_type ehr.contribution_change_type,
+	description TEXT, -- is a DvCodedText
+  sys_transaction TIMESTAMP NOT NULL,
+  sys_period tstzrange NOT NULL -- temporal table
+);
 
 create table ehr.attestation (
   id UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
@@ -185,6 +201,14 @@ CREATE TABLE ehr.attested_view (
   uri TEXT
 );
 
+-- change history table
+CREATE TABLE ehr.contribution_history (like ehr.contribution);
+CREATE INDEX ehr_contribution_history ON ehr.contribution_history USING BTREE (id);
+
+COMMENT ON TABLE ehr.contribution IS 'Contribution table, compositions reference this table';
+
+CREATE TRIGGER versioning_trigger BEFORE INSERT OR UPDATE OR DELETE ON ehr.contribution
+FOR EACH ROW EXECUTE PROCEDURE ext.versioning('sys_period', 'ehr.contribution_history', true);
 
 create table ehr.composition (
     id UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
@@ -287,6 +311,9 @@ create TABLE ehr.containment (
   label ltree,
   path text
 );
+
+-- CREATE INDEX label_idx ON ehr.containment USING BTREE(label);
+-- CREATE INDEX comp_id_idx ON ehr.containment USING BTREE(comp_id);
 
 -- meta data
 CREATE TABLE ehr.template_meta (
@@ -393,7 +420,7 @@ CREATE INDEX context_setting_idx ON ehr.event_context (setting);
 --     composition_id UUID references ehr.composition(id),
 --     committer UUID not null references ehr.party_identified(id), -- contributor
 --     date_created TIMESTAMP,
---     date_created_tzid TEXT, -- timezone id
+--     date_created_tzid VARCHAR(15), -- timezone id
 --     party UUID not null references ehr.party_identified(id), -- patient
 --     serial_version VARCHAR(50),
 --     system_id UUID references ehr.system(id)
