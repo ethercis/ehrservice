@@ -62,9 +62,9 @@ import static com.ethercis.jooq.pg.Tables.*;
 public class EhrAccess extends DataAccess implements  I_EhrAccess {
 
     private static final Logger log = LogManager.getLogger(EhrAccess.class);
-    private static EhrRecord ehrRecord;
+    private EhrRecord ehrRecord;
     private StatusRecord statusRecord = null;
-    private static boolean isNew = false;
+    private boolean isNew = false;
 
     //holds the non serialized archetyped other_details structure
     private Locatable otherDetails = null;
@@ -578,7 +578,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
 
         ehrAccess.ehrRecord = (EhrRecord)record;
         //retrieveInstanceByNamedSubject the corresponding status
-        ehrAccess.statusRecord = context.fetchOne(STATUS, STATUS.EHR_ID.eq(ehrRecord.getId()));
+        ehrAccess.statusRecord = context.fetchOne(STATUS, STATUS.EHR_ID.eq(ehrAccess.ehrRecord.getId()));
 
         //rebuild otherDetails
         if (ehrAccess.statusRecord.getOtherDetails() != null){
@@ -615,9 +615,9 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         ehrAccess.isNew = false;
 
         //retrieve the current contribution for this ehr
-        ContributionRecord contributionRecord = context.fetchOne(CONTRIBUTION, CONTRIBUTION.EHR_ID.eq(ehrRecord.getId()).and(CONTRIBUTION.CONTRIBUTION_TYPE.eq(ContributionDataType.ehr)));
+        ContributionRecord contributionRecord = context.fetchOne(CONTRIBUTION, CONTRIBUTION.EHR_ID.eq(ehrAccess.ehrRecord.getId()).and(CONTRIBUTION.CONTRIBUTION_TYPE.eq(ContributionDataType.ehr)));
         if (contributionRecord == null)
-            throw new IllegalArgumentException("DB inconsistency: could not find a related contribution for ehr="+ehrRecord.getId());
+            throw new IllegalArgumentException("DB inconsistency: could not find a related contribution for ehr="+ehrAccess.ehrRecord.getId());
 
         UUID contributionId = contributionRecord.getId();
 
