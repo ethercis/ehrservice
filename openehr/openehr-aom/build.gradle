@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+
+dependencies {
+    compile project(":openehr-rm-core")
+    compile project(":openehr-rm-domain")
+    //compile "org.apache.commons:commons-lang3:${versions.commonsLang3}"
+    compile "commons-lang:commons-lang:${versions.commonsLang}"
+    testCompile "junit:junit:${versions.junit}"
+}

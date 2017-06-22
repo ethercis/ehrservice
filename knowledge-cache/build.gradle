@@ -5,10 +5,10 @@ dependencies {
     compile project(':ecis-validation')
 
     // *** openehr dependencies ***
-    compile "openehr:adl-parser:${versions.openehr}"
-    compile "openehr:openehr-rm-core:${versions.openehr}"
-    compile "openehr:openehr-aom:${versions.openehr}"
-    compile "openehr:mini-termserv:${versions.openehr}"
+    compile project(':openehr-adl-parser')
+    compile project(':openehr-rm-core')
+    compile project(':openehr-aom')
+    compile project(':openehr-mini-termserv')
 
     // *** external dependencies ***
     compile "joda-time:joda-time:${versions.jodatime}"

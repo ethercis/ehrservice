@@ -80,5 +80,7 @@ public class CarePlanTest {
         assertFalse(composition.isPersistent());
 
         final Map<String, String> stringStringMap = new EcisFlattener().render(composition);
+
+        stringStringMap.values();
     }
 }

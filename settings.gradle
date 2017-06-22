@@ -8,7 +8,19 @@ include(
         'ecis-knowledge-cache',
         'ecis-transform',
         'ecis-validation',
-        'jooq-pg'
+        'jooq-pg',
+        'openehr-adl-parser',
+        'openehr-adl-serializer',
+        'openehr-rm-core',
+        'openehr-rm-builder',
+        'openehr-rm-domain',
+        'openehr-aom',
+        'openehr-ap',
+        'openehr-measure-serv',
+        'openehr-mini-termserv',
+        'openehr-oet-parser',
+        'openehr-xml-serializer',
+        'openehr-xml-binding'
 )
 
 // if the directory name does not match the module name, update the directory name
@@ -18,4 +30,15 @@ project(':ecis-ehrdao').projectDir = new File(rootDir, 'ehrdao')
 project(':ecis-knowledge-cache').projectDir = new File(rootDir, 'knowledge-cache')
 project(':ecis-transform').projectDir = new File(rootDir, 'transform')
 project(':ecis-validation').projectDir = new File(rootDir, 'validation')
-
+project(':openehr-adl-parser').projectDir = new File(rootDir, 'openehr/adl-parser')
+project(':openehr-adl-serializer').projectDir = new File(rootDir, 'openehr/adl-serializer')
+project(':openehr-rm-core').projectDir = new File(rootDir, 'openehr/openehr-rm-core')
+project(':openehr-rm-builder').projectDir = new File(rootDir, 'openehr/rm-builder')
+project(':openehr-rm-domain').projectDir = new File(rootDir, 'openehr/openehr-rm-domain')
+project(':openehr-aom').projectDir = new File(rootDir, 'openehr/openehr-aom')
+project(':openehr-ap').projectDir = new File(rootDir, 'openehr/openehr-ap')
+project(':openehr-measure-serv').projectDir = new File(rootDir, 'openehr/measure-serv')
+project(':openehr-mini-termserv').projectDir = new File(rootDir, 'openehr/mini-termserv')
+project(':openehr-oet-parser').projectDir = new File(rootDir, 'openehr/oet-parser')
+project(':openehr-xml-serializer').projectDir = new File(rootDir, 'openehr/xml-serializer')
+project(':openehr-xml-binding').projectDir = new File(rootDir, 'openehr/xml-binding')

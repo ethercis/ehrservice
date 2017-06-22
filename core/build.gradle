@@ -8,10 +8,10 @@ dependencies {
     compile project(':ecis-validation')
 
     // *** openehr dependencies ***
-    compile "openehr:adl-parser:${versions.openehr}"
-    compile "openehr:oet-parser:${versions.openehr}"
-    compile "openehr:rm-builder:${versions.openehr}"
-    compile "openehr:xml-serializer:${versions.openehr}"
+    compile project(':openehr-adl-parser')
+    compile project(':openehr-oet-parser')
+    compile project(':openehr-rm-builder')
+    compile project(':openehr-xml-serializer')
 
     // *** external dependencies ***
     compile "org.apache.commons:commons-collections4:${versions.commonsCollections4}"

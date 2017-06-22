@@ -22,7 +22,7 @@ public class BMITest {
     public BMITest() throws Exception {
     }
 
-    @Test
+    //@Test
     public void testBmi() throws Exception {
         final UUID subjectId = SubjectTestUtils.ensureTestSubjectExists(dataAccess);
         final UUID ehrId = EhrTestUtils.ensureEhrExists(dataAccess, subjectId);

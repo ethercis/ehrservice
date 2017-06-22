@@ -2,10 +2,10 @@ apply plugin: 'java'
 
 dependencies {
     // *** openehr dependencies ***
-    compile "openehr:openehr-aom:${versions.openehr}"
+    compile project(':openehr-aom')
     //compile project(':openehr-measure-serv')
     //compile project(':openehr-mini-termserv')
-    compile "openehr:xml-binding:${versions.openehr}"
+    compile project(':openehr-xml-binding')
     //compile project(':openehr-rm-builder')
 
     //compile "org.slf4j:slf4j-api:${versions.slf4j}"

@@ -19,6 +19,7 @@ package com.ethercis.ehr.keyvalues.serializer;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.keyvalues.I_PathValue;
+import java.util.Objects;
 import org.openehr.rm.RMObject;
 import org.openehr.rm.datatypes.text.CodePhrase;
 
@@ -41,7 +42,9 @@ public class SerializePrimitive implements I_EcisFlatSerializer {
     public Map<String, String> valueMap(String path, Map<String, Object> map) {
         Map<String, String> retMap = new TreeMap<>();
 
-        retMap.put(path, Object.toString());
+        if ((path != null) && (Object != null)) {
+            retMap.put(path, Object.toString());
+        }
         return retMap;
     }
 }

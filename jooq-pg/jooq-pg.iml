@@ -9,7 +9,29 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/java"/>
     </content>
     <orderEntry type="sourceFolder" forTests="false"/>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="jar:///sdhome/ralph/.gradle/caches/modules-2/files-2.1/org.jooq/jooq/3.9.1/f08a08b7103714cc94d8bca60958496aa181c6d4/jooq-3.9.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///sdhome/ralph/.gradle/caches/modules-2/files-2.1/org.jooq/jooq/3.9.1/a57cf8b39e509649b49d007702a0135c639b4c11/jooq-3.9.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///sdhome/ralph/.gradle/caches/modules-2/files-2.1/org.jooq/jooq/3.9.1/f08a08b7103714cc94d8bca60958496aa181c6d4/jooq-3.9.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///sdhome/ralph/.gradle/caches/modules-2/files-2.1/org.jooq/jooq/3.9.1/a57cf8b39e509649b49d007702a0135c639b4c11/jooq-3.9.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
           <root url="jar:///sdhome/ralph/.gradle/caches/modules-2/files-2.1/org.jooq/jooq/3.9.1/f08a08b7103714cc94d8bca60958496aa181c6d4/jooq-3.9.1.jar!/"/>
