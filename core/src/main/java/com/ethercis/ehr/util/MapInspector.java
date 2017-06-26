@@ -54,6 +54,7 @@ import java.util.*;
  */
 public class MapInspector {
 
+    public static final int ENCODED_ELEMENT_MAP_SIZE = 4;
     private Deque<Map<String, Object>> stack;
     static Logger log = LogManager.getLogger(MapInspector.class);
     public static final String TAG_OBJECT =  "$OBJECT$";
@@ -167,9 +168,9 @@ public class MapInspector {
             String path = simplifyPathExpressionKeepArrayIndex((String) map.get(CompositionSerializer.TAG_PATH));
             //transform the path expression, remove ' and name/value='
 
-            Object object = map.get(CompositionSerializer.TAG_VALUE);
+            Object target = map.get(CompositionSerializer.TAG_VALUE);
 
-            I_SerialMap serialMap = new SerialMap(object, map, path);
+            I_SerialMap serialMap = new SerialMap(target, map, path);
 
             retMap.putAll(serialMap.encode());
 
@@ -340,7 +341,7 @@ public class MapInspector {
             String key = node.getKey();
             Object value = node.getValue();
 
-            if (map.size() == 4 && map.containsKey(CompositionSerializer.TAG_CLASS)){ //encoded element
+            if (map.size() == ENCODED_ELEMENT_MAP_SIZE && map.containsKey(CompositionSerializer.TAG_CLASS)){ //encoded element
                 generateObject(map);
                 stack.push(map);
                 return;
@@ -376,17 +377,18 @@ public class MapInspector {
 ////            }
 
 
-            if (!isElementMetaData(key) && value instanceof String){
+            if (!new NodeAttribute(key).isMetaData() && value instanceof String){
                 //try to get a path for this key/value pair
                 String path = null;
 
                 for (Object sibling: map.values()){
                     if (sibling instanceof Map){ //grab a path
-                        if (((Map) sibling).containsKey(CompositionSerializer.TAG_PATH)){
-                            path = (String)((Map) sibling).get(CompositionSerializer.TAG_PATH);
-                            //and strip the suffix
-                            path = path.substring(0, path.lastIndexOf("/"));
-                        }
+//                        if (((Map) sibling).containsKey(CompositionSerializer.TAG_PATH)){
+//                            path = (String)((Map) sibling).get(CompositionSerializer.TAG_PATH);
+//                            //and strip the suffix
+//                            path = path.substring(0, path.lastIndexOf("/"));
+//                        }
+                        path = new PathItem((Map)sibling).findPathValue();
                     }
                 }
 
@@ -516,16 +518,16 @@ public class MapInspector {
                 }
             }
             else {
-                if (!isElementMetaData(key) && !(value instanceof Participation))
+                if (!new NodeAttribute(key).isMetaData() && !(value instanceof Participation))
                     throw new IllegalArgumentException("Invalid entry detected in map:" + String.valueOf(value));
             }
 
         }
     }
 
-    private boolean isElementMetaData(String key){
-        return key.equals(CompositionSerializer.TAG_NAME ) || key.equals(CompositionSerializer.TAG_PATH) || key.equals(CompositionSerializer.TAG_CLASS);
-    }
+//    private boolean isElementMetaData(String key){
+//        return key.equals(CompositionSerializer.TAG_NAME ) || key.equals(CompositionSerializer.TAG_PATH) || key.equals(CompositionSerializer.TAG_CLASS);
+//    }
 
     private void listInspect(List<Object> list) throws Exception {
         for (Object node: list){
