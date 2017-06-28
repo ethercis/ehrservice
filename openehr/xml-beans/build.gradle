@@ -1,0 +1,38 @@
+apply plugin: 'java'
+
+configurations {
+    xmlbeans
+}
+
+dependencies {
+    xmlbeans "org.apache.xmlbeans:xmlbeans:2.3.0"
+    compile "org.apache.xmlbeans:xmlbeans:2.3.0"
+    compile "javax.xml.bind:jsr173_api:1.0"
+
+    testCompile "junit:junit:${versions.junit}"
+}
+
+task compileXmlSchemas {
+    doLast{
+        ant.taskdef(name:'xmlbean', classname: 'org.apache.xmlbeans.impl.tool.XMLBean', classpath: configurations.xmlbeans.asPath)
+        ant.xmlbean(schema: 'src/main/xsd', srcgendir: 'src/main/java-xmlbeans', classgendir: "${buildDir}/classes/xmlbeans", classpath: configurations.xmlbeans.asPath, javasource: 1.5)
+    }
+}
+
+compileJava.dependsOn compileXmlSchemas
+
+sourceSets {
+    main {
+        java {
+            srcDir "/src/main/java-xmlbeans/"
+        }
+    }
+}
+
+jar {
+    from "${buildDir}/classes/xmlbeans"
+}
+
+clean {
+    delete project.file("/src/main/java-xmlbeans/")
+}

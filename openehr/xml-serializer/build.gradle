@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+
+dependencies {
+    compile project(':openehr-rm-domain')
+    compile project(':openehr-rm-core')
+    compile project(':openehr-aom')
+    //compile "org.jdom:jdom2:${versions.jdom}"
+    compile "jdom:jdom:${versions.jdom}"
+
+    testCompile "junit:junit:${versions.junit}"
+}

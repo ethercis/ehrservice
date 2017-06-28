@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+dependencies {
+    // *** project dependencies ***
+    compile project(':ecis-validation')
+
+    // *** openehr dependencies ***
+    compile project(':openehr-adl-parser')
+    compile project(':openehr-rm-core')
+    compile project(':openehr-aom')
+    compile project(':openehr-mini-termserv')
+
+    // *** external dependencies ***
+    compile "joda-time:joda-time:${versions.jodatime}"
+    compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+    compile "org.apache.xbean:xbean:${versions.xbean}"
+    compile "org.apache.xmlbeans:xmlbeans:${versions.xmlbeans}"
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+}

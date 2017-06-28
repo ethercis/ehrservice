@@ -20,7 +20,7 @@ package com.ethercis.dao.access.util;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
-import com.ethercis.jooq.pg.tables.records.TemplateRecord;
+//import com.ethercis.jooq.pg.tables.records.TemplateRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
@@ -65,11 +65,12 @@ public class OptTemplateRef extends DataAccess implements I_OptTemplateRef {
 
     @Override
     public void deleteAll(){
-        context.delete(TEMPLATE_HEADING_XREF).execute();
-        context.delete(TEMPLATE).execute(); //referential integrity!
+        //context.delete(TEMPLATE_HEADING_XREF).execute();
+       // context.delete(TEMPLATE).execute(); //referential integrity!
     }
 
     private void upsertEntry(Map<String, String> definitions) throws Exception {
+        /*
         UUID templateUid = UUID.fromString(definitions.get(getKnowledgeManager().UID));
         //check if the entry exists first
         if (context.fetchExists(TEMPLATE, TEMPLATE.UID.eq(templateUid))){
@@ -88,7 +89,7 @@ public class OptTemplateRef extends DataAccess implements I_OptTemplateRef {
         templateRecord.setUid(templateUid);
         templateRecord.setTemplateId(templateId);
         templateRecord.setConcept(definitions.get(getKnowledgeManager().CONCEPT));
-        templateRecord.store();
+        templateRecord.store();*/
 
     }
 }

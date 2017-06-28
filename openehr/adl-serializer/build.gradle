@@ -1,0 +1,16 @@
+plugins {
+    id "ca.coglinc2.javacc" version "3.0.0"
+}
+apply plugin: 'java'
+
+
+dependencies {
+    compile project(':openehr-rm-core')
+    compile project(':openehr-rm-domain')
+    compile project(':openehr-aom')
+    compile project(':openehr-ap')
+    compile project(':openehr-measure-serv')
+    compile project(':openehr-mini-termserv')
+    testCompile "junit:junit:${versions.junit}"
+    testCompile project(':openehr-adl-parser')
+}

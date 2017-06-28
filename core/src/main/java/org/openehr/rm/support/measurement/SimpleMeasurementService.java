@@ -172,16 +172,16 @@ public class  SimpleMeasurementService implements MeasurementService {
 	// a) For case-sensitive UCUM, mg and Mg are quite different, but would be accepted as the same (milli vs. mega)
 	//     Also, the upper-case G in the case-sensitive UCUM refers to Gauss' constant
 	// b) Would a unit be equivalent if they are formally the same, e.g A[mpere] = C[oulomb]/s[econd] are formally equivalent
-	   Unit<?> unit1 = Unit.valueOf(units1);
-       Unit<?> unit2 = Unit.valueOf(units2);
+	   Unit unit1 = Unit.valueOf(units1);
+       Unit unit2 = Unit.valueOf(units2);
 	try {
         return (unit1.getConverterTo(unit2).convert(1) ==1);
     } catch (UnsupportedOperationException e) {      
         return false;
-    } catch (ConversionException e) {
+    } /*catch (ConversionException e) {
         // Units not even compatible
         return false;
-    }
+    }*/
 //	return units1.equalsIgnoreCase(units2);    	
     }
 

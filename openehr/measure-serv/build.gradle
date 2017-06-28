@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+
+dependencies {
+    compile "commons-lang:commons-lang:${versions.commonsLang}"
+    compile "joda-time:joda-time:${versions.jodatime}"
+    compile "javax.measure:jsr-275:${versions.jsr275}"
+    testCompile 'junit:junit:3.8.1'
+}

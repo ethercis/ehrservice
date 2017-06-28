@@ -19,9 +19,11 @@ package com.ethercis.validation.wrappers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.xmlbeans.SchemaType;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 import org.openehr.schemas.v1.CCODEPHRASE;
+import org.openehr.schemas.v1.COBJECT;
 import org.openehr.schemas.v1.CONSTRAINTREF;
 import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
 
@@ -47,6 +49,7 @@ public class CDvCodedText extends CConstraint implements I_CArchetypeConstraintV
             ValidationException.raise(path, "Constraint for DvCodedText is not applicable:"+archetypeconstraint, "SYS01");
         CSINGLEATTRIBUTE csingleattribute = (CSINGLEATTRIBUTE)archetypeconstraint;
 
+        /*
         Object object = csingleattribute.getChildrenArray(0);
 
         if (!(object instanceof CCODEPHRASE)) {
@@ -58,6 +61,12 @@ public class CDvCodedText extends CConstraint implements I_CArchetypeConstraintV
             ValidationException.raise(path, "Constraint child is not a code phrase constraint:" + object, "SYS01");
         }
         CCODEPHRASE ccodephrase = (CCODEPHRASE)object;
+        */
+        final COBJECT obj = csingleattribute.getChildrenArray(0);
+        final SchemaType schemaType = obj.schemaType();
+
+        CCODEPHRASE ccodephrase = (CCODEPHRASE)csingleattribute.getChildrenArray(0).changeType(CCODEPHRASE.type);
+        final boolean result = ccodephrase.validate();
 
         if (checkValue.getDefiningCode().getTerminologyId() != null)
             if (checkValue.getDefiningCode().getCodeString() == null)

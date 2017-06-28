@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':ecis-ehrdao')
+    compile project(':jooq-pg')
+
+    compile "org.jooq:jooq:${versions.jooq}"
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+}
+
+test {
+    systemProperty 'test.knowledge.basepath', rootProject.projectDir.toString() + '/test-data/knowledge'
+    systemProperty 'test.db.host', "$db.host"
+    systemProperty 'test.db.name', "$db.name"
+    systemProperty 'test.db.user', "$db.user"
+    systemProperty 'test.db.password', "$db.password"
+}
+
+tasks.test.dependsOn(':ecis-db:flywayMigrate')

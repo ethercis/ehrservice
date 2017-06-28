@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+
+dependencies {
+    compile "commons-lang:commons-lang:${versions.commonsLang}"
+    compile "joda-time:joda-time:${versions.joda}"
+    compile project(':openehr-measure-serv')
+    testCompile "junit:junit:${versions.junit}"
+}

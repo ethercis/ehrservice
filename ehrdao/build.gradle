@@ -1,0 +1,59 @@
+apply plugin: 'java'
+
+dependencies {
+    // *** project dependencies **
+    compile project(':ecis-core')
+    compile project(':ecis-transform')
+    compile project(':jooq-pg');
+    compile project(':aql-processor');
+
+    compile "org.postgresql:postgresql:${versions.postgresql}"
+
+    // *** 3rd party dependencies ***
+    //compile name: 'openEHR.v1.OperationalTemplate', version: '1.0.1'
+    //compile name: 'openEHR.v1.Template', version: '1.0.1'
+
+    // *** openehr dependencies ***
+//    compile 'openehr:oet-parser:1.0.14-ec1-SNAPSHOT'
+
+    // *** external dependencies ***
+
+//    compile 'com.google.code.gson:gson:2.4'
+//    compile 'com.sun.jersey:jersey-json:1.19'
+    compile 'commons-cli:commons-cli:1.3'
+//    compile 'commons-collections:commons-collections:3.2'
+//    compile 'commons-io:commons-io:2.1'
+//    compile 'commons-lang:commons-lang:2.6'
+//    compile 'joda-time:joda-time:2.2'
+    compile 'org.apache.commons:commons-dbcp2:2.1.1'
+//    compile 'org.apache.commons:commons-pool2:2.4.2'
+//    compile 'org.apache.logging.log4j:log4j-api:2.6.2'
+//    compile 'org.apache.xbean:xbean:2.5'
+//    compile 'org.apache.xmlbeans:xmlbeans:2.5.0'
+//    compile "org.jooq:jooq:${versions.jooq}"
+//    compile 'org.postgresql:postgresql:9.4-1204-jdbc42'
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+    //testCompile project(':knowledge-cache-simple')
+}
+
+test {
+    // TODO: enable tests
+    exclude '**'
+}
+
+// disabled sources related to ripple-patient-summary
+sourceSets {
+    main {
+        java {
+            exclude '**/com/ethercis/dao/access/util/OptTemplateRef.java'
+            exclude '**/com/ethercis/dao/access/support/TemplateRefSetter.java'
+        }
+    }
+    test {
+        java {
+            exclude '**/com/ethercis/dao/access/util/OptTemplateRefTest.java'
+        }
+    }
+}

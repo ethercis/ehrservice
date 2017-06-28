@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+dependencies {
+    // *** project dependencies **
+    compile project(':ecis-core')
+
+    // *** external dependencies ***
+    compile 'com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.2.0'
+    compile "org.apache.commons:commons-lang3:${versions.commonsLang3}"
+    compile "org.apache.commons:commons-collections4:${versions.commonsCollections}"
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+}
+
+test {
+    // TODO: enable tests
+    exclude '**'
+}

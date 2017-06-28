@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+
+dependencies {
+    compile project(':openehr-rm-core')
+    compile project(':openehr-rm-domain')
+    testCompile "junit:junit:${versions.junit}"
+    testCompile project(':openehr-mini-termserv')
+}
