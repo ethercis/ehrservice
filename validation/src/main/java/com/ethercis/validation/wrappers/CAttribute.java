@@ -46,31 +46,32 @@ public class CAttribute extends CConstraint  implements I_CArchetypeConstraintVa
 //            throw new IllegalArgumentException("INTERNAL: constraint is not a C_ATTRIBUTE");
 
         SchemaType type = I_CArchetypeConstraintValidate.findSchemaType(I_CArchetypeConstraintValidate.getXmlType(archetypeconstraint));
-        Object attribute = archetypeconstraint.changeType(type);
 
-        if (((CATTRIBUTE)attribute).getRmAttributeName().equals("defining_code")){
+        CATTRIBUTE attribute = (CATTRIBUTE) archetypeconstraint.changeType(type);
+
+        if (attribute.getRmAttributeName().equals("defining_code")){
             if (aValue instanceof DvCodedText)
             //process this DvText as a DvCodedText
-                new CDvCodedText(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
+                new CDvCodedText(localTerminologyLookup).validate(path, aValue, attribute);
             else if (aValue instanceof DvText)
-                new CDvText(localTerminologyLookup).validate(path, aValue, archetypeconstraint);
+                new CDvText(localTerminologyLookup).validate(path, aValue, attribute);
             return;
         }
 
-        Object value = findAttribute(aValue, ((CATTRIBUTE)attribute).getRmAttributeName());
+        Object value = findAttribute(aValue, attribute.getRmAttributeName());
 
         if (!isAttributeResolved && value == null) {
             //check for a function
-            value = getFunctionValue(aValue, ((CATTRIBUTE)attribute).getRmAttributeName());
+            value = getFunctionValue(aValue, attribute.getRmAttributeName());
             if (!isAttributeResolved)
-                ValidationException.raise(path, "The following attribute:" + ((CATTRIBUTE) attribute).getRmAttributeName() + " is expected in object:" + aValue, "ATTR01");
+                ValidationException.raise(path, "The following attribute:" + attribute.getRmAttributeName() + " is expected in object:" + aValue, "ATTR01");
         }
 
         if (value == null){
-            if (IntervalComparator.isOptional(((CATTRIBUTE)attribute).getExistence()))
+            if (IntervalComparator.isOptional(attribute.getExistence()))
                 return;
             //resolved but missing
-            ValidationException.raise(path, "Mandatory attribute has no value:" + ((CATTRIBUTE) attribute).getRmAttributeName(), "ATTR02");
+            ValidationException.raise(path, "Mandatory attribute has no value:" + attribute.getRmAttributeName(), "ATTR02");
         }
         //if value is an enum use its actual value
         if (value.getClass().isEnum()){
