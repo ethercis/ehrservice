@@ -32,3 +32,40 @@ running:
 To find out what other tasks are available, run:
 
   `./gradlew tasks`
+
+
+# Setting up the database
+
+## For testing
+
+The gradle build uses flyway to manage the database schemas but before
+it can manage the schemas, a database must be created.
+
+First, the following Postgresql extentions need to be installed manually:
+
+- *uuid-ossp* (on Debian this is in the package `postgresql-contrib`)
+- *ltree* (on Debian this is in the package `postgresql-contrib`)
+- *temporal_tables* ( http://pgxn.org/dist/temporal_tables/ )
+- *jsquery* ( https://github.com/postgrespro/jsquery )
+
+Then run the script to create a new database and configure the extensions.
+See the db/createdb.sql for more details :
+
+  `sudo -u postgresql psql < db/createdb.sql`
+
+(only required once)
+
+After this, the Gradle build will take care of creating the database schemas
+as needed.
+
+To empty the database, run
+
+  `./gradlew flaywayClean`
+
+this will remove all data from the database.
+
+## For production
+
+The database schemas and migration scripts can be archived into a single jar
+and then deployed on the production server using a command line version
+Flyway.

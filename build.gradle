@@ -17,20 +17,31 @@ allprojects {
         mavenLocal();
         mavenCentral();
     }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
 }
 
 ext {
     versions = [
             commonslang         : '2.6',
+            jooq                : '3.9.3',
             junit               : '4.11',
             log4j               : '2.6.2',
+            postgresql          : '9.4-1204-jdbc42',
 
     ]
 
+    // Database used during testing.
+    // If these are changed, make sure the database is created using
+    // the same values. See also the db/createdb.sql script.
     db = [
             name         : 'ethercis',
             user         : 'ethercis',
             password     : 'ethercis',
-            host         : 'localhost'
+            host         : 'localhost',
+            port         : '5432',
     ]
 }

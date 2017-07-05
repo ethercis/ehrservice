@@ -1,7 +1,5 @@
 apply plugin: 'java'
 
-description = 'EtherCIS validation module'
-
 dependencies {
     // *** openehr dependencies from the 3rdparty directory ***
     compile ":openehr-am-rm-term:1.0.9"

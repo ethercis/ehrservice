@@ -11,3 +11,6 @@ build/
 out/
 target/
 .gradle
+
+# generated sources
+jooq-pg/src/main/java-jooq/
