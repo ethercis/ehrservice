@@ -1,0 +1,13 @@
+# IDEs and editors
+*~
+\#*\#
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# build
+build/
+out/
+target/
+.gradle
