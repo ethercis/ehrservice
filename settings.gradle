@@ -1,7 +1,7 @@
 // Include sub modules by module name, not directory name:
 include(
         'db',
-//        'ecis-core',
+        'ecis-core',
         'ecis-knowledge-cache',
         'ecis-validation',
         'jooq-pg'
@@ -10,6 +10,6 @@ include(
 // By convention Gradle assumes modules are placed in directories which are
 // named using the module name. If they differ the directory must be set
 // manually:
-//project(':ecis-core').projectDir = file('core')
+project(':ecis-core').projectDir = file('core')
 project(':ecis-knowledge-cache').projectDir = file('knowledge-cache')
 project(':ecis-validation').projectDir = file('validation')
