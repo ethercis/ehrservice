@@ -1,0 +1,36 @@
+// settings applied to all projects
+allprojects {
+    // use the idea plugin to generate idea project files
+    apply plugin: 'idea'
+
+    // use the maven plugin to access maven repos and install artifacts
+    apply plugin: 'maven'
+
+    group = 'ethercis'
+    version = '1.0-SNAPSHOT'
+
+    // where to look for dependencies
+    repositories {
+        flatDir {
+            dirs "${rootProject.projectDir}/3rdparty"
+        }
+        mavenLocal();
+        mavenCentral();
+    }
+}
+
+ext {
+    versions = [
+            commonslang         : '2.6',
+            junit               : '4.11',
+            log4j               : '2.6.2',
+
+    ]
+
+    db = [
+            name         : 'ethercis',
+            user         : 'ethercis',
+            password     : 'ethercis',
+            host         : 'localhost'
+    ]
+}

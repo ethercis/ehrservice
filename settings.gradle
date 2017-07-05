@@ -1,0 +1,9 @@
+// Include sub modules by module name, not directory name:
+include(
+        'ecis-validation'
+)
+
+// By convention Gradle assumes modules are placed in directories which are
+// named using the module name. If they differ the directory must be set
+// manually:
+project(':ecis-validation').projectDir = file('validation')
