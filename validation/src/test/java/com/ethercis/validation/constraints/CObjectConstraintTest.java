@@ -198,11 +198,7 @@ public class CObjectConstraintTest {
         DvQuantity dvQuantity = new DvQuantity("/min", 120D, 0);
         Element element = new Element("test", dvCodedText, dvQuantity);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", element, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", element, archetypeconstraint);
     }
 
     @Test
@@ -248,11 +244,7 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvQuantity dvQuantity = new DvQuantity("/min", 120D, 0);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
     }
 
     @Test
@@ -306,15 +298,11 @@ public class CObjectConstraintTest {
         CodePhrase codePhrase = new CodePhrase("local", "at0008");
         DvCodedText dvCodedText = new DvCodedText("1234", codePhrase);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dvCodedText, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvIdentifier() throws XmlException {
+    public void testCCDvIdentifier() throws Exception {
         String cdvIdentifier =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_IDENTIFIER</v1:rm_type_name>\n" +
@@ -333,15 +321,11 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvIdentifier identifier = new DvIdentifier("dummy", "dummy", "1234", "dummy");
 
-        try {
-            new CArchetypeConstraint(null).validate("test", identifier, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", identifier, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvDateTime() throws XmlException {
+    public void testCCDvDateTime() throws Exception {
         String cdvDateTime =
         "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
         "  <v1:rm_type_name>DV_DATE_TIME</v1:rm_type_name>\n" +
@@ -387,15 +371,11 @@ public class CObjectConstraintTest {
         DvDateTime dateTime = new DvDateTime(12,12,12, 11, null);
 //        ElementWrapper elementWrapper = wrapDataValue("DvCodedText", "value", "1234", "definingCode", codePhrase);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dateTime, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dateTime, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvBoolean() throws XmlException {
+    public void testCCDvBoolean() throws Exception {
         String cdvBoolean =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_BOOLEAN</v1:rm_type_name>\n" +
@@ -449,7 +429,7 @@ public class CObjectConstraintTest {
     }
 
     @Test
-    public void testCCDvIntervalDvQuantity() throws XmlException {
+    public void testCCDvIntervalDvQuantity() throws Exception {
         String cdvInterval =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_INTERVAL&lt;DV_QUANTITY></v1:rm_type_name>\n" +
@@ -550,15 +530,11 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvInterval<DvQuantity> dvQuantityDvInterval = new DvInterval<>(new DvQuantity("in", 100D, 2), new DvQuantity("in", 200D, 2));
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvQuantityDvInterval, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dvQuantityDvInterval, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvCount() throws XmlException {
+    public void testCCDvCount() throws Exception {
         String cdvCount =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_COUNT</v1:rm_type_name>\n" +
@@ -608,15 +584,11 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvCount count = new DvCount(10);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", count, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvIntervalDvCount() throws XmlException {
+    public void testCCDvIntervalDvCount() throws Exception {
         String cdvInterval =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_INTERVAL&lt;DV_COUNT></v1:rm_type_name>\n" +
@@ -680,15 +652,11 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvInterval<DvCount> dvIntervalDvCount = new DvInterval<>(new DvCount(10), new DvCount(20));
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvIntervalDvCount, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dvIntervalDvCount, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvProportion() throws XmlException {
+    public void testCCDvProportion() throws Exception {
         String cdvProportion =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_PROPORTION</v1:rm_type_name>\n" +
@@ -763,15 +731,11 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvProportion proportion = new DvProportion(5.4, 10.4, ProportionKind.RATIO, 2);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", proportion, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvintervalDvDateTime() throws XmlException {
+    public void testCCDvintervalDvDateTime() throws Exception {
         String cdvInterval =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_INTERVAL&lt;DV_DATE_TIME></v1:rm_type_name>\n" +
@@ -888,15 +852,11 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvInterval<DvDateTime> dvDateTimeDvInterval = new DvInterval<>(new DvDateTime(DateTime.now().toString()), null);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvDateTimeDvInterval, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dvDateTimeDvInterval, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvDuration() throws XmlException {
+    public void testCCDvDuration() throws Exception {
         String cdvDuration =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_DURATION</v1:rm_type_name>\n" +
@@ -915,15 +875,11 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvDuration dvDuration = new DvDuration(1, 1, 1, 1, 1, 1, 1, 0);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvDuration, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dvDuration, archetypeconstraint);
     }
 
     @Test
-    public void testDTDvOrdinal() throws XmlException {
+    public void testDTDvOrdinal() throws Exception {
         String cdvOrdinal =
                 "<xml-fragment xsi:type=\"C_DV_ORDINAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_ORDINAL</v1:rm_type_name>\n" +
@@ -1015,15 +971,11 @@ public class CObjectConstraintTest {
         DvCodedText symbol  = new DvCodedText("blah", "local", "at0040");
         DvOrdinal dvOrdinal = new DvOrdinal(2, symbol);
 
-        try {
-            new CArchetypeConstraint(null).validate("test", dvOrdinal, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", dvOrdinal, archetypeconstraint);
     }
 
     @Test
-    public void testCCDvMultimedia() throws XmlException {
+    public void testCCDvMultimedia() throws Exception {
         String cdvMultimedia =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_MULTIMEDIA</v1:rm_type_name>\n" +
@@ -1133,16 +1085,12 @@ public class CObjectConstraintTest {
                 integrityCheckAlgorithm, thumbnail, uri, null, terminologyService);
 
 
-        try {
-            new CArchetypeConstraint(null).validate("test", multimedia, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", multimedia, archetypeconstraint);
     }
 
 
     @Test
-    public void testCCDvURI() throws XmlException {
+    public void testCCDvURI() throws Exception {
         String cdvURI =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
                         "  <v1:rm_type_name>DV_URI</v1:rm_type_name>\n" +
@@ -1161,11 +1109,7 @@ public class CObjectConstraintTest {
         assertNotNull(archetypeconstraint);
         DvURI uri = new DvURI("http://java.sun.com/j2se/1.3/");
 
-        try {
-            new CArchetypeConstraint(null).validate("test", uri, archetypeconstraint);
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        new CArchetypeConstraint(null).validate("test", uri, archetypeconstraint);
     }
 
 }
