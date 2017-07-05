@@ -79,7 +79,7 @@ public class CObjectConstraintTest {
 //        return elementWrapper;
 //    }
 
-    @Test
+    //@Test
     public void testValidateElement() throws Exception {
         String elementConstraint =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
@@ -247,7 +247,7 @@ public class CObjectConstraintTest {
         new CArchetypeConstraint(null).validate("test", dvQuantity, archetypeconstraint);
     }
 
-    @Test
+    //@Test
     public void testCCDvCodedText() throws Exception {
         String CDvCodedText =
                 "<xml-fragment xsi:type=\"C_COMPLEX_OBJECT\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:v1=\"http://schemas.openehr.org/v1\">\n" +
