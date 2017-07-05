@@ -1,8 +1,10 @@
 // Include sub modules by module name, not directory name:
 include(
+        'aql-processor',
         'db',
         'ecis-core',
         'ecis-knowledge-cache',
+        'ecis-transform',
         'ecis-validation',
         'jooq-pg'
 )
@@ -13,3 +15,4 @@ include(
 project(':ecis-core').projectDir = file('core')
 project(':ecis-knowledge-cache').projectDir = file('knowledge-cache')
 project(':ecis-validation').projectDir = file('validation')
+project(':ecis-transform').projectDir = file('transform')

@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'antlr'
+
+dependencies {
+    // *** project dependencies **
+    compile project(':ecis-core')
+    compile project(':ecis-knowledge-cache')
+    compile project(':jooq-pg')
+
+    // *** external dependencies ***
+    compile 'commons-lang:commons-lang:2.6'
+    compile 'org.antlr:antlr4-runtime:4.5.3'
+    compile 'org.apache.commons:commons-collections4:4.0'
+    compile 'org.apache.logging.log4j:log4j-api:2.6.2'
+    compile "org.jooq:jooq:${versions.jooq}"
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+
+    antlr 'org.antlr:antlr4:4.5.3'
+}
+
+generateGrammarSource {
+    arguments += [ '-visitor' ]
+}
+
+test {
+    systemProperty 'test.db.host', db.host
+    systemProperty 'test.db.port', db.port
+    systemProperty 'test.db.name', db.name
+    systemProperty 'test.db.user', db.user
+    systemProperty 'test.db.password', db.password
+
+    // All paths inside the tests are relative to the rootProject working dir,
+    // this matches the working dir used by IDEA
+    workingDir rootProject.projectDir
+
+    // these tests depend on having the database filled with some known data, this data
+    // is currently missing
+    exclude '**'
+}
