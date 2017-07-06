@@ -24,6 +24,21 @@ allprojects {
     }
 }
 
+// generate source JARs to make debugging easier on external projects
+subprojects {
+    afterEvaluate {
+        if (tasks.findByName('classes')) {
+            task sourcesJar(type: Jar, dependsOn: classes) {
+                classifier = 'sources'
+                from sourceSets.main.allSource
+            }
+            artifacts {
+                archives sourcesJar
+            }
+        }
+    }
+}
+
 ext {
     versions = [
             commonslang         : '2.6',
