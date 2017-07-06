@@ -2,8 +2,8 @@ apply plugin: 'java'
 
 dependencies {
     // *** openehr dependencies from the 3rdparty directory ***
-    compile ":openehr-am-rm-term:1.0.9"
-    compile ":openEHR.v1.OperationalTemplate:1.0.1"
+    compile "ethercis:openehr-am-rm-term:1.0.9"
+    compile "ethercis:openEHR.v1.OperationalTemplate:1.0.1"
 
     // transitive dependencies not included in the above openEHR dependencies
     compile 'com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.2.0'

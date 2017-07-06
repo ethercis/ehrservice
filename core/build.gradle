@@ -2,14 +2,14 @@ apply plugin: 'java'
 
 dependencies {
     // *** 3rd party dependencies ***
-    compile ":thinkehr-framework-jsonlib:2.3.0-JL32"
-    compile ":openehr-am-rm-term:1.0.9"
-    compile ":oet-parser:1.0.5"
-    compile ":openEHR.v1.OperationalTemplate:1.0.1"
-    compile ":openEHR.v1.Template:1.0.1"
-    compile ":xml-serializer:1.0.9"
-    compile ":rm-builder:1.0.9"
-    compile ":adl-parser:1.0.9"
+    compile "ethercis:thinkehr-framework-jsonlib:2.3.0-JL32"
+    compile "ethercis:openehr-am-rm-term:1.0.9"
+    compile "ethercis:oet-parser:1.0.5"
+    compile "ethercis:openEHR.v1.OperationalTemplate:1.0.1"
+    compile "ethercis:openEHR.v1.Template:1.0.1"
+    compile "ethercis:xml-serializer:1.0.9"
+    compile "ethercis:rm-builder:1.0.9"
+    compile "ethercis:adl-parser:1.0.9"
 
     // *** project dependencies **
     compile project(':ecis-knowledge-cache')

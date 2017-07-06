@@ -1,5 +1,6 @@
 // Include sub modules by module name, not directory name:
 include(
+        '3rdparty',
         'aql-processor',
         'db',
         'ecis-core',
