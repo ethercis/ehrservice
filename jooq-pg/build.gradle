@@ -29,7 +29,6 @@ jooq {
             }
             target {
                 packageName = 'com.ethercis.jooq.pg'
-                directory = "src/main/java-jooq"
             }
             strategy {
                 name = null

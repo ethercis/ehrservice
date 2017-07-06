@@ -3,6 +3,7 @@ include(
         'aql-processor',
         'db',
         'ecis-core',
+        'ecis-ehrdao',
         'ecis-knowledge-cache',
         'ecis-transform',
         'ecis-validation',
@@ -13,6 +14,7 @@ include(
 // named using the module name. If they differ the directory must be set
 // manually:
 project(':ecis-core').projectDir = file('core')
+project(':ecis-ehrdao').projectDir = file('ehrdao')
 project(':ecis-knowledge-cache').projectDir = file('knowledge-cache')
 project(':ecis-validation').projectDir = file('validation')
 project(':ecis-transform').projectDir = file('transform')

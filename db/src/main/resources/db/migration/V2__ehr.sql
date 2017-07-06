@@ -1,4 +1,4 @@
--- Generate EtherCIS tables for PostgreSQL 9.4
+-- Generate EtherCIS tables for PostgreSQL 9.3
 -- Author: Christian Chevalley
 --
 --
@@ -8,21 +8,24 @@
 --
 --    alter table com.ethercis.ehr.consult_req_attachement
 --        drop constraint FKC199A3AA4204581F;
--- Rev 1.1 2/8/16 CCH
 --
 
 -- 20170605 RVE:
--- this file is a copy of ehrdao/resources/ddls/pgsql_ehr.ddl with the following modififactions
+-- this file is a copy of jooq-pg/src/main/resources/ddls/pgsql_ehr.ddl with the following
+-- modififactions:
 --   - places extensions in the ext schema due to flyway restrictions
+--   - replaced all VARCHAR with TEXT (because our tzid is longer than what fits)
 
-CREATE SCHEMA IF NOT EXISTS ehr;
+
+-- storeComposition schema common;
+
 
 -- storeComposition common_im entities
 -- CREATE TABLE "system" ---------------------------------------
 CREATE TABLE ehr.system (
 	id UUid PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
-	description Character Varying( 100 ) NOT NULL,
-	settings Character Varying( 250 ) NOT NULL
+	description TEXT NOT NULL,
+	settings TEXT NOT NULL
  );
 
 COMMENT ON TABLE  ehr.system IS 'system table for reference';
@@ -31,22 +34,22 @@ CREATE TABLE ehr.territory (
 	code int unique primary key, -- numeric code
 	twoLetter char(2),
 	threeLetter char(3),
-	text Character Varying( 100 ) NOT NULL
+	text TEXT NOT NULL
  );
 
 COMMENT ON TABLE  ehr.territory IS 'ISO 3166-1 countries codeset';
 
 CREATE TABLE ehr.language (
 	code varchar(5) unique primary key,
-	description Character Varying( 100 ) NOT NULL
+	description TEXT NOT NULL
  );
 
 COMMENT ON TABLE  ehr.language IS 'ISO 639-1 language codeset';
 
 CREATE TABLE ehr.terminology_provider (
-	code varchar(20) unique primary key,
-	source Character Varying( 100 ) NOT NULL,
-	authority varchar(50)
+	code TEXT unique primary key,
+	source TEXT NOT NULL,
+	authority TEXT
  );
 
 COMMENT ON TABLE  ehr.terminology_provider IS 'openEHR identified terminology provider';
@@ -55,27 +58,27 @@ CREATE TABLE ehr.concept (
   id UUID unique primary key DEFAULT ext.uuid_generate_v4(),
 	conceptID int,
 	language varchar(5) references ehr.language(code),
-	description varchar(250)
+	description TEXT
  );
 
 COMMENT ON TABLE  ehr.concept IS 'openEHR common concepts (e.g. terminology) used in the system';
 
 create table ehr.party_identified (
 	id UUID primary key DEFAULT ext.uuid_generate_v4(),
-	name varchar(50),
+	name TEXT,
   -- optional party ref attributes
-  party_ref_value VARCHAR(50),
-  party_ref_scheme VARCHAR(100),
-  party_ref_namespace VARCHAR(50),
-  party_ref_type VARCHAR(50)
+  party_ref_value TEXT,
+  party_ref_scheme TEXT,
+  party_ref_namespace TEXT,
+  party_ref_type TEXT
 );
 
 -- list of identifiers for a party identified
 create table ehr.identifier (
-	id_value VARCHAR(50), -- identifier value
-	issuer VARCHAR(50), -- authority responsible for the identification (ex. France ASIP, LDAP server etc.)
-  assigner VARCHAR(50), -- assigner of the identifier
-	type_name VARCHAR(50), -- coding origin f.ex. INS-C, INS-A, NHS etc.
+	id_value TEXT, -- identifier value
+	issuer TEXT, -- authority responsible for the identification (ex. France ASIP, LDAP server etc.)
+  assigner TEXT, -- assigner of the identifier
+	type_name TEXT, -- coding origin f.ex. INS-C, INS-A, NHS etc.
 	party UUID not null references ehr.party_identified(id) -- entity identified with this identifier (normally a person, patient etc.)
 );
 
@@ -84,8 +87,8 @@ COMMENT ON TABLE ehr.identifier IS 'specifies an identifier for a party identifi
 -- defines the modality for accessing an com.ethercisrcis.ehr
 create table ehr.access (
 	id UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
-	settings varchar(250),
-	scheme char(50) -- name of access control scheme
+	settings TEXT,
+	scheme TEXT -- name of access control scheme
  );
 
 COMMENT ON TABLE ehr.access IS 'defines the modality for accessing an com.ethercis.ehr (security strategy implementation)';
@@ -96,7 +99,7 @@ COMMENT ON TABLE ehr.access IS 'defines the modality for accessing an com.etherc
 create table ehr.ehr (
     id UUID NOT NULL PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
     date_created timestamp default CURRENT_DATE,
-    date_created_tzid VARCHAR(15), -- timezone id: GMT+/-hh:mm
+    date_created_tzid TEXT, -- timezone id: GMT+/-hh:mm
     access UUID references ehr.access(id), -- access decision support (f.e. consent)
 --    status UUID references ehr.status(id),
     system_id UUID references ehr.system(id),
@@ -155,9 +158,9 @@ create table ehr.contribution (
 	system_id UUID references ehr.system(id),
 	committer UUID references ehr.party_identified(id),
 	time_committed timestamp default NOW(),
-  time_committed_tzid VARCHAR(15), -- timezone id
+  time_committed_tzid TEXT, -- timezone id
 	change_type ehr.contribution_change_type,
-	description varchar(100), -- is a DvCodedText
+	description TEXT, -- is a DvCodedText
   sys_transaction TIMESTAMP NOT NULL,
   sys_period tstzrange NOT NULL -- temporal table
 );
@@ -166,7 +169,7 @@ create table ehr.attestation (
   id UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
   contribution_id UUID REFERENCES ehr.contribution(id) ON DELETE CASCADE ,
   proof TEXT,
-  reason VARCHAR(50),
+  reason TEXT,
   is_pending BOOLEAN
 );
 
@@ -174,12 +177,12 @@ CREATE TABLE ehr.attested_view (
   id UUID PRIMARY KEY DEFAULT ext.uuid_generate_v4(),
   attestation_id UUID REFERENCES ehr.attestation(id) ON DELETE CASCADE,
   --  DvMultimedia
-  alternate_text VARCHAR(50),
-  compression_algorithm VARCHAR(50),
-  media_type VARCHAR(50),
+  alternate_text TEXT,
+  compression_algorithm TEXT,
+  media_type TEXT,
   data BYTEA,
   integrity_check BYTEA,
-  integrity_check_algorithm VARCHAR(50),
+  integrity_check_algorithm TEXT,
   thumbnail UUID, -- another multimedia holding the thumbnail
   uri TEXT
 );
@@ -200,7 +203,7 @@ create table ehr.composition (
     in_contribution UUID references ehr.contribution(id) ON DELETE CASCADE , -- in contribution version
     active boolean default true, -- true if this composition is still valid (e.g. not replaced yet)
     is_persistent boolean default true,
-    language varchar(5) references ehr.language(code), -- pointer to the language codeset. Indicates what broad category this Composition is belogs to, e.g. �persistent� - of longitudinal validity, �event�, �invalidateContent� etc.
+    language varchar(5) references ehr.language(code), -- pointer to the language codeset. Indicates what broad category this Composition is belogs to, e.g. �persistent� - of longitudinal validity, �event�, �process� etc.
     territory int references ehr.territory(code), -- Name of territory in which this Composition was written. Coded fromBinder openEHR �countries� code set, which is an expression of the ISO 3166 standard.
     composer UUID not null references ehr.party_identified(id), -- points to the PARTY_PROXY who has created the composition
     sys_transaction TIMESTAMP NOT NULL,
@@ -221,11 +224,11 @@ create table ehr.event_context (
   id UUID primary key DEFAULT ext.uuid_generate_v4(),
   composition_id UUID references ehr.composition(id) ON DELETE CASCADE , -- belong to composition
   start_time TIMESTAMP not null,
-  start_time_tzid VARCHAR(15), -- time zone id: format GMT +/- hh:mm
+  start_time_tzid TEXT, -- time zone id: format GMT +/- hh:mm
   end_time TIMESTAMP null,
-  end_time_tzid VARCHAR(15), -- time zone id: format GMT +/- hh:mm
+  end_time_tzid TEXT, -- time zone id: format GMT +/- hh:mm
   facility UUID references ehr.party_identified(id), -- points to a party identified
-  location varchar(50),
+  location TEXT,
   other_context JSONB, -- supports a cluster for other context definition
   setting UUID references ehr.concept(id), -- codeset setting, see ehr_im section 5
 --	program UUID references ehr.program(id), -- the program defined for this context (only in full ddl version)
@@ -246,10 +249,10 @@ create table ehr.participation (
   id UUID primary key DEFAULT ext.uuid_generate_v4(),
   event_context UUID NOT NULL REFERENCES ehr.event_context(id) ON DELETE CASCADE,
   performer UUID references ehr.party_identified(id),
-  function VARCHAR(50),
-  mode VARCHAR(50),
+  function TEXT,
+  mode TEXT,
   start_time timestamp,
-  start_time_tzid VARCHAR(15), -- timezone id
+  start_time_tzid TEXT, -- timezone id
   sys_transaction TIMESTAMP NOT NULL,
   sys_period tstzrange NOT NULL -- temporal table
 );
@@ -270,9 +273,9 @@ create table ehr.entry (
 	composition_id UUID references ehr.composition(id) ON DELETE CASCADE , -- belong to composition
 	sequence int, -- ordering sequence number
 	item_type ehr.entry_type,
-  template_id VARCHAR(250), -- operational template to rebuild the structure entry
+  template_id TEXT, -- operational template to rebuild the structure entry
   template_uuid UUID, -- optional, used with operational template for consistency
-  archetype_id VARCHAR(250), -- ROOT archetype id (not sure still in use...)
+  archetype_id TEXT, -- ROOT archetype id (not sure still in use...)
   category UUID null references ehr.concept(id), -- used to specify the type of content: Evaluation, Instruction, Observation, Action with different languages
   entry JSONB,            -- actual content version dependent (9.3: json, 9.4: jsonb). entry is either CARE_ENTRY or ADMIN_ENTRY
   sys_transaction TIMESTAMP NOT NULL,
@@ -293,6 +296,36 @@ create TABLE ehr.containment (
   comp_id UUID,
   label ltree,
   path text
+);
+
+-- CREATE INDEX label_idx ON ehr.containment USING BTREE(label);
+-- CREATE INDEX comp_id_idx ON ehr.containment USING BTREE(comp_id);
+
+-- meta data
+CREATE TABLE ehr.template_meta (
+  template_id TEXT,
+  array_path TEXT[] -- list of paths containing an item list with list size > 1
+);
+
+CREATE INDEX template_meta_idx ON ehr.template_meta(template_id);
+
+-- simple cross reference table to link INSTRUCTIONS with ACTIONS or other COMPOSITION
+CREATE TABLE ehr.compo_xref (
+  master_uuid UUID REFERENCES ehr.composition(id),
+  child_uuid UUID REFERENCES ehr.composition(id),
+  sys_transaction TIMESTAMP NOT NULL
+);
+CREATE INDEX ehr_compo_xref ON ehr.compo_xref USING BTREE (master_uuid);
+
+-- log user sessions with logon id, session id and other parameters
+CREATE TABLE ehr.session_log (
+  id UUID primary key DEFAULT uuid_generate_v4(),
+  subject_id TEXT NOT NULL,
+  node_id TEXT,
+  session_id TEXT,
+  session_name TEXT,
+  session_time TIMESTAMP,
+  ip_address TEXT
 );
 
 -- views to abstract querying
@@ -350,21 +383,21 @@ CREATE OR REPLACE VIEW ehr.comp_expand AS
     -- LEFT JOIN ehr.system sys ON ctx.setting = sys.id
     LEFT JOIN ehr.party_identified fclty ON ctx.facility = fclty.id;
 
+--- CREATED INDEX
+CREATE INDEX label_idx ON ehr.containment USING GIST (label);
+CREATE INDEX comp_id_idx ON ehr.containment USING BTREE(comp_id);
+CREATE INDEX gin_entry_path_idx ON ehr.entry USING gin(entry jsonb_path_ops);
+CREATE INDEX template_entry_idx ON ehr.entry (template_id);
 
-CREATE OR REPLACE VIEW ehr.status_details AS
-  SELECT
-    ehr.id AS ehr_id,
-    status.is_modifiable AS is_modifiable,
-    status.is_queryable AS is_queryable,
-    status.other_details AS other_details,
-    party_identified.name AS party_name,
-    party_identified.party_ref_namespace,
-    party_identified.party_ref_scheme,
-    party_identified.party_ref_type
-  FROM ehr.ehr
-  INNER JOIN ehr.status status ON ehr.id = status.ehr_id
-  INNER JOIN ehr.party_identified ON party_identified.id = status.party;
-
+-- to optimize comp_expand, index FK's
+CREATE INDEX entry_composition_id_idx ON ehr.entry (composition_id);
+CREATE INDEX composition_composer_idx ON ehr.composition (composer);
+CREATE INDEX composition_ehr_idx ON ehr.composition (ehr_id);
+CREATE INDEX status_ehr_idx ON ehr.status (ehr_id);
+CREATE INDEX status_party_idx ON ehr.status (party);
+CREATE INDEX context_facility_idx ON ehr.event_context (facility);
+CREATE INDEX context_composition_id_idx ON ehr.event_context (composition_id);
+CREATE INDEX context_setting_idx ON ehr.event_context (setting);
 
 
 -- AUDIT TRAIL has been replaced by CONTRIBUTION
@@ -378,4 +411,3 @@ CREATE OR REPLACE VIEW ehr.status_details AS
 --     serial_version VARCHAR(50),
 --     system_id UUID references ehr.system(id)
 -- );
-
