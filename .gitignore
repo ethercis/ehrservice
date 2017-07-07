@@ -1,0 +1,16 @@
+# IDEs and editors
+*~
+\#*\#
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# build
+*/build/
+out/
+target/
+.gradle
+
+# generated sources
+jooq-pg/src/main/java-jooq/

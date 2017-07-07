@@ -1,0 +1,98 @@
+{
+ "modifiable": true,
+ "otherDetails": {
+  "@class": "ITEM_TREE",
+  "archetype_node_id": "at0001",
+  "items": [
+   {
+    "@class": "CLUSTER",
+    "archetype_details": {
+     "@class": "ARCHETYPED",
+     "archetype_id": {
+      "@class": "ARCHETYPE_ID",
+      "value": "openEHR-EHR-CLUSTER.person_anonymised_parent.v1"
+     },
+     "rm_version": "1.0.1"
+    },
+    "archetype_node_id": "openEHR-EHR-CLUSTER.person_anonymised_parent.v1",
+    "items": [
+     {
+      "@class": "ELEMENT",
+      "archetype_node_id": "at0001",
+      "name": {
+       "@class": "DV_TEXT",
+       "value": "Administrative Gender"
+      },
+      "value": {
+       "@class": "DV_CODED_TEXT",
+       "defining_code": {
+        "@class": "CODE_PHRASE",
+        "code_string": "at0009",
+        "terminology_id": {
+         "@class": "TERMINOLOGY_ID",
+         "value": "local"
+        }
+       },
+       "value": "Male"
+      }
+     },
+     {
+      "@class": "ELEMENT",
+      "archetype_node_id": "at0001",
+      "name": {
+       "@class": "DV_TEXT",
+       "value": "Birth Sex"
+      },
+      "value": {
+       "@class": "DV_CODED_TEXT",
+       "defining_code": {
+        "@class": "CODE_PHRASE",
+        "code_string": "at0009",
+        "terminology_id": {
+         "@class": "TERMINOLOGY_ID",
+         "value": "local"
+        }
+       },
+       "value": "Male"
+      }
+     },
+     {
+      "@class": "ELEMENT",
+      "archetype_node_id": "at0001",
+      "name": {
+       "@class": "DV_TEXT",
+       "value": "Vital Status"
+      },
+      "value": {
+       "@class": "DV_CODED_TEXT",
+       "defining_code": {
+        "@class": "CODE_PHRASE",
+        "code_string": "at0004",
+        "terminology_id": {
+         "@class": "TERMINOLOGY_ID",
+         "value": "local"
+        }
+       },
+       "value": "Alive"
+      }
+     },
+     {
+      "@class": "ELEMENT",
+      "archetype_node_id": "at0014",
+      "name": {
+       "@class": "DV_TEXT",
+       "value": "Birth Year"
+      },
+      "value": {
+       "@class": "DV_DATE",
+       "value": "1944"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "subjectId": "{{subjectId}}",
+ "subjectNamespace": "{{subjectNamespace}}"
+}
+

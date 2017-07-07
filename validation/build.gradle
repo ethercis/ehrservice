@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+dependencies {
+    // *** openehr dependencies from the 3rdparty directory ***
+    compile "ethercis:openehr-am-rm-term:1.0.9"
+    compile "ethercis:openEHR.v1.OperationalTemplate:1.0.1"
+
+    // transitive dependencies not included in the above openEHR dependencies
+    compile 'com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.2.0'
+    compile 'org.jdom:jdom:1.1.3'
+    compile 'org.jscience:jscience:4.3.1'
+    compile 'org.apache.xmlbeans:xmlbeans:2.5.0'
+
+    // In the future this all can be replaced with:
+    //   compile project(':openehr-aom')
+    //   compile project(':openehr-xml-binding')
+
+    // *** other dependencies ***
+    compile "commons-lang:commons-lang:${versions.commonslang}"
+    compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+
+    // *** test dependencies ***
+    testCompile "junit:junit:${versions.junit}"
+}

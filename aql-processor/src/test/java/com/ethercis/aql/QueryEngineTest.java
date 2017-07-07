@@ -52,14 +52,14 @@ public class QueryEngineTest {
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
 //        String url = "jdbc:postgresql://localhost:5434/ethercis";
-        String url = "jdbc:postgresql://192.168.2.113:5432/ethercis";
+        String url = "jdbc:postgresql://" + System.getProperty("test.db.host") + ":" + System.getProperty("test.db.port") + "/" + System.getProperty("test.db.name");
 //        String url = "jdbc:postgresql://192.168.2.108:5432/ethercis";
-        String login = "postgres";
-        String password = "postgres";
+        String login = System.getProperty("test.db.user");
+        String password = System.getProperty("test.db.password");
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.path.archetype", "core/src/test/resources/knowledge/archetypes");
+        props.put("knowledge.path.template", "core/src/test/resources/knowledge/templates");
+        props.put("knowledge.path.opt", "core/src/test/resources/knowledge/operational_templates");
         props.put("knowledge.forcecache", "true");
         I_KnowledgeCache knowledge;
         try {

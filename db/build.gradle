@@ -1,0 +1,30 @@
+buildscript {
+    dependencies {
+        classpath 'org.postgresql:postgresql:9.4-1204-jdbc42'
+    }
+}
+
+plugins {
+    id "org.flywaydb.flyway" version "4.1.2"
+}
+
+apply plugin: 'java'
+
+
+dependencies {
+    compile 'org.flywaydb:flyway-core:4.1.2'
+    compile 'commons-dbutils:commons-dbutils:1.6'
+}
+
+flyway {
+    url = "jdbc:postgresql://${db.host}:${db.port}/${db.name}"
+    user = project.db.user
+    password = project.db.password
+    locations = [
+            "filesystem:$projectDir/src/main/resources/db/migration",
+            "classpath:com/ethercis/db/migration"
+    ]
+    schemas = [ 'ehr' ]
+}
+
+tasks.flywayMigrate.dependsOn('jar')

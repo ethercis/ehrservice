@@ -1,0 +1,62 @@
+// settings applied to all projects
+allprojects {
+    // use the idea plugin to generate idea project files
+    apply plugin: 'idea'
+
+    // use the maven plugin to access maven repos and install artifacts
+    apply plugin: 'maven'
+
+    group = 'ethercis'
+    version = '1.0-SNAPSHOT'
+
+    // where to look for dependencies
+    repositories {
+        flatDir {
+            dirs "${rootProject.projectDir}/3rdparty"
+        }
+        mavenLocal();
+        mavenCentral();
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+}
+
+// generate source JARs to make debugging easier on external projects
+subprojects {
+    afterEvaluate {
+        if (tasks.findByName('classes')) {
+            task sourcesJar(type: Jar, dependsOn: classes) {
+                classifier = 'sources'
+                from sourceSets.main.allSource
+            }
+            artifacts {
+                archives sourcesJar
+            }
+        }
+    }
+}
+
+ext {
+    versions = [
+            commonslang         : '2.6',
+            jooq                : '3.9.3',
+            junit               : '4.11',
+            log4j               : '2.6.2',
+            postgresql          : '9.4-1204-jdbc42',
+
+    ]
+
+    // Database used during testing.
+    // If these are changed, make sure the database is created using
+    // the same values. See also the db/createdb.sql script.
+    db = [
+            name         : 'ethercis',
+            user         : 'ethercis',
+            password     : 'ethercis',
+            host         : 'localhost',
+            port         : '5432',
+    ]
+}
