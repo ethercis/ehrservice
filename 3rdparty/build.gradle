@@ -5,14 +5,14 @@ apply plugin: 'maven-publish'
 publishing {
     publications {
         adl(MavenPublication) {
-            groupId 'ethercis'
+            groupId 'openehr'
             artifactId 'adl-parser'
             version '1.0.9'
 
             artifact 'adl-parser-1.0.9.jar'
         }
         oet(MavenPublication) {
-            groupId 'ethercis'
+            groupId 'openehr'
             artifactId 'oet-parser'
             version '1.0.5'
 
@@ -40,7 +40,7 @@ publishing {
             artifact 'openehr-am-rm-term-1.0.9.jar'
         }
         rmb(MavenPublication) {
-            groupId 'ethercis'
+            groupId 'openehr'
             artifactId 'rm-builder'
             version '1.0.9'
 
@@ -54,7 +54,7 @@ publishing {
             artifact 'thinkehr-framework-jsonlib-2.3.0-JL32.jar'
         }
         xml(MavenPublication) {
-            groupId 'ethercis'
+            groupId 'openehr'
             artifactId 'xml-serializer'
             version '1.0.9'
 
