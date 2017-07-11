@@ -5,7 +5,7 @@ dependencies {
     compile project(':ecis-validation')
 
     // *** openehr dependencies from the 3rdparty directory ***
-    compile "ethercis:adl-parser:1.0.9"
+    compile "openehr:adl-parser:1.0.9"
     compile "ethercis:openEHR.v1.Template:1.0.1"
 
     // *** test dependencies ***
