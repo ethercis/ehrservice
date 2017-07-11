@@ -1056,10 +1056,10 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 			if (list.getItems() != null) {
 
-				for (Element element : list.getItems()) {
+				for (Item listItem : list.getItems()) {
 					if (ltree.containsKey(extractNodeTag(TAG_ITEMS, item, ltree)))
 						log.warn("ItemList: Overwriting entry for key:"+TAG_ITEMS+"["+item.getArchetypeNodeId()+"]");
-					compactEntry(element, ltree, getNodeTag(TAG_ITEMS, element, ltree), traverse(element, TAG_ITEMS));
+					compactEntry(listItem, ltree, getNodeTag(TAG_ITEMS, (Locatable)listItem, ltree), traverse(listItem, TAG_ITEMS));
 				}
 			}
 			if (ltree.size() > 0)
