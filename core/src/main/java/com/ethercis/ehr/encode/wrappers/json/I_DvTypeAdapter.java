@@ -22,7 +22,7 @@ package com.ethercis.ehr.encode.wrappers.json;
  */
 public interface I_DvTypeAdapter {
 
-    public enum AdapterType {PG_JSONB, RAW_JSON}
+    public enum AdapterType {PG_JSONB, RAW_JSON, DBJSON2RAWJSON}
 
     String TAG_CLASS_RAW_JSON = "@class";
 }

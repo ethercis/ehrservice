@@ -21,7 +21,10 @@ import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.json.*;
 import com.ethercis.ehr.encode.wrappers.json.serializer.*;
 import com.ethercis.ehr.encode.wrappers.json.writer.*;
+import com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw.ArrayListAdapter;
+import com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw.LinkedTreeMapAdapter;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
@@ -53,6 +56,7 @@ import org.openehr.rm.support.identification.GenericID;
 import org.openehr.rm.support.identification.PartyRef;
 import org.openehr.rm.support.identification.TerminologyID;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -115,6 +119,12 @@ public class EncodeUtil {
             .registerTypeAdapter(History.class, new HistorySerializer(adapterType))
             .registerTypeAdapter(PointEvent.class, new PointEventSerializer(adapterType))
             .registerTypeHierarchyAdapter(ElementWrapper.class, new ElementWrapperSerializer(adapterType));
+            return builder;
+        }
+        else if (adapterType == I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON){
+            GsonBuilder builder = new GsonBuilder()
+                    .registerTypeAdapter(LinkedTreeMap.class, new LinkedTreeMapAdapter())
+                    .registerTypeAdapter(ArrayList.class, new ArrayListAdapter());
             return builder;
         }
         else if (adapterType == I_DvTypeAdapter.AdapterType.PG_JSONB)
