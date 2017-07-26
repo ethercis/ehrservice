@@ -49,6 +49,9 @@ public class SerialMap implements I_SerialMap {
     public Map<String, String> encode(){
         Map<String, String> retmap;
 
+        if (target == null)
+            return null;
+
         //no easy Late Binding...
         if (target instanceof DvInterval)
             retmap = encode((DvInterval)target);

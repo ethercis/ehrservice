@@ -57,11 +57,11 @@ public class MapInspector {
     public static final int ENCODED_ELEMENT_MAP_SIZE = 4;
     private Deque<Map<String, Object>> stack;
     static Logger log = LogManager.getLogger(MapInspector.class);
-    public static final String TAG_OBJECT =  "$OBJECT$";
-    
-    private String[] structuralClasses = {"Element","Cluster","ItemSingle","ItemList","ItemTable","ItemTree","History","IntervalEvent","PointEvent"};
+    public static final String TAG_OBJECT = "$OBJECT$";
 
-    public MapInspector(){
+    private String[] structuralClasses = {"Element", "Cluster", "ItemSingle", "ItemList", "ItemTable", "ItemTree", "History", "IntervalEvent", "PointEvent"};
+
+    public MapInspector() {
         this.stack = new ArrayDeque<>();
     }
 
@@ -69,7 +69,7 @@ public class MapInspector {
         mapInspect(map);
 
         //recursion termination
-        if (!(stack.isEmpty())){ //build object for the preceding class...
+        if (!(stack.isEmpty())) { //build object for the preceding class...
             Map<String, Object> current = stack.getFirst();
             if (!current.containsKey("/meta")) {
                 log.debug("Building object for class " + current.get(CompositionSerializer.TAG_CLASS));
@@ -101,11 +101,11 @@ public class MapInspector {
         inspect(jsonReader);
     }
 
-    public Deque<Map<String, Object>> getStack(){
+    public Deque<Map<String, Object>> getStack() {
         return stack;
     }
 
-    public String simplifyPathExpression(String path){
+    public String simplifyPathExpression(String path) {
         if (path.contains("{{")) //annotated
             return path;
         List<String> segments = Locatable.dividePathIntoSegments(path);
@@ -115,19 +115,18 @@ public class MapInspector {
         result.add(segments.get(0));
         segments.remove(0);
 
-        for (String segment: segments){
-            if (segment.contains(" and name/value") || segment.contains(",")){
-                String simplified = segment.substring(0, segment.indexOf(segment.contains(" and name/value") ? " and name/value" : ","))+"]";
+        for (String segment : segments) {
+            if (segment.contains(" and name/value") || segment.contains(",")) {
+                String simplified = segment.substring(0, segment.indexOf(segment.contains(" and name/value") ? " and name/value" : ",")) + "]";
                 result.add(simplified);
-            }
-            else
+            } else
                 result.add(segment);
         }
 
-        return "/"+String.join("/", result);
+        return "/" + String.join("/", result);
     }
 
-    public String simplifyPathExpressionKeepArrayIndex(String path){
+    public String simplifyPathExpressionKeepArrayIndex(String path) {
         if (path == null)
             return null;
         if (path.contains("{{")) //annotated
@@ -139,28 +138,26 @@ public class MapInspector {
 //        result.add(segments.get(0));
 //        segments.remove(0);
 
-        for (String segment: segments){
-            if (segment.contains(LocatableHelper.AND_NAME_VALUE_TOKEN) || segment.contains(LocatableHelper.COMMA_TOKEN)){
+        for (String segment : segments) {
+            if (segment.contains(LocatableHelper.AND_NAME_VALUE_TOKEN) || segment.contains(LocatableHelper.COMMA_TOKEN)) {
                 if (segment.contains(LocatableHelper.INDEX_PREFIX_TOKEN)) {
 //                    Integer arrayValue = LocatableHelper.retrieveIndexValue(segment);
 //                    String trimmed = LocatableHelper.trimNameValue(segment);
 //                    trimmed = trimmed.substring(0, trimmed.length() -1 )+",'#"+arrayValue+"']";
 
                     result.add(segment.replace(LocatableHelper.AND_NAME_VALUE_TOKEN, LocatableHelper.COMMA_TOKEN));
-                }
-                else {
+                } else {
                     String trimmed = LocatableHelper.trimNameValue(segment);
                     result.add(trimmed);
                 }
-            }
-            else
+            } else
                 result.add(segment);
         }
 
-        return "/"+String.join("/", result);
+        return "/" + String.join("/", result);
     }
 
-    public Map<String, String> getStackFlatten(){
+    public Map<String, String> getStackFlatten() {
         Map<String, String> retMap = new TreeMap<>();
 
         for (Object valueDefinition : stack) {
@@ -172,7 +169,9 @@ public class MapInspector {
 
             I_SerialMap serialMap = new SerialMap(target, map, path);
 
-            retMap.putAll(serialMap.encode());
+            Map encoded = serialMap.encode();
+            if (encoded != null)
+                retMap.putAll(encoded);
 
 //            if (object instanceof Participation) {
 //                Participation participation = (Participation) object;
@@ -243,17 +242,18 @@ public class MapInspector {
 
     /**
      * utility to list classnames when inner classes are specified
+     *
      * @param className
      * @return
      */
 
-    public static List<String> listInnnerClasses(String className){
+    public static List<String> listInnnerClasses(String className) {
         List<String> classList = new ArrayList<>();
         extractInnerClass(classList, className);
         return classList;
     }
 
-    private static void extractInnerClass(List<String> classList, String className){
+    private static void extractInnerClass(List<String> classList, String className) {
 
         if (!className.contains("<")) {
             classList.add(className);
@@ -263,7 +263,7 @@ public class MapInspector {
         String outerClass = className.substring(0, className.indexOf("<"));
         classList.add(outerClass);
 
-        String innerClassName = className.substring(className.indexOf("<")+1, className.lastIndexOf(">"));
+        String innerClassName = className.substring(className.indexOf("<") + 1, className.lastIndexOf(">"));
         extractInnerClass(classList, innerClassName);
     }
 
@@ -274,30 +274,30 @@ public class MapInspector {
             if (attributes.get(TAG_OBJECT) instanceof DataValue || attributes.get(TAG_OBJECT) instanceof ObjectID || attributes.get(TAG_OBJECT) instanceof PartyIdentified)
                 return;
 
-        String className = (String)attributes.get(CompositionSerializer.TAG_CLASS);
+        String className = (String) attributes.get(CompositionSerializer.TAG_CLASS);
 
-        if (className == null){
+        if (className == null) {
             log.error("NULL className found for " + attributes);
-            throw new IllegalArgumentException("NULL class name found for attributes:"+attributes);
+            return;
+//            throw new IllegalArgumentException("NULL class name found for attributes:"+attributes);
         }
 
-        if (className.contains("<")){
+        if (className.contains("<")) {
             List<String> classList = listInnnerClasses(className);
-            className = classList.get(0)+"VBean";
+            className = classList.get(0) + "VBean";
             //by convention we pass the list of inner classes to the getInstance() method of the ValueBean
             attributes.put(CompositionSerializer.INNER_CLASS_LIST, classList.subList(1, classList.size()));
-        }
-        else
+        } else
             className += "VBean";
 
-        Class clazz = Class.forName("com.ethercis.ehr.encode.wrappers."+className);
+        Class clazz = Class.forName("com.ethercis.ehr.encode.wrappers." + className);
         Method method = clazz.getDeclaredMethod("getInstance", Map.class);
 
         Object object;
 
         try {
             object = method.invoke(null, attributes); //static call of method
-        } catch (Exception e){
+        } catch (Exception e) {
             if (clazz.equals(DvCodedTextVBean.class)) { //try a DvText
                 clazz = Class.forName("com.ethercis.ehr.encode.wrappers.DvTextVBean");
                 method = clazz.getDeclaredMethod("getInstance", Map.class);
@@ -308,15 +308,14 @@ public class MapInspector {
                 } catch (Exception ex) {
                     throw new IllegalArgumentException("Could not invoke constructor for class DvText attributes:" + attributes + " exception:" + e);
                 }
-            }
-            else
-                throw new IllegalArgumentException("Could not invoke constructor for class:"+clazz+ " attributes:"+attributes+" exception:"+e);
+            } else
+                throw new IllegalArgumentException("Could not invoke constructor for class:" + clazz + " attributes:" + attributes + " exception:" + e);
         }
 
         try {
             attributes.put(TAG_OBJECT, object);
-        } catch (IllegalArgumentException e){
-            throw new IllegalArgumentException("Could not add object:"+object);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Could not add object:" + object);
         }
 
     }
@@ -330,27 +329,26 @@ public class MapInspector {
         Map<String, Object> current = stack.getFirst();
         try {
             current.put(key, value);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.debug("duplicate key detected:" + key);
         }
     }
 
     private void mapInspect(Map<String, Object> map) throws Exception {
-        for (Map.Entry<String, Object> node: map.entrySet()){
+        for (Map.Entry<String, Object> node : map.entrySet()) {
             String key = node.getKey();
             Object value = node.getValue();
 
-            if (map.size() == ENCODED_ELEMENT_MAP_SIZE && map.containsKey(CompositionSerializer.TAG_CLASS)){ //encoded element
+            if (map.size() == ENCODED_ELEMENT_MAP_SIZE && map.containsKey(CompositionSerializer.TAG_CLASS)) { //encoded element
                 generateObject(map);
                 stack.push(map);
                 return;
             }
 
-            if (key.equals(VBeanUtil.TAG_VALUE_AS_STRING)){
+            if (key.equals(VBeanUtil.TAG_VALUE_AS_STRING)) {
                 log.debug("VALUE AS STRING ------->");
                 //it is expected to have a DataValue object here...
-                if (value instanceof Map){ //build object for the preceding class...
+                if (value instanceof Map) { //build object for the preceding class...
                     Map<String, Object> current = stack.getFirst();
 //                    log.debug("Building object for class" + current.get(CompWalker.TAG_CLASS));
                     current.put(TAG_OBJECT, ((Map) value).get("value"));
@@ -377,30 +375,29 @@ public class MapInspector {
 ////            }
 
 
-            if (!new NodeAttribute(key).isMetaData() && value instanceof String){
+            if (!new NodeAttribute(key).isMetaData() && value instanceof String) {
                 //try to get a path for this key/value pair
                 String path = null;
 
-                for (Object sibling: map.values()){
-                    if (sibling instanceof Map){ //grab a path
+                for (Object sibling : map.values()) {
+                    if (sibling instanceof Map) { //grab a path
 //                        if (((Map) sibling).containsKey(CompositionSerializer.TAG_PATH)){
 //                            path = (String)((Map) sibling).get(CompositionSerializer.TAG_PATH);
 //                            //and strip the suffix
 //                            path = path.substring(0, path.lastIndexOf("/"));
 //                        }
-                        path = new PathItem((Map)sibling).findPathValue();
+                        path = new PathItem((Map) sibling).findPathValue();
                     }
                 }
 
-                if (path != null){
+                if (path != null) {
                     Map<String, Object> values = new HashMap<>();
-                    values.put(CompositionSerializer.TAG_PATH, path+key);
+                    values.put(CompositionSerializer.TAG_PATH, path + key);
                     values.put(CompositionSerializer.TAG_CLASS, String.class.getSimpleName());
                     values.put(CompositionSerializer.TAG_VALUE, value);
                     values.put(CompositionSerializer.TAG_NAME, key.substring(1));
                     stack.push(values);
-                }
-                else {
+                } else {
                     addObjectAttributesOnStack(key, value);
                     log.debug(key + "=" + value);
                 }
@@ -411,13 +408,13 @@ public class MapInspector {
 //                generateObject(valueMap);
 //                stack.push(valueMap);
 //            }
-            else if (value instanceof Map){
-                if (key.equals(CompositionSerializer.TAG_VALUE)){ //a map of values...
+            else if (value instanceof Map) {
+                if (key.equals(CompositionSerializer.TAG_VALUE)) { //a map of values...
                     Map<String, Object> valueMap = ((Map) value);
                     Map<String, Object> attributes = new HashMap<>();
                     //add the original
 //                    ((Map)value).put(CompositionSerializer.TAG_VALUE, value);
-                    if (!valueMap.containsKey(CompositionSerializer.TAG_VALUE) /*&& valueMap.containsKey("value")*/){
+                    if (!valueMap.containsKey(CompositionSerializer.TAG_VALUE) /*&& valueMap.containsKey("value")*/) {
                         //and interpreted.
                         Map<String, Object> valueAttributes = new HashMap<>();
 //                        valueAttributes.put("value", valueMap.get("value"));
@@ -426,15 +423,15 @@ public class MapInspector {
 //                        valueMap.remove("value");
                     }
 
-                    if (!valueMap.containsKey(CompositionSerializer.TAG_CLASS)){
+                    if (!valueMap.containsKey(CompositionSerializer.TAG_CLASS)) {
                         //ensure the object can be rebuilt...
                         valueMap.put(CompositionSerializer.TAG_CLASS, map.get(CompositionSerializer.TAG_CLASS));
                     }
-                    if (!((Map) value).containsKey(CompositionSerializer.TAG_PATH)){
+                    if (!((Map) value).containsKey(CompositionSerializer.TAG_PATH)) {
                         //and interpreted.
                         valueMap.put(CompositionSerializer.TAG_PATH, map.get(CompositionSerializer.TAG_PATH));
                     }
-                    if (!valueMap.containsKey(CompositionSerializer.TAG_NAME)){
+                    if (!valueMap.containsKey(CompositionSerializer.TAG_NAME)) {
                         //and interpreted.
                         valueMap.put(CompositionSerializer.TAG_NAME, map.get(CompositionSerializer.TAG_NAME));
                     }
@@ -449,29 +446,26 @@ public class MapInspector {
 //                    //remove the /value entry if any
 //                    if (current.containsKey(CompWalker.TAG_VALUE))
 //                        current.remove(CompWalker.TAG_VALUE);
-                }
-                else {
-                    if (((Map) value).containsKey(CompositionSerializer.TAG_CLASS) && !isStructural((String) ((Map) value).get(CompositionSerializer.TAG_CLASS))){
+                } else {
+                    if (((Map) value).containsKey(CompositionSerializer.TAG_CLASS) && !isStructural((String) ((Map) value).get(CompositionSerializer.TAG_CLASS))) {
                         generateObject((Map<String, Object>) value);
                         stack.push((Map<String, Object>) value);
 //                        return;
-                    }
-                    else {
+                    } else {
                         Map<String, Object> submap = (Map<String, Object>) value;
                         mapInspect(submap);
                     }
                 }
-            }
-            else if (value instanceof List){
-                if (CompositionSerializer.TAG_OTHER_PARTICIPATIONS.equals(key)){
+            } else if (value instanceof List) {
+                if (CompositionSerializer.TAG_OTHER_PARTICIPATIONS.equals(key)) {
                     int index = 0;
-                    for (Map participation: (List<Map>)value){
+                    for (Map participation : (List<Map>) value) {
                         Map<String, Object> participationMap = new HashMap<>();
                         participationMap.putAll(participation);
 //                        participationMap.remove(CompositionSerializer.TAG_VALUE);
                         participationMap.put(CompositionSerializer.TAG_VALUE, participation.get(CompositionSerializer.TAG_VALUE));
 //                        participationMap.remove(CompositionSerializer.TAG_PATH);
-                        participationMap.put(CompositionSerializer.TAG_PATH, participation.get(CompositionSerializer.TAG_PATH)+"/participation:"+index++);
+                        participationMap.put(CompositionSerializer.TAG_PATH, participation.get(CompositionSerializer.TAG_PATH) + "/participation:" + index++);
 
                         Object taggedValue = participationMap.get(CompositionSerializer.TAG_VALUE);
                         if (taggedValue instanceof Participation)
@@ -480,34 +474,27 @@ public class MapInspector {
                             Map<String, Object> valueMap = new HashMap<>();
                             valueMap.put(CompositionSerializer.TAG_VALUE, taggedValue);
                             participationMap.put(TAG_OBJECT, ParticipationVBean.getInstance(valueMap));
-                        }
-                        else
+                        } else
                             throw new IllegalArgumentException("Participation could not be parsed properly...");
 
                         stack.push(participationMap);
                     }
-                }
-                else if (CompositionSerializer.TAG_NAME.equals(key)){
+                } else if (CompositionSerializer.TAG_NAME.equals(key)) {
                     //ignore node names (contained in item path)
 //                    Map nameValueMap = (Map)((List<Object>)value).get(0);
 //                    stack.push(nameValueMap);
-                }
-                else
+                } else
                     listInspect((List<Object>) value);
-            }
-            else if (value instanceof Double){
+            } else if (value instanceof Double) {
                 addObjectAttributesOnStack(key, value);
                 log.debug(key + "=" + value);
-            }
-            else if (value instanceof Boolean){
+            } else if (value instanceof Boolean) {
                 addObjectAttributesOnStack(key, value);
                 log.debug(key + "=" + value);
-            }
-            else if (value instanceof DataValue){
-                if (stack.isEmpty()){
+            } else if (value instanceof DataValue) {
+                if (stack.isEmpty()) {
                     stack.push(map);
-                }
-                else {
+                } else {
                     Map<String, Object> current = stack.getFirst();
                     log.debug("Building object for class" + current.get(CompositionSerializer.TAG_CLASS));
                     try {
@@ -516,8 +503,7 @@ public class MapInspector {
 
                     }
                 }
-            }
-            else {
+            } else {
                 if (!new NodeAttribute(key).isMetaData() && !(value instanceof Participation))
                     throw new IllegalArgumentException("Invalid entry detected in map:" + String.valueOf(value));
             }
@@ -530,25 +516,23 @@ public class MapInspector {
 //    }
 
     private void listInspect(List<Object> list) throws Exception {
-        for (Object node: list){
-            if (node instanceof Map){
+        for (Object node : list) {
+            if (node instanceof Map) {
                 mapInspect((Map<String, Object>) node);
-            }
-            else if (node instanceof List){
+            } else if (node instanceof List) {
                 listInspect((List<Object>) node);
-            }
-            else
+            } else
                 ; //TODO: quick fix, ignore as this may come from complex types such as Joda Time
-                // throw new IllegalArgumentException("Invalid entry detected in list:"+String.valueOf(node));
+            // throw new IllegalArgumentException("Invalid entry detected in list:"+String.valueOf(node));
 
         }
     }
 
-    public void resetStack(){
+    public void resetStack() {
         stack.clear();
     }
 
-    private boolean isStructural(String classname){
+    private boolean isStructural(String classname) {
         return Arrays.asList(structuralClasses).contains(classname);
     }
 
