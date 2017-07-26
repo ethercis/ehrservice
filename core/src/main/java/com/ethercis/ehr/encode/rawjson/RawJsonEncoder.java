@@ -125,6 +125,8 @@ public class RawJsonEncoder {
 
         postProcess();
 
+        //hack the name/value array to be a valid name/value
+        stringMap = new NameValueEncoding(stringMap).make();
 
         return stringMap;
     }

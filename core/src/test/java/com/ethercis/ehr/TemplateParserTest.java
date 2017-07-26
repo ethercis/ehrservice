@@ -24,7 +24,7 @@ public class TemplateParserTest {
 		InputStream is = this.getClass().getResourceAsStream("prescription.oet");
 		TEMPLATE template = (TEMPLATE) JaxbUtil.unmarshal(new StreamSource(is),TEMPLATE.class);
 
-		
+
 		assertEquals("template name wrong", "Prescription", template.getName());
 		
 		Archetyped def = template.getDefinition();

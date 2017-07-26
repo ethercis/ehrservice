@@ -57,9 +57,9 @@ public class PathValueTest {
     @Before
     public void setUp() throws Exception {
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.path.archetype", "core/src/test/resources/knowledge/archetypes");
+        props.put("knowledge.path.template", "core/src/test/resources/knowledge/templates");
+        props.put("knowledge.path.opt", "core/src/test/resources/knowledge/operational_templates");
         props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
@@ -68,7 +68,7 @@ public class PathValueTest {
 
         knowledge.retrieveFileMap(include, null);
 
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/pathvalues_test1.json");
+        FileReader fileReader = new FileReader("core/src/test/resources/samples/pathvalues_test1.json");
 
         kvPairs = FlatJsonUtil.inputStream2Map(fileReader);
     }

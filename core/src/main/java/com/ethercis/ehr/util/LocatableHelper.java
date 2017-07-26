@@ -20,7 +20,9 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
+import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.SystemValue;
+import org.openehr.rm.Attribute;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.datastructure.history.History;
 import org.openehr.rm.datastructure.history.PointEvent;
@@ -28,6 +30,8 @@ import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datatypes.text.DvText;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -580,5 +584,22 @@ public class LocatableHelper {
             arrayItemPathMap.put(itemPath, 1);
         else
             arrayItemPathMap.put(itemPath, arrayItemPathMap.get(itemPath) + 1);
+    }
+
+    public static Class parameterClass(Object locatable, String parameterName) throws NoSuchFieldException {
+        Class parameterClass = null;
+        RMObjectBuilder objectBuilder = RMObjectBuilder.getInstance();
+        Constructor constructor = objectBuilder.fullConstructor(locatable.getClass());
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        for (int i = 0; i < annotations.length; i++){
+            Annotation[] annotationDef = annotations[i];
+            Attribute attribute = (Attribute) annotationDef[0];
+            if (attribute.name().equals(parameterName)){
+                parameterClass = constructor.getParameterTypes()[i];
+                break;
+            }
+        }
+//        Class clazz = LocatableHelper.itemAtPath(entry, attribute).getClass();
+        return parameterClass;
     }
 }

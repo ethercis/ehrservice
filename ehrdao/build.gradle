@@ -1,0 +1,51 @@
+apply plugin: 'java'
+
+dependencies {
+    // *** project dependencies **
+    compile project(':ecis-core')
+    compile project(':ecis-transform')
+    compile project(':jooq-pg');
+    compile project(':aql-processor');
+
+    // *** external dependencies ***
+    compile 'com.google.code.findbugs:jsr305:3.0.1'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.sun.jersey:jersey-json:1.19'
+    compile 'commons-cli:commons-cli:1.3'
+    compile 'commons-collections:commons-collections:3.2'
+    compile 'commons-io:commons-io:2.1'
+    compile 'commons-lang:commons-lang:2.6'
+    compile 'joda-time:joda-time:2.2'
+    compile 'org.apache.commons:commons-dbcp2:2.1.1'
+    compile 'org.apache.commons:commons-pool2:2.4.2'
+    compile 'org.apache.logging.log4j:log4j-api:2.6.2'
+    compile 'org.apache.xbean:xbean:2.5'
+    compile 'org.apache.xmlbeans:xmlbeans:2.5.0'
+    compile "org.jooq:jooq:${versions.jooq}"
+    compile 'org.postgresql:postgresql:9.4-1204-jdbc42'
+
+    // *** test dependencies ***
+    testCompile 'junit:junit:4.11'
+}
+
+test {
+    systemProperty 'test.db.host', db.host
+    systemProperty 'test.db.port', db.port
+    systemProperty 'test.db.name', db.name
+    systemProperty 'test.db.user', db.user
+    systemProperty 'test.db.password', db.password
+
+    // All paths inside the tests are relative to the rootProject working dir,
+    // this matches the working dir used by IDEA
+    workingDir rootProject.projectDir
+
+    // TODO: enable tests
+    exclude 'com/ethercis/dao/access/util/MigrateEntryTest*'
+    exclude 'com/ethercis/dao/jooq/impl/CompositionTest*'
+    exclude 'com/ethercis/dao/jooq/impl/ContributionAccessTest*'
+    exclude 'com/ethercis/dao/jooq/impl/EcisFlatPersistenceTest*'
+    exclude 'com/ethercis/dao/jooq/impl/EhrAccessTest*'
+    exclude 'com/ethercis/dao/jooq/impl/EntryAccessTest*'
+    exclude 'com/ethercis/dao/jooq/impl/OtherContextTest*'
+    exclude 'com/ethercis/dao/jooq/impl/PartyIdentifiedAccessTest*'
+}

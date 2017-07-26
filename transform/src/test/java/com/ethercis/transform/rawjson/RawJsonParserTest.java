@@ -22,6 +22,7 @@ import com.ethercis.ehr.keyvalues.EcisFlattener;
 import com.ethercis.ehr.util.MapInspector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.InputStreamReader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,8 +39,10 @@ public class RawJsonParserTest {
     @Test
     public void testParseRawJson() throws Exception {
 //        RawJsonParser rawJsonParser = new RawJsonParser();
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/ehr_status_raw.json");
-        String serialized = RawJsonParser.dbEncode(fileReader);
+        //FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/ehr_status_raw.json");
+        final InputStreamReader inputStreamReader = new InputStreamReader(
+                getClass().getClassLoader().getResourceAsStream("ehr_status_raw.json"));
+        String serialized = RawJsonParser.dbEncode(inputStreamReader);
         Assert.assertNotNull(serialized);
         System.out.println(serialized);
 
