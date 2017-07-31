@@ -12,17 +12,17 @@
 //-------------------------------------------
 grammar Aql;
 
-@header {
-package com.ethercis.aql.parser;
-}
+//@header {
+//package com.ethercis.aql.parser;
+//}
 
 query	:	queryExpr ;
 
 queryExpr : select from (where)? (limit)? (offset)? (orderBy)? EOF ;
 
 select
-        : SELECT selectExpr
-        | SELECT topExpr selectExpr ;
+        : SELECT (DISTINCT)? selectExpr
+        | SELECT (DISTINCT)? topExpr selectExpr ;
 
 topExpr
         : TOP INTEGER (BACKWARD|FORWARD)?;
@@ -39,7 +39,7 @@ orderBy
         : ORDERBY orderBySeq ;
 
 limit
-        :LIMIT INTEGER;
+        : LIMIT INTEGER;
 
 offset
         : OFFSET INTEGER;

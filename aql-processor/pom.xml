@@ -33,12 +33,13 @@
                 <configuration>
                     <listener>true</listener>
                     <visitor>true</visitor>
-                    <arguments>
-                        <argument>-package</argument>
-                        <argument>com.ethercis.aql.parser</argument>
-                    </arguments>
+                    <!--<arguments>-->
+                        <!--<argument>-package</argument>-->
+                        <!--<argument>com.ethercis.aql.parser</argument>-->
+                    <!--</arguments>-->
                     <!--possibly a bug in the plugin, does not generated automatically the package structure...-->
-                    <outputDirectory>${basedir}/target/generated-sources/antlr4/com/ethercis/aql/parser</outputDirectory>
+                    <!--<outputDirectory>${basedir}/target/generated-sources/antlr4/com/ethercis/aql/parser</outputDirectory>-->
+                    <outputDirectory>${basedir}/build/generated-src/antlr/main/com/ethercis/aql/parser</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -153,6 +154,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/build/generated-src/antlr/main/com/ethercis/aql/parser</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -203,4 +221,4 @@
     </properties>
 
 
-</project>
+</project>

@@ -19,6 +19,7 @@ package com.ethercis.aql.sql.postprocessing;
 
 import com.ethercis.aql.sql.QuerySteps;
 import com.ethercis.aql.sql.binding.JsonbBlockDef;
+import com.ethercis.ehr.encode.rawjson.LightRawJsonEncoder;
 import com.ethercis.ehr.encode.rawjson.RawJsonEncoder;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import org.jooq.Field;
@@ -57,8 +58,9 @@ public class RawJsonTransform implements I_RawJsonTransform{
                         String itemPath = jsonbBlockDef.getPath();
                         //apply the transformation
                         try {
-                            jsonbOrigin = "{\""+jsonbBlockDef.getField().getName()+"\":"+jsonbOrigin+"}";
-                            Object rawJson = rawJsonEncoder.encodeContentAsMap(jsonbBlockDef.getField().getName(), templateId, jsonbOrigin, itemPath);
+//                            jsonbOrigin = "{\""+jsonbBlockDef.getField().getName()+"\":"+jsonbOrigin+"}";
+                            String rawJson = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap(jsonbBlockDef.getField().getName());
+//                            Object rawJson = rawJsonEncoder.encodeContentAsMap(jsonbBlockDef.getField().getName(), templateId, jsonbOrigin, itemPath);
                             //debugging
                             if (jsonbOrigin.contains("@class"))
                                 System.out.print("Hum...");

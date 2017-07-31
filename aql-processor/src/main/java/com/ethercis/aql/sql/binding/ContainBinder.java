@@ -499,6 +499,10 @@ public class ContainBinder {
 
         while (parent != null){
             depth++;
+            if (parent.getClassName().equals("COMPOSITION")) { //COMPOSITION is not part of the label
+                lquery.insert(0, LEFT_WILDCARD);
+                break;
+            }
             archetypeId = parent.getArchetypeId();
             if (archetypeId == null || archetypeId.isEmpty()) //substitute by the class name
                 archetypeId = parent.getClassName()+"%";

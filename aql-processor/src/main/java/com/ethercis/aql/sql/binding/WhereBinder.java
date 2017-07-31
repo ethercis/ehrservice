@@ -20,6 +20,7 @@ package com.ethercis.aql.sql.binding;
 import com.ethercis.aql.containment.IdentifierMapper;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
+import com.ethercis.aql.sql.queryImpl.I_QueryImpl;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -38,6 +39,7 @@ public class WhereBinder {
     protected List whereClause;
     private IdentifierMapper mapper;
     private Condition initialCondition;
+    private String sqlStatementRegexp = "(?i)(like|ilike|in|not in)"; //list of subquery and operators
 
     private enum Operator {OR, XOR, AND, NOT, EXISTS}
 
@@ -97,27 +99,35 @@ public class WhereBinder {
         this.mapper = mapper;
     }
 
-    private TaggedStringBuffer encodeWhereVariable(UUID comp_id, VariableDefinition variableDefinition){
+    private TaggedStringBuffer encodeWhereVariable(UUID comp_id, VariableDefinition variableDefinition, boolean forceSQL){
         String identifier = variableDefinition.getIdentifier();
         String className = mapper.getClassName(identifier);
         if (className == null)
             throw new IllegalArgumentException("Could not bind identifier in WHERE clause:'"+identifier+"'");
         Field<?> field;
-        switch (className){
-            case "COMPOSITION":
-                if (variableDefinition.getPath().startsWith("content")){
+        if (forceSQL){
+            field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.SELECT);
+            if (field == null)
+                return null;
+            return new TaggedStringBuffer(field.toString(), TagField.SQLQUERY);
+        }
+        else {
+            switch (className) {
+                case "COMPOSITION":
+                    if (variableDefinition.getPath().startsWith("content")) {
+                        field = jsonbEntryQuery.whereField(comp_id, identifier, variableDefinition);
+                        return new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
+                    }
+                case "EHR":
+                    field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
+                    if (field == null)
+                        return null;
+                    return new TaggedStringBuffer(field.toString(), TagField.SQLQUERY);
+
+                default:
                     field = jsonbEntryQuery.whereField(comp_id, identifier, variableDefinition);
                     return new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
-                }
-            case "EHR":
-                field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
-                if (field == null)
-                    return null;
-                return new TaggedStringBuffer(field.toString(), TagField.SQLQUERY);
-
-            default:
-                field = jsonbEntryQuery.whereField(comp_id, identifier, variableDefinition);
-                return new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
+            }
         }
     }
 
@@ -127,7 +137,7 @@ public class WhereBinder {
                 taggedBuffer.append((String)part);
             else if (part instanceof VariableDefinition) {
                 //substitute the identifier
-                TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) part);
+                TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) part, false);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
             }
@@ -203,7 +213,8 @@ public class WhereBinder {
         TaggedStringBuffer taggedBuffer = new TaggedStringBuffer();
         Condition condition = initialCondition;
 
-        for (Object item: whereClause){
+        for (int cursor = 0; cursor < whereClause.size(); cursor++){
+            Object item = whereClause.get(cursor);
             if (item instanceof String) {
                 switch ((String)item){
                     case "OR":
@@ -238,7 +249,13 @@ public class WhereBinder {
                     condition = wrapInCondition(condition, taggedBuffer, operators);
                     taggedBuffer = new TaggedStringBuffer();
                 }
-                TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item);
+                //look ahead and check if followed by a sql operator
+                TaggedStringBuffer taggedStringBuffer;
+                if (followSQLOperator(cursor))
+                    taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, true);
+                else
+                    taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false);
+
                 if (taggedStringBuffer != null) {
                     taggedBuffer.append(taggedStringBuffer.toString());
                     taggedBuffer.setTagField(taggedStringBuffer.getTagField());
@@ -262,6 +279,15 @@ public class WhereBinder {
     }
 
 
+    //look ahead for a SQL operator
+    private boolean followSQLOperator(int cursor){
+        if (cursor < whereClause.size() - 1){
+            Object nextToken = whereClause.get(cursor + 1);
+            if (nextToken instanceof String && ((String)nextToken).matches(sqlStatementRegexp))
+                return true;
+        }
+        return false;
+    }
 
 
     //from AQL grammar
@@ -274,6 +300,9 @@ public class WhereBinder {
         if (taggedBuffer.toString().contains("composition_id")){
             if (item.contains("::"))
                 return item.split("::")[0]+"'";
+        }
+        if (taggedBuffer.stringBuffer.indexOf("#>>") > 0){
+            return item;
         }
         if (taggedBuffer.stringBuffer.indexOf("#") > 0 && item.contains("'")){ //conventionally double quote for jsquery
             return item.replaceAll("'", "\"");

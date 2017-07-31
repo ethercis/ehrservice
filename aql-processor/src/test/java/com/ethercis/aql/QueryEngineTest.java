@@ -57,9 +57,9 @@ public class QueryEngineTest {
         String login = System.getProperty("test.db.user");
         String password = System.getProperty("test.db.password");
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "core/src/test/resources/knowledge/archetypes");
-        props.put("knowledge.path.template", "core/src/test/resources/knowledge/templates");
-        props.put("knowledge.path.opt", "core/src/test/resources/knowledge/operational_templates");
+        props.put("knowledge.path.archetype", "src/test");
+        props.put("knowledge.path.template", "src/test");
+        props.put("knowledge.path.opt", "src/test");
         props.put("knowledge.forcecache", "true");
         I_KnowledgeCache knowledge;
         try {
@@ -1027,6 +1027,27 @@ public class QueryEngineTest {
                 "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude > 130\n" +
                 "                  limit 10 offset 10 \n" +
                 "                  ORDER BY date_created ASC ";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testQryObservationActionOR() throws Exception {
+        String query = "SELECT c/uid/value as uid, \n" +
+                "       c/composer/name as author, \n" +
+                "       c/context/start_time/value as date_created, \n" +
+                "       a_y/ism_transition/careflow_step/defining_code/code_string as ystate_code, \n" +
+                "       a_y/ism_transition/careflow_step/value as ystate, " +
+                "       a_y/ism_transition/careflow_step/definingCode/terminologyId/value as ystate_terminology, " +
+                "       a_m/ism_transition/careflow_step/definingCode/codeString as mstate_code, " +
+                "       a_m/ism_transition/careflow_step/value as mstate, " +
+                "       a_m/ism_transition/careflow_step/definingCode/terminologyId/value as mstate_terminology " +
+                "       FROM EHR e \n" +
+                "           CONTAINS COMPOSITION c CONTAINS (ACTION a_y[openEHR-EHR-ACTION.service-yoga.v0] OR ACTION a_m[openEHR-EHR-ACTION.service-massage.v0])\n" +
+                "           WHERE c/name/value='Encounter' ";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

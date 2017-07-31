@@ -71,7 +71,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 //    private final static String JSONBSelector_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO +" #> '{";
     public final static String Jsquery_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO +" @@ '";
 
-    public final static String matchNodePredicate = "/(content|protocol|data|description|instruction|items|activities|activity|composition|entry|evaluation|observation|action)\\[at([(0-9)\\.]*)\\]";
+    public final static String matchNodePredicate = "/(content|protocol|data|description|instruction|items|activities|activity|composition|entry|evaluation|observation|action|at)\\[([(0-9)|(A-Z)|(a-z)|\\-|_|\\.]*)\\]";
 
     //Generic stuff
     private final static String JSONBSelector_CLOSE = "}'";
@@ -130,6 +130,11 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         //CHC 160607: this offset (1 or 0) was required due to a bug in generating the containment table
         //from a PL/pgSQL script. this is no more required
 //        int offset = (path_part == PATH_PART.IDENTIFIER_PATH_PART ? 1 : 0);
+        if (path == null){ //partial path
+            jsonDataBlock = true;
+            return new ArrayList<>();
+        }
+
         jsonDataBlock = false;
         int offset = 0;
         List<String> segments = Locatable.dividePathIntoSegments(path);
@@ -243,7 +248,10 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
         if (path == null) {
             //return a null field
-            return DSL.field(DSL.val((String)null));
+            if (withAlias)
+                return DSL.field(DSL.val((String)null)).as(variableDefinition.getAlias());
+            else
+                return DSL.field(DSL.val((String)null));
 //            throw new IllegalArgumentException("Could not resolve path for identifier:" + variableDefinition.getIdentifier());
         }
         String alias = variableDefinition.getAlias();
@@ -261,6 +269,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
         itemPath = wrapQuery(itemPath, JSONBSelector_COMPOSITION_OPEN, JSONBSelector_CLOSE);
 
+        //TODO: smarter typecast required (e.g. template based)
         if (itemPathArray.get(itemPathArray.size() - 1).contains("magnitude")){ //force explicit type cast for DvQuantity
             itemPath = "("+itemPath+")::numeric";
         }
@@ -275,6 +284,8 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
                 fieldPathItem = DSL.field(itemPath, String.class).as(tempAlias);
             }
         }
+        else
+            fieldPathItem = DSL.field(itemPath, String.class);
 
         containsJqueryPath = true;
         useEntry = true;
