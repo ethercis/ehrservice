@@ -248,10 +248,16 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
         if (path == null) {
             //return a null field
+            String cast = "";
+            //TODO: explicit template based type cast will be implemented in a later release
+            //force explicit type cast for DvQuantity
+            if (variableDefinition.getPath().endsWith("magnitude"))
+                cast = "::numeric";
+
             if (withAlias)
-                return DSL.field(DSL.val((String)null)).as(variableDefinition.getAlias());
+                return DSL.field(DSL.val((String)null)+cast).as(variableDefinition.getAlias());
             else
-                return DSL.field(DSL.val((String)null));
+                return DSL.field(DSL.val((String)null)+cast);
 //            throw new IllegalArgumentException("Could not resolve path for identifier:" + variableDefinition.getIdentifier());
         }
         String alias = variableDefinition.getAlias();
