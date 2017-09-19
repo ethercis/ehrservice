@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -42,7 +43,7 @@ public class DvMultiMediaSerializer extends DvTypeSerializer<DvMultimedia> {
 	@Override
 	public JsonElement serialize(DvMultimedia multimedia, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(multimedia));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(multimedia).camelToUpperSnake());
 		jsonObject.add("uri", jsonSerializationContext.serialize(multimedia.getUri()));
 		jsonObject.add("media_type", jsonSerializationContext.serialize(multimedia.getMediaType()));
 		jsonObject.add("compression_algorithm", jsonSerializationContext.serialize(multimedia.getCompressionAlgorithm()));

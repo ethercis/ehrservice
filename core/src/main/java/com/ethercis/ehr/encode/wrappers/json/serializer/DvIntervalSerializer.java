@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -42,7 +43,7 @@ public class DvIntervalSerializer extends DvTypeSerializer<DvInterval> {
 	@Override
 	public JsonElement serialize(DvInterval interval, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(interval));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(interval).camelToUpperSnake());
 		jsonObject.add("lower", jsonSerializationContext.serialize(interval.getLower()));
 		jsonObject.add("upper", jsonSerializationContext.serialize(interval.getUpper()));
 		jsonObject.addProperty("lower_unbounded", interval.isLowerUnbounded());

@@ -183,6 +183,8 @@ public final class DvQuantityVConstraints extends DataValueConstraints {
 
     @Override
     public void setConstraints(Archetype archetype, CAttribute valueAttribute) {
+		if (valueAttribute == null)
+			return;
         //get the limits as found from the flatten archetype and template
         CDvQuantity constraints = (CDvQuantity) valueAttribute.getChildren().get(0);
         setConstraints(constraints);

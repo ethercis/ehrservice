@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.datatypes.text.CodePhrase;
@@ -47,7 +48,7 @@ public class DvCodedTextSerializer extends DvTypeSerializer<DvCodedText> {
 	@Override
 	public JsonElement serialize(DvCodedText dvCodedText, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(dvCodedText));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(dvCodedText).camelToUpperSnake());
 		jsonObject.addProperty("value", dvCodedText.getValue());
 		jsonObject.add("definining_code", jsonSerializationContext.serialize(dvCodedText.getDefiningCode()));
 		return jsonObject;

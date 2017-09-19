@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -44,7 +45,7 @@ public class DvOrdinalSerializer extends DvTypeSerializer<DvOrdinal> {
 	@Override
 	public JsonElement serialize(DvOrdinal dvOrdinal, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(dvOrdinal));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(dvOrdinal).camelToUpperSnake());
 		jsonObject.addProperty("value", dvOrdinal.getValue());
 		jsonObject.add("symbol", jsonSerializationContext.serialize(dvOrdinal.getSymbol()));
 		return jsonObject;

@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.datatypes.text.CodePhrase;
@@ -46,7 +47,7 @@ public class CodePhraseSerializer extends DvTypeSerializer<CodePhrase> {
 	@Override
 	public JsonElement serialize(CodePhrase codePhrase, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(codePhrase));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(codePhrase).camelToUpperSnake());
 		jsonObject.addProperty("code_string", codePhrase.getCodeString());
 		jsonObject.add("terminology_id", jsonSerializationContext.serialize(codePhrase.getTerminologyId()));
 		return jsonObject;

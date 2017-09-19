@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.composition.Composition;
@@ -44,7 +45,7 @@ public class EventContextSerializer extends DvTypeSerializer<EventContext> {
 	@Override
 	public JsonElement serialize(EventContext eventContext, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(eventContext));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(eventContext).camelToUpperSnake());
 		jsonObject.add("start_time", jsonSerializationContext.serialize(eventContext.getStartTime()));
 		jsonObject.add("end_time", jsonSerializationContext.serialize(eventContext.getEndTime()));
 		jsonObject.addProperty("location", eventContext.getLocation());

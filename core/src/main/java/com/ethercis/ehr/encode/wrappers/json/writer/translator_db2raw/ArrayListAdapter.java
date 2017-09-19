@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 package com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw;
-import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
@@ -24,7 +23,6 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * GSON adapter for DvDateTime
@@ -33,10 +31,25 @@ import java.util.Map;
 public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvTypeAdapter {
 
 	protected AdapterType adapterType = AdapterType.DBJSON2RAWJSON;
+	protected String archetypeNodeId = null;
+	protected String key = null;
 
 	public ArrayListAdapter(AdapterType adapterType) {
 		super();
 		this.adapterType = adapterType;
+	}
+
+	public ArrayListAdapter(String archetypeNodeId, String key) {
+		super();
+		this.adapterType = AdapterType.DBJSON2RAWJSON;
+		this.archetypeNodeId = archetypeNodeId;
+		this.key = key;
+	}
+
+	public ArrayListAdapter(String archetypeNodeId) {
+		super();
+		this.adapterType = AdapterType.DBJSON2RAWJSON;
+		this.archetypeNodeId = archetypeNodeId;
 	}
 
 	public ArrayListAdapter() {
@@ -53,11 +66,20 @@ public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvType
 //	@Override
 	public void write(JsonWriter writer, ArrayList arrayList) throws IOException {
 		writer.beginArray();
+//		System.out.println("begin array -----------------------------");
 		for (Object entry: arrayList){
 			if (entry instanceof LinkedTreeMap){
-				new LinkedTreeMapAdapter().write(writer, (LinkedTreeMap)entry);
+				LinkedTreeMap itemMap = (LinkedTreeMap)entry;
+				String path = new PathAttribute().findPath(itemMap);
+				String nodeName = "";
+				if (path != null)
+					nodeName =new PathAttribute(path).nodeNameFromPath(key);
+				new LinkedTreeMapAdapter(archetypeNodeId, nodeName).write(writer, itemMap);
 			}
+			else
+				throw new IllegalArgumentException("unhandled item in array:"+entry);
 		}
+//		System.out.println("end array -----------------------------");
 		writer.endArray();
 		return;
 	}

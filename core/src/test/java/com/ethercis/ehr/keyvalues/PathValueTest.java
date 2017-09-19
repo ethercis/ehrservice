@@ -57,9 +57,9 @@ public class PathValueTest {
     @Before
     public void setUp() throws Exception {
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "core/src/test/resources/knowledge/archetypes");
-        props.put("knowledge.path.template", "core/src/test/resources/knowledge/templates");
-        props.put("knowledge.path.opt", "core/src/test/resources/knowledge/operational_templates");
+        props.put("knowledge.path.archetype", "src/test/resources/knowledge/archetypes");
+        props.put("knowledge.path.template", "src/test/resources/knowledge/templates");
+        props.put("knowledge.path.opt", "src/test/resources/knowledge/operational_templates");
         props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
@@ -68,7 +68,7 @@ public class PathValueTest {
 
         knowledge.retrieveFileMap(include, null);
 
-        FileReader fileReader = new FileReader("core/src/test/resources/samples/pathvalues_test1.json");
+        FileReader fileReader = new FileReader("src/test/resources/samples/pathvalues_test1.json");
 
         kvPairs = FlatJsonUtil.inputStream2Map(fileReader);
     }
@@ -168,14 +168,15 @@ public class PathValueTest {
 
     @Test
     public void testUpdate_OPT() throws Exception {
+        String templateId = "ECIS EVALUATION TEST";
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
-        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, "ECIS EVALUATION TEST.opt");
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
         Composition composition = contentBuilder.generateNewComposition();
 
         assertNotNull(composition);
 
-        PathValue pathValue = new PathValue(null);
+        PathValue pathValue = new PathValue(contentBuilder, knowledge, templateId, new Properties());
 
         Map<String, Object> updateValues = new HashMap<>();
 
@@ -183,7 +184,7 @@ public class PathValueTest {
         updateValues.put("/context/participation|function", "Cantine");
         updateValues.put("/context/participation|name", "Joe");
         updateValues.put("/context/participation|identifier", "99999-222");
-        updateValues.put("/context/participation|mode", "openehr::216|face-to-face communication|");
+        updateValues.put("/context/participation|mode", "face-to-face communication::openehr::216");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0003]", "at0004|Type 1|");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0008]", "true");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0007]", "2010-09-24");
@@ -194,11 +195,11 @@ public class PathValueTest {
 
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|function", "Oncologist");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|identifier", "1345678");
-        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|mode", "openehr::216|face-to-face communication|");
+        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|mode", "face-to-face communication::openehr::216");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|name", "Dr. Knock");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|function", "Oncologist");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|identifier", "999999-8");
-        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|mode", "openehr::216|evil cabinet|");
+        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|mode", "evil cabinet::openehr::216");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|name", "Dr. Caligari");
 
         boolean result = pathValue.update(composition, updateValues);
@@ -217,11 +218,11 @@ public class PathValueTest {
         kvPairs.put("/context/participation:0|function", "Oncologist");
         kvPairs.put("/context/participation:0|name", "Dr. Marcus Johnson");
         kvPairs.put("/context/participation:0|identifier", "1345678");
-        kvPairs.put("/context/participation:0|mode", "openehr::216|face-to-face communication|");
+        kvPairs.put("/context/participation:0|mode", "face-to-face communication::openehr::216");
         kvPairs.put("/context/participation:1|function", "Pediatric");
         kvPairs.put("/context/participation:1|name", "Dr. Mabuse");
         kvPairs.put("/context/participation:1|identifier", "99999-123");
-        kvPairs.put("/context/participation:1|mode", "openehr::216|face-to-face communication|");
+        kvPairs.put("/context/participation:1|mode", "face-to-face communication::openehr::216");
 
         result = pathValue.update(composition, kvPairs);
         assertTrue(result);
@@ -519,6 +520,128 @@ public class PathValueTest {
         kvPairs.put("value", test);
         HierObjectID objectID = (HierObjectID)PathValue.decodeValue("HierObjectID", FieldUtil.flatten(FieldUtil.getAttributes(HierObjectIDVBean.generate())), kvPairs);
         assertEquals(objectID.toString(), test);
+    }
+
+    @Test
+    public void testAssignment_OPT_RALPH_20() throws Exception {
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, "ECIS EVALUATION TEST.opt");
+//        Composition composition = contentBuilder.setCompositionParameters();generateNewComposition();
+//
+//        assertNotNull(composition);
+
+        PathValue pathValue = new PathValue(knowledge, "careplan.v1", new Properties());
+
+        kvPairs.clear();
+        kvPairs.put("/category", "openehr::433|event|");
+        kvPairs.put("/territory", "GB");
+        kvPairs.put("/language", "en");
+
+        kvPairs.put(
+                "/content[openEHR-EHR-EVALUATION.careplan.v1]/data[at0001]/items[at0002]",
+                "My Care Plan"
+        );
+
+        kvPairs.put(
+                "/content[openEHR-EHR-EVALUATION.careplan.v1]/guideline",
+                "local::test"
+        );
+
+        kvPairs.put(
+                "/content[openEHR-EHR-EVALUATION.careplan.v1]/data[at0001]/items[at0011]",
+                "A test care plan"
+        );
+
+        kvPairs.put(
+                "/content[openEHR-EHR-EVALUATION.careplan.v1]/data[at0001]/items[at0021]",
+                "local::at0024|Active|"
+        );
+
+        kvPairs.put(
+                "/content[openEHR-EHR-INSTRUCTION.procedure.v1]/activities[at0001]/description[at0002]/items[at0003]",
+                "foo"
+        );
+
+        kvPairs.put(
+                "/content[openEHR-EHR-INSTRUCTION.procedure.v1]/activities[at0001]/description[at0002]/items[at0012]",
+                "Test name"
+        );
+
+        Composition composition = pathValue.assign(kvPairs);
+
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        String jsonString = gson.toJson(testRetMap);
+
+        System.out.println(jsonString);
+    }
+
+    @Test
+    public void testAssignment_OPT_RALPH_6() throws Exception {
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, "ECIS EVALUATION TEST.opt");
+//        Composition composition = contentBuilder.setCompositionParameters();generateNewComposition();
+//
+//        assertNotNull(composition);
+
+        PathValue pathValue = new PathValue(knowledge, "65d9e89a-81d8-4344-afbe-88508d42dcfc", new Properties());
+
+        kvPairs.clear();
+        kvPairs.put("/category", "openehr::433|event|");
+        kvPairs.put("/territory", "GB");
+        kvPairs.put("/language", "en");
+
+        kvPairs.put(
+                "/content[openEHR-EHR-OBSERVATION.laboratory_test.v0]/guideline_id",
+                "roughspace::myType::65d9e89a-81d8-4344-afbe-88508d42dcfc"
+        );
+
+        Composition composition = pathValue.assign(kvPairs);
+
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        String jsonString = gson.toJson(testRetMap);
+
+        System.out.println(jsonString);
+    }
+
+    @Test
+    public void testAssignment_OPT_RALPH_BMI() throws Exception {
+//        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, "ECIS EVALUATION TEST.opt");
+//        Composition composition = contentBuilder.setCompositionParameters();generateNewComposition();
+//
+//        assertNotNull(composition);
+
+        PathValue pathValue = new PathValue(knowledge, "BMI", new Properties());
+
+        kvPairs.clear();
+        kvPairs.put("/category", "openehr::433|event|");
+        kvPairs.put("/territory", "GB");
+        kvPairs.put("/language", "en");
+
+        kvPairs.put(
+                "/content[openEHR-EHR-OBSERVATION.body_mass_index.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]|value",
+                "18.5,kg/m2");
+        kvPairs.put(
+                "/content[openEHR-EHR-OBSERVATION.body_weight.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]|value",
+                "65.2,kg");
+        kvPairs.put(
+                "/content[openEHR-EHR-OBSERVATION.height.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]|value",
+                "167,cm");
+        Composition composition = pathValue.assign(kvPairs);
+
+        Map<String, String> testRetMap = new EcisFlattener().render(composition);
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().disableHtmlEscaping().create();
+
+        String jsonString = gson.toJson(testRetMap);
+
+        System.out.println(jsonString);
     }
 
 

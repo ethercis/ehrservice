@@ -225,8 +225,8 @@ public class ContentBuilderTest extends TestCase {
         Composition newComposition = content.buildCompositionFromJson(content.getEntry());
     }
 
-//    @Test
-    public void _testSetInstructionEntry() throws Exception {
+    @Test
+    public void testSetInstructionEntry() throws Exception {
         //build the archetype map manually... when deployed, the service populate its map from scanning the directory
         knowledge.retrieveArchetype("openEHR-EHR-COMPOSITION.prescription.v1");
         knowledge.retrieveArchetype("openEHR-EHR-SECTION.medications.v1");
@@ -733,7 +733,8 @@ public class ContentBuilderTest extends TestCase {
 //        String templateId = "IDCR Problem List.v1";
 //        String templateId = "IDCR - Relevant contacts.v0";
 //        String templateId = "NCHCD - Clinical notes.v0";
-        String templateId = "IDCR - Problem List.v1";
+//        String templateId = "IDCR - Problem List.v1";
+        String templateId = "EHRN Yoga service.v0";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
@@ -745,7 +746,8 @@ public class ContentBuilderTest extends TestCase {
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR - Immunisation summary.v0.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_10.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_12.flat.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/will_1.flat.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/will_1.flat.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/EHRN Yoga service.v0.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
         //hack map for Marand's library
 //        map.put("ctx/language", "en");
@@ -866,18 +868,20 @@ public class ContentBuilderTest extends TestCase {
 //        String templateId = "COLNEC Medication";
 //        String templateId = "IDCR - Service Request.v0";
 //        String templateId = "GEL - Generic Lab Report import.v0";
-        String templateId = "DiADeM Assessment.v1";
+//        String templateId = "DiADeM Assessment.v1";
 //        String templateId = "Ripple Dashboard Cache.v1";
 //        String templateId = "IDCR - Adverse Reaction List.v1";
 
 //        String templateId = "IDCR Problem List.v1";
+        String templateId = "Smart Growth Chart Data.v0";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/COLNEC_Medication_FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Ian-mail-27-01-17.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_32.flat.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_32.flat.json");
+        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/CR40.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ripple_dashboard_cache.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_37.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);

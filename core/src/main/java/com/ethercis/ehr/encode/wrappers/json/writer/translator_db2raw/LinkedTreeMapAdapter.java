@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 package com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw;
-import com.b.a.c.T;
+
 import com.ethercis.ehr.encode.CompositionSerializer;
-import com.ethercis.ehr.encode.EncodeUtil;
-import com.ethercis.ehr.encode.I_CompositionSerializer;
+import com.ethercis.ehr.encode.wrappers.SnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
@@ -36,97 +35,196 @@ import java.util.Map;
  */
 public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements I_DvTypeAdapter {
 
-	public static final String NAME = "name";
-	public static final String AT_CLASS = "@class";
-	protected AdapterType adapterType = AdapterType.DBJSON2RAWJSON;
 
-	final static String matchNodePredicate =
-			"/(content|protocol|events|data|description|instruction|items|activities|activity|composition|entry|evaluation|observation|action|at)\\[([(0-9)|(A-Z)|(a-z)|\\-|_|\\.]*)\\]";
+    protected AdapterType adapterType = AdapterType.DBJSON2RAWJSON;
+    protected String parentArchetypeNodeId = null;
+    protected String nodeName = null;
+    boolean isRoot = true;
 
-	public LinkedTreeMapAdapter(AdapterType adapterType) {
-		super();
-		this.adapterType = adapterType;
-	}
+    public LinkedTreeMapAdapter(AdapterType adapterType) {
+        super();
+        this.adapterType = adapterType;
+        isRoot = true;
+    }
 
-	public LinkedTreeMapAdapter() {
-		super();
-		this.adapterType = AdapterType.DBJSON2RAWJSON;
-	}
+    public LinkedTreeMapAdapter() {
+        super();
+        this.adapterType = AdapterType.DBJSON2RAWJSON;
+        isRoot = true;
+    }
 
-//	@Override
-	public LinkedTreeMap read(JsonReader arg0) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public LinkedTreeMapAdapter(String parentArchetypeNodeId, String nodeName) {
+        super();
+        this.adapterType = AdapterType.DBJSON2RAWJSON;
+        this.parentArchetypeNodeId = parentArchetypeNodeId;
+        this.nodeName = nodeName;
+        isRoot = false;
+    }
 
-//	@Override
-	public void write(JsonWriter writer, LinkedTreeMap map) throws IOException {
-		writer.beginObject();
-		for (Object entry: map.entrySet()){
-			if (entry instanceof Map.Entry){
-				String key = (String) ((Map.Entry) entry).getKey();
-				Object value = ((Map.Entry) entry).getValue();
-				if (value instanceof String) {
-					if (key.equals(CompositionSerializer.TAG_CLASS)) {
-						writer.name(AT_CLASS).value(EncodeUtil.camelToUpperSnake((String)value));
-					} else if (key.equals(CompositionSerializer.TAG_PATH)) {
-						//ignore
-					} else if (key.equals(CompositionSerializer.TAG_NAME)) {
-						writer.name(NAME).value((String)value);
-					}
-					else {
-						writer.name(key).value((String)value);
-					}
-				}
-				else if (value instanceof ArrayList){
-					if (key.equals(CompositionSerializer.TAG_NAME)){
-						//grab the name part
-						LinkedTreeMap nameValue = (LinkedTreeMap) ((ArrayList)value).get(0);
-						writer.name(NAME);
-						new LinkedTreeMapAdapter().write(writer, nameValue);
-					}
-					else {
-						String jsonKey = new RawJsonKey(key).toRawJson();
+    //	@Override
+    public LinkedTreeMap read(JsonReader arg0) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-						if (key.matches(matchNodePredicate)){
-							//grab the archetype_node_id and add it to all array value instance
-							String archetypeNodeId = new NodeId(key).predicate();
-							key = jsonKey;
-							for (Object item: (ArrayList)value){
-								if (item instanceof LinkedTreeMap){
-									((LinkedTreeMap)item).put("archetype_node_id", archetypeNodeId);
-								}
-							}
-						}
-						writer.name(key);
-						new ArrayListAdapter().write(writer, (ArrayList) value);
-					}
-				}
-				else if (value instanceof LinkedTreeMap){
-					LinkedTreeMap valueMap = (LinkedTreeMap)value;
-					writer.name(new RawJsonKey(key).toRawJson());
-					new LinkedTreeMapAdapter().write(writer, valueMap);
-				}
-				else if (value instanceof Double){
-					writer.name(key).value((Double)value);
-				}
-				else if (value instanceof Long){
-					writer.name(key).value((Long)value);
-				}
-				else if (value instanceof Number){
-					writer.name(key).value((Number)value);
-				}
-				else if (value instanceof Boolean){
-					writer.name(key).value((Boolean)value);
-				}
-				else
-					throw new IllegalArgumentException("Could not handle value type for key:"+key+", value:"+value);
+    //	@Override
+    private void writeInternal(JsonWriter writer, LinkedTreeMap map) throws IOException {
+
+        boolean inArray = false;
+
+        for (Object entry : map.entrySet()) {
+            if (entry instanceof Map.Entry) {
+                String key = (String) ((Map.Entry) entry).getKey();
+                String jsonKey = new RawJsonKey(key).toRawJson();
+                String archetypeNodeId = new NodeId(key).predicate();
+
+                Object value = ((Map.Entry) entry).getValue();
+
+                if (value instanceof ArrayList) {
+                    //lookahead to check if this embeds another array or terminal leaves
+                    boolean terminalNode = isTerminal((ArrayList) value);
+//                    System.out.println("ARRAY items:" + key + " isTerminal:" + terminalNode);
+                    if (terminalNode) {
+                        if (!inArray)
+                            writer.name(jsonKey);
+                        if (jsonKey.equals(ITEMS) && !inArray) {
+                            inArray = true;
+//                            System.out.println("begin array -----------------------------");
+                            writer.beginArray();
+                        }
+
+                        if (key.matches(matchNodePredicate)) {
+                            //grab the archetype_node_id and add it to all array value instance
+                            for (Object item : (ArrayList) value) {
+                                if (item instanceof LinkedTreeMap) {
+                                    ((LinkedTreeMap) item).put(ARCHETYPE_NODE_ID, archetypeNodeId);
+                                }
+                            }
+                        }
+                        new LinkedTreeMapAdapter().write(writer, (LinkedTreeMap) ((List) value).get(0));
+                    } else {
+//                        System.out.println("name:" + "items");
+                        writer.name(jsonKey);
+                        new ArrayListAdapter(archetypeNodeId, key).write(writer, (ArrayList) value);
+                    }
+                } else if (value instanceof LinkedTreeMap) {
+//                    System.out.println("MAP:" + key);
+                    writer.name(new RawJsonKey(key).toRawJson());
+                    LinkedTreeMap valueMap = (LinkedTreeMap) value;
+//                    System.out.println("name:" + new RawJsonKey(key).toRawJson());
+                    new LinkedTreeMapAdapter().write(writer, valueMap);
+                } else if (value instanceof String) {
+                    if (key.equals(CompositionSerializer.TAG_CLASS)) {
+//                        System.out.println("name:" + AT_CLASS);
+                        writer.name(AT_CLASS).value(new SnakeCase(((String) value)).camelToUpperSnake());
+                    } else if (key.equals(CompositionSerializer.TAG_PATH)) {
+                        ; //do nothing
+                    } else if (key.equals(CompositionSerializer.TAG_NAME)) {
+//                        System.out.println("name:" + NAME);
+                        writeNameAsValue(writer, value.toString());
+//                        writer.name(NAME).value((String) value);
+                    } else {
+//                        System.out.println("name:" + key);
+                        writer.name(key).value((String) value);
+                    }
+                } else if (value instanceof Double) {
+//                    System.out.println("name:" + new SnakeCase(key).camelToSnake());
+                    writer.name(new SnakeCase(key).camelToSnake()).value((Double) value);
+                } else if (value instanceof Long) {
+//                    System.out.println("name:" + new SnakeCase(key).camelToSnake());
+                    writer.name(new SnakeCase(key).camelToSnake()).value((Long) value);
+                } else if (value instanceof Number) {
+//                    System.out.println("name:" + new SnakeCase(key).camelToSnake());
+                    writer.name(new SnakeCase(key).camelToSnake()).value((Number) value);
+                } else if (value instanceof Boolean) {
+//                    System.out.println("name:" + new SnakeCase(key).camelToSnake());
+                    writer.name(new SnakeCase(key).camelToSnake()).value((Boolean) value);
+                } else
+                    throw new IllegalArgumentException("Could not handle value type for key:" + key + ", value:" + value);
+            } else
+                throw new IllegalArgumentException("Entry is not a map:" + entry);
+        }
+
+        if (inArray) {
+//            System.out.println("end array -----------------------------");
+            writer.endArray();
+        }
+
+        return;
+    }
+
+    //	@Override
+    public void write(JsonWriter writer, LinkedTreeMap map) throws IOException {
+//        System.out.println("begin object --------------------------------");
+
+        writer.beginObject();
+        if (isRoot) {
+            //grab the matching node id for this node
+            String nodeKey = new PathAttribute().structuralNodeKey(map);
+            String path = new PathAttribute().findPath(map);
+            if (path != null && nodeKey != null) {
+                String archetypeNodeId = new PathAttribute(path).parentArchetypeNodeId(nodeKey);
+//            String parentNodeName = new PathAttribute(path).parentNodeName(nodeKey);
+                if (archetypeNodeId != null)
+                    writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+            }
+//            if (parentNodeName != null)
+//                writeNameAsValue(writer, parentNodeName);
+            isRoot = false;
+        } else {
+            if (parentArchetypeNodeId != null)
+                writer.name(ARCHETYPE_NODE_ID).value(parentArchetypeNodeId);
+            else {
+                String nodeKey = new PathAttribute().structuralNodeKey(map);
+                String path = new PathAttribute().findPath(map);
+                if (path != null && nodeKey != null) {
+                    String archetypeNodeId = new PathAttribute(path).parentArchetypeNodeId(nodeKey);
+//            String parentNodeName = new PathAttribute(path).parentNodeName(nodeKey);
+                    if (archetypeNodeId != null)
+                        writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                }
+            }
 
 
-			}
-		}
-		writer.endObject();
-		return;
-	}
+//            if (nodeName != null)
+//                writeNameAsValue(writer, nodeName);
+
+        }
+        writeInternal(writer, map);
+//        System.out.println("end object --------------------------------");
+        writer.endObject();
+        return;
+    }
+
+    boolean isTerminal(ArrayList list) {
+        for (Object object : list) {
+            if (object instanceof List)
+                return false;
+            if (object instanceof LinkedTreeMap) {
+                for (Object entry : ((LinkedTreeMap) object).entrySet()) {
+                    String itemKey = ((Map.Entry) entry).getKey().toString();
+                    if (!(itemKey.contains(ITEMS)) && !(itemKey.equals(CompositionSerializer.TAG_NAME)))
+                        return true;
+                    Object mapValue = ((Map.Entry) entry).getValue();
+                    if (mapValue instanceof LinkedTreeMap) {
+                        Map values = (Map) mapValue;
+                        if (values.containsKey(CompositionSerializer.TAG_CLASS))
+                            return true;
+                    }
+
+                }
+            }
+        }
+        return false;
+    }
+
+    void writeNameAsValue(JsonWriter writer, String value) throws IOException {
+        if (value == null || value.isEmpty())
+            return;
+        writer.name(NAME);
+        writer.beginObject();
+        writer.name(VALUE).value(value);
+        writer.endObject();
+    }
 
 }

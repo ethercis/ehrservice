@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.common.generic.PartyIdentified;
@@ -44,7 +45,7 @@ public class PartyIdentifiedSerializer extends DvTypeSerializer<PartyIdentified>
 	@Override
 	public JsonElement serialize(PartyIdentified partyIdentified, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(partyIdentified));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(partyIdentified).camelToUpperSnake());
 		jsonObject.addProperty("name", partyIdentified.getName());
 		jsonObject.add("external_ref", jsonSerializationContext.serialize(partyIdentified.getExternalRef()));
 		return jsonObject;

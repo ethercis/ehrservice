@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.writer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
@@ -103,7 +104,7 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
 //			writer.endObject(); //}
             //===
             writer.beginObject(); //{
-            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(EncodeUtil.camelToUpperSnake(dvalue));
+            writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(dvalue).camelToUpperSnake());
             writer.name("value").value(dvalue.getValue());
             CodePhrase codePhrase = dvalue.getDefiningCode();
             writer.name("defining_code").value(gson.toJson(codePhrase));

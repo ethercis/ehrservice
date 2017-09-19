@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2015 Christian Chevalley
+ * Copyright (c) Ripple Foundation CIC Ltd, UK, 2017
+ * Author: Christian Chevalley
  * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,21 +23,19 @@ import com.ethercis.ehr.encode.wrappers.SnakeCase;
 /**
  * Created by christian on 6/22/2017.
  */
-public class RawJsonKey {
+public class RawJsonArchetypeNodeId {
 
     String originalKey;
 
-    public RawJsonKey(String originalKey) {
+    public RawJsonArchetypeNodeId(String originalKey) {
         this.originalKey = originalKey;
     }
 
-    public String toRawJson() {
+    public String toString() {
         String key = originalKey;
-        if (key.startsWith("/"))
-            key = originalKey.substring(1);
         //strip the [...] node predicate
         if (key.contains("[")) {
-            key = key.substring(0, key.indexOf("["));
+            key = key.substring(key.indexOf("[")+1, key.indexOf("]"));
         }
         return new SnakeCase(key).camelToSnake();
     }

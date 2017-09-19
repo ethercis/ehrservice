@@ -21,7 +21,11 @@ import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,9 +40,10 @@ public class LightRawJsonEncoder {
     }
 
     public String encodeContentAsMap(String root){
+//        Type listType = new TypeToken<ArrayList<ArrayList<Object>>>(){}.getType();
         GsonBuilder gsondb = EncodeUtil.getGsonBuilderInstance();
         if (jsonbOrigin.startsWith("[")){ //strip the expression as an array
-            jsonbOrigin = jsonbOrigin.substring(1, jsonbOrigin.length()-1);
+            jsonbOrigin = jsonbOrigin.trim().substring(1, jsonbOrigin.length()-1);
         }
         Map<String, Object> fromDB = gsondb.create().fromJson(jsonbOrigin, Map.class);
 

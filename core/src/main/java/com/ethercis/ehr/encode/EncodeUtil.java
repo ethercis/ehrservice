@@ -133,24 +133,4 @@ public class EncodeUtil {
         return null;
     }
 
-
-    public static String camelToUpperSnake(String aString){
-        StringBuilder buffer = new StringBuilder();
-        for(int i = 0; i < aString.length(); i++) {
-            if(Character.isUpperCase(aString.charAt(i))) {
-                if(i > 0) {
-                    buffer.append('_');
-                }
-                buffer.append(Character.toLowerCase(aString.charAt(i)));
-            } else {
-                buffer.append(aString.charAt(i));
-            }
-        }
-        return buffer.toString().toUpperCase();
-    }
-
-    public static String camelToUpperSnake(Object object){
-        return camelToUpperSnake(object.getClass().getSimpleName());
-    }
-
 }

@@ -80,6 +80,9 @@ public class DvCodedTextVConstraints extends DataValueConstraints {
     @Override
     public void setConstraints(Archetype archetype, CAttribute valueAttribute) {
 
+        if (valueAttribute == null)
+            return;
+
         Object objectConstraint = ((CComplexObject)(valueAttribute.getChildren().get(0))).getAttribute("defining_code").getChildren().get(0);
 
         CCodePhrase cphrase = null;

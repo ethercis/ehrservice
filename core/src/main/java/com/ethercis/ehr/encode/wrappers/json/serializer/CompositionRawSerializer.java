@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.composition.Composition;
@@ -47,7 +48,7 @@ public class CompositionRawSerializer extends DvTypeSerializer<Composition> {
 		if (composition.getContent().isEmpty())
 			return JsonNull.INSTANCE;
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(composition));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(composition).camelToUpperSnake());
 		jsonObject.add("name", jsonSerializationContext.serialize(composition.getName()));
 		jsonObject.addProperty("archetype_node_id", composition.getArchetypeNodeId());
 		jsonObject.add("archetype_details", jsonSerializationContext.serialize(composition.getArchetypeDetails()));

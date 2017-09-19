@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.writer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -62,7 +63,7 @@ public class DvDateAdapter extends DvTypeAdapter<DvDate> {
 		}
 		else if (adapterType == AdapterType.RAW_JSON ){
 			writer.beginObject();
-			writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(EncodeUtil.camelToUpperSnake(dvalue));
+			writer.name(I_DvTypeAdapter.TAG_CLASS_RAW_JSON).value(new ObjectSnakeCase(dvalue).camelToUpperSnake());
 			writer.name("value").value(dvalue.getValue());
 			writer.endObject();
 		}

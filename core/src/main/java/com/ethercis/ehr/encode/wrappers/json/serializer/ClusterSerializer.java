@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.composition.content.entry.Observation;
@@ -46,7 +47,7 @@ public class ClusterSerializer extends DvTypeSerializer<Cluster> {
 		if (cluster.getItems().isEmpty())
 			return JsonNull.INSTANCE;
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(cluster));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(cluster).camelToUpperSnake());
 		jsonObject.add("name", jsonSerializationContext.serialize(cluster.getName()));
 		jsonObject.addProperty("archetype_node_id", cluster.getArchetypeNodeId());
 		jsonObject.add("archetype_details", jsonSerializationContext.serialize(cluster.getArchetypeDetails()));

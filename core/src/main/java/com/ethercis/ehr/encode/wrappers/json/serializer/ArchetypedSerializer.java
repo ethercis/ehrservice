@@ -17,6 +17,7 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.ethercis.ehr.encode.EncodeUtil;
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.common.archetyped.Archetyped;
@@ -43,7 +44,7 @@ public class ArchetypedSerializer extends DvTypeSerializer<Archetyped> {
 	@Override
 	public JsonElement serialize(Archetyped archetyped, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, EncodeUtil.camelToUpperSnake(archetyped));
+		jsonObject.addProperty(I_DvTypeAdapter.TAG_CLASS_RAW_JSON, new ObjectSnakeCase(archetyped).camelToUpperSnake());
 		jsonObject.add("archetype_id", jsonSerializationContext.serialize(archetyped.getArchetypeId()));
 		jsonObject.add("rm_version", jsonSerializationContext.serialize(archetyped.getRmVersion()));
 		return jsonObject;

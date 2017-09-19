@@ -17,6 +17,7 @@
 
 package com.ethercis.ehr.encode;
 
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.Gson;
@@ -62,7 +63,7 @@ public class CompositionSerializerRawJson extends CompositionSerializer {
             else if (className.equals("DvEHRURI"))
                 rawClassName = "DV_EHR_URI";
             else
-                rawClassName = EncodeUtil.camelToUpperSnake(className);
+                rawClassName = new ObjectSnakeCase(className).camelToUpperSnake();
 
             retStructure = map.put(rawJsonKey(key), rawClassName);
         }
