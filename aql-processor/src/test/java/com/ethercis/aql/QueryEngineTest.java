@@ -1054,4 +1054,55 @@ public class QueryEngineTest {
         assertFalse(records.isEmpty());
         System.out.print(records);
     }
+
+    @Test
+    public void testCR38() throws Exception {
+        String query = "select   a/uid/value as uid,   \n" +
+                "  a/composer/name as author,\n" +
+                "  a/context/start_time/value as date_created," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0057]/value/value as conclusion," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/value as status," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0] as test_panel  \n" +
+                "  from EHR e \n" +
+                "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]\n" +
+                "  contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]  \n" +
+                "  where a/name/value='Laboratory test report'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR43() throws Exception {
+        String query = "select " +
+                "   e/ehr_id/value as ehrId " +
+                "   from EHR e " +
+                "   contains COMPOSITION a " +
+                "   contains EVALUATION a_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1] " +
+                "   where a/name/value='Adverse reaction list' and a_a/data[at0001]/items[at0002]/value/value = 'peanuts'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR46() throws Exception {
+        String query = "select a/ehr_id/value as EHRid," +
+                " a/context/facility/name/value as organization" +
+                " from EHR e contains COMPOSITION a[openEHR-EHR-COMPOSITION.review.v1]" +
+                " contains (OBSERVATION b_a[openEHR-EHR-ADMIN_ENTRY.admission-extended.v1])" +
+                " WHERE a/archetype_details/template_id/value='EHRN Episode details.v0'" +
+                " AND a/context/start_time/value < '2018-01-01' AND a/context/start_time/value > '2017-09-01'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
 }

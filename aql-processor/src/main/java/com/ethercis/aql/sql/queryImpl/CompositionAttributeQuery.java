@@ -124,18 +124,23 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 joinEventContext = true;
                 return contextLocation(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/name/value":
+            case "context/health_care_facility/name/value":
                 joinContextFacility = true;
                 return contextFacilityName(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/namespace":
+            case "context/health_care_facility/id/namespace":
                 joinContextFacility = true;
                 return contextFacilityNamespace(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/ref":
+            case "context/health_care_facility/id/ref":
                 joinContextFacility = true;
                 return contextFacilityRef(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/scheme":
+            case "context/health_care_facility/id/scheme":
                 joinContextFacility = true;
                 return contextFacilityScheme(compositionId, withAlias, variableDefinition.getAlias());
             case "context/facility/id/type":
+            case "context/health_care_facility/id/type":
                 joinContextFacility = true;
                 return contextFacilityType(compositionId, withAlias, variableDefinition.getAlias());
             case "ehr_status/subject/external_ref/namespace":

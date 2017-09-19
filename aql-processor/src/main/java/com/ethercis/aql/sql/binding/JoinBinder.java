@@ -45,41 +45,42 @@ public class JoinBinder implements I_JoinBinder {
 
     /**
      * Warning: JOIN sequence is important!
+     *
      * @param selectQuery
      * @param compositionAttributeQuery
      */
-    public void addJoinClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
-        if (compositionAttributeQuery.isJoinSubject()){
+    public void addJoinClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
+        if (compositionAttributeQuery.isJoinSubject()) {
             joinSubject(selectQuery, compositionAttributeQuery);
         }
-        if (compositionAttributeQuery.isJoinComposition()){
+        if (compositionAttributeQuery.isJoinComposition()) {
             joinComposition(selectQuery, compositionAttributeQuery);
         }
-        if (compositionAttributeQuery.isJoinEventContext()){
+        if (compositionAttributeQuery.isJoinEventContext()) {
             joinEventContext(selectQuery, compositionAttributeQuery);
         }
-        if (compositionAttributeQuery.isJoinContextFacility()){
+        if (compositionAttributeQuery.isJoinContextFacility()) {
             joinContextFacility(selectQuery, compositionAttributeQuery);
         }
-        if (compositionAttributeQuery.isJoinComposer()){
+        if (compositionAttributeQuery.isJoinComposer()) {
             joinComposer(selectQuery, compositionAttributeQuery);
         }
-        if (compositionAttributeQuery.isJoinEhr()){
+        if (compositionAttributeQuery.isJoinEhr()) {
             joinEhr(selectQuery, compositionAttributeQuery);
         }
-        if (compositionAttributeQuery.isJoinEhrStatus() || compositionAttributeQuery.containsEhrStatus()){
+        if (compositionAttributeQuery.isJoinEhrStatus() || compositionAttributeQuery.containsEhrStatus()) {
             joinEhrStatus(selectQuery, compositionAttributeQuery);
         }
     }
 
-    private void joinComposition(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
+    private void joinComposition(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (compositionJoined)
             return;
         selectQuery.addJoin(compositionRecordTable, DSL.field(compositionRecordTable.field(COMPOSITION.ID)).eq(ENTRY.COMPOSITION_ID));
         compositionJoined = true;
     }
 
-    private void joinEhrStatus(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
+    private void joinEhrStatus(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (statusJoined) return;
         if (compositionAttributeQuery.isJoinComposition() || compositionAttributeQuery.useFromEntry()) {
             joinComposition(selectQuery, compositionAttributeQuery);
@@ -87,8 +88,7 @@ public class JoinBinder implements I_JoinBinder {
                     DSL.field(statusRecordTable.field(STATUS.EHR_ID.getName(), UUID.class))
                             .eq(DSL.field(compositionRecordTable.field(COMPOSITION.EHR_ID.getName(), UUID.class))));
             statusJoined = true;
-        }
-        else {//assume it is joined on EHR
+        } else {//assume it is joined on EHR
             joinEhr(selectQuery, compositionAttributeQuery);
             selectQuery.addJoin(statusRecordTable,
                     DSL.field(statusRecordTable.field(STATUS.EHR_ID.getName(), UUID.class))
@@ -97,7 +97,7 @@ public class JoinBinder implements I_JoinBinder {
         }
     }
 
-    private void joinSubject(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
+    private void joinSubject(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (subjectJoin) return;
         joinEhrStatus(selectQuery, compositionAttributeQuery);
         Table<PartyIdentifiedRecord> subjectTable = compositionAttributeQuery.getSubjectRef();
@@ -107,23 +107,23 @@ public class JoinBinder implements I_JoinBinder {
         subjectJoin = true;
     }
 
-    private void joinEventContext(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
+    private void joinEventContext(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (eventContextJoined) return;
         selectQuery.addJoin(EVENT_CONTEXT, EVENT_CONTEXT.COMPOSITION_ID.eq(ENTRY.COMPOSITION_ID));
         eventContextJoined = true;
     }
 
-    private void joinContextFacility(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
+    private void joinContextFacility(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (facilityJoined) return;
         joinEventContext(selectQuery, compositionAttributeQuery);
         Table<PartyIdentifiedRecord> facilityTable = compositionAttributeQuery.getFacilityRef();
-        selectQuery.addJoin(EVENT_CONTEXT,
-                EVENT_CONTEXT.FACILITY
-                        .eq(DSL.field(facilityTable.field(PARTY_IDENTIFIED.ID.getName(), UUID.class))));
+        selectQuery.addJoin(facilityTable,
+                            EVENT_CONTEXT.FACILITY
+                                .eq(DSL.field(facilityTable.field(PARTY_IDENTIFIED.ID.getName(), UUID.class))));
         facilityJoined = true;
     }
 
-    private void joinComposer(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
+    private void joinComposer(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (composerJoined) return;
         joinComposition(selectQuery, compositionAttributeQuery);
         Table<PartyIdentifiedRecord> composerTable = compositionAttributeQuery.getComposerRef();
@@ -133,7 +133,7 @@ public class JoinBinder implements I_JoinBinder {
         composerJoined = true;
     }
 
-    private void joinEhr(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery){
+    private void joinEhr(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (ehrJoined) return;
         joinComposition(selectQuery, compositionAttributeQuery);
         selectQuery.addJoin(ehrRecordTable,
