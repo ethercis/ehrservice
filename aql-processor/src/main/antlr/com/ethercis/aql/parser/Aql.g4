@@ -21,8 +21,8 @@ query	:	queryExpr ;
 queryExpr : select from (where)? (limit)? (offset)? (orderBy)? EOF ;
 
 select
-        : SELECT (DISTINCT)? selectExpr
-        | SELECT (DISTINCT)? topExpr selectExpr ;
+        : SELECT selectExpr
+        | SELECT topExpr selectExpr ;
 
 topExpr
         : TOP INTEGER (BACKWARD|FORWARD)?;
@@ -30,7 +30,7 @@ topExpr
 //        | TOP INTEGER FORWARD ;
 
 function
-        : FUNCTION_IDENTIFIER OPEN_PAR IDENTIFIER (COMMA IDENTIFIER)* CLOSE_PAR;
+        : FUNCTION_IDENTIFIER OPEN_PAR (IDENTIFIER|identifiedPath|operand) (COMMA (IDENTIFIER|identifiedPath|operand))* CLOSE_PAR;
 
 where
         : WHERE identifiedExpr ;
@@ -58,8 +58,14 @@ orderByExpr : identifiedPath (DESCENDING|ASCENDING|DESC|ASC);
 //        : variableSeq;
 
 selectExpr
-        : identifiedPath (AS IDENTIFIER)? (COMMA selectExpr)?
-        | function (AS IDENTIFIER)? (COMMA selectExpr)?
+        : (DISTINCT)? identifiedPath (AS IDENTIFIER)? (COMMA selectExpr)?
+        | (DISTINCT)? stdExpression (AS IDENTIFIER)? (COMMA selectExpr)?
+        ;
+
+stdExpression
+        : function
+        | INTEGER
+        | STRING
         ;
 
 //variableSeq_
@@ -69,13 +75,19 @@ selectExpr
 
 from
         : FROM fromExpr		// stop or/and without root class
-	    | FROM fromEHR (CONTAINS containsExpression)?;
+	    | FROM fromEHR (CONTAINS containsExpression)? (COMMA fromForeignData)?
+	    | FROM fromForeignData (COMMA fromForeignData)?;
 //        | FROM ContainsOr;
 
 fromEHR 
         : EHR standardPredicate
         | EHR IDENTIFIER standardPredicate
         | EHR IDENTIFIER ;
+
+//foreign data
+fromForeignData
+        : (AGENT | GROUP | ORGANISATION | PERSON) IDENTIFIER standardPredicate
+        | (AGENT | GROUP | ORGANISATION | PERSON) IDENTIFIER;
 
 //====== CONTAINMENT
 fromExpr
@@ -251,8 +263,21 @@ VERSION	:	V E R S I O N ;
 VERSIONED_OBJECT	:	V E R S I O N E D '_' O B J E C T;
 ALL_VERSIONS :	A L L '_' V E R S I O N S;
 LATEST_VERSION : L A T E S T '_' V E R S I O N ;
+DISTINCT : D I S T I N C T ;
+//demographic binding
+PERSON: P E R S O N ;
+AGENT: A G E N T ;
+ORGANISATION: O R G A N I S A T I O N ;
+GROUP: G R O U P ;
 
-FUNCTION_IDENTIFIER : COUNT | AVG | BOOL_AND | BOOL_OR | EVERY | MAX | MIN | SUM;
+FUNCTION_IDENTIFIER : COUNT | AVG | BOOL_AND | BOOL_OR | EVERY | MAX | MIN | SUM |
+//statistic
+                      CORR | COVAR_POP | COVAR_SAMP | REGR_AVGX | REGR_AVGY | REGR_COUNT | REGR_INTERCEPT | REGR_R2 | REGR_SLOPE | REGR_SXX |
+                      REGR_SXY | REGR_SYY | STDDEV | STDDEV_POP | STDDEV_SAMP | VARIANCE | VAR_POP | VAR_SAMP |
+//string function
+                      SUBSTR | STRPOS | SPLIT_PART | BTRIM | CONCAT | CONCAT_WS | DECODE | ENCODE | FORMAT | INITCAP | LEFT | LENGTH | LPAD | LTRIM |
+                       REGEXP_MATCH | REGEXP_REPLACE | REGEXP_SPLIT_TO_ARRAY | REGEXP_SPLIT_TO_TABLE | REPEAT | REPLACE | REVERSE | RIGHT | RPAD |
+                       RTRIM | TRANSLATE ;
 
 // Terminal Definitions
 BOOLEAN	:	(T R U E)|(F A L S E) ;
@@ -263,6 +288,9 @@ IDENTIFIER
 	:	A (ALPHANUM|'_')*
 	| 	LETTERMINUSA IDCHAR*
 	;
+
+DEMOGRAPHIC
+        : (AGENT | GROUP | ORGANISATION | PERSON) ;
 
 INTEGER	:	'-'? DIGIT+;
 FLOAT	:	'-'? DIGIT+ '.' DIGIT+;
@@ -296,6 +324,13 @@ CLOSE_PAR	:	')';
 OPEN_CURLY :	'{';
 CLOSE_CURLY :	'}';
 
+ARITHMETIC_BINOP:
+      '/'
+    | '*'
+    | '+'
+    | '-'
+    ;
+
 COUNT: C O U N T;
 AVG: A V G;
 BOOL_AND: B O O L '_' A N D;
@@ -304,6 +339,50 @@ EVERY: E V E R Y;
 MAX: M A X;
 MIN: M I N;
 SUM: S U M;
+SUBSTR: S U B S T R;
+STRPOS: S T R P O S;
+SPLIT_PART: S P L I T '_' P A R T;
+BTRIM : B T R I M;
+CONCAT: C O N C A T;
+CONCAT_WS : C O N C A T '_' W S;
+DECODE : D E C O D E;
+ENCODE : E N C O D E;
+FORMAT : F O R M A T;
+INITCAP : I N I T C A P;
+LEFT : L E F T;
+LENGTH : L E N G T H;
+LPAD : L P A D;
+LTRIM : L T R I M;
+REGEXP_MATCH : R E G E X P '_' M A T C H;
+REGEXP_REPLACE : R E G E X P '_' R E P L A C E;
+REGEXP_SPLIT_TO_ARRAY : R E G E X P '_' S P L I T '_' T O '_' A R R A Y;
+REGEXP_SPLIT_TO_TABLE : R E G E X P '_' S P L I T '_' T O '_' T A B L E;
+REPEAT : R E P E A T;
+REPLACE : R E P L A C E;
+REVERSE : R E V E R S E;
+RIGHT : R I G H T;
+RPAD : R P A D;
+RTRIM : R T R I M;
+TRANSLATE : T R A N S L A T E;
+CORR : C O R R;
+COVAR_POP : C O V A R '_' P O P;
+COVAR_SAMP : C O V A R '_' S A M P;
+REGR_AVGX : R E G R '_' A V G X;
+REGR_AVGY  : R E G R '_' A V G Y;
+REGR_COUNT  : R E G R '_' C O U N T;
+REGR_INTERCEPT : R E G R '_' I N T E R C E P T;
+REGR_R2  : R E G R '_' R '2';
+REGR_SLOPE  : R E G R '_' S L O P E;
+REGR_SXX  : R E G R '_' S X X;
+REGR_SXY  : R E G R '_' S X Y;
+REGR_SYY  : R E G R '_' S Y Y;
+STDDEV : S T D D E V;
+STDDEV_POP : S T D D E V '_' P O P;
+STDDEV_SAMP : S T D D E V '_' S A M P;
+VARIANCE : V A R I A N C E;
+VAR_POP : V A R '_' P O P;
+VAR_SAMP : V A R '_' S A M P;
+
 
 
 fragment

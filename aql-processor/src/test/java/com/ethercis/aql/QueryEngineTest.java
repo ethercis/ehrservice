@@ -57,9 +57,9 @@ public class QueryEngineTest {
         String login = System.getProperty("test.db.user");
         String password = System.getProperty("test.db.password");
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "src/test");
-        props.put("knowledge.path.template", "src/test");
-        props.put("knowledge.path.opt", "src/test");
+        props.put("knowledge.path.archetype", "src/test/resources/dummy");
+        props.put("knowledge.path.template", "src/test/resources/dummy");
+        props.put("knowledge.path.opt", "src/test/resources/dummy");
         props.put("knowledge.forcecache", "true");
         I_KnowledgeCache knowledge;
         try {
@@ -1099,6 +1099,68 @@ public class QueryEngineTest {
                 " contains (OBSERVATION b_a[openEHR-EHR-ADMIN_ENTRY.admission-extended.v1])" +
                 " WHERE a/archetype_details/template_id/value='EHRN Episode details.v0'" +
                 " AND a/context/start_time/value < '2018-01-01' AND a/context/start_time/value > '2017-09-01'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testDISTINCT() throws Exception {
+        String query = "select distinct count(a/ehr_id/value) as ehr_count" +
+                " from EHR e contains COMPOSITION a[openEHR-EHR-COMPOSITION.review.v1]" +
+                " contains (OBSERVATION b_a[openEHR-EHR-ADMIN_ENTRY.admission-extended.v1])" +
+                " WHERE a/archetype_details/template_id/value='EHRN Episode details.v0'" +
+                " AND a/context/start_time/value < '2018-01-01' AND a/context/start_time/value > '2017-09-01'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testFunction1() throws Exception {
+        String query = "select  \n" +
+                "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as max_systolic,\n" +
+                "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as max_diastolic,\n" +
+                "    min(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as min_systolic,\n" +
+                "    min(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as min_diastolic,\n" +
+                "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as avg_systolic,\n" +
+                "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as avg_diastolic\n" +
+                "    from EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9']\n" +
+                "    contains COMPOSITION a contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1]\n";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testExtendedFrom1() throws Exception {
+        String query = "select  \n" +
+                "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as max_systolic\n" +
+                "    from EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9']\n" +
+                "       contains COMPOSITION a contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1],\n" +
+                "    PERSON p[e/ehr_status/party/uuid=p/uuid]\n";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR58Func() throws Exception {
+        String query = "select   split_part(a/uid/value, '::', 3) as uid,   \n" +
+                "  initcap(a/composer/name)  as author,\n" +
+                "  a/context/start_time/value as date_created" +
+                "  from EHR e \n" +
+                "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]\n" +
+                "  contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]  \n" +
+                "  where a/name/value='Laboratory test report'";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

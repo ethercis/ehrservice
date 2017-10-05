@@ -17,12 +17,12 @@
 
 package com.ethercis.aql.compiler;
 
-import com.ethercis.aql.definition.FunctionDefinition;
-import com.ethercis.aql.definition.VariableDefinition;
+import com.ethercis.aql.definition.*;
 import com.ethercis.aql.parser.AqlBaseListener;
 import com.ethercis.aql.parser.AqlParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,10 +33,10 @@ import java.util.stream.Collectors;
  * AQL compilation pass 2<p>
  * This pass uses the results of pass 1 to:
  * <ul>
- *     <li>resolve AQL paths from symbols, example: c/items[at0002]/items[at0001]/value/value/magnitude
- *     <li>create the list of variables used in SELECT
- *     <li>create the list of ORDER BY expression parts
- *     <li>set the TOP clause if specified
+ * <li>resolve AQL paths from symbols, example: c/items[at0002]/items[at0001]/value/value/magnitude
+ * <li>create the list of variables used in SELECT
+ * <li>create the list of ORDER BY expression parts
+ * <li>set the TOP clause if specified
  * </ul>
  * Created by christian on 4/1/2016.
  */
@@ -44,16 +44,15 @@ public class QueryCompilerPass2 extends AqlBaseListener {
 
     Logger logger = LogManager.getLogger(QueryCompilerPass2.class);
 
-    Deque<VariableDefinition> variableStack = new ArrayDeque<>();
+    Deque<I_VariableDefinition> variableStack = new ArrayDeque<>();
     Deque<OrderAttribute> orderAttributes = null;
     Integer limitAttribute = null;
     Integer offsetAttribute = null;
 
     TopAttributes topAttributes = null;
-    FunctionDefinition functionDefinitions = new FunctionDefinition();
 
     @Override
-    public void exitObjectPath(AqlParser.ObjectPathContext objectPathContext){
+    public void exitObjectPath(AqlParser.ObjectPathContext objectPathContext) {
         logger.debug("Object Path->");
     }
 
@@ -63,33 +62,55 @@ public class QueryCompilerPass2 extends AqlBaseListener {
 //    }
 
     @Override
-    public void exitSelectExpr(AqlParser.SelectExprContext selectExprContext){
+    public void exitSelectExpr(AqlParser.SelectExprContext selectExprContext) {
+        boolean isDistinct = false;
+
         AqlParser.IdentifiedPathContext identifiedPathContext = selectExprContext.identifiedPath();
+
+        if (selectExprContext.DISTINCT() != null) {
+            //has distinct expression
+            isDistinct = true;
+        }
+
         if (identifiedPathContext != null) {
-            String identifier = identifiedPathContext.IDENTIFIER().getText();
-            String path = null;
-            if (identifiedPathContext.objectPath() != null && !identifiedPathContext.objectPath().isEmpty())
-                path = identifiedPathContext.objectPath().getText();
-            String alias = null;
-            //get an alias if any
-            if (selectExprContext.AS() != null) {
-                alias = selectExprContext.IDENTIFIER().getText();
+            VariableDefinition variableDefinition = new IdentifiedPathVariable(identifiedPathContext, selectExprContext, isDistinct).definition();
+            variableStack.push(variableDefinition);
+        } else if (selectExprContext.stdExpression() != null) {
+            //function handling
+            logger.debug("Found standard expression");
+            //set alias if any (function AS alias
+            if (selectExprContext.stdExpression().function() != null) {
+                logger.debug("Found function");
+                AqlParser.FunctionContext functionContext = selectExprContext.stdExpression().function();
+                String name = functionContext.FUNCTION_IDENTIFIER().getText();
+                List<FuncParameter> parameters = new ArrayList<>();
+//            for (AqlParser.IdentifiedPathContext pathContext: functionContext.identifiedPath()){
+//                parameters.add(pathContext.getText());
+//                VariableDefinition variableDefinition = new IdentifiedPathVariable(pathContext, selectExprContext, false).definition();
+//                variableStack.push(variableDefinition);
+//            }
+
+                for (ParseTree pathTree : functionContext.children) {
+                    if (pathTree instanceof AqlParser.IdentifiedPathContext) {
+                        AqlParser.IdentifiedPathContext pathContext = (AqlParser.IdentifiedPathContext) pathTree;
+                        VariableDefinition variableDefinition = new IdentifiedPathVariable(pathContext, selectExprContext, false).definition();
+                        variableStack.push(variableDefinition);
+                        parameters.add(new FuncParameter(FuncParameterType.VARIABLE, variableDefinition.getAlias()));
+                    } else if (pathTree instanceof AqlParser.OperandContext) {
+                        parameters.add(new FuncParameter(FuncParameterType.OPERAND, pathTree.getText()));
+                    } else if (pathTree instanceof TerminalNode) {
+                        parameters.add(new FuncParameter(FuncParameterType.IDENTIFIER, pathTree.getText()));
+                    }
+                }
+
+                String alias = selectExprContext.IDENTIFIER() == null ? name : selectExprContext.IDENTIFIER().getText();
+                String path = functionContext.getText();
+                FunctionDefinition definition = new FunctionDefinition(name, alias, path, parameters);
+                variableStack.push(definition);
             }
 
-            VariableDefinition variableDefinition = new VariableDefinition(path, alias, identifier);
-            variableStack.push(variableDefinition);
-        }
-        else {
-            //function handling
-            logger.debug("Found function:");
-            //set alias if any (function AS alias
-            AqlParser.FunctionContext functionContext = selectExprContext.function();
-            String name = functionContext.FUNCTION_IDENTIFIER().getText();
-            List<String> identifiers = functionContext.IDENTIFIER().stream().map(terminalNode -> terminalNode.getSymbol().getText()).collect(Collectors.toList());
-            functionDefinitions.add(name, identifiers);
-            String alias = selectExprContext.IDENTIFIER() == null ? name : selectExprContext.IDENTIFIER().getText();
-            functionDefinitions.setAlias(name, alias);
-        }
+        } else
+            throw new IllegalArgumentException("Could not interpret select context");
     }
 
 //    @Override
@@ -111,20 +132,20 @@ public class QueryCompilerPass2 extends AqlBaseListener {
 //    }
 
     @Override
-    public void exitIdentifiedExpr(AqlParser.IdentifiedExprContext identifiedExprContext){
+    public void exitIdentifiedExpr(AqlParser.IdentifiedExprContext identifiedExprContext) {
 
     }
 
     @Override
-    public void exitIdentifiedEquality(AqlParser.IdentifiedEqualityContext identifiedEqualityContext){
+    public void exitIdentifiedEquality(AqlParser.IdentifiedEqualityContext identifiedEqualityContext) {
 
     }
 
     @Override
-    public void exitTopExpr(AqlParser.TopExprContext context){
+    public void exitTopExpr(AqlParser.TopExprContext context) {
         Integer window = null;
         TopAttributes.TopDirection direction = null;
-        if (context.TOP() != null){
+        if (context.TOP() != null) {
             window = new Integer(context.INTEGER().getText());
             if (context.BACKWARD() != null)
                 direction = TopAttributes.TopDirection.BACKWARD;
@@ -135,18 +156,18 @@ public class QueryCompilerPass2 extends AqlBaseListener {
     }
 
     @Override
-    public void exitOrderBy(AqlParser.OrderByContext context){
+    public void exitOrderBy(AqlParser.OrderByContext context) {
 
     }
 
     @Override
-    public void exitOrderBySeq(AqlParser.OrderBySeqContext context){
+    public void exitOrderBySeq(AqlParser.OrderBySeqContext context) {
         if (orderAttributes == null)
             orderAttributes = new ArrayDeque<>();
 
-        for (ParseTree tree: context.children){
-            if (tree instanceof AqlParser.OrderByExprContext){
-                AqlParser.OrderByExprContext context1 = (AqlParser.OrderByExprContext)tree;
+        for (ParseTree tree : context.children) {
+            if (tree instanceof AqlParser.OrderByExprContext) {
+                AqlParser.OrderByExprContext context1 = (AqlParser.OrderByExprContext) tree;
                 AqlParser.IdentifiedPathContext identifiedPathContext = context1.identifiedPath();
                 String path;
                 if (identifiedPathContext.objectPath() != null)
@@ -154,7 +175,7 @@ public class QueryCompilerPass2 extends AqlBaseListener {
                 else
                     path = "$ALIAS$";
                 String identifier = identifiedPathContext.IDENTIFIER().getText();
-                OrderAttribute orderAttribute = new OrderAttribute(new VariableDefinition(path, null, identifier));
+                OrderAttribute orderAttribute = new OrderAttribute(new VariableDefinition(path, null, identifier, false));
                 if (context1.ASC() != null || context1.ASCENDING() != null)
                     orderAttribute.setDirection(OrderAttribute.OrderDirection.ASC);
                 else if (context1.DESC() != null || context1.DESCENDING() != null)
@@ -165,7 +186,7 @@ public class QueryCompilerPass2 extends AqlBaseListener {
     }
 
     @Override
-    public void exitOffset(AqlParser.OffsetContext ctx){
+    public void exitOffset(AqlParser.OffsetContext ctx) {
         offsetAttribute = new Integer(ctx.INTEGER().getText());
     }
 
@@ -175,12 +196,12 @@ public class QueryCompilerPass2 extends AqlBaseListener {
     }
 
     @Override
-    public void exitFunction(AqlParser.FunctionContext functionContext){
+    public void exitFunction(AqlParser.FunctionContext functionContext) {
         //get the function id and parameters
         logger.debug("in function");
     }
 
-    public List<VariableDefinition> variables(){
+    public List<I_VariableDefinition> variables() {
         return new ArrayList<>(variableStack);
     }
 
@@ -188,15 +209,12 @@ public class QueryCompilerPass2 extends AqlBaseListener {
         return topAttributes;
     }
 
-    public List<OrderAttribute> getOrderAttributes(){
+    public List<OrderAttribute> getOrderAttributes() {
         if (orderAttributes == null)
             return null;
         return new ArrayList<>(orderAttributes);
     }
 
-    public FunctionDefinition getFunctionDefinitions() {
-        return functionDefinitions;
-    }
 
     public Integer getLimitAttribute() {
         return limitAttribute;

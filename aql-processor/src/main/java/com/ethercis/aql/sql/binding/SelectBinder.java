@@ -20,6 +20,7 @@ package com.ethercis.aql.sql.binding;
 import com.ethercis.aql.compiler.OrderAttribute;
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.containment.IdentifierMapper;
+import com.ethercis.aql.definition.I_VariableDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
 import com.ethercis.aql.sql.postprocessing.I_RawJsonTransform;
@@ -47,7 +48,7 @@ public class SelectBinder {
     private JsonbEntryQuery jsonbEntryQuery;
     private CompositionAttributeQuery compositionAttributeQuery;
     private PathResolver pathResolver;
-    protected List<VariableDefinition> selectVariableDefinitions;
+    protected List<I_VariableDefinition> selectVariableDefinitions;
     protected List<JsonbBlockDef> jsonDataBlock = new ArrayList<>();
     private IdentifierMapper mapper;
     DSLContext context ;
@@ -57,7 +58,7 @@ public class SelectBinder {
 
     private OptimizationMode optimizationMode;
 
-    public SelectBinder(DSLContext context, IdentifierMapper mapper, List<VariableDefinition> definitions, List whereClause, String serverNodeId, OptimizationMode mode, String entry_root) {
+    public SelectBinder(DSLContext context, IdentifierMapper mapper, List<I_VariableDefinition> definitions, List whereClause, String serverNodeId, OptimizationMode mode, String entry_root) {
         this.context = context;
         this.pathResolver = new PathResolver(context, mapper);
         this.mapper = mapper;
@@ -87,7 +88,10 @@ public class SelectBinder {
 
         boolean containsJsonDataBlock = false;
 
-        for (VariableDefinition variableDefinition: selectVariableDefinitions) {
+        for (I_VariableDefinition variableDefinition: selectVariableDefinitions) {
+            if (variableDefinition.isFunction() == true){
+                continue;
+            }
             String identifier = variableDefinition.getIdentifier();
             String className = mapper.getClassName(identifier);
             Field<?> field;
@@ -159,7 +163,7 @@ public class SelectBinder {
 
         SelectQuery<?> selectQuery = context.selectQuery();
 
-        for (VariableDefinition variableDefinition: selectVariableDefinitions) {
+        for (I_VariableDefinition variableDefinition: selectVariableDefinitions) {
             String identifier = variableDefinition.getIdentifier();
             String className = mapper.getClassName(identifier);
             Field<?> field;
@@ -216,7 +220,7 @@ public class SelectBinder {
 
         SelectQuery<?> selectQuery = context.selectQuery();
 
-        for (VariableDefinition variableDefinition: selectVariableDefinitions) {
+        for (I_VariableDefinition variableDefinition: selectVariableDefinitions) {
             String identifier = variableDefinition.getIdentifier();
             String className = mapper.getClassName(identifier);
             Field<?> field;

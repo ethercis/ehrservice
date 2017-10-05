@@ -17,6 +17,7 @@
 
 package com.ethercis.aql.sql.queryImpl;
 
+import com.ethercis.aql.definition.I_VariableDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import org.jooq.Field;
 import org.jooq.SelectQuery;
@@ -42,7 +43,7 @@ public interface I_QueryImpl {
 
     enum Clause {SELECT, WHERE, ORDERBY, FROM}
 
-    Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause);
+    Field<?> makeField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause);
 
-    Field<?> whereField(UUID compositionId, String identifier, VariableDefinition variableDefinition);
+    Field<?> whereField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition);
 }

@@ -17,6 +17,7 @@
 
 package com.ethercis.aql.sql.queryImpl;
 
+import com.ethercis.aql.definition.I_VariableDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
 import com.ethercis.aql.sql.binding.I_JoinBinder;
@@ -98,7 +99,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
     private String entry_root;
 
-    public JsonbEntryQuery(DSLContext context, PathResolver pathResolver, List<VariableDefinition> definitions, String entry_root){
+    public JsonbEntryQuery(DSLContext context, PathResolver pathResolver, List<I_VariableDefinition> definitions, String entry_root){
         super(context, pathResolver, definitions);
         this.entry_root = entry_root;
     }
@@ -244,7 +245,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
 
     @Override
-    public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause){
+    public Field<?> makeField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause){
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
         if (path == null) {
             //return a null field
@@ -314,7 +315,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     }
 
     @Override
-    public Field<?> whereField(UUID compositionId, String identifier, VariableDefinition variableDefinition){
+    public Field<?> whereField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition){
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
         if (path == null)
             throw new IllegalArgumentException("Could not find a path for identifier:" + variableDefinition.getIdentifier());

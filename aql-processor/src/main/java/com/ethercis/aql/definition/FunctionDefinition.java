@@ -25,53 +25,53 @@ import java.util.Map;
 /**
  * Created by christian on 9/20/2016.
  */
-public class FunctionDefinition {
+public class FunctionDefinition implements I_VariableDefinition{
 
-    public class Definition {
-        private List<String> parameters;
-        private String alias;
+    private String identifier;
+    private String alias;
+    private String path;
+    private List<FuncParameter> parameters;
 
-        public Definition(List<String> parameters) {
-            this.parameters = parameters;
-        }
-
-        public void setAlias(String alias) {
-            this.alias = alias;
-        }
-
-        public List<String> getParameters() {
-            return parameters;
-        }
-
-        public String getAlias() {
-            return alias;
-        }
+    public FunctionDefinition(String identifier, String alias, String path, List<FuncParameter> parameters) {
+        this.identifier = identifier;
+        this.alias = alias;
+        this.path = path;
+        this.parameters = parameters;
     }
 
-    //list of maps consisting of a function name (key) and a list of parameters (identifiers)
-    private Map<String, Definition> functions = new HashMap<>();
-
-    public void add(String name, List<String> identifiers){
-        Definition definition = new Definition(identifiers);
-        functions.put(name, definition);
+    public List<FuncParameter> getParameters(){
+        return parameters;
     }
 
-    public void setAlias(String function, String alias){
-        Definition definition = functions.get(function);
-        definition.setAlias(alias);
+    @Override
+    public String getAlias(){
+        return alias;
     }
 
-    public List<String> getIdentifiers(String functionName){
-        Definition definition = functions.get(functionName);
-        return definition.getParameters();
+
+    @Override
+    public String getPath() {
+        return path;
     }
 
-    public String getAlias(String functionName){
-        Definition definition = functions.get(functionName);
-        return definition.getAlias();
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public int size(){
-        return functions.size();
+    @Override
+    public boolean isDistinct() {
+        return false;
+    }
+
+    @Override
+    public boolean isFunction() {
+        return true;
+    }
+
+    @Override
+    public List<FuncParameter> getFuncParameters() {
+        return parameters;
     }
 }

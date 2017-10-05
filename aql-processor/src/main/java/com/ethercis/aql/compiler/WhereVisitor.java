@@ -169,7 +169,7 @@ public class WhereVisitor extends AqlBaseVisitor< List<Object>> {
                         String path = identifiedPathContext.objectPath().getText();
                         String identifier = identifiedPathContext.IDENTIFIER().getText();
                         String alias = null;
-                        VariableDefinition variable = new VariableDefinition(path, alias, identifier);
+                        VariableDefinition variable = new VariableDefinition(path, alias, identifier, false);
                         whereExpression.add(variable);
                     }
                 }

@@ -19,20 +19,18 @@ package com.ethercis.aql.sql;
 
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.compiler.TopAttributes;
+import com.ethercis.aql.definition.Variables;
 import com.ethercis.aql.sql.binding.*;
 import com.ethercis.aql.sql.postprocessing.I_RawJsonTransform;
 import com.ethercis.aql.sql.postprocessing.RawJsonTransform;
 import com.ethercis.aql.sql.queryImpl.ContainsSet;
-import com.ethercis.ehr.encode.rawjson.RawJsonEncoder;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
-import com.ethercis.jooq.pg.tables.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
-import java.lang.System;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -173,7 +171,10 @@ public class QueryProcessor  {
                     if (count != null)
                         unionSetQuery.addLimit(count);
                     if (!explain) {
-                        result = fetchResultSet(unionSetQuery, result);
+                        if (new Variables(queryParser.getVariables()).hasDefinedDistinct() || new Variables(queryParser.getVariables()).hasDefinedFunction())
+                            result = fetchResultSet(new SuperQuery(context, queryParser.getVariables(), unionSetQuery).select(), result);
+                        else
+                            result = fetchResultSet(unionSetQuery, result);
                         //if any jsonb data field transform them into raw json
                         if (containsJsonbField && knowledgeCache != null){
                             RawJsonTransform.toRawJson(result, cacheQuery.values(), knowledgeCache);

@@ -18,6 +18,7 @@
 package com.ethercis.aql.sql.queryImpl;
 
 import com.ethercis.aql.containment.IdentifierMapper;
+import com.ethercis.aql.definition.I_VariableDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
 import org.jooq.DSLContext;
@@ -30,11 +31,11 @@ import java.util.List;
 public abstract class ObjectQuery {
 
     protected DSLContext context;
-    protected List<VariableDefinition> variableDefinitions;
+    protected List<I_VariableDefinition> variableDefinitions;
     protected PathResolver pathResolver;
     protected static int serial = 0; //used to alias fields for now.
 
-    protected ObjectQuery(DSLContext context, PathResolver pathResolver, List<VariableDefinition> definitions){
+    protected ObjectQuery(DSLContext context, PathResolver pathResolver, List<I_VariableDefinition> definitions){
         this.context = context;
         this.variableDefinitions = definitions;
         this.pathResolver = pathResolver;

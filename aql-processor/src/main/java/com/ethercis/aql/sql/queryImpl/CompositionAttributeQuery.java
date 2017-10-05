@@ -17,6 +17,7 @@
 
 package com.ethercis.aql.sql.queryImpl;
 
+import com.ethercis.aql.definition.I_VariableDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.binding.I_JoinBinder;
 import com.ethercis.jooq.pg.Tables;
@@ -60,13 +61,13 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     private boolean joinComposer = false;
     private boolean joinContextFacility = false;
 
-    public CompositionAttributeQuery(DSLContext context, PathResolver pathResolver, List<VariableDefinition> definitions, String serverNodeId){
+    public CompositionAttributeQuery(DSLContext context, PathResolver pathResolver, List<I_VariableDefinition> definitions, String serverNodeId){
         super(context, pathResolver, definitions);
         this.serverNodeId = serverNodeId;
     }
 
     @Override
-    public Field<?> makeField(UUID compositionId, String identifier, VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
+    public Field<?> makeField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
         //resolve composition attributes and/or context
         columnAlias = variableDefinition.getPath();
         compositionIdField = false;
@@ -172,7 +173,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     }
 
     @Override
-    public Field<?> whereField(UUID compositionId, String identifier, VariableDefinition variableDefinition) {
+    public Field<?> whereField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition) {
         return makeField(compositionId, identifier, variableDefinition, false, Clause.WHERE);
     }
 
@@ -481,14 +482,14 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         }
     }
 
-    private Field<?> ehrStatusOtherDetails(VariableDefinition variableDefinition, boolean withAlias){
+    private Field<?> ehrStatusOtherDetails(I_VariableDefinition variableDefinition, boolean withAlias){
         containsEhrStatus = true;
         String variablePath = variableDefinition.getPath().substring("ehr_status/other_details".length() + 1);
         Field<?> field = JsonbEntryQuery.makeField(JsonbEntryQuery.OTHER_ITEM.OTHER_DETAILS, null, variableDefinition.getAlias(), variablePath, withAlias);
         return field;
     }
 
-    private Field<?> ehrContextOtherContext(VariableDefinition variableDefinition, boolean withAlias){
+    private Field<?> ehrContextOtherContext(I_VariableDefinition variableDefinition, boolean withAlias){
         containsOtherContext = true;
         String variablePath = variableDefinition.getPath().substring("context/other_context".length() + 1);
         variablePath = variablePath.substring(variablePath.indexOf("]")+1);

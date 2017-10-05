@@ -20,8 +20,9 @@ package com.ethercis.aql.compiler;
 import com.ethercis.aql.containment.Containment;
 import com.ethercis.aql.containment.ContainmentSet;
 import com.ethercis.aql.containment.IdentifierMapper;
-import com.ethercis.aql.definition.FromDefinition;
+import com.ethercis.aql.definition.FromEhrDefinition;
 import com.ethercis.aql.definition.FunctionDefinition;
+import com.ethercis.aql.definition.I_VariableDefinition;
 import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.parser.AqlLexer;
 import com.ethercis.aql.parser.AqlParser;
@@ -63,7 +64,7 @@ public class QueryParser {
     private List<Object> whereClause;
     private IdentifierMapper identifierMapper;
     ParseTreeWalker walker = new ParseTreeWalker();
-    List<VariableDefinition> variables;
+    List<I_VariableDefinition> variables;
     private boolean requiresContainResolution = false; //true if expression has CONTAINS
     private TopAttributes topAttributes;
     private List<OrderAttribute> orderAttributes;
@@ -142,7 +143,6 @@ public class QueryParser {
         orderAttributes = queryCompilerPass2.getOrderAttributes();
         limitAttribute = queryCompilerPass2.getLimitAttribute();
         offsetAttribute = queryCompilerPass2.getOffsetAttribute();
-        functionDefinitions = queryCompilerPass2.getFunctionDefinitions();
     }
 
     private List visitWhere(){
@@ -151,12 +151,12 @@ public class QueryParser {
         return whereVisitor.getWhereExpression();
     }
 
-    private void appendEhrPredicate(FromDefinition.EhrPredicate ehrPredicate){
+    private void appendEhrPredicate(FromEhrDefinition.EhrPredicate ehrPredicate){
         if (ehrPredicate == null)
             return;
 
         //append field, operator and value to the where clause
-        whereClause.add(new VariableDefinition(ehrPredicate.getField(), null, ehrPredicate.getIdentifier()));
+        whereClause.add(new VariableDefinition(ehrPredicate.getField(), null, ehrPredicate.getIdentifier(), false));
         whereClause.add(ehrPredicate.getOperator());
         whereClause.add(ehrPredicate.getValue());
     }
@@ -213,7 +213,7 @@ public class QueryParser {
         return identifierMapper;
     }
 
-    public List<VariableDefinition> getVariables() {
+    public List<I_VariableDefinition> getVariables() {
         return variables;
     }
 
@@ -233,9 +233,6 @@ public class QueryParser {
         return offsetAttribute;
     }
 
-    public boolean hasDefinedFunctions(){
-        return functionDefinitions.size() > 0;
-    }
 
     public boolean isUseSimpleCompositionContainment() {
         return useSimpleCompositionContainment;

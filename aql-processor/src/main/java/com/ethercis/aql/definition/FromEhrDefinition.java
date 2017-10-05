@@ -29,7 +29,7 @@ import java.util.UUID;
  * </p>
  * Created by christian on 5/2/2016.
  */
-public class FromDefinition {
+public class FromEhrDefinition implements I_FromEntityDefinition {
 
     public static class EhrPredicate {
         String field;
@@ -81,6 +81,7 @@ public class FromDefinition {
 
     private List<EhrPredicate> fromEhrPredicates = new ArrayList<>();
 
+    @Override
     public void add(String identifier, String value, String operator){
         fromEhrPredicates.add(new EhrPredicate(identifier, value, operator));
     }

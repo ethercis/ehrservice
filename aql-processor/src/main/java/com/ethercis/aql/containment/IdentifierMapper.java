@@ -17,7 +17,8 @@
 
 package com.ethercis.aql.containment;
 
-import com.ethercis.aql.definition.FromDefinition;
+import com.ethercis.aql.definition.FromEhrDefinition;
+import com.ethercis.aql.definition.FromForeignDataDefinition;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
 
 import java.util.HashMap;
@@ -69,12 +70,19 @@ public class IdentifierMapper {
             Mapper def = new Mapper(containment);
             mapper.put(containment.getSymbol(), def);
         }
-        else if (definition instanceof FromDefinition.EhrPredicate){
-            FromDefinition.EhrPredicate ehrPredicate = (FromDefinition.EhrPredicate)definition;
+        else if (definition instanceof FromEhrDefinition.EhrPredicate){
+            FromEhrDefinition.EhrPredicate ehrPredicate = (FromEhrDefinition.EhrPredicate)definition;
             if (mapper.containsKey(ehrPredicate.getField()))
                 throw new IllegalArgumentException("Symbol already exists:"+ehrPredicate.getField());
             Mapper def = new Mapper(ehrPredicate);
             mapper.put(ehrPredicate.getIdentifier(), def);
+        }
+        else if (definition instanceof FromForeignDataDefinition.NodePredicate){
+            FromForeignDataDefinition.NodePredicate nodePredicate  = (FromForeignDataDefinition.NodePredicate)definition;
+            if (mapper.containsKey(nodePredicate.getField()))
+                throw new IllegalArgumentException("Symbol already exists:"+nodePredicate.getField());
+            Mapper def = new Mapper(nodePredicate);
+            mapper.put(nodePredicate.getIdentifier(), def);
         }
     }
 
@@ -90,10 +98,10 @@ public class IdentifierMapper {
         return mapped.getContainer();
     }
 
-    public FromDefinition.EhrPredicate getEhrContainer(){
+    public FromEhrDefinition.EhrPredicate getEhrContainer(){
         for (Map.Entry<String, Mapper> containment: mapper.entrySet()){
-            if (containment.getValue().getContainer() instanceof FromDefinition.EhrPredicate)
-                return (FromDefinition.EhrPredicate)containment.getValue().getContainer();
+            if (containment.getValue().getContainer() instanceof FromEhrDefinition.EhrPredicate)
+                return (FromEhrDefinition.EhrPredicate)containment.getValue().getContainer();
         }
         return null;
     }
@@ -110,7 +118,7 @@ public class IdentifierMapper {
 
     public boolean hasEhrContainer(){
         for (Map.Entry<String, Mapper> containment: mapper.entrySet()){
-            if (containment.getValue().getContainer() instanceof FromDefinition.EhrPredicate)
+            if (containment.getValue().getContainer() instanceof FromEhrDefinition.EhrPredicate)
                 return true;
         }
         return false;
@@ -175,7 +183,7 @@ public class IdentifierMapper {
                 return ((Containment)containment).getClassName();
             }
         }
-        else if (containment instanceof FromDefinition.EhrPredicate)
+        else if (containment instanceof FromEhrDefinition.EhrPredicate)
             return "EHR";
 
         return null;

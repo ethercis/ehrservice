@@ -17,35 +17,58 @@
 
 package com.ethercis.aql.definition;
 
+import java.util.List;
+
 /**
  * Container of a variable (symbol) with its path and alias (AS 'alias')
  * Created by christian on 5/3/2016.
  */
-public class VariableDefinition {
+public class VariableDefinition implements I_VariableDefinition {
 
     private String path;
     private String alias;
     private String identifier;
+    private boolean isDistinct = false;
 
-    public VariableDefinition(String path, String alias, String identifier) {
+    public VariableDefinition(String path, String alias, String identifier, boolean isDistinct) {
         this.path = path;
         this.alias = alias;
         this.identifier = identifier;
+        this.isDistinct = isDistinct;
     }
 
+    @Override
     public String getPath() {
         return path;
     }
 
+    @Override
     public String getAlias() {
         return alias;
     }
 
+    @Override
     public String getIdentifier() {
         return identifier;
     }
 
+    @Override
     public String toString(){
         return identifier+"::"+path;
+    }
+
+    @Override
+    public boolean isDistinct() {
+        return isDistinct;
+    }
+
+    @Override
+    public boolean isFunction() {
+        return false;
+    }
+
+    @Override
+    public List<FuncParameter> getFuncParameters() {
+        return null;
     }
 }

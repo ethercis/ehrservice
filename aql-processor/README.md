@@ -24,6 +24,42 @@ NB. SQL query is performed against view COMP_EXPAND
 TODO:
 - Further optimization and query planning
 
+Function Support
+----------------
+A number of postgresql functions are now supported:
+
+### Aggregate Functions
+
+COUNT, AVG, BOOL_AND, BOOL_OR, EVERY, MAX, MIN, SUM
+
+### Statistics Functions
+
+#### correlation
+CORR
+
+#### covariance
+COVAR_POP, COVAR_SAMP
+
+#### regression 
+REGR_AVGX, REGR_AVGY, REGR_COUNT, REGR_INTERCEPT, REGR_R2, REGR_SLOPE, REGR_SXX,
+REGR_SXY, REGR_SYY
+
+#### standard deviation
+STDDEV, STDDEV_POP, STDDEV_SAMP, VARIANCE, VAR_POP, VAR_SAM
+
+See [https://www.postgresql.org/docs/9.4/static/functions-aggregate.html](https://www.postgresql.org/docs/9.4/static/functions-aggregate.html "Postgresql aggregate functions") for more details
+
+### String Functions
+SUBSTR, STRPOS, SPLIT_PART, BTRIM, CONCAT, CONCAT_WS, DECODE, ENCODE, FORMAT, INITCAP, LEFT, LENGTH, LPAD
+LTRIM, REGEXP_MATCH, REGEXP_REPLACE, REGEXP_SPLIT_TO_ARRAY, REGEXP_SPLIT_TO_TABLE, REPEAT, REPLACE, REVERSE
+RIGHT, RPAD, RTRIM, TRANSLATE
+
+See [https://www.postgresql.org/docs/9.4/static/functions-string.html](https://www.postgresql.org/docs/9.4/static/functions-string.html) for more details.
+
+### Limitations
+Embedded expressions or functions are not yet supported.
+
+
 How To Compile The Module
 -------------------------
 REQUIREMENTS
@@ -44,4 +80,4 @@ Tests
 
 Known issues
 ============
-This currently supports a limited set of AQL operators
+This currently supports a limited set of AQL operators
