@@ -31,6 +31,8 @@ Directory config contains a bat script used to generate the binding classes. It 
 
 `jooq-codegen ecis-dbgen.xml`
 
+NB. make sure pointers to drivers and DB address matches your configuration
+
 Dependencies
 ------------
 The main dependency is jOOQ 3.7 which is extensively used to perform SQL queries in a neat way (jOOQ stands for *java object oriented query*). See `http://www.jooq.org/` for more details on this great library.
