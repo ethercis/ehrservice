@@ -372,5 +372,9 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
 
     Integer getVersion();
 
+    void updateCompositionData(Composition newComposition) throws EhrException;
+
+    void setContext(org.openehr.rm.composition.EventContext historicalEventContext);
+
 //    void setCommitted(boolean b);
 }

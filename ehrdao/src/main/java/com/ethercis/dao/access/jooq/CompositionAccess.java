@@ -100,32 +100,36 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 
         String territoryCode = composition.getTerritory().getCodeString();
         String languageCode = composition.getLanguage().getCodeString();
-        PartyProxy composer = composition.getComposer();
+//        PartyProxy composer = composition.getComposer();
+//
+//        if (!(composer instanceof PartyIdentified))
+//            throw new IllegalArgumentException("Composer found in composition is not an IdenfiedParty and is not supported:"+composer.toString());
+//
+//
+//        UUID composerId = I_PartyIdentifiedAccess.getOrCreateParty(this, (PartyIdentified) composer);
 
-        if (!(composer instanceof PartyIdentified))
-            throw new IllegalArgumentException("Composer found in composition is not an IdenfiedParty and is not supported:"+composer.toString());
-
-
-        UUID composerId = I_PartyIdentifiedAccess.getOrCreateParty(this, (PartyIdentified) composer);
+        UUID composerId = seekComposerId(composition.getComposer());
 
         compositionRecord = context.newRecord(COMPOSITION);
         compositionRecord.setId(UUID.randomUUID());
 
         //check validity of codes
-        Integer foundTerritoryCode = I_CompositionAccess.fetchTerritoryCode(this, territoryCode);
+//        Integer foundTerritoryCode = I_CompositionAccess.fetchTerritoryCode(this, territoryCode);
+//
+//        if (foundTerritoryCode < 0)
+//            throw new EhrException(0, "Invalid two letter territory code");
+//
+//        compositionRecord.setTerritory(foundTerritoryCode);
 
-        if (foundTerritoryCode < 0)
-            throw new EhrException(0, "Invalid two letter territory code");
+        compositionRecord.setTerritory(seekTerritoryCode(territoryCode));
 
-        compositionRecord.setTerritory(foundTerritoryCode);
+//        if (languageCode == null) //defaulted to english
+//            languageCode = "en";
+//        else
+//        if (!(I_CompositionAccess.isValidLanguageCode(this, languageCode)))
+//            throw new EhrException(0, "Invalid language code");
 
-        if (languageCode == null) //defaulted to english
-            languageCode = "en";
-        else
-        if (!(I_CompositionAccess.isValidLanguageCode(this, languageCode)))
-            throw new EhrException(0, "Invalid language code");
-
-        compositionRecord.setLanguage(languageCode);
+        compositionRecord.setLanguage(seekLanguageCode(languageCode));
         compositionRecord.setActive(true);
 //        compositionRecord.setContext(eventContextId);
         compositionRecord.setComposer(composerId);
@@ -140,6 +144,35 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
         contributionAccess =  I_ContributionAccess.getInstance(this, compositionRecord.getEhrId());
         contributionAccess.setState(ContributionDef.ContributionState.COMPLETE);
 
+    }
+
+    private UUID seekComposerId(PartyProxy composer){
+        if (!(composer instanceof PartyIdentified))
+            throw new IllegalArgumentException("Composer found in composition is not an IdenfiedParty and is not supported:"+composer.toString());
+
+
+        UUID composerId = I_PartyIdentifiedAccess.getOrCreateParty(this, (PartyIdentified) composer);
+
+        return composerId;
+    }
+
+    private Integer seekTerritoryCode(String territoryCode) throws EhrException {
+        Integer foundTerritoryCode = I_CompositionAccess.fetchTerritoryCode(this, territoryCode);
+
+        if (foundTerritoryCode < 0)
+            throw new EhrException(0, "Invalid two letter territory code");
+
+       return foundTerritoryCode;
+    }
+
+    private String seekLanguageCode(String languageCode) throws EhrException {
+        if (languageCode == null) //defaulted to english
+            return "en";
+        else
+        if (!(I_CompositionAccess.isValidLanguageCode(this, languageCode)))
+            throw new EhrException(0, "Invalid language code");
+
+        return languageCode;
     }
 
 
@@ -454,6 +487,16 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
         if (version  < 1)
             throw new IllegalArgumentException("Version number must be > 0  please check your code");
 
+//        //check if this version number matches the current version
+//        Integer versionCount = domainAccess.getContext()
+//                .selectCount()
+//                .from(COMPOSITION_HISTORY)
+//                .where(COMPOSITION_HISTORY.ID.eq(id)).fetchOne(0, int.class);
+
+        if (getLastVersionNumber(domainAccess, id) == version){ //current version
+            return retrieveInstance(domainAccess, id);
+        }
+
         String versionQuery =
                 "select row_id, in_contribution, ehr_id, language, territory, composer, sys_transaction from \n" +
                 "  (select ROW_NUMBER() OVER (ORDER BY sys_transaction ASC ) AS row_id, * from ehr.composition_history " +
@@ -487,6 +530,16 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
             //retrieve the corresponding contribution
             I_ContributionAccess contributionAccess = I_ContributionAccess.retrieveVersionedInstance(domainAccess, compositionHistoryAccess.getContributionVersionId(), compositionHistoryAccess.getSysTransaction());
             compositionHistoryAccess.setContributionAccess(contributionAccess);
+
+            //retrieve versioned context
+            EventContext historicalEventContext = I_ContextAccess.retrieveHistoricalEventContext(domainAccess, id, compositionHistoryAccess.getSysTransaction());
+            //adjust context for entries
+            if (historicalEventContext != null) {
+                for (I_EntryAccess entryAccess : compositionHistoryAccess.getContent()) {
+                    entryAccess.getComposition().setContext(historicalEventContext);
+                }
+            }
+
         }
 
         connection.close();
@@ -677,6 +730,19 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
     @Override
     public Integer getVersion(){
         return version;
+    }
+
+    @Override
+    public void updateCompositionData(Composition newComposition) throws EhrException {
+        //update the mutable attributes
+        setLanguageCode(seekLanguageCode(newComposition.getLanguage().getCodeString()));
+        setTerritoryCode(seekTerritoryCode(newComposition.getTerritory().getCodeString()));
+        setComposerId(seekComposerId(newComposition.getComposer()));
+    }
+
+    @Override
+    public void setContext(EventContext eventContext) {
+        composition.setContext(eventContext);
     }
 
 

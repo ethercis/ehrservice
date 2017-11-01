@@ -108,6 +108,7 @@ public class FlatJsonHandler implements I_FlatJsonHandler, I_CompositionMetaData
             templateId = entryAccess.getTemplateId();
             Composition newComposition = build(content);
             entryAccess.setCompositionData(newComposition.getArchetypeDetails().getTemplateId().getValue(), newComposition);
+            compositionAccess.updateCompositionData(newComposition);
             changed = true;
             EventContext eventContext = newComposition.getContext();
             contextAccess.setRecordFields(contextId, eventContext);

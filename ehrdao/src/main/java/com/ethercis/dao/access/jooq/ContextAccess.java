@@ -596,8 +596,9 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
 
     public static EventContext retrieveHistoricalEventContext(I_DomainAccess domainAccess, UUID compositionId, Timestamp transactionTime){
 
+        //use fetch any since duplicates are possible during tests...
         EventContextHistoryRecord eventContextHistoryRecord = domainAccess.getContext()
-                .fetchOne(EVENT_CONTEXT_HISTORY, EVENT_CONTEXT_HISTORY.COMPOSITION_ID.eq(compositionId)
+                .fetchAny(EVENT_CONTEXT_HISTORY, EVENT_CONTEXT_HISTORY.COMPOSITION_ID.eq(compositionId)
                         .and(EVENT_CONTEXT_HISTORY.SYS_TRANSACTION.eq(transactionTime)));
 
         if (eventContextHistoryRecord == null) return null; //no matching version for this composition
