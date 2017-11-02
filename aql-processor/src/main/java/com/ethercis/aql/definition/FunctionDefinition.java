@@ -71,6 +71,11 @@ public class FunctionDefinition implements I_VariableDefinition{
     }
 
     @Override
+    public boolean isExtension() {
+        return false;
+    }
+
+    @Override
     public List<FuncParameter> getFuncParameters() {
         return parameters;
     }

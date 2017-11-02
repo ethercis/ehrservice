@@ -89,7 +89,7 @@ public class SelectBinder {
         boolean containsJsonDataBlock = false;
 
         for (I_VariableDefinition variableDefinition: selectVariableDefinitions) {
-            if (variableDefinition.isFunction() == true){
+            if (variableDefinition.isFunction() || variableDefinition.isExtension()){
                 continue;
             }
             String identifier = variableDefinition.getIdentifier();

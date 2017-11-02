@@ -32,6 +32,9 @@ topExpr
 function
         : FUNCTION_IDENTIFIER OPEN_PAR (IDENTIFIER|identifiedPath|operand) (COMMA (IDENTIFIER|identifiedPath|operand))* CLOSE_PAR;
 
+extension
+        : EXTENSION_IDENTIFIER OPEN_PAR STRING COMMA STRING CLOSE_PAR;
+
 where
         : WHERE identifiedExpr ;
 
@@ -64,6 +67,7 @@ selectExpr
 
 stdExpression
         : function
+        | extension
         | INTEGER
         | STRING
         ;
@@ -86,7 +90,7 @@ fromEHR
 
 //foreign data
 fromForeignData
-        : (AGENT | GROUP | ORGANISATION | PERSON) IDENTIFIER standardPredicate
+        : (AGENT | GROUP | ORGANISATION | PERSON) IDENTIFIER joinPredicate
         | (AGENT | GROUP | ORGANISATION | PERSON) IDENTIFIER;
 
 //====== CONTAINMENT
@@ -179,6 +183,9 @@ versionpredicateOptions
 standardPredicate
         : OPEN_BRACKET predicateExpr CLOSE_BRACKET;
 
+joinPredicate
+        : OPEN_BRACKET JOINON predicateEquality CLOSE_BRACKET;
+
 predicateExpr
         : predicateAnd (OR predicateAnd)*;
 
@@ -264,6 +271,8 @@ VERSIONED_OBJECT	:	V E R S I O N E D '_' O B J E C T;
 ALL_VERSIONS :	A L L '_' V E R S I O N S;
 LATEST_VERSION : L A T E S T '_' V E R S I O N ;
 DISTINCT : D I S T I N C T ;
+JOINON: J O I N ' ' O N;
+
 //demographic binding
 PERSON: P E R S O N ;
 AGENT: A G E N T ;
@@ -278,6 +287,8 @@ FUNCTION_IDENTIFIER : COUNT | AVG | BOOL_AND | BOOL_OR | EVERY | MAX | MIN | SUM
                       SUBSTR | STRPOS | SPLIT_PART | BTRIM | CONCAT | CONCAT_WS | DECODE | ENCODE | FORMAT | INITCAP | LEFT | LENGTH | LPAD | LTRIM |
                        REGEXP_MATCH | REGEXP_REPLACE | REGEXP_SPLIT_TO_ARRAY | REGEXP_SPLIT_TO_TABLE | REPEAT | REPLACE | REVERSE | RIGHT | RPAD |
                        RTRIM | TRANSLATE ;
+
+EXTENSION_IDENTIFIER: '_' E X T;
 
 // Terminal Definitions
 BOOLEAN	:	(T R U E)|(F A L S E) ;
@@ -313,6 +324,15 @@ STRING
     	:  '\'' ( ESC_SEQ | ~('\\'|'\'') )* '\''
     	|  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
     	;
+
+EXP_STRING
+    : ([uUbB]? [rR]? | [rR]? [uUbB]?)
+    ( '\''     ('\\' (([ \t]+ ('\r'? '\n')?)|.) | ~[\\\r\n'])*  '\''
+    | '"'      ('\\' (([ \t]+ ('\r'? '\n')?)|.) | ~[\\\r\n"])*  '"'
+    | '"""'    ('\\' .                          | ~'\\'     )*? '"""'
+    | '\'\'\'' ('\\' .                          | ~'\\'     )*? '\'\'\''
+    )
+;
 
 SLASH	:	'/';
 COMMA	:	',';

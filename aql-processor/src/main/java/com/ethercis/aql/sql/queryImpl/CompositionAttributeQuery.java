@@ -236,11 +236,11 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
 
     private Field<?> rawUid(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(COMPOSITION.ID).as(aliasStr == null ? columnAlias : aliasStr);
+            Field<?> select = DSL.field(I_JoinBinder.compositionRecordTable.field("id", UUID.class).as(aliasStr == null ? columnAlias : aliasStr));
             return select;
         }
         else
-            return DSL.field(COMPOSITION.ID);
+            return DSL.field(I_JoinBinder.compositionRecordTable.field("id", UUID.class));
     }
 
     private Field<?> name(UUID compositionId, boolean alias, String aliasStr, Clause clause){

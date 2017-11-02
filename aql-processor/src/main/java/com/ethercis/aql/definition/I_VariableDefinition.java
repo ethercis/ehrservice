@@ -34,5 +34,7 @@ public interface I_VariableDefinition {
 
     boolean isFunction();
 
+    boolean isExtension();
+
     List<FuncParameter> getFuncParameters();
 }

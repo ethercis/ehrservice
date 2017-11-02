@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2015 Christian Chevalley
+ * Copyright (c) Ripple Foundation CIC Ltd, UK, 2017
+ * Author: Christian Chevalley
  * This file is part of Project Ethercis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,46 +21,41 @@ package com.ethercis.aql.definition;
 import java.util.List;
 
 /**
- * Container of a variable (symbol) with its path and alias (AS 'alias')
- * Created by christian on 5/3/2016.
+ * Created by christian on 9/20/2016.
  */
-public class VariableDefinition implements I_VariableDefinition {
+public class ExtensionDefinition implements I_VariableDefinition{
 
-    private String path;
+    private String context;
+    private String parsableExpression;
     private String alias;
-    private String identifier;
-    private boolean isDistinct = false;
 
-    public VariableDefinition(String path, String alias, String identifier, boolean isDistinct) {
-        this.path = path;
+    public ExtensionDefinition(String context, String parsableExpression, String alias) {
+        this.context = context;
+        this.parsableExpression = parsableExpression;
         this.alias = alias;
-        this.identifier = identifier;
-        this.isDistinct = isDistinct;
     }
 
-    @Override
-    public String getPath() {
-        return path;
-    }
 
     @Override
-    public String getAlias() {
+    public String getAlias(){
         return alias;
     }
 
-    @Override
-    public String getIdentifier() {
-        return identifier;
-    }
 
     @Override
-    public String toString(){
-        return identifier+"::"+path;
+    public String getPath() {
+        return null;
+    }
+
+
+    @Override
+    public String getIdentifier() {
+        return null;
     }
 
     @Override
     public boolean isDistinct() {
-        return isDistinct;
+        return false;
     }
 
     @Override
@@ -68,9 +64,7 @@ public class VariableDefinition implements I_VariableDefinition {
     }
 
     @Override
-    public boolean isExtension() {
-        return false;
-    }
+    public boolean isExtension() {return  true;}
 
     @Override
     public List<FuncParameter> getFuncParameters() {

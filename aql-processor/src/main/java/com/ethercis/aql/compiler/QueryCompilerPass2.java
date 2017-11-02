@@ -108,6 +108,15 @@ public class QueryCompilerPass2 extends AqlBaseListener {
                 FunctionDefinition definition = new FunctionDefinition(name, alias, path, parameters);
                 variableStack.push(definition);
             }
+            if (selectExprContext.stdExpression().extension() != null) {
+                logger.debug("Found extension");
+                AqlParser.ExtensionContext extensionContext = selectExprContext.stdExpression().extension();
+                String context = extensionContext.getChild(2).getText();
+                String parsableExpression = extensionContext.getChild(4).getText();
+                String alias = selectExprContext.IDENTIFIER() == null ? "_alias_"+Math.abs(new Random().nextLong()): selectExprContext.IDENTIFIER().getText();
+                ExtensionDefinition definition = new ExtensionDefinition(context, parsableExpression, alias);
+                variableStack.push(definition);
+            }
 
         } else
             throw new IllegalArgumentException("Could not interpret select context");

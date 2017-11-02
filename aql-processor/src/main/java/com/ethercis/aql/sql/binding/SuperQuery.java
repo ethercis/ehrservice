@@ -85,7 +85,10 @@ public class SuperQuery {
                 if (variableDefinition.getAlias() != null)
                     field = field.as(alias);
                 fields.add(field);
-            } else {
+            } else if (variableDefinition.isExtension()) {
+                //do nothing... for the time being
+            }
+            else {
                 //check if this alias is serviced by a function
                 if (skipField.contains(alias))
                     continue;

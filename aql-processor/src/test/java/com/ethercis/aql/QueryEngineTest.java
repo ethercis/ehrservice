@@ -1025,8 +1025,8 @@ public class QueryEngineTest {
                 "                  and e/ehr_status/subject/external_ref/id/value='fr.asip.48221832'\n" +
                 "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude < 80\n" +
                 "                  and o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude > 130\n" +
-                "                  limit 10 offset 10 \n" +
-                "                  ORDER BY date_created ASC ";
+                "                  limit 1 \n" +
+                "                  ORDER BY date_created DESC ";
 
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -1144,7 +1144,7 @@ public class QueryEngineTest {
                 "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as max_systolic\n" +
                 "    from EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9']\n" +
                 "       contains COMPOSITION a contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1],\n" +
-                "    PERSON p[e/ehr_status/party/uuid=p/uuid]\n";
+                "    PERSON p[join on e/ehr_status/party/uuid=p/uuid]\n";
 
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -1161,6 +1161,50 @@ public class QueryEngineTest {
                 "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]\n" +
                 "  contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]  \n" +
                 "  where a/name/value='Laboratory test report'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testExtension() throws Exception {
+        String query = "select   \n" +
+                "    _ext('http://aaaa.(aa)', '\"[11]11\"'),\n" +
+                "    split_part(a/uid/value, '::', 3) as compo_version,   \n" +
+                "  initcap(a/composer/name)  as author,\n" +
+                "  a/context/start_time/value as date_created  from EHR e \n" +
+                "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]\n" +
+                "  contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0]  \n" +
+                "  where a/name/value='Laboratory test report'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testDISTINCT_CR54() throws Exception {
+        String query = "select distinct e/ehr_id/value as ehrId ," +
+                " b_a/data[at0001]/items[at0.137]/items[at0.138]/value/value as Status " +
+                "     from EHR e" +
+                "     contains COMPOSITION a[openEHR-EHR-COMPOSITION.review.v1] " +
+                "     contains (OBSERVATION b_a[openEHR-EHR-ADMIN_ENTRY.admission-extended.v1])";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR69() throws Exception {
+        String query = "select \n" +
+                "\ta_a/data[at0001]/items[at0009] as Manifestation \n" +
+                "\tfrom EHR e contains COMPOSITION a contains EVALUATION a_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]\n" +
+                "\twhere a/uid/value = 'b10d5ca1-1cfa-46c6-9dc2-e33890e758a3'";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

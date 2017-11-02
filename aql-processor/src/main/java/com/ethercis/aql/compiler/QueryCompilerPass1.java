@@ -104,12 +104,35 @@ public class QueryCompilerPass1 extends AqlBaseListener {
         }
     }
 
+    private void visitJoinExpressionChildren(I_FromEntityDefinition fromEntityDefinition, List<ParseTree> children){
+        if (children.size() == 0)
+            return;
+
+        for (ParseTree node: children){
+
+            if (node.getText().equals("[") || node.getText().equals("]"))
+                continue;
+
+            if (node instanceof AqlParser.JoinPredicateContext){
+                AqlParser.JoinPredicateContext joinContext = (AqlParser.JoinPredicateContext)node;
+                if (joinContext.getChildCount() > 0) {
+                    if (joinContext.getChildCount() == 4){
+                        AqlParser.PredicateEqualityContext predicateEqualityContext = (AqlParser.PredicateEqualityContext)joinContext.getChild(2);
+                        if (predicateEqualityContext.getChildCount() != 3)
+                            throw new IllegalArgumentException("Could not handle predicateEqualityContext:"+predicateEqualityContext.getText());
+                        fromEntityDefinition.add(predicateEqualityContext.getChild(0).getText(), predicateEqualityContext.getChild(2).getText(), predicateEqualityContext.getChild(1).getText());
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public void exitFromForeignData(AqlParser.FromForeignDataContext context){
         FromForeignDataDefinition fromForeignDataDefinition = new FromForeignDataDefinition(context.getChild(0).getText());
         if (context.IDENTIFIER() != null){
-            visitFromExpressionChildren(fromForeignDataDefinition, context.children);
+            visitJoinExpressionChildren(fromForeignDataDefinition, context.children);
             String identifier = context.IDENTIFIER().getText();
             fromForeignDataDefinition.setIdentifier(identifier);
             if (!fromForeignDataDefinition.getFDPredicates().isEmpty()) {
