@@ -24,6 +24,7 @@ import com.ethercis.aql.sql.binding.*;
 import com.ethercis.aql.sql.postprocessing.I_RawJsonTransform;
 import com.ethercis.aql.sql.postprocessing.RawJsonTransform;
 import com.ethercis.aql.sql.queryImpl.ContainsSet;
+import com.ethercis.aql.sql.queryImpl.EntryRoot;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -96,14 +97,18 @@ public class QueryProcessor  {
         Map<String, QuerySteps> cacheQuery = new HashMap<>();
 
         if (queryParser.hasContainsExpression()) {
-            ContainsSet containsSet = new ContainsSet(queryParser.getContainClause(), context);
+            //pass additional filters to optimize the containment search
+            ContainsSet containsSet = new ContainsSet(queryParser.getContainClause(), context, queryParser.getWhereClause());
+            //get the list of templates satisfying the containment clause
             Result<?> containmentRecords = containsSet.getInSet();
             if (!containmentRecords.isEmpty()) {
                 for (Record containmentRecord : containmentRecords) {
-                    UUID comp_id = (UUID) containmentRecord.getValue(CONTAINMENT.COMP_ID.getName());
+                    UUID comp_id = null; //not used anymore
                     String template_id = (String) containmentRecord.getValue(ENTRY.TEMPLATE_ID.getName());
                     String label = containmentRecord.getValue(CONTAINMENT.LABEL.getName()).toString();
-                    String entry_root = containmentRecord.getValue(ContainsSet.ENTRY_ROOT, String.class);
+
+//                    String entry_root = containmentRecord.getValue(ContainsSet.ENTRY_ROOT, String.class);
+                    String entry_root = new EntryRoot(containmentRecord.getValue(ContainsSet.ENTRY_ROOT, String.class)).toString();
 
                     SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, optimizationMode, entry_root);
 

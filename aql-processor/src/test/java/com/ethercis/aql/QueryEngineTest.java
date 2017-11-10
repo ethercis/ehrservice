@@ -1200,11 +1200,15 @@ public class QueryEngineTest {
     }
 
     @Test
-    public void testCR69() throws Exception {
-        String query = "select \n" +
-                "\ta_a/data[at0001]/items[at0009] as Manifestation \n" +
-                "\tfrom EHR e contains COMPOSITION a contains EVALUATION a_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]\n" +
-                "\twhere a/uid/value = 'b10d5ca1-1cfa-46c6-9dc2-e33890e758a3'";
+    public void testMackoOptimize() throws Exception {
+        String query = "SELECT TOP 100\n" +
+                "   obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude\n" +
+                "FROM\n" +
+                "EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9'] \n" +
+                "   contains COMPOSITION c\n" +
+                "   contains OBSERVATION obs[openEHR-EHR-OBSERVATION.blood_pressure.v1]\n" +
+                "WHERE\n" +
+                "   obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > 10";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

@@ -30,6 +30,8 @@ import java.util.*;
 
 /**
  * Bind the abstract WHERE clause parameters into a SQL expression
+ * TODO: add a directive to encode a where clause using only EHR and COMPOSITION attributes (ignore item_structure)
+ * TODO: will be used to optimize containment.inSet()
  * Created by christian on 5/20/2016.
  */
 public class WhereBinder {

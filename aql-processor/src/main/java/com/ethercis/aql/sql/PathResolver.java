@@ -122,14 +122,14 @@ public class PathResolver {
 
                     //query the DB to get the path
 //                String labelWhere = "label ~ '"+lquery+"'";
-                    Result<?> records = context
+                    Record2<String, String> records = context
                             .select(CONTAINMENT.PATH, ENTRY.TEMPLATE_ID)
                             .from(CONTAINMENT)
                             .join(ENTRY)
-                            .on(ENTRY.COMPOSITION_ID.eq(comp_id))
-                            .where(CONTAINMENT.COMP_ID.eq(ENTRY.COMPOSITION_ID))
-                            .and(CONTAINMENT.LABEL + "~ '" + lquery + "'")
-                            .fetch().into(CONTAINMENT.PATH, ENTRY.TEMPLATE_ID);
+                            .on(ENTRY.TEMPLATE_ID.eq(templateId))
+                            .where(CONTAINMENT.LABEL + "~ '" + lquery + "'")
+                            .limit(1)
+                            .fetchAny();
 
 //                Result<Record> records = context.fetch(query);
 
@@ -137,16 +137,16 @@ public class PathResolver {
                         continue;
                     }
 
-                    resolveMap.put(resolveMapKey((String) records.getValue(0, ENTRY.TEMPLATE_ID.getName()),lquery), records.getValue(0, CONTAINMENT.PATH));
+                    resolveMap.put(resolveMapKey((String) records.getValue(0, ENTRY.TEMPLATE_ID.getName()),lquery), records.get(CONTAINMENT.PATH));
 
-                    if (records.isEmpty()) {
+                    if (records == null) {
                         logger.debug("No path found for identifier (query return no records):" + identifier);
                     }
-                    if (records.size() > 1) {
-                        logger.debug("Multiple paths found for identifier, returning first one:" + identifier);
-                    }
+//                    if (records.size() > 1) {
+//                        logger.debug("Multiple paths found for identifier, returning first one:" + identifier);
+//                    }
 
-                    String path = records.getValue(0, CONTAINMENT.PATH);
+                    String path = records.getValue(CONTAINMENT.PATH);
                     mapper.setPath(identifier, path);
                     if (((Containment) mapper.getContainer(identifier)).getClassName().equals("COMPOSITION")) {
                         mapper.setQueryStrategy(identifier, CompositionAttributeQuery.class);
