@@ -81,6 +81,7 @@
                             <artifact>*:*:*</artifact>
                             <excludes>
                                 <exclude>org/jooq/**</exclude>
+                                <exclude>org/openehr/**</exclude>
                                 <exclude>org/postgresql/**</exclude>
                                 <exclude>xsd/**</exclude>
                             </excludes>
@@ -95,6 +96,7 @@
                             <exclude>ethercis:ecis-transform</exclude>
                             <exclude>ethercis:ecis-validation</exclude>
                             <exclude>ethercis:ecis-knowledge-cache</exclude>
+                            <exclude>org.openehr:*</exclude>
                             <exclude>junit:junit</exclude>
                             <exclude>jmock:*</exclude>
                             <exclude>*:xml-apis</exclude>
