@@ -53,6 +53,7 @@ public class SelectBinder {
     private IdentifierMapper mapper;
     DSLContext context ;
     private WhereBinder whereBinder;
+    private boolean isWholeComposition = false;
 
     public enum OptimizationMode {TEMPLATE_BATCH, NONE}
 
@@ -221,6 +222,20 @@ public class SelectBinder {
         SelectQuery<?> selectQuery = context.selectQuery();
 
         for (I_VariableDefinition variableDefinition: selectVariableDefinitions) {
+
+            if (variableDefinition.getPath() == null){
+                //check if it is a composition in mapper
+                if (mapper.getClassName(variableDefinition.getIdentifier()).equals("COMPOSITION")){
+                    //substitute this variable definition by a function definition
+                    isWholeComposition = true;
+                    continue;
+                }
+
+            }
+
+            if (variableDefinition.isFunction() || variableDefinition.isExtension()){
+                continue;
+            }
             String identifier = variableDefinition.getIdentifier();
             String className = mapper.getClassName(identifier);
             Field<?> field;
@@ -358,5 +373,9 @@ public class SelectBinder {
 
     public List<JsonbBlockDef> getJsonDataBlock() {
         return jsonDataBlock;
+    }
+
+    public boolean isWholeComposition() {
+        return isWholeComposition;
     }
 }

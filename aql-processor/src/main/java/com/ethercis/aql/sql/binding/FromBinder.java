@@ -32,7 +32,17 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class FromBinder {
 
-//    private boolean compositionJoined = false;
+    boolean isWholeComposition;
+
+    public FromBinder(boolean isWholeComposition) {
+        this.isWholeComposition = isWholeComposition;
+    }
+
+    public FromBinder() {
+        this.isWholeComposition = false;
+    }
+
+    //    private boolean compositionJoined = false;
 
     public void addFromClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery, QueryParser queryParser){
 

@@ -17,6 +17,7 @@
 
 package com.ethercis.aql.compiler;
 
+import com.ethercis.aql.containment.ContainWalker;
 import com.ethercis.aql.containment.Containment;
 import com.ethercis.aql.containment.ContainmentSet;
 import com.ethercis.aql.containment.IdentifierMapper;

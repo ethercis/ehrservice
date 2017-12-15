@@ -201,10 +201,13 @@ public class QueryProcessor  {
         else {
             SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, SelectBinder.OptimizationMode.TEMPLATE_BATCH, null);
             SelectQuery<?> select = selectBinder.bind(queryParser.getInSetExpression(), count, queryParser.getOrderAttributes());
-            new FromBinder().addFromClause(select, selectBinder.getCompositionAttributeQuery(), queryParser);
+            new FromBinder(selectBinder.isWholeComposition()).addFromClause(select, selectBinder.getCompositionAttributeQuery(), queryParser);
             new JoinBinder().addJoinClause(select, selectBinder.getCompositionAttributeQuery());
             if (!explain)
-                result = (Result<Record>)select.fetch();
+                if (new Variables(queryParser.getVariables()).hasDefinedDistinct() || new Variables(queryParser.getVariables()).hasDefinedFunction())
+                    result = fetchResultSet(new SuperQuery(context, queryParser.getVariables(), select).select(), result);
+                else
+                    result = (Result<Record>)select.fetch();
             else
                 buildExplain(select, explainList);
         }

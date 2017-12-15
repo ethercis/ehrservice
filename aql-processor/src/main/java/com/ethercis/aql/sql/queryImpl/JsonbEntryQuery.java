@@ -246,6 +246,9 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
     @Override
     public Field<?> makeField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause){
+        if (entry_root == null) //case of (invalid) composition with null entry!
+            return null;
+
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
         if (path == null) {
             //return a null field

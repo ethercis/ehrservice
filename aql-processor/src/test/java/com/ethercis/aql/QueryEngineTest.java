@@ -1060,10 +1060,10 @@ public class QueryEngineTest {
         String query = "select   a/uid/value as uid,   \n" +
                 "  a/composer/name as author,\n" +
                 "  a/context/start_time/value as date_created," +
-                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/value as test_name," +
-                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0057]/value/value as conclusion," +
-                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/value as status," +
-                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value/value as sample_taken," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value as test_name," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0057]/value as conclusion," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value as status," +
+                "   a_a/data[at0001]/events[at0002]/data[at0003]/items[at0075]/value as sample_taken," +
                 "   a_a/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0] as test_panel  \n" +
                 "  from EHR e \n" +
                 "  contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]\n" +
@@ -1205,6 +1205,81 @@ public class QueryEngineTest {
                 "\ta_a/data[at0001]/items[at0009] as Manifestation \n" +
                 "\tfrom EHR e contains COMPOSITION a contains EVALUATION a_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]\n" +
                 "\twhere a/uid/value = 'b10d5ca1-1cfa-46c6-9dc2-e33890e758a3'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR72() throws Exception {
+        String query = "select" +
+                "     a/uid/value as uid," +
+                "     a/composer/name as author," +
+                "     a/context/start_time/value as date_created, b_a/time/value as time " +
+                "from EHR e" +
+                "    contains COMPOSITION a[openEHR-EHR-COMPOSITION.health_summary.v1]" +
+                "    contains ACTION b_a[openEHR-EHR-ACTION.immunisation_procedure.v1]";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testRobProposal() throws Exception {
+        String query = "select a as data " +
+                " from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']" +
+                " contains COMPOSITION a [openEHR-EHR-COMPOSITION.adverse_reaction_list.v1]" +
+                " where a/name/value='Adverse reaction list'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR82() throws Exception {
+        String query = "select " +
+                "   e/ehr_id/value as ehrId, " +
+                "   e/ehr_status/subject/external_ref/id/value as subjectId, " +
+                "   e/ehr_status/subject/external_ref/namespace as subjectNamespace, " +
+                "   a/uid/value as compositionId, " +
+                "   b_a/data[at0001]/items[at0002]/value as Causative_agent" +
+                " from EHR e " +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1]" +
+                " contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]" +
+                " where a/name/value='Adverse reaction list'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR79() throws Exception {
+        String query = "select" +
+                " a/uid/value as uid," +
+                " a/composer/name as author," +
+                " a/context/start_time/value as date_created," +
+                " b_a/data[at0001]/items[at0.137]/items[at0.136]/value/value as checkout," +
+                " b_a/data[at0001]/items[at0.137]/items[at0071]/value/value as checkin," +
+                " b_a/data[at0001]/items[at0.139]/items[at0.140]/value/value as package," +
+                " b_a/data[at0001]/items[at0.139]/items[at0002.1]/value/value as class," +
+                " c_a/data[at0001]/items[at0002]/value/value as reason," +
+                " e/ehr_status/subject/external_ref/id/value as patientId" +
+                " from EHR e" +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.review.v1]" +
+                " contains (ADMIN_ENTRY b_a[openEHR-EHR-ADMIN_ENTRY.admission-extended.v1] or ADMIN_ENTRY c_a[openEHR-EHR-ADMIN_ENTRY.episode_preferences.v0])" +
+                " where a/name/value='Review'" +
+                " and a/context/facility/id/ref ='9adcfad54advadf4adf5ad4'" +
+                " and (b_a/data[at0001]/items[at0.137]/items[at0071]/value/value ilike '2017-11%' or b_a/data[at0001]/items[at0.137]/items[at0.136]/value/value ilike '2017-11%')" +
+                " ORDER BY date_created DESCENDING";
+
 
         records = queryEngine.perform(query);
         assertNotNull(records);

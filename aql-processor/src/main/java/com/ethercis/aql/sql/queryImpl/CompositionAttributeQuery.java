@@ -71,8 +71,15 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         //resolve composition attributes and/or context
         columnAlias = variableDefinition.getPath();
         compositionIdField = false;
-        if (columnAlias == null)
+        if (columnAlias == null) {
+//            if (identifier.contains("/")) //a composite, unsupported attribute
+//                return null;
+//            else {
+//                //assume it is the whole composition object
+//                return rawUid(compositionId, withAlias, variableDefinition.getAlias());
+//            }
             return null;
+        }
         switch (columnAlias){
             case "uid/value":
                 if (clause == Clause.WHERE)
@@ -187,36 +194,6 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         subSelect.addGroupBy(COMPOSITION_HISTORY.ID);
 
         String coalesceVersion = "1 + COALESCE(\n(" + subSelect +"), 0)";
-//                "  (select count(*)\n" +
-//                "from \"ehr\".\"composition_history\"\n" +
-//                "  where "+ I_JoinBinder.COMPOSITION_JOIN +".id = ehr.comp_expand.composition_id\n" +
-//                "group by id)\n" +
-//                ", 0)\n";
-
-
-
-//         Field<?> coalesceField = DSL.value(new Integer(1))
-//                 .coalesce(COMPOSITION_HISTORY.
-//                 DSL.field(
-//                         DSL.count().from(COMPOSITION_HISTORY).where(COMPOSITION_HISTORY.ID.eq(COMPOSITION.ID)).groupBy(COMPOSITION.ID)), 0
-//         )
-
-//        Field<?> select = DSL.field(COMP_EXPAND.COMPOSITION_ID
-//                +"||"
-//                + DSL.val("::")
-//                +"||"
-//                + DSL.val(serverNodeId)
-//                +"||"
-//                + DSL.val("::")
-//                +"||"
-//                + DSL.field(
-//                            context
-//                                    .select(DSL.count().add(1))
-//                                    .from(COMPOSITION_HISTORY)
-//                                    .where(Tables.COMPOSITION_HISTORY.ID.eq(compositionId)))
-//                , SQLDataType.VARCHAR)
-//                .as(alias && aliasStr!= null && !aliasStr.isEmpty() ? aliasStr : "uid")
-                ;
 
         Field<?> select = DSL.field(I_JoinBinder.compositionRecordTable.field("id")
                 +"||"

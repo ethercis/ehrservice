@@ -51,7 +51,7 @@ public class ContainsSet {
                 .from(CONTAINMENT)
                 .join(ENTRY)
                 .on(CONTAINMENT.COMP_ID.eq(ENTRY.COMPOSITION_ID))
-                .where(CONTAINMENT.COMP_ID.in(DSL.field(containClause)));
+                .where(CONTAINMENT.COMP_ID.in(DSL.field(containClause)).and(DSL.field(ENTRY.ENTRY_+"::text").ne("{}")));
     }
 
     public Result<?> getInSet() {

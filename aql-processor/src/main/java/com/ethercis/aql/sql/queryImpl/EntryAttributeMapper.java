@@ -109,6 +109,9 @@ public class EntryAttributeMapper {
 //                fields.remove(0);
 //            }
         }
+        else if (fields.get(0).equals(VALUE) && fields.size() == 1){
+            fields.add(1, VALUE);
+        }
         else { //this deals with the "/value,value"
             Integer match = firstOccurence(0, fields, VALUE);
 //            Integer match = fields.stream().filter(m -> m.equals("value"));
@@ -126,9 +129,6 @@ public class EntryAttributeMapper {
                     fields.set(match, SLASH_VALUE);
                     if (match == fields.size() - 1)
                         fields.add(VALUE);
-                }
-                else if (!fields.get(match + 1).equals(VALUE)){ //for example : /value/defining_code/code_string
-                    ;
                 }
                 else if (match + 1 < fields.size() - 1){
                     Integer first = firstOccurence(match+1, fields, VALUE);
