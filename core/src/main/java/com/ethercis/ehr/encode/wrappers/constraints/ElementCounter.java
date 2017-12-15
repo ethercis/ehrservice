@@ -23,6 +23,7 @@ import org.openehr.rm.composition.content.entry.*;
 import org.openehr.rm.composition.content.navigation.Section;
 import org.openehr.rm.datastructure.history.Event;
 import org.openehr.rm.datastructure.history.History;
+import org.openehr.rm.datastructure.itemstructure.ItemList;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 
@@ -57,6 +58,8 @@ public class ElementCounter {
         }
         else if (locatable instanceof ItemTree)
             count(((ItemTree) locatable).getItems());
+        else if (locatable instanceof ItemList)
+            count(((ItemList) locatable).getItems());
         else if (locatable instanceof Section)
             count(((Section) locatable).getItems());
         else if (locatable instanceof Evaluation) {

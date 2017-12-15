@@ -652,6 +652,9 @@ public class CompositionSerializer implements I_CompositionSerializer {
 			if (observation.getGuidelineId() != null)
 				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, observation.getGuidelineId(), observation.getName());
 
+			if (observation.getUid() != null)
+				encodeNodeAttribute(ltree, TAG_UID, observation.getUid(), observation.getName());
+
 			if (ltree.size() > 0)
 				retmap = ltree;
 			else
@@ -672,6 +675,9 @@ public class CompositionSerializer implements I_CompositionSerializer {
 
 			if (evaluation.getGuidelineId() != null)
 				encodeNodeAttribute(ltree, TAG_GUIDELINE_ID, evaluation.getGuidelineId(), evaluation.getName());
+
+			if (evaluation.getUid() != null)
+				encodeNodeAttribute(ltree, TAG_UID, evaluation.getUid(), evaluation.getName());
 
 			//CHC: 160531 add explicit name
 			if (evaluation.getName() != null) encodeNodeMetaData(ltree, evaluation);

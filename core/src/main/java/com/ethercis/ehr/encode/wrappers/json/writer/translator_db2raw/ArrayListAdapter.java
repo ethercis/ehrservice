@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * GSON adapter for DvDateTime
- * Required since JSON does not support natively a DateTime data type
+ * GSON adapter for ArrayList
  */
 public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvTypeAdapter {
 

@@ -30,8 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * GSON adapter for DvDateTime
- * Required since JSON does not support natively a DateTime data type
+ * GSON adapter for LinkedTreeMap
  */
 public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements I_DvTypeAdapter {
 
