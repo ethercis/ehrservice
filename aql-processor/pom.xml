@@ -167,6 +167,7 @@
                         </goals>
                         <configuration>
                             <sources>
+                                <!--<source>${basedir}/build/generated-src/antlr/main/com/ethercis/aql/parser</source>-->
                                 <source>${basedir}/build/generated-src/antlr/main/com/ethercis/aql/parser</source>
                             </sources>
                         </configuration>

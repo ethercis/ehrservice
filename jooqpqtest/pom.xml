@@ -1,0 +1,146 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ethercis</groupId>
+  <artifactId>jooq-pg</artifactId>
+  <version>1.1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>jooq-pq</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+
+  <build>
+    <plugins>
+      <plugin>
+
+        <!-- Specify the maven code generator plugin -->
+        <!-- Use org.jooq            for the Open Source Edition
+                 org.jooq.pro        for commercial editions,
+                 org.jooq.pro-java-6 for commercial editions with Java 6 support,
+                 org.jooq.trial      for the free trial edition
+
+             Note: Only the Open Source Edition is hosted on Maven Central.
+                   Import the others manually from your distribution -->
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-codegen-maven</artifactId>
+        <version>3.7.3</version>
+
+        <!-- The plugin should hook into the generate goal -->
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <!-- Manage the plugin's dependency. In this example, we'll use a PostgreSQL database -->
+        <dependencies>
+          <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1212</version>
+          </dependency>
+        </dependencies>
+
+        <!-- Specify the plugin configuration.
+             The configuration format is the same as for the standalone code generator -->
+        <configuration>
+          <!-- Configure the database connection here -->
+          <jdbc>
+            <driver>org.postgresql.Driver</driver>
+            <url>jdbc:postgresql://localhost:5432/ethercis</url>
+            <user>postgres</user>
+            <password>postgres</password>
+          </jdbc>
+          <generator>
+            <database>
+              <!-- The database dialect fromBinder jooq-meta. Available dialects are named
+                  org.util.[database].[database]Database. Known values are: org.jooq.util.ase.ASEDatabase
+                  (to be used with Sybase ASE) org.jooq.util.cubrid.CUBRIDDatabase org.jooq.util.db2.DB2Database
+                  org.jooq.util.derby.DerbyDatabase org.jooq.util.h2.H2Database org.jooq.util.hsqldb.HSQLDBDatabase
+                  org.jooq.util.ingres.IngresDatabase org.jooq.util.mysql.MySQLDatabase org.jooq.util.oracle.OracleDatabase
+                  org.jooq.util.postgres.PostgresDatabase org.jooq.util.sqlite.SQLiteDatabase
+                  org.jooq.util.sqlserver.SQLServerDatabase org.jooq.util.sybase.SybaseDatabase
+                  (to be used with Sybase SQL Anywhere) You can also provide your own org.jooq.util.Database
+                  implementation here, if your database is currently not supported or if you
+                  wish to read the database schema fromBinder a file, such as a Hibernate .hbm.xml
+                  file -->
+              <name>org.jooq.util.postgres.PostgresDatabase</name>
+              <!-- All elements that are generated fromBinder your schema (A Java regular
+                  expression. Use the pipe to separate several expressions) Watch out for case-sensitivity.
+                  Depending on your database, this might be important! You can storeComposition case-insensitive
+                  regular expressions using this syntax: (?i:expr) -->
+              <includes></includes>
+              <!-- All elements that are excluded fromBinder your schema (A Java regular expression.
+                  Use the pipe to separate several expressions). Excludes match before includes -->
+              <excludes></excludes>
+              <!-- The schema that is used locally as a source for meta information.
+                  This could be your development schema or the production schema, etc This
+                  cannot be combined with the schemata element. If left empty, jOOQ will generate
+                  all available schemata. See the manual's next section to learn how to generate
+                  several schemata -->
+              <inputSchema>ehr</inputSchema>
+            </database>
+            <generate>
+              <!-- Generation flags: See advanced configuration properties -->
+            </generate>
+            <target>
+              <!-- The destination package of your generated classes (within the destination
+                  directory) jOOQ may append the schema name to this package if generating
+                  multiple schemas, e.g. org.jooq.your.packagename.schema1 org.jooq.your.packagename.schema2 -->
+              <packageName>com.ethercis.jooq.pg</packageName>
+              <!-- The destination directory of your generated classes -->
+              <!--<directory>./build/generated-src/main/</directory>-->
+              <directory>target/generated-sources/</directory>
+            </target>
+          </generator>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.3</version>
+        <executions>
+          <execution>
+            <id>generate-sources-flag</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <echo>GENERATE SOURCES IS EXECUTING</echo>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.jooq/jooq-codegen-maven -->
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq-codegen-maven</artifactId>
+      <version>3.7.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

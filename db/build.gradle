@@ -17,9 +17,9 @@ dependencies {
 }
 
 flyway {
-    url = "jdbc:postgresql://${db.host}:${db.port}/${db.name}"
-    user = project.db.user
-    password = project.db.password
+    url = "jdbc:postgresql://localhost:5432/ethercis"
+    user = "postgres"
+    password = "postgres"
     locations = [
             "filesystem:$projectDir/src/main/resources/db/migration",
             "classpath:com/ethercis/db/migration"

@@ -286,12 +286,7 @@ FUNCTION_IDENTIFIER : COUNT | AVG | BOOL_AND | BOOL_OR | EVERY | MAX | MIN | SUM
 //string function
                       SUBSTR | STRPOS | SPLIT_PART | BTRIM | CONCAT | CONCAT_WS | DECODE | ENCODE | FORMAT | INITCAP | LEFT | LENGTH | LPAD | LTRIM |
                        REGEXP_MATCH | REGEXP_REPLACE | REGEXP_SPLIT_TO_ARRAY | REGEXP_SPLIT_TO_TABLE | REPEAT | REPLACE | REVERSE | RIGHT | RPAD |
-                       RTRIM | TRANSLATE |
-//encoding function
-                       RAW_COMPOSITION_ENCODE
-
-                       ;
-
+                       RTRIM | TRANSLATE ;
 
 EXTENSION_IDENTIFIER: '_' E X T;
 
@@ -407,7 +402,8 @@ STDDEV_SAMP : S T D D E V '_' S A M P;
 VARIANCE : V A R I A N C E;
 VAR_POP : V A R '_' P O P;
 VAR_SAMP : V A R '_' S A M P;
-RAW_COMPOSITION_ENCODE : '_' '_' R A W '_' C O M P O S I T I O N '_' E N C O D E;
+
+
 
 fragment
 ESC_SEQ
