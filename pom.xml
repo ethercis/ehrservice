@@ -15,7 +15,7 @@
         <module>core</module>
         <module>ehrdao</module>
         <!--<module>jooq-pg</module>-->
-        <module>jooqpqtest</module>
+        <module>jooq-pq</module>
         <module>transform</module>
         <module>validation</module>
         <module>knowledge-cache</module>
