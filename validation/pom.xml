@@ -23,6 +23,8 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <user.deploy>../../ethercis-deploy</user.deploy>
+        <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
     </properties>
     <build>
         <plugins>
