@@ -294,6 +294,14 @@
             <artifactId>log4j-core</artifactId>
             <version>2.6.2</version>
         </dependency>
+        <!--NEEDED BY 3RD PARTY APIS THAT USE LOG4J V1-->
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-1.2-api -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
