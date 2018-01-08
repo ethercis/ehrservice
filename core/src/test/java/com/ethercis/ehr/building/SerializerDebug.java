@@ -59,13 +59,15 @@ public class SerializerDebug extends TestCase {
 //        String templateId = "IDCR - Laboratory Order.v0";
 //        String templateId = "IDCR - Laboratory Test Report.v0";
 //        String templateId = "IDCR - Laboratory Test Report.v0";
-        String templateId = "COLNEC Medication Action";
+//        String templateId = "COLNEC Medication Action";
+        String templateId = "patient_blood_pressure.v1";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
 //        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/a601a3df-cfea-4cb8-9b82-5737522b52c4.db.json")).forEach(line -> sb.append(line));
-        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/encoded_action.db.json")).forEach(line -> sb.append(line));
+//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/encoded_action.db.json")).forEach(line -> sb.append(line));
+        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/test/medvision.entry.db.json")).forEach(line -> sb.append(line));
 //        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "IDCR Problem List.v1");
         I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
 

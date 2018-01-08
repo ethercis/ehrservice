@@ -63,6 +63,7 @@
                 <exclude>org/jooq/**</exclude>
                 <exclude>org/postgresql/**</exclude>
                 <exclude>xsd/**</exclude>
+                <exclude>com/fasterxml/**</exclude>
               </excludes>
             </filter>
           </filters>
