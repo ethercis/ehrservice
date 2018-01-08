@@ -64,6 +64,7 @@
                 <exclude>org/openehr/**</exclude>
                 <exclude>org/postgresql/**</exclude>
                 <exclude>xsd/**</exclude>
+                <exclude>com/fasterxml/**</exclude>
               </excludes>
             </filter>
           </filters>
@@ -142,14 +143,14 @@
     </dependency>
     <dependency>
       <groupId>org.openehr</groupId>
-      <artifactId>openehr-am-rm-term</artifactId>
-      <version>1.0.9</version>
+      <artifactId>oet-parser</artifactId>
+      <version>1.0.5</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.openehr</groupId>
-      <artifactId>oet-parser</artifactId>
-      <version>1.0.5</version>
+      <artifactId>openehr-am-rm-term</artifactId>
+      <version>1.0.9</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

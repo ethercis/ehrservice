@@ -281,6 +281,32 @@ public class ContributionAccessTest extends AccessTestCase {
     }
 
     @Test
+    public void testRetrieve() throws Exception {
+
+        String description = "test contribution";
+        String templateId = "prescription.opt";
+        Integer changeCode = 249; //creation
+
+        I_ContributionAccess contributionAccess = I_ContributionAccess.getNewInstance(testDomainAccess, ehrIdUUID, systemUUID, composerUUID, description, changeCode, ContributionDef.ContributionType.COMPOSITION, ContributionDef.ContributionState.INCOMPLETE);
+
+        //retrieveInstanceByNamedSubject the contribution
+        UUID compositionId = UUID.fromString("24e296c5-196a-4584-9abd-808f5151a0dc");
+
+        I_ContributionAccess retrieved = I_ContributionAccess.retrieveInstance((I_DomainAccess) contributionAccess, compositionId);
+
+        assertNotNull(retrieved);
+
+        Set<UUID> ids = retrieved.getCompositionIds();
+        UUID retrievedCompositionId = ids.toArray(new UUID[]{})[0];
+        UUID composerId = retrieved.getComposition(retrievedCompositionId).getComposerId();
+        String composerName = I_PartyIdentifiedAccess.retrieveInstance(testDomainAccess, composerId).getPartyName();
+
+        I_CompositionAccess compositionAccess = I_CompositionAccess.retrieveInstance(testDomainAccess, retrievedCompositionId);
+
+        assertNotNull(compositionAccess);
+    }
+
+    @Test
     public void testInOutCanonicalXML() throws Exception {
         String description = "test contribution";
 //        String templateId = "MDT Output Report.opt";
