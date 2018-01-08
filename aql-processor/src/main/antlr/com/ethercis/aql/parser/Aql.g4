@@ -12,9 +12,9 @@
 //-------------------------------------------
 grammar Aql;
 
-//@header {
-//package com.ethercis.aql.parser;
-//}
+@header {
+package com.ethercis.aql.parser;
+}
 
 query	:	queryExpr ;
 
