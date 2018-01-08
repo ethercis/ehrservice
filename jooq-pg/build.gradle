@@ -1,5 +1,5 @@
 plugins {
-    id 'nu.studer.jooq' version '2.0.4'
+    id 'nu.studer.jooq' version '2.0.9'
 }
 
 apply plugin: 'java'
@@ -37,7 +37,6 @@ jooq {
                         schema {
                             schemaIdentifier {
                                 transform = 'UPPER'
-
                                 // Add _SCHEMA to schema identifiers as newer versions of jOOQ
                                 // will add an _ to duplicate identifiers.
                                 // This way the schema ehr will be named EHR_SCHEMA and the
