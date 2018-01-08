@@ -77,6 +77,8 @@
                                 <exclude>org/jooq/**</exclude>
                                 <exclude>org/postgresql/**</exclude>
                                 <exclude>xsd/**</exclude>
+                                <exclude>org/openehr/**</exclude>
+                                <exclude>com/fasterxml/**</exclude>
                             </excludes>
                         </filter>
                     </filters>
@@ -195,4 +197,4 @@
         </dependency>
     </dependencies>
 
-</project>
+</project>
