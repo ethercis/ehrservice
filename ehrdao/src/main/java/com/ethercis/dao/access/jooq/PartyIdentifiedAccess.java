@@ -304,7 +304,7 @@ public class PartyIdentifiedAccess extends DataAccess implements I_PartyIdentifi
 //                            .and(PARTY_IDENTIFIED.PARTY_REF_SCHEME.eq(genericID.getScheme()))
                             .and(PARTY_IDENTIFIED.PARTY_REF_VALUE.eq(genericID.getValue())))) {
 
-                return context.fetchOne(PARTY_IDENTIFIED,
+                return context.fetchAny(PARTY_IDENTIFIED,
                         PARTY_IDENTIFIED.PARTY_REF_NAMESPACE.eq(partyRef.getNamespace())
 //                                .and(PARTY_IDENTIFIED.PARTY_REF_SCHEME.eq(genericID.getScheme()))
                                 .and(PARTY_IDENTIFIED.PARTY_REF_VALUE.eq(genericID.getValue()))).getId();

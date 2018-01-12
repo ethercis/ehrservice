@@ -48,15 +48,15 @@ public interface I_ConceptAccess {
      * @return the record UUID or null if not found
      */
     public static UUID fetchConcept(I_DomainAccess domainAccess, Integer conceptId, String language){
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(conceptId).and(CONCEPT.LANGUAGE.equal(language))).getId();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(conceptId).and(CONCEPT.LANGUAGE.equal(language))).getId();
     }
 
     public static String fetchConceptLitteral(I_DomainAccess domainAccess, Integer conceptId, String language){
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(conceptId).and(CONCEPT.LANGUAGE.equal(language))).getDescription();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(conceptId).and(CONCEPT.LANGUAGE.equal(language))).getDescription();
     }
 
     public static String fetchConceptLitteral(I_DomainAccess domainAccess, UUID uuid){
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.ID.eq(uuid)).getDescription();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.ID.eq(uuid)).getDescription();
     }
     /**
      * retrieve a concept
@@ -68,14 +68,14 @@ public interface I_ConceptAccess {
         if (contributionChangeType == null)
             return null;
         int code = contributionChangeType.getCode();
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(code).and(CONCEPT.LANGUAGE.equal("en"))).getId();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(code).and(CONCEPT.LANGUAGE.equal("en"))).getId();
     }
 
     static UUID fetchContributionChangeType(I_DomainAccess domainAccess, ContributionChangeType contributionChangeType){
         if (contributionChangeType == null)
             return null;
         int code = contributionChangeType.getCode();
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(code).and(CONCEPT.LANGUAGE.equal("en"))).getId();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(code).and(CONCEPT.LANGUAGE.equal("en"))).getId();
     }
 
     /**
@@ -85,7 +85,7 @@ public interface I_ConceptAccess {
      * @return
      */
     public static UUID getVlcsDraft(I_DomainAccess domainAccess){
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(244).and(CONCEPT.LANGUAGE.equal("en"))).getId();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(244).and(CONCEPT.LANGUAGE.equal("en"))).getId();
     }
 
     /**
@@ -95,7 +95,7 @@ public interface I_ConceptAccess {
      * @return
      */
     public static UUID getVlcsActive(I_DomainAccess domainAccess){
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(245).and(CONCEPT.LANGUAGE.equal("en"))).getId();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(245).and(CONCEPT.LANGUAGE.equal("en"))).getId();
     }
 
     /**
@@ -105,7 +105,7 @@ public interface I_ConceptAccess {
      * @return
      */
     public static UUID getVlcsInactive(I_DomainAccess domainAccess){
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(246).and(CONCEPT.LANGUAGE.equal("en"))).getId();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(246).and(CONCEPT.LANGUAGE.equal("en"))).getId();
     }
 
     /**
@@ -115,6 +115,6 @@ public interface I_ConceptAccess {
      * @return
      */
     public static UUID getVlcsAwaitingApproval(I_DomainAccess domainAccess){
-        return domainAccess.getContext().fetchOne(CONCEPT, CONCEPT.CONCEPTID.eq(247).and(CONCEPT.LANGUAGE.equal("en"))).getId();
+        return domainAccess.getContext().fetchAny(CONCEPT, CONCEPT.CONCEPTID.eq(247).and(CONCEPT.LANGUAGE.equal("en"))).getId();
     }
 }
