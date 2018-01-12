@@ -1286,4 +1286,108 @@ public class QueryEngineTest {
         assertFalse(records.isEmpty());
         System.out.print(records);
     }
+
+    @Test
+    public void testCR92() throws Exception {
+        String query = "select " +
+                "    e/ehr_id/value as ehrId," +
+                "    e/ehr_status/subject/external_ref/id/value as subjectId," +
+                "    e/ehr_status/subject/external_ref/namespace as subjectNamespace," +
+                "    a/composer/name as composerName," +
+                "    a/composer/external_ref/id/value as composerId," +
+                "    a/composer/external_ref/namespace as composerNamespace," +
+                "   a/uid/value as compositionId, " +
+                "   b_a/data[at0001]/items[at0002]/value as Causative_agent" +
+                " from EHR e [ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae'] " +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1]" +
+                " contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]" +
+                " where a/name/value='Adverse reaction list'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR91() throws Exception {
+        String query = "select" +
+                " e/ehr_id/value as ehrId," +
+                " e/ehr_status/subject/external_ref/id/value as subjectId," +
+                " e/ehr_status/subject/external_ref/namespace as subjectNamespace," +
+                " a/context/start_time/value as compositionStartTime," +
+                " a/uid/value as compositionId," +
+                " a/composer/name as composerName \n" +
+                " from EHR" +
+                " e contains COMPOSITION a[openEHR-EHR-COMPOSITION.problem_list.v1]" +
+                " contains (  EVALUATION b_a[openEHR-EHR-EVALUATION.problem_diagnosis.v1] or  CLUSTER b_b[openEHR-EHR-CLUSTER.problem_status.v0])" +
+                " where a/name/value='Problem list'" +
+                " and a/uid/value='49eec9b7-a85f-4056-a2b2-140bfeb8145b::vm01.ethercis.org::1'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR88() throws Exception {
+        String query = "select" +
+                " e/ehr_id/value as ehrId," +
+                " e/ehr_status/subject/external_ref/id/value as subjectId," +
+                " e/ehr_status/subject/external_ref/namespace as subjectNamespace," +
+                " a/uid/value as compositionId," +
+                " b_a/uid/value as entryId," +
+                " b_a/data[at0001]/items[at0002]/value/value as Causative_agent_value," +
+                " b_a/data[at0001]/items[at0002]/value/defining_code/code_string as Causative_agent_code," +
+                " b_a/data[at0001]/items[at0002]/value/defining_code/terminology_id/value as Causative_agent_terminology," +
+                " b_a/data[at0001]/items[at0063]/value/defining_code/code_string as Status_code," +
+                " b_a/data[at0001]/items[at0101]/value/defining_code/code_string as Criticality_code," +
+                " b_a/data[at0001]/items[at0120]/value/defining_code/code_string as Category_code," +
+                " b_a/data[at0001]/items[at0117]/value/value as Onset_of_last_reaction," +
+                " b_a/data[at0001]/items[at0058]/value/defining_code/code_string as Reaction_mechanism_code," +
+                " b_a/data[at0001]/items[at0006]/value/value as Comment," +
+                " b_a/protocol[at0042]/items[at0062]/value/value as Adverse_reaction_risk_Last_updated," +
+                " b_a/protocol[at0042]/items[at0062]/value/value as time_whatever," +
+                " b_a/data[at0001]/items[at0009]/items[at0010]/value/value as Specific_substance_value," +
+                " b_a/data[at0001]/items[at0009]/items[at0010]/value/defining_code/code_string as Specific_substance_code," +
+                " b_a/data[at0001]/items[at0009]/items[at0010]/value/defining_code/terminology_id/value as Specific_substance_terminology," +
+                " b_a/data[at0001]/items[at0009]/items[at0021]/value/defining_code/code_string as Certainty_code," +
+                " b_a/data[at0001]/items[at0009]/items[at0011]/value/value as Manifestation_value," +
+                "     b_a/data[at0001]/items[at0009]/items[at0011]/value/defining_code/code_string as Manifestation_code," +
+                " b_a/data[at0001]/items[at0009]/items[at0011]/value/defining_code/terminology_id/value as Manifestation_terminology," +
+                " b_a/data[at0001]/items[at0009]/items[at0012]/value/value as Reaction_description," +
+                " b_a/data[at0001]/items[at0009]/items[at0027]/value/value as Onset_of_reaction," +
+                " b_a/data[at0001]/items[at0009]/items[at0089]/value/defining_code/code_string as Severity_code," +
+                " b_a/data[at0001]/items[at0009]/items[at0106]/value/value as Route_of_exposure_value," +
+                " b_a/data[at0001]/items[at0009]/items[at0106]/value/defining_code/code_string as Route_of_exposure_code," +
+                " b_a/data[at0001]/items[at0009]/items[at0106]/value/defining_code/terminology_id/value as Route_of_exposure_terminology," +
+                " b_a/data[at0001]/items[at0009]/items[at0032]/value/value as Adverse_reaction_risk_Comment" +
+                " from EHR e" +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1]" +
+                " contains EVALUATION b_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]" +
+                " where a/name/value='Adverse reaction list'" +
+                " and b_a/protocol[at0042]/items[at0062]/value/value >= '2016-12-07T14:47:00Z'" +
+                " and b_a/protocol[at0042]/items[at0062]/value/value <= '2018-12-07T14:47:00Z'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR73() throws Exception {
+        String query = "select" +
+                " a as data" +
+                " from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']" +
+                " contains COMPOSITION a [openEHR-EHR-COMPOSITION.adverse_reaction_list.v1]" +
+                " where a/name/value='Adverse reaction list'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
 }

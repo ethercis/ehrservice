@@ -22,6 +22,7 @@ import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.aql.sql.queryImpl.I_QueryImpl;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
+import com.ethercis.aql.sql.queryImpl.value_field.ISODateTime;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -34,9 +35,10 @@ import java.util.*;
  */
 public class WhereBinder {
 
+    public static final String JSQUERY_EXPR_VALUE = "\"value\"";
     private JsonbEntryQuery jsonbEntryQuery;
     private CompositionAttributeQuery compositionAttributeQuery;
-    protected List whereClause;
+    protected final List whereClause;
     private IdentifierMapper mapper;
     private Condition initialCondition;
     private String sqlStatementRegexp = "(?i)(like|ilike|in|not in)"; //list of subquery and operators
@@ -69,6 +71,20 @@ public class WhereBinder {
         @Override
         public StringBuffer append(String string) {
             return stringBuffer.append(string);
+        }
+
+        @Override
+        public void replaceLast(String previous, String newString){
+            int lastPos = stringBuffer.lastIndexOf(previous);
+            if (lastPos >= 0) {
+                stringBuffer.delete(lastPos, lastPos + previous.length());
+                stringBuffer.insert(lastPos, newString);
+            }
+        }
+
+        @Override
+        public int lastIndexOf(String string){
+            return stringBuffer.lastIndexOf(string);
         }
 
         @Override
@@ -213,8 +229,11 @@ public class WhereBinder {
         TaggedStringBuffer taggedBuffer = new TaggedStringBuffer();
         Condition condition = initialCondition;
 
-        for (int cursor = 0; cursor < whereClause.size(); cursor++){
-            Object item = whereClause.get(cursor);
+//        List whereItems = new WhereResolver(whereClause).resolveDateCondition();
+        List whereItems = whereClause;
+
+        for (int cursor = 0; cursor < whereItems.size(); cursor++){
+            Object item = whereItems.get(cursor);
             if (item instanceof String) {
                 switch ((String)item){
                     case "OR":
@@ -238,11 +257,27 @@ public class WhereBinder {
                         break;
 
                     default:
-                        item = hackItem(taggedBuffer, (String) item);
-                        taggedBuffer.append((String) item);
+                        ISODateTime isoDateTime = new ISODateTime(((String) item).replaceAll("'", ""));
+                        if (isoDateTime.isValidDateTimeExpression()){
+                            Long timestamp = isoDateTime.toTimeStamp();
+                            int lastValuePos = taggedBuffer.lastIndexOf(JSQUERY_EXPR_VALUE);
+                            if (lastValuePos > 0) {
+                                taggedBuffer.replaceLast(JSQUERY_EXPR_VALUE, "\"epoch_offset\"");
+                            }
+                            item = hackItem(taggedBuffer, timestamp.toString());
+                            taggedBuffer.append((String) item);
+                        }
+                        else {
+                            item = hackItem(taggedBuffer, (String) item);
+                            taggedBuffer.append((String) item);
+                        }
                         break;
 
                 }
+            }
+            else if (item instanceof Long){
+                item = hackItem(taggedBuffer, item.toString());
+                taggedBuffer.append(item.toString());
             }
             else if (item instanceof VariableDefinition){
                 if (taggedBuffer.length() > 0) {
@@ -297,7 +332,7 @@ public class WhereBinder {
     private Object hackItem(TaggedStringBuffer taggedBuffer, String item) {
         if (operators.contains(item.toUpperCase()))
             return item;
-        if (taggedBuffer.toString().contains("composition_id")){
+        if (taggedBuffer.toString().contains(I_JoinBinder.COMPOSITION_JOIN)){
             if (item.contains("::"))
                 return item.split("::")[0]+"'";
         }

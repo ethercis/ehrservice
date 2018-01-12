@@ -111,12 +111,15 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
                 joinComposer = true;
                 return composerNameValue(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/id/namespace":
+            case "composer/external_ref/namespace":
                 joinComposer = true;
                 return composerIdNamespace(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/id/scheme":
+            case "composer/external_ref/scheme":
                 joinComposer = true;
                 return composerIdScheme(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/id/ref":
+            case "composer/external_ref/id/value":
                 joinComposer = true;
                 return composerIdRef(compositionId, withAlias, variableDefinition.getAlias());
             case "composer/type":

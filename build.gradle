@@ -53,10 +53,10 @@ ext {
     // If these are changed, make sure the database is created using
     // the same values. See also the db/createdb.sql script.
     db = [
-            name         : 'ethercis',
-            user         : 'ethercis',
-            password     : 'ethercis',
+            name         : 'ehr',
+            user         : 'ehr',
+            password     : 'ehr',
             host         : 'localhost',
-            port         : '5432',
+            port         : '5434',
     ]
 }

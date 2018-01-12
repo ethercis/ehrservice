@@ -4,7 +4,7 @@ import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
-import com.ethercis.ehr.building.XMLBinding;
+import com.ethercis.ehr.building.ECIS_XMLBinding;
 import org.openehr.rm.composition.Composition;
 import org.openehr.schemas.v1.COMPOSITION;
 import org.openehr.schemas.v1.CompositionDocument;
@@ -38,7 +38,7 @@ public class CompositionFinderTest extends TestCase {
 
         Object o = comp.getTerritory();
 
-        XMLBinding binding = new XMLBinding();
+        ECIS_XMLBinding binding = new ECIS_XMLBinding();
         Object rmObj = binding.bindToRM(comp);
 
         assertNotNull(rmObj);

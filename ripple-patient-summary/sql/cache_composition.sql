@@ -91,7 +91,7 @@ CREATE OR REPLACE FUNCTION ehr.set_cache_for_ehr(UUID)
       languageId := 'en';
       composerId := ehr.get_cache_committer();
       sysTransationTime := now();
-      sysPeriod := tstzrange(now(), 'infinity', '[)');
+      sysPeriod := tstzrange(now(), NULL);
       SELECT territory.code
       FROM ehr.territory
       WHERE territory.twoletter = 'GB'
@@ -157,7 +157,7 @@ CREATE OR REPLACE FUNCTION ehr.update_cache_for_ehr(UUID)
       UPDATE ehr.event_context
         SET other_context = ehr.other_context_for_ehr(ehrId),
             sys_transaction = now(),
-            sys_period = tstzrange(now(), 'infinity', '[)')
+            sys_period = tstzrange(now(), NULL)
         FROM
           ehr.composition,
           ehr.entry

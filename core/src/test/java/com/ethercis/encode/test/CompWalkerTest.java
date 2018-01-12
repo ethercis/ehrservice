@@ -3,7 +3,7 @@ package com.ethercis.encode.test;
 import com.ethercis.ehr.building.GenerationStrategy;
 import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.building.OetBinding;
-import com.ethercis.ehr.building.XMLBinding;
+import com.ethercis.ehr.building.ECIS_XMLBinding;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.json.writer.DvDateTimeAdapter;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
@@ -63,7 +63,7 @@ public class CompWalkerTest {
 
 		Object o = comp.getTerritory();
 		
-		XMLBinding binding = new XMLBinding();
+		ECIS_XMLBinding binding = new ECIS_XMLBinding();
 		Object rmObj = binding.bindToRM(comp);
 		
 		assertNotNull(rmObj);

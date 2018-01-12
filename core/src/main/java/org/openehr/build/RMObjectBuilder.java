@@ -116,7 +116,7 @@ public class RMObjectBuilder {
 				TerminologyID.class,   ArchetypeID.class,     HierObjectID.class,    AccessGroupRef.class,
 				GenericID.class,       InternetID.class,      ISO_OID.class,         LocatableRef.class,
 				ObjectVersionID.class, ObjectRef.class,       PartyRef.class,        TemplateID.class,
-				TerminologyID.class,   UUID.class,            VersionTreeID.class,
+				TerminologyID.class,   UUID.class,            VersionTreeID.class,   ObjectID.class,
 
 				// datatypes classes
 				DvBoolean.class,       DvState.class,         DvIdentifier.class,    DvText.class,

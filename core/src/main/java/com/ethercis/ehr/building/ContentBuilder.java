@@ -65,8 +65,6 @@ import org.openehr.schemas.v1.*;
 import java.io.InputStream;
 import java.util.*;
 
-import static org.openehr.build.SystemValue.*;
-
 /**
  * Abstract class to manage the content of a composition (an Entry) under its serialized representation.
  * At this point in time, the serialization is using the value tree  (Maps and Arrays) as a JSON structure.
@@ -511,7 +509,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
         generateNewComposition();
 
 //        XMLBinding binding = new XMLBinding();
-        XMLBinding binding = new XMLBinding();
+        ECIS_XMLBinding binding = new ECIS_XMLBinding();
 
         Object rmObj = binding.bindToRM(comp);
         //consistency test
@@ -618,8 +616,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //            XStream xStream = new XStream();
 //            String xml = xStream.toXML(composition); // this does not marshal consistently with XmlBeans...
 
-            XMLBinding xmlBinding = new XMLBinding(anyElement);
-            Object object = xmlBinding.bindToXML(composition, true);
+            ECIS_XMLBinding ECISXmlBinding = new ECIS_XMLBinding(anyElement);
+            Object object = ECISXmlBinding.bindToXML(composition, true);
 
             if (!(object instanceof COMPOSITION))
                 throw new IllegalArgumentException("Invalid binding of object, resulting in class:"+object.getClass());
@@ -684,7 +682,7 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 
     public static Locatable parseOtherDetailsXML(InputStream otherDetailsXmlStream) throws Exception {
         ItemsDocument items =  ItemsDocument.Factory.parse(otherDetailsXmlStream);
-        XMLBinding binding = new XMLBinding();
+        ECIS_XMLBinding binding = new ECIS_XMLBinding();
         LOCATABLE locatable = items.getItems();
         SchemaType itemType = implyClass(locatable);
         Object rmObj = binding.bindToRM(locatable.changeType(itemType));
@@ -706,8 +704,8 @@ public abstract class ContentBuilder implements I_ContentBuilder{
 //            XStream xStream = new XStream();
 //            String xml = xStream.toXML(composition); // this does not marshal consistently with XmlBeans...
 
-            XMLBinding xmlBinding = new XMLBinding(anyElement);
-            Object object = xmlBinding.bindToXML(locatable, false);
+            ECIS_XMLBinding ECISXmlBinding = new ECIS_XMLBinding(anyElement);
+            Object object = ECISXmlBinding.bindToXML(locatable, false);
 
             XmlOptions xmlOptions = new XmlOptions();
             xmlOptions.setUseDefaultNamespace();

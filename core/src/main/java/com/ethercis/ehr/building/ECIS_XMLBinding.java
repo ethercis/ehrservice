@@ -18,6 +18,7 @@
 package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.building.filter.FilterOutNil;
+import com.ethercis.ehr.building.util.XmlBeansFix;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
@@ -26,6 +27,7 @@ import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
@@ -53,23 +55,23 @@ import java.util.*;
  * @author Rong.Chen
  * @author minor modifications by Erik Sundvall, Linköping University
  */
-public class XMLBinding {
-	Logger log = LogManager.getLogger(XMLBinding.class);
+public class ECIS_XMLBinding {
+	Logger log = LogManager.getLogger(ECIS_XMLBinding.class);
 	boolean anyElement = false;
 	
-	public XMLBinding(Map<SystemValue, Object> values) {
+	public ECIS_XMLBinding(Map<SystemValue, Object> values) {
 		if (values == null) {
 			throw new NullPointerException("values cannot be null");
 		}
 		init(values);
 	}
 
-	public XMLBinding() {
+	public ECIS_XMLBinding() {
 		this(false);
 	}
 
 
-	public XMLBinding(boolean anyElement) {
+	public ECIS_XMLBinding(boolean anyElement) {
 		this.anyElement = anyElement;
 		TerminologyService terminologyService;
 		try {
@@ -355,14 +357,36 @@ public class XMLBinding {
 //			return null;
 //		}
 //
-		Method[] methods = object.getClass().getMethods();
 		Object value;
 		Map<String, Object> valueMap = new HashMap<String, Object>();
 
-		String className = object.getClass().getSimpleName();
+		//this hack ensures that the actual type is returned instead of the parent class
+
+//		String xmlFragmentHeader = object.toString().substring(0, object.toString().indexOf(">"));
+//		String className;
+//		if (xmlFragmentHeader.contains("type=")) {
+//			int typeEndPos = xmlFragmentHeader.indexOf("type=\"") + 6;
+//			className = xmlFragmentHeader.substring(typeEndPos, xmlFragmentHeader.indexOf("\"", typeEndPos)).replaceAll("_", "");
+//		}
+//		else
+//			className = object.getClass().getSimpleName();
+
+		String className = new XmlBeansFix().getXmlType((XmlObject)object);
+
+		if (className != null && !className.equals(object.getClass().getSimpleName())){
+			SchemaType schema = new XmlBeansFix().findSchemaType(className);
+			object = ((XmlObject) object).changeType(schema);
+		}
+		else
+			className = object.getClass().getSimpleName();
+
+
+
 		if (className.endsWith("Impl")) {
 			className = className.substring(0, className.length() - 4);
 		}
+
+		Method[] methods = object.getClass().getMethods();
 
 		Map<String, Class<?>> attributes = builder.retrieveAttribute(className);
 		Set<String> attributeNames = attributes.keySet();

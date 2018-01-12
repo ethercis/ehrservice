@@ -27,6 +27,11 @@ package com.ethercis.aql.sql.binding;
 public interface I_TaggedStringBuffer {
 
     StringBuffer append(String string);
+
+    void replaceLast(String previous, String newString);
+
+    int lastIndexOf(String string);
+
     String toString();
 
     int length();
