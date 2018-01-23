@@ -54,7 +54,6 @@
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <configuration>
                     <aggregate>true</aggregate>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                 </configuration>
                 <version>2.20.1</version>
             </plugin>
