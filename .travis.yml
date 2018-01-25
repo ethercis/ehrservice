@@ -1,5 +1,9 @@
 language: java
 
+branches:
+  only:
+    - develop
+
 before_install:
   - chmod +x install.sh
   - chmod +x custom_build.sh
