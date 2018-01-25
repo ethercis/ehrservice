@@ -22,35 +22,34 @@ import com.ethercis.aql.sql.binding.JsonbBlockDef;
 import com.ethercis.ehr.encode.rawjson.LightRawJsonEncoder;
 import com.ethercis.ehr.encode.rawjson.RawJsonEncoder;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectField;
-import org.jooq.impl.CustomRecord;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by christian on 2/21/2017.
  */
-public class RawJsonTransform implements I_RawJsonTransform{
+public class RawJsonTransform implements I_RawJsonTransform {
 
-    public static void toRawJson(Result<Record> result, Collection<QuerySteps> querySteps, I_KnowledgeCache knowledgeCache){
+    private final DSLContext context;
+
+    public RawJsonTransform(DSLContext context) {
+        this.context = context;
+    }
+
+    public static void toRawJson(Result<Record> result, Collection<QuerySteps> querySteps, I_KnowledgeCache knowledgeCache) {
 
         RawJsonEncoder rawJsonEncoder = new RawJsonEncoder(knowledgeCache);
 
-        for (QuerySteps queryStep: querySteps){
-            if (queryStep.jsonColumnsSize() > 0){
+        for (QuerySteps queryStep : querySteps) {
+            if (queryStep.jsonColumnsSize() > 0) {
                 for (int cursor = 0; cursor < result.size(); cursor++) {
                     Record record = result.get(cursor);
                     String templateIdNow = record.getValue(TEMPLATE_ID, String.class);
                     if (!templateIdNow.equals(queryStep.getTemplateId()))
                         continue;
-                    for (JsonbBlockDef jsonbBlockDef: queryStep.getJsonColumns()) {
+                    for (JsonbBlockDef jsonbBlockDef : queryStep.getJsonColumns()) {
                         String jsonbOrigin = (String) record.getValue(jsonbBlockDef.getField());
                         if (jsonbOrigin == null)
                             continue;
@@ -59,15 +58,14 @@ public class RawJsonTransform implements I_RawJsonTransform{
                         //apply the transformation
                         try {
 //                            jsonbOrigin = "{\""+jsonbBlockDef.getField().getName()+"\":"+jsonbOrigin+"}";
-                            String rawJson = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap(jsonbBlockDef.getField().getName());
-//                            Object rawJson = rawJsonEncoder.encodeContentAsMap(jsonbBlockDef.getField().getName(), templateId, jsonbOrigin, itemPath);
+                            String rawJson = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsString(jsonbBlockDef.getField().getName());
+//                            Object rawJson = rawJsonEncoder.encodeContentAsString(jsonbBlockDef.getField().getName(), templateId, jsonbOrigin, itemPath);
                             //debugging
                             if (jsonbOrigin.contains("@class"))
                                 System.out.print("Hum...");
                             record.setValue(jsonbBlockDef.getField(), rawJson);
-                        }
-                        catch (Exception e){
-                            throw new IllegalArgumentException("Could not encode raw json for template Id:"+templateId);
+                        } catch (Exception e) {
+                            throw new IllegalArgumentException("Could not encode raw json for template Id:" + templateId);
                         }
                     }
                 }
@@ -75,7 +73,34 @@ public class RawJsonTransform implements I_RawJsonTransform{
         }
     }
 
-    private static int columnIndex(List<Field> fields, String columnName){
+    public Result toRawJson(Result<Record> result) {
+
+        Result resultSet = context.newResult(DSL.field("data", String.class));
+
+        for (int cursor = 0; cursor < result.size(); cursor++) {
+            Record record = result.get(cursor);
+            String jsonbOrigin = record.getValue("data").toString();
+            if (jsonbOrigin == null)
+                continue;
+            //apply the transformation
+            try {
+                Map rawJson = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("data");
+                //debugging
+//                if (jsonbOrigin.contains("@class"))
+//                    System.out.print("Hum...");
+                Record newValue = context.newRecord(DSL.field("data"));
+                newValue.setValue(DSL.field("data"), rawJson);
+                resultSet.add(newValue);
+                record.setValue(DSL.field("data"), rawJson);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Could not encode raw json data"+e);
+            }
+        }
+        return resultSet;
+    }
+
+
+    private static int columnIndex(List<Field> fields, String columnName) {
         for (int i = 0; i < fields.size(); i++) {
             Field field = fields.get(i);
             if (field.getName().equals(columnName))
@@ -84,7 +109,7 @@ public class RawJsonTransform implements I_RawJsonTransform{
         return -1;
     }
 
-    public static Result<Record> deleteNamedColumn(Result<Record> result, String columnName){
+    public static Result<Record> deleteNamedColumn(Result<Record> result, String columnName) {
 
         List<Field> fields = new ArrayList<>();
 
@@ -95,8 +120,7 @@ public class RawJsonTransform implements I_RawJsonTransform{
             Field[] arrayField = fields.toArray(new Field[]{});
 
             return result.into(arrayField);
-        }
-        else
+        } else
             return result;
     }
 

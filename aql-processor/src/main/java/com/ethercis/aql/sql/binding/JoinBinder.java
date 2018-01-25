@@ -35,6 +35,8 @@ import static com.ethercis.jooq.pg.Tables.EVENT_CONTEXT;
  */
 public class JoinBinder implements I_JoinBinder {
 
+    private boolean isWholeComposition = false;
+
     private boolean compositionJoined = false;
     private boolean statusJoined = false;
     private boolean subjectJoin = false;
@@ -43,6 +45,14 @@ public class JoinBinder implements I_JoinBinder {
     private boolean composerJoined = false;
     private boolean ehrJoined = false;
 
+    public JoinBinder(boolean isWholeComposition) {
+        this.isWholeComposition = isWholeComposition;
+    }
+
+    public JoinBinder() {
+        this.isWholeComposition = false;
+    }
+
     /**
      * Warning: JOIN sequence is important!
      *
@@ -50,6 +60,8 @@ public class JoinBinder implements I_JoinBinder {
      * @param compositionAttributeQuery
      */
     public void addJoinClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
+//        if (isWholeComposition)
+//            return;
         if (compositionAttributeQuery.isJoinSubject()) {
             joinSubject(selectQuery, compositionAttributeQuery);
         }

@@ -190,7 +190,7 @@ public class LightRawJsonEncoderTest {
                         "  }\n" +
                         "]";
 
-        String translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("test");
+        String translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsString("test");
         assertNotNull(translated);
         System.out.println(translated);
     }
@@ -432,7 +432,7 @@ public class LightRawJsonEncoderTest {
                                        "      }\n" +
                                        "    ]\n" +
                                        "  }\n";
-                String translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("test");
+                String translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsString("test");
                 assertNotNull(translated);
                 System.out.println(translated);
         }

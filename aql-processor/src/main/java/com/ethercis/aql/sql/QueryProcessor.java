@@ -202,12 +202,16 @@ public class QueryProcessor  {
             SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, SelectBinder.OptimizationMode.TEMPLATE_BATCH, null);
             SelectQuery<?> select = selectBinder.bind(queryParser.getInSetExpression(), count, queryParser.getOrderAttributes());
             new FromBinder(selectBinder.isWholeComposition()).addFromClause(select, selectBinder.getCompositionAttributeQuery(), queryParser);
-            new JoinBinder().addJoinClause(select, selectBinder.getCompositionAttributeQuery());
+            new JoinBinder(selectBinder.isWholeComposition()).addJoinClause(select, selectBinder.getCompositionAttributeQuery());
             if (!explain)
                 if (new Variables(queryParser.getVariables()).hasDefinedDistinct() || new Variables(queryParser.getVariables()).hasDefinedFunction())
                     result = fetchResultSet(new SuperQuery(context, queryParser.getVariables(), select).select(), result);
                 else
                     result = (Result<Record>)select.fetch();
+
+                if (selectBinder.isWholeComposition()){
+                    result = new RawJsonTransform(context).toRawJson(result);
+                }
             else
                 buildExplain(select, explainList);
         }

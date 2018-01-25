@@ -30,6 +30,7 @@ import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -228,6 +229,7 @@ public class SelectBinder {
                 if (mapper.getClassName(variableDefinition.getIdentifier()).equals("COMPOSITION")){
                     //substitute this variable definition by a function definition
                     isWholeComposition = true;
+                    selectQuery.addSelect(DSL.field("ehr.js_composition("+ENTRY.COMPOSITION_ID+")").as("data"));
                     continue;
                 }
 

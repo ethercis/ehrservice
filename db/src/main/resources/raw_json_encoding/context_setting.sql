@@ -1,0 +1,14 @@
+CREATE OR REPLACE FUNCTION ehr.js_context_setting(UUID)
+  RETURNS JSON AS
+  $$
+  DECLARE
+    concept_id ALIAS FOR $1;
+  BEGIN
+    RETURN (
+      SELECT ehr.js_dv_coded_text(description, ehr.js_code_phrase(conceptid :: TEXT, 'openehr'))
+      FROM ehr.concept
+      WHERE id = concept_id AND language = 'en'
+    );
+  END
+  $$
+LANGUAGE plpgsql;

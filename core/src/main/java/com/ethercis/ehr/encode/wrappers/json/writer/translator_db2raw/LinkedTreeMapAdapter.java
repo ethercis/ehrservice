@@ -23,6 +23,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import org.apache.commons.collections.MapUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
     protected String parentArchetypeNodeId = null;
     protected String nodeName = null;
     boolean isRoot = true;
+    int depth = 0;
 
     public LinkedTreeMapAdapter(AdapterType adapterType) {
         super();
@@ -79,6 +81,9 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
 
                 Object value = ((Map.Entry) entry).getValue();
 
+                if (value == null)
+                    continue;
+
                 if (value instanceof ArrayList) {
                     //lookahead to check if this embeds another array or terminal leaves
                     boolean terminalNode = isTerminal((ArrayList) value);
@@ -102,7 +107,6 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                         }
                         new LinkedTreeMapAdapter().write(writer, (LinkedTreeMap) ((List) value).get(0));
                     } else {
-//                        System.out.println("name:" + "items");
                         writer.name(jsonKey);
                         new ArrayListAdapter(archetypeNodeId, key).write(writer, (ArrayList) value);
                     }
@@ -138,7 +142,8 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                 } else if (value instanceof Boolean) {
 //                    System.out.println("name:" + new SnakeCase(key).camelToSnake());
                     writer.name(new SnakeCase(key).camelToSnake()).value((Boolean) value);
-                } else
+                }
+                else
                     throw new IllegalArgumentException("Could not handle value type for key:" + key + ", value:" + value);
             } else
                 throw new IllegalArgumentException("Entry is not a map:" + entry);
@@ -154,7 +159,8 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
 
     //	@Override
     public void write(JsonWriter writer, LinkedTreeMap map) throws IOException {
-//        System.out.println("begin object --------------------------------");
+
+//        MapUtils.debugPrint(System.out, "begin object"+(depth++), map);
 
         writer.beginObject();
         if (isRoot) {
@@ -190,31 +196,44 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
 
         }
         writeInternal(writer, map);
-//        System.out.println("end object --------------------------------");
+//        System.out.println("end object ============================================="+(depth--));
         writer.endObject();
         return;
     }
 
     boolean isTerminal(ArrayList list) {
         for (Object object : list) {
-            if (object instanceof List)
-                return false;
+//            if (object instanceof ArrayList)
+//                return true;
+//            else if (object.getClass().getCanonicalName().contains("java.lang"))
+//                return true;
             if (object instanceof LinkedTreeMap) {
                 for (Object entry : ((LinkedTreeMap) object).entrySet()) {
-                    String itemKey = ((Map.Entry) entry).getKey().toString();
-                    if (!(itemKey.contains(ITEMS)) && !(itemKey.equals(CompositionSerializer.TAG_NAME)))
-                        return true;
+//                    String itemKey = ((Map.Entry) entry).getKey().toString();
+//                    if (itemKey.equals(CompositionSerializer.TAG_NAME))
+//                        continue;
+////                    if (!(itemKey.contains(ITEMS)) && !(itemKey.equals(CompositionSerializer.TAG_NAME)))
+////                        return true;
                     Object mapValue = ((Map.Entry) entry).getValue();
-                    if (mapValue instanceof LinkedTreeMap) {
-                        Map values = (Map) mapValue;
-                        if (values.containsKey(CompositionSerializer.TAG_CLASS))
-                            return true;
+//                    if (mapValue instanceof LinkedTreeMap) {
+//                        Map values = (Map) mapValue;
+//                        if (values.containsKey(CompositionSerializer.TAG_CLASS))
+//                            return true;
+//                    }
+                    if (mapValue instanceof ArrayList){
+                        return false;
                     }
+//                    else {
+//                        throw new IllegalArgumentException("Unhandled type:"+mapValue.getClass());
+//                    }
 
                 }
             }
+//            else {
+//                throw new IllegalArgumentException("Unknown type:"+object.getClass());
+//            }
         }
-        return false;
+        return true;
     }
 
     void writeNameAsValue(JsonWriter writer, String value) throws IOException {

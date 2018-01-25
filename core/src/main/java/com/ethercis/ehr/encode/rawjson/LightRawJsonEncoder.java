@@ -39,7 +39,7 @@ public class LightRawJsonEncoder {
         this.jsonbOrigin = jsonbOrigin;
     }
 
-    public String encodeContentAsMap(String root){
+    public String encodeContentAsString(String root){
 //        Type listType = new TypeToken<ArrayList<ArrayList<Object>>>(){}.getType();
         GsonBuilder gsondb = EncodeUtil.getGsonBuilderInstance();
         if (jsonbOrigin.startsWith("[")){ //strip the expression as an array
@@ -48,8 +48,23 @@ public class LightRawJsonEncoder {
         Map<String, Object> fromDB = gsondb.create().fromJson(jsonbOrigin, Map.class);
 
         GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON);
-        String raw = gsonRaw.setPrettyPrinting().create().toJson(fromDB);
+        String raw = gsonRaw.create().toJson(fromDB);
 
         return raw;
+    }
+
+    public Map encodeContentAsMap(String root){
+//        Type listType = new TypeToken<ArrayList<ArrayList<Object>>>(){}.getType();
+        GsonBuilder gsondb = EncodeUtil.getGsonBuilderInstance();
+        if (jsonbOrigin.startsWith("[")){ //strip the expression as an array
+            jsonbOrigin = jsonbOrigin.trim().substring(1, jsonbOrigin.length()-1);
+        }
+        Map<String, Object> fromDB = gsondb.create().fromJson(jsonbOrigin, Map.class);
+
+        GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON);
+        String raw = gsonRaw.create().toJson(fromDB);
+        Map retmap = gsonRaw.create().fromJson(raw, Map.class);
+
+        return retmap;
     }
 }
