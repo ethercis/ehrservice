@@ -1,0 +1,66 @@
+// install all 3rd party libraries in the local maven repo so other projects can pick it up
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        adl(MavenPublication) {
+            groupId 'openehr'
+            artifactId 'adl-parser'
+            version '1.0.9'
+
+            artifact 'adl-parser-1.0.9.jar'
+        }
+        oet(MavenPublication) {
+            groupId 'openehr'
+            artifactId 'oet-parser'
+            version '1.0.5'
+
+            artifact 'oet-parser-1.0.5.jar'
+        }
+        opt(MavenPublication) {
+            groupId 'ethercis'
+            artifactId 'openEHR.v1.OperationalTemplate'
+            version '1.0.1'
+
+            artifact 'openEHR.v1.OperationalTemplate-1.0.1.jar'
+        }
+        tpl(MavenPublication) {
+            groupId 'ethercis'
+            artifactId 'openEHR.v1.Template'
+            version '1.0.1'
+
+            artifact 'openEHR.v1.Template-1.0.1.jar'
+        }
+        art(MavenPublication) {
+            groupId 'ethercis'
+            artifactId 'openehr-am-rm-term'
+            version '1.0.9'
+
+            artifact 'openehr-am-rm-term-1.0.9.jar'
+        }
+        rmb(MavenPublication) {
+            groupId 'openehr'
+            artifactId 'rm-builder'
+            version '1.0.9'
+
+            artifact 'rm-builder-1.0.9.jar'
+        }
+        tfj(MavenPublication) {
+            groupId 'ethercis'
+            artifactId 'thinkehr-framework-jsonlib'
+            version '2.3.0-JL32'
+
+            artifact 'thinkehr-framework-jsonlib-2.3.0-JL32.jar'
+        }
+        xml(MavenPublication) {
+            groupId 'openehr'
+            artifactId 'xml-serializer'
+            version '1.0.9'
+
+            artifact 'xml-serializer-1.0.9.jar'
+        }
+    }
+}
+
+task('install').dependsOn('publishToMavenLocal')
