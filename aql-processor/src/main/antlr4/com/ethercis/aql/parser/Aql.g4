@@ -12,11 +12,11 @@
 //-------------------------------------------
 grammar Aql;
 
-@header {
-package com.ethercis.aql.parser;
-}
+//@header {
+//package com.ethercis.aql.parser;
+//}
 
-query	:	queryExpr ;
+query   :   queryExpr ;
 
 queryExpr : select from (where)? (limit)? (offset)? (orderBy)? EOF ;
 
@@ -38,7 +38,7 @@ extension
 where
         : WHERE identifiedExpr ;
 
-orderBy 
+orderBy
         : ORDERBY orderBySeq ;
 
 limit
@@ -47,15 +47,15 @@ limit
 offset
         : OFFSET INTEGER;
 
-orderBySeq  
+orderBySeq
         : orderByExpr (COMMA orderBySeq)?;
-//		| orderByExpr COMMA orderBySeq ;
+//      | orderByExpr COMMA orderBySeq ;
 
 orderByExpr : identifiedPath (DESCENDING|ASCENDING|DESC|ASC);
-//		| identifiedPath DESCENDING
-//		| identifiedPath ASCENDING
-//		| identifiedPath DESC
-//		| identifiedPath ASC ;
+//      | identifiedPath DESCENDING
+//      | identifiedPath ASCENDING
+//      | identifiedPath DESC
+//      | identifiedPath ASC ;
 
 //selectExpr
 //        : variableSeq;
@@ -78,12 +78,12 @@ stdExpression
 //        ;
 
 from
-        : FROM fromExpr		// stop or/and without root class
-	    | FROM fromEHR (CONTAINS containsExpression)? (COMMA fromForeignData)?
-	    | FROM fromForeignData (COMMA fromForeignData)?;
+        : FROM fromExpr     // stop or/and without root class
+        | FROM fromEHR (CONTAINS containsExpression)? (COMMA fromForeignData)?
+        | FROM fromForeignData (COMMA fromForeignData)?;
 //        | FROM ContainsOr;
 
-fromEHR 
+fromEHR
         : EHR standardPredicate
         | EHR IDENTIFIER standardPredicate
         | EHR IDENTIFIER ;
@@ -110,17 +110,17 @@ contains
 //======= END CONTAINMENT
 
 identifiedExpr
- 	    : identifiedEquality ((OR|XOR|AND) identifiedEquality)*
- 	    | OPEN_PAR identifiedEquality ((OR|XOR|AND) identifiedEquality)* CLOSE_PAR
- 	    ;
+        : identifiedEquality ((OR|XOR|AND) identifiedEquality)*
+        | OPEN_PAR identifiedEquality ((OR|XOR|AND) identifiedEquality)* CLOSE_PAR
+        ;
 
 //identifiedExprAnd
-//	    : identifiedEquality (AND identifiedEquality)*;
-//	    : identifiedEquality (AND identifiedExpr)*;
+//      : identifiedEquality (AND identifiedEquality)*;
+//      : identifiedEquality (AND identifiedExpr)*;
 
-identifiedEquality 
+identifiedEquality
         : NOT? identifiedOperand COMPARABLEOPERATOR identifiedOperand
-	    | NOT? identifiedOperand MATCHES OPEN_CURLY matchesOperand CLOSE_CURLY
+        | NOT? identifiedOperand MATCHES OPEN_CURLY matchesOperand CLOSE_CURLY
         | NOT? identifiedOperand MATCHES REGEXPATTERN
         | NOT? identifiedOperand LIKE STRING
         | NOT? identifiedOperand ILIKE STRING
@@ -129,8 +129,8 @@ identifiedEquality
         | NOT? EXISTS identifiedPath
         | NOT? EXISTS identifiedExpr;
 
-identifiedOperand 
-        : operand 
+identifiedOperand
+        : operand
         | identifiedPath ;
 
 identifiedPath
@@ -154,9 +154,9 @@ nodePredicateAnd
 //        | nodePredicateAnd AND nodePredicateComparable ;
 
 nodePredicateComparable
- 	: NODEID (COMMA (STRING|PARAMETER))?
- 	| ARCHETYPEID (COMMA (STRING|PARAMETER))?
- 	| predicateOperand ((COMPARABLEOPERATOR predicateOperand)|(MATCHES REGEXPATTERN))
+    : NODEID (COMMA (STRING|PARAMETER))?
+    | ARCHETYPEID (COMMA (STRING|PARAMETER))?
+    | predicateOperand ((COMPARABLEOPERATOR predicateOperand)|(MATCHES REGEXPATTERN))
     | REGEXPATTERN     //! /items[{/at0001.*/}], /items[at0001 and name/value matches {//}]
     ;
 
@@ -174,7 +174,7 @@ valueListItems
 //        | operand COMMA valueListItems ;
 
 versionpredicate
- 	    : OPEN_BRACKET versionpredicateOptions CLOSE_BRACKET;
+        : OPEN_BRACKET versionpredicateOptions CLOSE_BRACKET;
 
 versionpredicateOptions
         : LATEST_VERSION
@@ -218,24 +218,24 @@ pathPart
         : IDENTIFIER predicate?;
 
 classExpr
- 	    : OPEN_PAR simpleClassExpr CLOSE_PAR
-	    | simpleClassExpr
-	    ;
+        : OPEN_PAR simpleClassExpr CLOSE_PAR
+        | simpleClassExpr
+        ;
 
 simpleClassExpr
-	    : IDENTIFIER IDENTIFIER?					//! RM_TYPE_NAME .. RM_TYPE_NAME identifier
+        : IDENTIFIER IDENTIFIER?                    //! RM_TYPE_NAME .. RM_TYPE_NAME identifier
         | archetypedClassExpr
         | versionedClassExpr
-	    | versionClassExpr;
+        | versionClassExpr;
 
 archetypedClassExpr
- 	    : IDENTIFIER (IDENTIFIER)? (OPEN_BRACKET ARCHETYPEID CLOSE_BRACKET)?;	//! RM_TYPE_NAME identifier? [archetype_id]
+        : IDENTIFIER (IDENTIFIER)? (OPEN_BRACKET ARCHETYPEID CLOSE_BRACKET)?;   //! RM_TYPE_NAME identifier? [archetype_id]
 
 versionedClassExpr
- 	    : VERSIONED_OBJECT (IDENTIFIER)? (standardPredicate)?;
+        : VERSIONED_OBJECT (IDENTIFIER)? (standardPredicate)?;
 
 versionClassExpr
- 	    : VERSION (IDENTIFIER)? (standardPredicate|versionpredicate)?;
+        : VERSION (IDENTIFIER)? (standardPredicate|versionpredicate)?;
 
 //
 // LEXER PATTERNS
@@ -266,9 +266,9 @@ ASCENDING : A S C E N D I N G ;
 DESC : D E S C ;
 ASC : A S C ;
 EXISTS: E X I S T S ;
-VERSION	:	V E R S I O N ;
-VERSIONED_OBJECT	:	V E R S I O N E D '_' O B J E C T;
-ALL_VERSIONS :	A L L '_' V E R S I O N S;
+VERSION :   V E R S I O N ;
+VERSIONED_OBJECT    :   V E R S I O N E D '_' O B J E C T;
+ALL_VERSIONS :  A L L '_' V E R S I O N S;
 LATEST_VERSION : L A T E S T '_' V E R S I O N ;
 DISTINCT : D I S T I N C T ;
 JOINON: J O I N ' ' O N;
@@ -286,44 +286,49 @@ FUNCTION_IDENTIFIER : COUNT | AVG | BOOL_AND | BOOL_OR | EVERY | MAX | MIN | SUM
 //string function
                       SUBSTR | STRPOS | SPLIT_PART | BTRIM | CONCAT | CONCAT_WS | DECODE | ENCODE | FORMAT | INITCAP | LEFT | LENGTH | LPAD | LTRIM |
                        REGEXP_MATCH | REGEXP_REPLACE | REGEXP_SPLIT_TO_ARRAY | REGEXP_SPLIT_TO_TABLE | REPEAT | REPLACE | REVERSE | RIGHT | RPAD |
-                       RTRIM | TRANSLATE ;
+                       RTRIM | TRANSLATE |
+//encoding function
+                       RAW_COMPOSITION_ENCODE
+
+                       ;
+
 
 EXTENSION_IDENTIFIER: '_' E X T;
 
 // Terminal Definitions
-BOOLEAN	:	(T R U E)|(F A L S E) ;
-NODEID	:	'at' DIGIT+ ('.' DIGIT+)*;
-ARCHETYPEID :	LETTER+ '-' LETTER+ '-' (LETTER|'_')+ '.' (IDCHAR|'-')+ '.v' DIGIT+ ('.' DIGIT+)?;
+BOOLEAN :   (T R U E)|(F A L S E) ;
+NODEID  :   'at' DIGIT+ ('.' DIGIT+)*;
+ARCHETYPEID :   LETTER+ '-' LETTER+ '-' (LETTER|'_')+ '.' (IDCHAR|'-')+ '.v' DIGIT+ ('.' DIGIT+)?;
 
 IDENTIFIER
-	:	A (ALPHANUM|'_')*
-	| 	LETTERMINUSA IDCHAR*
-	;
+    :   A (ALPHANUM|'_')*
+    |   LETTERMINUSA IDCHAR*
+    ;
 
 DEMOGRAPHIC
         : (AGENT | GROUP | ORGANISATION | PERSON) ;
 
-INTEGER	:	'-'? DIGIT+;
-FLOAT	:	'-'? DIGIT+ '.' DIGIT+;
-DATE	:	'\'' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT 'T' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT '.' DIGIT DIGIT DIGIT '+' DIGIT DIGIT DIGIT DIGIT '\'';
-PARAMETER :	'$' LETTER IDCHAR*;
+INTEGER :   '-'? DIGIT+;
+FLOAT   :   '-'? DIGIT+ '.' DIGIT+;
+DATE    :   '\'' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT 'T' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT '.' DIGIT DIGIT DIGIT '+' DIGIT DIGIT DIGIT DIGIT '\'';
+PARAMETER : '$' LETTER IDCHAR*;
 
-UNIQUEID:	DIGIT+ ('.' DIGIT+)+ '.' DIGIT+  // OID
+UNIQUEID:   DIGIT+ ('.' DIGIT+)+ '.' DIGIT+  // OID
             | HEXCHAR+ ('-' HEXCHAR+)+       // UUID
-	;
+    ;
 
 COMPARABLEOPERATOR
-	:	'=' | '!=' | '>' | '>=' | '<' | '<='
-	;
+    :   '=' | '!=' | '>' | '>=' | '<' | '<='
+    ;
 
 URIVALUE: LETTER+ '://' (URISTRING|OPEN_BRACKET|CLOSE_BRACKET|', \''|'\'')*;
 
 REGEXPATTERN : '{/' REGEXCHAR+ '/}';
 
 STRING
-    	:  '\'' ( ESC_SEQ | ~('\\'|'\'') )* '\''
-    	|  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
-    	;
+        :  '\'' ( ESC_SEQ | ~('\\'|'\'') )* '\''
+        |  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
+        ;
 
 EXP_STRING
     : ([uUbB]? [rR]? | [rR]? [uUbB]?)
@@ -334,15 +339,15 @@ EXP_STRING
     )
 ;
 
-SLASH	:	'/';
-COMMA	:	',';
+SLASH   :   '/';
+COMMA   :   ',';
 SEMICOLON : ';';
-OPEN_BRACKET :	'[';
-CLOSE_BRACKET :	']';
-OPEN_PAR	:	'(';
-CLOSE_PAR	:	')';
-OPEN_CURLY :	'{';
-CLOSE_CURLY :	'}';
+OPEN_BRACKET :  '[';
+CLOSE_BRACKET : ']';
+OPEN_PAR    :   '(';
+CLOSE_PAR   :   ')';
+OPEN_CURLY :    '{';
+CLOSE_CURLY :   '}';
 
 ARITHMETIC_BINOP:
       '/'
@@ -402,8 +407,7 @@ STDDEV_SAMP : S T D D E V '_' S A M P;
 VARIANCE : V A R I A N C E;
 VAR_POP : V A R '_' P O P;
 VAR_SAMP : V A R '_' S A M P;
-
-
+RAW_COMPOSITION_ENCODE : '_' '_' R A W '_' C O M P O S I T I O N '_' E N C O D E;
 
 fragment
 ESC_SEQ
@@ -428,44 +432,44 @@ fragment
 HEX_DIGIT : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 fragment
-QUOTE	:	'\'';
+QUOTE   :   '\'';
 
 fragment
-DIGIT	:	'0'..'9';
+DIGIT   :   '0'..'9';
 
 fragment
-HEXCHAR	:	 DIGIT|'a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'f'|'F';
+HEXCHAR :    DIGIT|'a'|'A'|'b'|'B'|'c'|'C'|'d'|'D'|'e'|'E'|'f'|'F';
 
 fragment
 LETTER
-	:	'a'..'z'|'A'..'Z';
+    :   'a'..'z'|'A'..'Z';
 
 fragment
 ALPHANUM
-	:	LETTER|DIGIT;
+    :   LETTER|DIGIT;
 
 fragment
 LETTERMINUSA
-	:	'b'..'z'|'B'..'Z';
+    :   'b'..'z'|'B'..'Z';
 
 fragment
 LETTERMINUST
-	:	'a'..'s'|'A'..'S'|'u'..'z'|'U'..'Z';
+    :   'a'..'s'|'A'..'S'|'u'..'z'|'U'..'Z';
 
 fragment
-IDCHAR	:	ALPHANUM|'_';
+IDCHAR  :   ALPHANUM|'_';
 
 fragment
 IDCHARMINUST
-	:	LETTERMINUST|DIGIT|'_';
+    :   LETTERMINUST|DIGIT|'_';
 
 fragment
 URISTRING
-	:	ALPHANUM|'_'|'-'|'/'|':'|'.'|'?'|'&'|'%'|'$'|'#'|'@'|'!'|'+'|'='|'*';
+    :   ALPHANUM|'_'|'-'|'/'|':'|'.'|'?'|'&'|'%'|'$'|'#'|'@'|'!'|'+'|'='|'*';
 
 fragment
 REGEXCHAR
-	:	URISTRING|'('|')'|'\\'|'^'|'{'|'}'|']'|'[';
+    :   URISTRING|'('|')'|'\\'|'^'|'{'|'}'|']'|'[';
 
 fragment A : [aA];
 fragment B : [bB];

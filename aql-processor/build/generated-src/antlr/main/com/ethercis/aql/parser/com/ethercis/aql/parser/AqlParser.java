@@ -36,7 +36,7 @@ public class AqlParser extends Parser {
 		COVAR_SAMP=98, REGR_AVGX=99, REGR_AVGY=100, REGR_COUNT=101, REGR_INTERCEPT=102, 
 		REGR_R2=103, REGR_SLOPE=104, REGR_SXX=105, REGR_SXY=106, REGR_SYY=107, 
 		STDDEV=108, STDDEV_POP=109, STDDEV_SAMP=110, VARIANCE=111, VAR_POP=112, 
-		VAR_SAMP=113, WS=114;
+		VAR_SAMP=113, RAW_COMPOSITION_ENCODE=114, WS=115;
 	public static final int
 		RULE_query = 0, RULE_queryExpr = 1, RULE_select = 2, RULE_topExpr = 3, 
 		RULE_function = 4, RULE_extension = 5, RULE_where = 6, RULE_orderBy = 7, 
@@ -92,7 +92,7 @@ public class AqlParser extends Parser {
 		"RTRIM", "TRANSLATE", "CORR", "COVAR_POP", "COVAR_SAMP", "REGR_AVGX", 
 		"REGR_AVGY", "REGR_COUNT", "REGR_INTERCEPT", "REGR_R2", "REGR_SLOPE", 
 		"REGR_SXX", "REGR_SXY", "REGR_SYY", "STDDEV", "STDDEV_POP", "STDDEV_SAMP", 
-		"VARIANCE", "VAR_POP", "VAR_SAMP", "WS"
+		"VARIANCE", "VAR_POP", "VAR_SAMP", "RAW_COMPOSITION_ENCODE", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -3672,7 +3672,7 @@ public class AqlParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3t\u01fc\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3u\u01fc\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
