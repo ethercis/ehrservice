@@ -21,143 +21,164 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
+import com.ethercis.ehr.encode.wrappers.SnakeCase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.build.RMObjectBuilder;
+import org.openehr.build.RMObjectBuildingException;
 import org.openehr.rm.Attribute;
 
 import com.google.gson.internal.Primitives;
+import org.openehr.rm.common.generic.PartyProxy;
 
 public class FieldUtil {
-	private static RMObjectBuilder builder = RMObjectBuilder.getInstance();
-	private static Logger logger = LogManager.getLogger(FieldUtil.class);
-	
-	private static void getClassScalarAttributes(Map<String, Object>map, Class<?> clazz) throws SecurityException, NoSuchFieldException {
-		Map<String, Attribute> thismap = builder.getAttributes(clazz);
-		
-		for (Attribute attr: thismap.values()) {
-			Field afield = null;
-			try {
-				afield = clazz.getDeclaredField(attr.name());
-			} catch (NoSuchFieldException e) {
-				; //do nothing, it is potentially left at the super class level (ex. accuracy for DvQuantity)
-			}
-			if (afield != null && (Primitives.isPrimitive(afield.getType()) || afield.getType() == String.class)) {
-				map.put(afield.getName(), afield.getType());
-			}
-		}
-	}
-	
-	public static Map<String, Object> getScalarAttributes(Class<?> clazz) throws Exception {
-		Map<String, Object> retmap = new HashMap<String, Object>();
-		
-		getClassScalarAttributes(retmap, clazz);
-		
-		return retmap;
-	}
-	
-	public static Map<String, Object> getRequiredAttributes(Class<?> clazz) throws SecurityException, NoSuchFieldException {
-		Map<String, Attribute> thismap = builder.getAttributes(clazz);
-		Map<String, Class<?>> classMap = builder.getAttributeTypes(clazz);
-		Map<String, Object> retmap = new HashMap<String, Object>();
-		
-		for (Attribute attr: thismap.values()) {
-			if (attr.required()) {
-				//check if field is a java primitive or openehr datatype
-				Class attrClass = classMap.get(attr.name());
-				if (attrClass.getName().startsWith("java.lang"))
-					retmap.put(attr.name(), attrClass.getName());
-				else if (attrClass.getName().contains(RMObjectBuilder.OPENEHR_RM_PACKAGE))
-					retmap.put(attr.name(), getRequiredAttributes(attrClass));
-				else //assume primitive
-					retmap.put(attr.name(), attrClass.getName());
-			}
-		}
-		
-		return retmap;
-	}
+    private static RMObjectBuilder builder = RMObjectBuilder.getInstance();
+    private static Logger logger = LogManager.getLogger(FieldUtil.class);
 
-	public static Map<String, Object> getAttributes(Object object) throws Exception {
-		Class<?> clazz = object.getClass();
-		Map<String, Attribute> thismap = builder.getAttributes(clazz);
-		Map<String, Class<?>> classMap = builder.getAttributeTypes(clazz);
-		Map<String, Object> retmap = new HashMap<String, Object>();
+    private static void getClassScalarAttributes(Map<String, Object> map, Class<?> clazz) throws SecurityException, NoSuchFieldException {
+        Map<String, Attribute> thismap = builder.getAttributes(clazz);
 
-		for (Attribute attr: thismap.values()) {
-			if (true) {
-				boolean isRequired = attr.required();
-				//check if field is a java primitive or openehr datatype
-				Class attrClass = classMap.get(attr.name());
-				if (attrClass.getName().startsWith("java.lang."))
-					retmap.put(attr.name(), attrClass.getName());
-				else if (attrClass.getName().contains(RMObjectBuilder.OPENEHR_RM_PACKAGE)) {
-					//check if type is abstract (ex. DvOrdered) due to java type erasure
-					if (Modifier.isAbstract(attrClass.getModifiers())){
-						//check for getter and access the field to check its actual class
+        for (Attribute attr : thismap.values()) {
+            Field afield = null;
+            try {
+                afield = clazz.getDeclaredField(attr.name());
+            } catch (NoSuchFieldException e) {
+                ; //do nothing, it is potentially left at the super class level (ex. accuracy for DvQuantity)
+            }
+            if (afield != null && (Primitives.isPrimitive(afield.getType()) || afield.getType() == String.class)) {
+                map.put(afield.getName(), afield.getType());
+            }
+        }
+    }
 
-						String methodName = "get"+Character.toString(attr.name().charAt(0)).toUpperCase()+attr.name().substring(1);
-						try {
-							Method getter = object.getClass().getDeclaredMethod(methodName, null);
-							Object field = getter.invoke(object, null);
-							retmap.put(attr.name(), field.getClass());
-						}
-						catch (Exception e){
-							logger.warn("Cannot handle field:"+attr.name());
-						}
-					}
-					else
-						retmap.put(attr.name(), attrClass.getName() /*getRequiredAttributes(attrClass)*/);
-				}
-				else //assume primitive
-					retmap.put(attr.name(), attrClass.getName());
-			}
-		}
+    public static Map<String, Object> getScalarAttributes(Class<?> clazz) throws Exception {
+        Map<String, Object> retmap = new HashMap<String, Object>();
 
-		return retmap;
-	}
+        getClassScalarAttributes(retmap, clazz);
 
-//	static int depth = -1;
-	static Stack<String> keyStack = new Stack<>();
+        return retmap;
+    }
 
-	public static Map<String, String> flatten(Map<String, Object> map){
-		Map<String, String> retMap = new TreeMap<>();
+    public static Map<String, Object> getRequiredAttributes(Class<?> clazz) throws SecurityException, NoSuchFieldException, RMObjectBuildingException {
+        Class objectClass = substituteGeneric(clazz);
+        Map<String, Attribute> thismap = builder.getAttributes(objectClass);
+        Map<String, Class<?>> classMap = builder.getAttributeTypes(objectClass);
+        Map<String, Object> retmap = new HashMap<String, Object>();
 
-		flatten(retMap, null, map);
+        for (Attribute attr : thismap.values()) {
+            if (attr.required()) {
+                //check if field is a java primitive or openehr datatype
+                Class attrClass = classMap.get(attr.name());
+                if (attrClass.getName().startsWith("java.lang")) {
+                    Map<String, Object> defMap = new HashMap<>();
+                    retmap.put(attr.name(), defMap);
+                    defMap.put("type", attrClass.getSimpleName().toUpperCase());
+                } else if (attrClass.getName().contains(RMObjectBuilder.OPENEHR_RM_PACKAGE)) {
+                    Map<String, Object> submap = getRequiredAttributes(attrClass);
+                    submap.put("type", new SnakeCase(attrClass.getSimpleName()).camelToUpperSnake());
+                    retmap.put(attr.name(), submap);
+                } else {//assume primitive
+                    Map<String, Object> defMap = new HashMap<>();
+                    retmap.put(attr.name(), defMap);
+                    defMap.put("type", attrClass.getSimpleName().toUpperCase());
+                }
+            }
+        }
 
-		return retMap;
-	}
+        return retmap;
+    }
 
-	public static List<Object> flatten(Map<String, String> resultMap, String key, Map<String, Object> map){
+    static Class substituteGeneric(Class clazz) throws RMObjectBuildingException {
 
-		if (key != null)
-			keyStack.push(key);
+        Class retClass = clazz;
 
-		List<Object> retlist = new ArrayList<>();
+        if (clazz.equals(PartyProxy.class)) {
+            retClass = builder.retrieveRMType("PARTY_REF");
+        }
 
-		for (Map.Entry<String, Object> entry : map.entrySet()) {
-			Object value =  entry.getValue();
+        return retClass;
 
-			if (value instanceof Map) {
-				retlist.addAll(flatten(resultMap, entry.getKey(), (Map) entry.getValue()));
-			} else {
-				keyStack.push(entry.getKey());
-				retlist.add(value);
-				StringBuffer stringBuffer = new StringBuffer();
+    }
 
-				Collections.list(keyStack.elements()).forEach(s1 -> stringBuffer.append(s1));
+    public static Map<String, Object> getAttributes(Object object) throws Exception {
+        Class<?> clazz = object.getClass();
+        Map<String, Attribute> thismap = builder.getAttributes(clazz);
+        Map<String, Class<?>> classMap = builder.getAttributeTypes(clazz);
+        Map<String, Object> retmap = new HashMap<String, Object>();
 
-				resultMap.put(stringBuffer.toString(), entry.getValue().toString());
-			}
+        for (Attribute attr : thismap.values()) {
+            if (true) {
+                boolean isRequired = attr.required();
+                //check if field is a java primitive or openehr datatype
+                Class attrClass = classMap.get(attr.name());
+                if (attrClass.getName().startsWith("java.lang."))
+                    retmap.put(attr.name(), attrClass.getName());
+                else if (attrClass.getName().contains(RMObjectBuilder.OPENEHR_RM_PACKAGE)) {
+                    //check if type is abstract (ex. DvOrdered) due to java type erasure
+                    if (Modifier.isAbstract(attrClass.getModifiers())) {
+                        //check for getter and access the field to check its actual class
 
-			keyStack.pop();
-		}
-		return retlist;
-	}
+                        String methodName = "get" + Character.toString(attr.name().charAt(0)).toUpperCase() + attr.name().substring(1);
+                        try {
+                            Method getter = object.getClass().getDeclaredMethod(methodName, null);
+                            Object field = getter.invoke(object, null);
+                            retmap.put(attr.name(), field.getClass());
+                        } catch (Exception e) {
+                            logger.warn("Cannot handle field:" + attr.name());
+                        }
+                    } else
+                        retmap.put(attr.name(), attrClass.getName() /*getRequiredAttributes(attrClass)*/);
+                } else //assume primitive
+                    retmap.put(attr.name(), attrClass.getName());
+            }
+        }
 
-	public static Class<?> getFieldClass(Class<?> clazz, String name) throws SecurityException, NoSuchFieldException {
+        return retmap;
+    }
 
-		Field field = clazz.getDeclaredField(name);
-		
-		return (field == null ? null : field.getType());
-	}
+    //	static int depth = -1;
+    static Stack<String> keyStack = new Stack<>();
+
+    public static Map<String, String> flatten(Map<String, Object> map) {
+        Map<String, String> retMap = new TreeMap<>();
+
+        flatten(retMap, null, map);
+
+        return retMap;
+    }
+
+    public static List<Object> flatten(Map<String, String> resultMap, String key, Map<String, Object> map) {
+
+        if (key != null)
+            keyStack.push(key);
+
+        List<Object> retlist = new ArrayList<>();
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            Object value = entry.getValue();
+
+            if (value instanceof Map) {
+                retlist.addAll(flatten(resultMap, entry.getKey(), (Map) entry.getValue()));
+            } else {
+                keyStack.push(entry.getKey());
+                retlist.add(value);
+                StringBuffer stringBuffer = new StringBuffer();
+
+                Collections.list(keyStack.elements()).forEach(s1 -> stringBuffer.append(s1));
+
+                resultMap.put(stringBuffer.toString(), entry.getValue().toString());
+            }
+
+            keyStack.pop();
+        }
+        return retlist;
+    }
+
+    public static Class<?> getFieldClass(Class<?> clazz, String name) throws SecurityException, NoSuchFieldException {
+
+        Field field = clazz.getDeclaredField(name);
+
+        return (field == null ? null : field.getType());
+    }
 }

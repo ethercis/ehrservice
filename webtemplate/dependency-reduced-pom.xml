@@ -2,9 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ethercis</groupId>
-  <artifactId>ecis-core</artifactId>
-  <name>Core EHR RM Handling</name>
-  <version>1.1.1-SNAPSHOT</version>
+  <artifactId>ecis-opt-introspect</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -55,26 +54,29 @@
                 <exclude>*.properties</exclude>
                 <exclude>*.sql</exclude>
                 <exclude>*.xsd</exclude>
+              </excludes>
+            </filter>
+            <filter>
+              <artifact>*:*:*</artifact>
+              <excludes>
                 <exclude>org/jooq/**</exclude>
+                <exclude>org/openehr/**</exclude>
                 <exclude>org/postgresql/**</exclude>
                 <exclude>xsd/**</exclude>
-                <exclude>org/openehr/am/**</exclude>
-                <exclude>org/openehr/jaxb/**</exclude>
-                <exclude>org/openehr/schemas/**</exclude>
-                <exclude>org/openehr/terminology/**</exclude>
-                <exclude>org/openehr/xsd/**</exclude>
                 <exclude>com/fasterxml/**</exclude>
               </excludes>
             </filter>
           </filters>
           <artifactSet>
             <excludes>
+              <exclude>ethercis:ecis-core</exclude>
               <exclude>ethercis:ecis-ehrdao</exclude>
               <exclude>ethercis:jooq-pg</exclude>
               <exclude>ethercis:aql-processor</exclude>
               <exclude>ethercis:ecis-transform</exclude>
               <exclude>ethercis:ecis-validation</exclude>
               <exclude>ethercis:ecis-knowledge-cache</exclude>
+              <exclude>org.openehr:*</exclude>
               <exclude>junit:junit</exclude>
               <exclude>jmock:*</exclude>
               <exclude>*:xml-apis</exclude>
@@ -117,20 +119,44 @@
   <dependencies>
     <dependency>
       <groupId>ethercis</groupId>
+      <artifactId>ecis-core</artifactId>
+      <version>1.1.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>ethercis</groupId>
       <artifactId>ecis-knowledge-cache</artifactId>
       <version>1.1.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
-      <artifactId>ecis-validation</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <artifactId>aql-processor</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <groupId>org.openehr</groupId>
+      <artifactId>openEHR.v1.OperationalTemplate</artifactId>
+      <version>1.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openehr</groupId>
+      <artifactId>openEHR.v1.Template</artifactId>
+      <version>1.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openehr</groupId>
+      <artifactId>openehr-am-rm-term</artifactId>
+      <version>1.0.9</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openehr</groupId>
+      <artifactId>adl-parser</artifactId>
+      <version>1.0.9</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

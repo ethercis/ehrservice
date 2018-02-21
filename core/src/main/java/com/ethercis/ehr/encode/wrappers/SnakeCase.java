@@ -45,6 +45,6 @@ public class SnakeCase {
     }
 
     public String camelToUpperSnake(){
-        return camelToSnake().toUpperCase();
+        return camelToSnake().toUpperCase().replaceAll("I_S_M", "ISM").replaceAll("_I_D", "_ID");
     }
 }

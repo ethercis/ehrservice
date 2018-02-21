@@ -28,6 +28,8 @@ import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 
 import java.util.Map;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Created by christian on 11/19/2015.
  */
@@ -47,5 +49,59 @@ public class FieldUtilTest {
 
         Assert.assertNotNull(flatten);
         MapUtils.debugPrint(System.out, "FLATTEN", flatten);
+    }
+
+    @Test
+    public void testStructuralEvaluation() throws Exception {
+        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+
+        Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("EVALUATION"));
+
+        assertNotNull(requiredParameters);
+    }
+
+    @Test
+    public void testStructuralObservation() throws Exception {
+        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+
+        Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("OBSERVATION"));
+
+        assertNotNull(requiredParameters);
+    }
+
+    @Test
+    public void testStructuralAction() throws Exception {
+        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+
+        Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("ACTION"));
+
+        assertNotNull(requiredParameters);
+    }
+
+    @Test
+    public void testStructuralInstruction() throws Exception {
+        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+
+        Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("ACTION"));
+
+        assertNotNull(requiredParameters);
+    }
+
+    @Test
+    public void testStructuralHistory() throws Exception {
+        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+
+        Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("HISTORY"));
+
+        assertNotNull(requiredParameters);
+    }
+
+    @Test
+    public void testStructuralComposition() throws Exception {
+        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+
+        Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("COMPOSITION"));
+
+        assertNotNull(requiredParameters);
     }
 }
