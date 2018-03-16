@@ -23,6 +23,8 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <user.deploy>../../ethercis-deploy</user.deploy>
+        <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
     </properties>
     <build>
         <plugins>
@@ -31,7 +33,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>false</skipTests>
                 </configuration>
             </plugin>
             <plugin>
@@ -138,12 +140,12 @@
     <packaging>jar</packaging>
     <version>1.1.1-SNAPSHOT</version>
     <name>Core EHR RM Handling</name>
-    <repositories>
-        <repository>
-            <id>local-maven-repo</id>
-            <url>${user.localMavenRepo}</url>
-        </repository>
-    </repositories>
+    <!--<repositories>-->
+        <!--<repository>-->
+            <!--<id>local-maven-repo</id>-->
+            <!--<url>${user.localMavenRepo}</url>-->
+        <!--</repository>-->
+    <!--</repositories>-->
     <dependencies>
         <dependency>
             <groupId>ethercis</groupId>
@@ -260,13 +262,24 @@
             <artifactId>jooq</artifactId>
             <version>3.5.3</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>xmlbeans</groupId>-->
+            <!--<artifactId>xbean</artifactId>-->
+            <!--<version>2.5.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>xmlbeans</groupId>-->
+            <!--<artifactId>xmlbeans</artifactId>-->
+            <!--<version>2.5.0</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>xmlbeans</groupId>
+            <groupId>org.apache.xbean</groupId>
             <artifactId>xbean</artifactId>
-            <version>2.5.0</version>
+            <version>2.5</version>
+            <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>xmlbeans</groupId>
+            <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
             <version>2.5.0</version>
         </dependency>
@@ -280,6 +293,14 @@
             <artifactId>log4j-core</artifactId>
             <version>2.6.2</version>
         </dependency>
+        <!--NEEDED BY 3RD PARTY APIS THAT USE LOG4J V1-->
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-1.2-api -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -302,4 +323,31 @@
         </dependency>
 
     </dependencies>
+    <!--DON'T GENERATE PROJECT INFO REPORT-->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </reportSet>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.20.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

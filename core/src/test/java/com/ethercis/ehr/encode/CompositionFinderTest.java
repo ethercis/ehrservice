@@ -32,7 +32,14 @@ public class CompositionFinderTest extends TestCase {
 
     @Test
     public void testJSONPathInComposition() throws Exception {
-        InputStream is = new FileInputStream(new File("core/resources/compositions/composition.xml"));
+        File file =
+            new File(
+                getClass()
+                    .getClassLoader()
+                    .getResource("compositions/composition.xml")
+                    .getFile());
+
+        InputStream is = new FileInputStream(file);
         CompositionDocument cd = CompositionDocument.Factory.parse(is);
         COMPOSITION comp = cd.getComposition();
 

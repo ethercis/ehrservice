@@ -34,6 +34,7 @@ public class OetRmTest {
 
     //	ClusterController controller;
     I_KnowledgeCache knowledge;
+    final String resourcePath = "src/test/resources";
 
     @Before
     public void setUp() throws Exception {
@@ -45,9 +46,11 @@ public class OetRmTest {
 //				{}
 //			});
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.path.archetype", resourcePath+"/shared_knowledge/archetypes");
+        props.put("knowledge.path.template", resourcePath+"/shared_knowledge/templates");
+        props.put("knowledge.path.opt", resourcePath+"/shared_knowledge/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
+        props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
     }
 //	archetype = loadArchetype("openEHR-EHR-OBSERVATION.blood_pressure.v2.adl");
@@ -63,8 +66,8 @@ public class OetRmTest {
 //	assertNotNull(details);
 //	assertEquals("wrong templateId", templateId, details.getTemplateId().toString());
 	
-	@Test
-	public void testOET() throws Exception {
+//	@Test
+	public void _testOET() throws Exception {
 //		Logger.getRootLogger().setLevel(Level.DEBUG);
 //		I_ResourceService service = (I_ResourceService) ClusterInfo.getRegisteredService(controller, "ResourceService", "1.0", new Object[] {null});
 //		I_KnowledgeManager knowledge = service.getKnowledgeManager();
@@ -154,7 +157,7 @@ public class OetRmTest {
     @Test
     public void testOPT() throws Exception {
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
-        String templateId = "prescription.opt";
+        String templateId = "prescription";
 
         //try to build an actual COMPOSITION from the instance...
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);

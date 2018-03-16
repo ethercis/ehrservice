@@ -1,0 +1,395 @@
+{
+  "openEHR-EHR-COMPOSITION.report.v1": {
+    "openEHR-EHR-SECTION.history_rcp.v1": [
+      {
+        "openEHR-EHR-EVALUATION.reason_for_encounter.v1": [
+          {
+            "at0001": {
+              "at0004": {
+                "/name": "Question to MDT",
+                "/value": {
+                  "value": "Increasing back pain"
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.history_rcp.v1]/items[openEHR-EHR-EVALUATION.reason_for_encounter.v1]/data[at0001]/items[at0004]",
+                "/$CLASS$": "DvText"
+              }
+            },
+            "/other_participations": [
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "face-to-face communication",
+                    "definingCode": {
+                      "codeString": "216",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "Oncologist"
+                  },
+                  "performer": {
+                    "name": "Dr. Marcus Johnson",
+                    "externalRef": {
+                      "id": {
+                        "value": "1345678",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.history_rcp.v1]/items[openEHR-EHR-EVALUATION.reason_for_encounter.v1]",
+                "/$CLASS$": "Participation"
+              },
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "face-to-face communication",
+                    "definingCode": {
+                      "codeString": "216",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "McMillan Nurse"
+                  },
+                  "performer": {
+                    "name": "Heather Smith",
+                    "externalRef": {
+                      "id": {
+                        "value": "365672345",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.history_rcp.v1]/items[openEHR-EHR-EVALUATION.reason_for_encounter.v1]",
+                "/$CLASS$": "Participation"
+              },
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "videoconference",
+                    "definingCode": {
+                      "codeString": "198",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "District Nurse"
+                  },
+                  "performer": {
+                    "name": "Joyce Grenfell",
+                    "externalRef": {
+                      "id": {
+                        "value": "3335622",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.history_rcp.v1]/items[openEHR-EHR-EVALUATION.reason_for_encounter.v1]",
+                "/$CLASS$": "Participation"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "openEHR-EHR-SECTION.referral_details_rcp.v1": [
+      {
+        "openEHR-EHR-INSTRUCTION.request-referral.v1": [
+          {
+            "/uid": [
+              {
+                "/name": "uid",
+                "/value": {
+                  "root": {
+                    "value": "0d6a8e85-aada-4b38-9412-f5665c2c296b"
+                  },
+                  "value": "0d6a8e85-aada-4b38-9412-f5665c2c296b"
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]",
+                "/$CLASS$": "HierObjectID"
+              }
+            ],
+            "at0001": [
+              {
+                "at0009": {
+                  "at0121": {
+                    "/name": "Service requested",
+                    "/value": {
+                      "value": "MDT referral"
+                    },
+                    "/$PATH$": "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/description[at0009]/items[at0121]",
+                    "/$CLASS$": "DvText"
+                  }
+                },
+                "/timing": {
+                  "/name": "Request",
+                  "/value": {
+                    "value": "R1/2015-07-14T13:00:00+02:00/P1M",
+                    "charset": {
+                      "codeString": "UTF-8",
+                      "terminologyId": {
+                        "name": "IANA_character-sets",
+                        "value": "IANA_character-sets"
+                      }
+                    },
+                    "language": {
+                      "codeString": "en",
+                      "terminologyId": {
+                        "name": "ISO_639-1",
+                        "value": "ISO_639-1"
+                      }
+                    },
+                    "formalism": "timing"
+                  },
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]",
+                  "/$CLASS$": "DvParsable"
+                }
+              }
+            ],
+            "at0008": [
+              {
+                "at0011": {
+                  "/name": "MDT Team",
+                  "/value": {
+                    "value": "Prostate Cancer MDT"
+                  },
+                  "/$PATH$": "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]/protocol[at0008]/items[at0011]",
+                  "/$CLASS$": "DvText"
+                }
+              }
+            ],
+            "/other_participations": [
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "face-to-face communication",
+                    "definingCode": {
+                      "codeString": "216",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "Oncologist"
+                  },
+                  "performer": {
+                    "name": "Dr. Marcus Johnson",
+                    "externalRef": {
+                      "id": {
+                        "value": "1345678",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]",
+                "/$CLASS$": "Participation"
+              },
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "face-to-face communication",
+                    "definingCode": {
+                      "codeString": "216",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "McMillan Nurse"
+                  },
+                  "performer": {
+                    "name": "Heather Smith",
+                    "externalRef": {
+                      "id": {
+                        "value": "365672345",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]",
+                "/$CLASS$": "Participation"
+              },
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "videoconference",
+                    "definingCode": {
+                      "codeString": "198",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "District Nurse"
+                  },
+                  "performer": {
+                    "name": "Joyce Grenfell",
+                    "externalRef": {
+                      "id": {
+                        "value": "3335622",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]",
+                "/$CLASS$": "Participation"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "openEHR-EHR-SECTION.plan_requested_actions_rcp.v1": [
+      {
+        "openEHR-EHR-EVALUATION.recommendation.v1": [
+          {
+            "at0001": {
+              "at0002": {
+                "/name": "Meeting notes",
+                "/value": {
+                  "value": "Order MRI scan, GP to review analgesia"
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.plan_requested_actions_rcp.v1]/items[openEHR-EHR-EVALUATION.recommendation.v1]/data[at0001]/items[at0002]",
+                "/$CLASS$": "DvText"
+              }
+            },
+            "/other_participations": [
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "face-to-face communication",
+                    "definingCode": {
+                      "codeString": "216",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "Oncologist"
+                  },
+                  "performer": {
+                    "name": "Dr. Marcus Johnson",
+                    "externalRef": {
+                      "id": {
+                        "value": "1345678",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.plan_requested_actions_rcp.v1]/items[openEHR-EHR-EVALUATION.recommendation.v1]",
+                "/$CLASS$": "Participation"
+              },
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "face-to-face communication",
+                    "definingCode": {
+                      "codeString": "216",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "McMillan Nurse"
+                  },
+                  "performer": {
+                    "name": "Heather Smith",
+                    "externalRef": {
+                      "id": {
+                        "value": "365672345",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.plan_requested_actions_rcp.v1]/items[openEHR-EHR-EVALUATION.recommendation.v1]",
+                "/$CLASS$": "Participation"
+              },
+              {
+                "/name": "other participation",
+                "/value": {
+                  "mode": {
+                    "value": "videoconference",
+                    "definingCode": {
+                      "codeString": "198",
+                      "terminologyId": {
+                        "name": "openehr",
+                        "value": "openehr"
+                      }
+                    }
+                  },
+                  "function": {
+                    "value": "District Nurse"
+                  },
+                  "performer": {
+                    "name": "Joyce Grenfell",
+                    "externalRef": {
+                      "id": {
+                        "value": "3335622",
+                        "scheme": "2.16.840.1.113883.2.1.4.3"
+                      },
+                      "type": "ANY",
+                      "namespace": "NHS-UK"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.plan_requested_actions_rcp.v1]/items[openEHR-EHR-EVALUATION.recommendation.v1]",
+                "/$CLASS$": "Participation"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

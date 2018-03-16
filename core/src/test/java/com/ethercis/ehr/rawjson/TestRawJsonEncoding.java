@@ -56,14 +56,16 @@ public class TestRawJsonEncoding {
     //	ClusterController controller;
     I_KnowledgeCache knowledge;
 
-    static final String FLAT_JSON_INPUT_DIRECTORY = "core/src/test/resources/flat_json_input";
+    final String resourcePath = "src/test/resources";
+//    static final String FLAT_JSON_INPUT_DIRECTORY = "core/src/test/resources/flat_json_input";
 
     @Before
     public void setUp() throws Exception {
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "core/src/test/resources/knowledge/archetypes");
-        props.put("knowledge.path.template", "core/src/test/resources/knowledge/templates");
-        props.put("knowledge.path.opt", "core/src/test/resources/knowledge/operational_templates");
+        props.put("knowledge.path.archetype", resourcePath+"/shared_knowledge/archetypes");
+        props.put("knowledge.path.template", resourcePath+"/shared_knowledge/templates");
+        props.put("knowledge.path.opt", resourcePath+"/shared_knowledge/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
 
@@ -103,7 +105,7 @@ public class TestRawJsonEncoding {
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-        FileReader fileReader = new FileReader(FLAT_JSON_INPUT_DIRECTORY + "/COLNEC_Medication_FLAT.json");
+        FileReader fileReader = new FileReader(resourcePath + "/samples/COLNEC_Medication_FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Ian-mail-27-01-17.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_26.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);
@@ -183,7 +185,7 @@ public class TestRawJsonEncoding {
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-        FileReader fileReader = new FileReader(FLAT_JSON_INPUT_DIRECTORY + "/COLNEC_Medication_FLAT.json");
+        FileReader fileReader = new FileReader(resourcePath + "/samples/COLNEC_Medication_FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/Ian-mail-27-01-17.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/ticket_26.flat.json");
         Map map = FlatJsonUtil.inputStream2Map(fileReader);

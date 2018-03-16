@@ -18,6 +18,8 @@
 package com.ethercis.aql.sql.postprocessing;
 
 import com.ethercis.aql.sql.QuerySteps;
+import com.ethercis.aql.sql.binding.CompositionVersionedUuid;
+import com.ethercis.aql.sql.binding.I_SelectBinder;
 import com.ethercis.aql.sql.binding.JsonbBlockDef;
 import com.ethercis.ehr.encode.rawjson.LightRawJsonEncoder;
 import com.ethercis.ehr.encode.rawjson.RawJsonEncoder;
@@ -75,23 +77,25 @@ public class RawJsonTransform implements I_RawJsonTransform {
 
     public Result toRawJson(Result<Record> result) {
 
-        Result resultSet = context.newResult(DSL.field("data", String.class));
+        Result resultSet = context.newResult(DSL.field(I_SelectBinder.DATA, String.class));
 
         for (int cursor = 0; cursor < result.size(); cursor++) {
             Record record = result.get(cursor);
-            String jsonbOrigin = record.getValue("data").toString();
+            String jsonbOrigin = record.getValue(I_SelectBinder.DATA).toString();
             if (jsonbOrigin == null)
                 continue;
             //apply the transformation
             try {
-                Map rawJson = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("data");
+                Map rawJson = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap(I_SelectBinder.DATA);
                 //debugging
 //                if (jsonbOrigin.contains("@class"))
 //                    System.out.print("Hum...");
-                Record newValue = context.newRecord(DSL.field("data"));
-                newValue.setValue(DSL.field("data"), rawJson);
+                //add the composition uuid
+                rawJson.putAll(new CompositionVersionedUuid(record.getValue(I_SelectBinder.COMPOSITION_UID).toString()).toMap());
+                Record newValue = context.newRecord(DSL.field(I_SelectBinder.DATA));
+                newValue.setValue(DSL.field(I_SelectBinder.DATA), rawJson);
                 resultSet.add(newValue);
-                record.setValue(DSL.field("data"), rawJson);
+                record.setValue(DSL.field(I_SelectBinder.DATA), rawJson);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Could not encode raw json data"+e);
             }

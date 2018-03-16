@@ -1,0 +1,19 @@
+{
+    "/composer|name": "Dr Mabuse",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #1']/data[at0001]/items[at0002]|name": "Causative agent",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #1']/data[at0001]/items[at0002]|value": "Aspirin",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #1']/data[at0001]/items[at0009]/items[at0011]|name": "Reaction",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #1']/data[at0001]/items[at0009]/items[at0011]|value": "SNOMED-CT::1239085|Severe inflamation and rashes|",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #2']/data[at0001]/items[at0002]|name": "Causative agent",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #2']/data[at0001]/items[at0002]|value": "Traffic Jam",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #2']/data[at0001]/items[at0009]/items[at0011]|name": "Reaction",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #2']/data[at0001]/items[at0009]/items[at0011]|value": "SNOMED-CT::1111111|bad mood|",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #3']/data[at0001]/items[at0002]|name": "Causative agent",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #3']/data[at0001]/items[at0002]|value": "TV Soap Opera",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #3']/data[at0001]/items[at0009]/items[at0011]|name": "Reaction",
+    "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1, 'Adverse reaction risk #3']/data[at0001]/items[at0009]/items[at0011]|value": "SNOMED-CT::1111111|Yawn|",
+    "/context/setting": "openehr::238|other care|",
+    "/context/start_time": "2016-04-13T00:54:29.604+08:00",
+    "/language": "en",
+    "/territory": "GB"
+}

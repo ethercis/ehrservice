@@ -681,6 +681,9 @@ public class PathValue implements I_PathValue {
 
             if (filterTag.startsWith(OTHER_CONTEXT_TAG) || filterTag.startsWith(CompositionSerializer.TAG_ITEMS)){
                 locatablePath = locatablePath.substring(filterTag.length()); //should be in the form: /context/other_context[at0001]/... strip the prefix
+                if (filterTag.contains(OTHER_CONTEXT_TAG)){
+                    locatablePath = locatablePath.substring(locatablePath.indexOf("/"));
+                }
             }
 
 
@@ -839,5 +842,10 @@ public class PathValue implements I_PathValue {
     @Override
     public boolean isModifiedContent() {
         return modifiedContent;
+    }
+
+    @Override
+    public void setLenient(Boolean lenient){
+        contentBuilder.setLenient(lenient);
     }
 }

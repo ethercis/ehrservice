@@ -1,5 +1,6 @@
 package com.ethercis.ehr.json;
 
+import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.util.MapInspector;
 import junit.framework.TestCase;
 import org.junit.Ignore;
@@ -8,14 +9,17 @@ import org.junit.Test;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 public class JsonMapInspectorTest extends TestCase {
 
+    final String resourcePath = "src/test/resources";
+
     @Ignore
     @Test
-    public void _testTraversal() throws FileNotFoundException {
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/Medication List_1FLAT.json");
+    public void testTraversal() throws FileNotFoundException {
+        FileReader fileReader = new FileReader(resourcePath+"/samples/Medication List_1FLAT.json");
 
         Map<String, String> inputMap = FlatJsonUtil.inputStream2Map(fileReader);
 
@@ -70,7 +74,7 @@ public class JsonMapInspectorTest extends TestCase {
     @Ignore
     @Test
     public void testFindPath() throws FileNotFoundException {
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/Medication List_1FLAT.json");
+        FileReader fileReader = new FileReader(resourcePath+"/samples/Medication List_1FLAT.json");
 
         Map<String, String> inputMap = FlatJsonUtil.inputStream2Map(fileReader);
 
@@ -88,8 +92,8 @@ public class JsonMapInspectorTest extends TestCase {
     }
 
     @Test
-    public void testTraversal2() throws Exception {
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/out2.json");
+    public void testTraversal_Other_Participations() throws Exception {
+        FileReader fileReader = new FileReader(resourcePath+ "/samples/DB_serialized_2.json");
 
         MapInspector mapInspector = new MapInspector();
 
@@ -97,6 +101,33 @@ public class JsonMapInspectorTest extends TestCase {
 
         Collection collection = mapInspector.getStack();
 
+        //check other_parcipations encoding
+        String other_participation_1 = "/content[openEHR-EHR-SECTION.plan_requested_actions_rcp.v1]/items[openEHR-EHR-EVALUATION.recommendation.v1]/participation";
+        String other_participation_2 = "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]/participation";
+        String other_participation_3 = "/content[openEHR-EHR-SECTION.history_rcp.v1]/items[openEHR-EHR-EVALUATION.reason_for_encounter.v1]/participation";
+
+        int participation1=0;
+        int participation2=0;
+        int participation3=0;
+
+        Iterator<Map> iterator = collection.iterator();
+
+        while (iterator.hasNext()){
+            Map<String, Object> def = iterator.next();
+
+            if (def.containsKey(CompositionSerializer.TAG_PATH)){
+                String path = (String) def.get(CompositionSerializer.TAG_PATH);
+
+                if (path.startsWith(other_participation_1))
+                    participation1 += 1;
+                else if (path.startsWith(other_participation_2))
+                    participation2 += 1;
+                else if (path.startsWith(other_participation_3))
+                    participation3 += 1;
+            }
+        }
+
+        assertTrue(participation1 == 3 && participation2 == 3 && participation3 == 3);
         collection.toString();
 
     }

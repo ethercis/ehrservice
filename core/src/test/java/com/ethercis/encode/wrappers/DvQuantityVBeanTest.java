@@ -1,5 +1,6 @@
 package com.ethercis.encode.wrappers;
 
+import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.DvQuantityVBean;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Test;
@@ -24,12 +25,15 @@ public class DvQuantityVBeanTest {
 
     @Test
     public void testBuild() throws Exception {
+        Map<String, Object> valueMap = new HashMap<>();
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("magnitude", (Double)12.0);
         attributes.put("precision", (Integer)0);
         attributes.put("units", "mU");
 
-        DvQuantity quantity = DvQuantityVBean.getInstance(attributes);
+        valueMap.put(CompositionSerializer.TAG_VALUE, attributes);
+
+        DvQuantity quantity = DvQuantityVBean.getInstance(valueMap);
 
         assertNotNull(quantity);
     }

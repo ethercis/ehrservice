@@ -107,4 +107,5 @@ public interface I_PathValue {
     boolean isModifiedAttributes();
     boolean isModifiedContent();
 
+    void setLenient(Boolean lenient);
 }

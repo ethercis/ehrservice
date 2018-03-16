@@ -29,62 +29,64 @@ import static org.junit.Assert.*;
 
 public class TestRMData {
 
-//	ClusterController controller;
-I_KnowledgeCache knowledge;
+    //	ClusterController controller;
+    I_KnowledgeCache knowledge;
+    final String resourcePath = "src/test/resources";
 
-	@Before
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
+        props.put("knowledge.path.archetype", resourcePath+"/shared_knowledge/archetypes");
+        props.put("knowledge.path.template", resourcePath+"/shared_knowledge/templates");
+        props.put("knowledge.path.opt", resourcePath+"/shared_knowledge/operational_templates");
+        props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
 
         Pattern include = Pattern.compile(".*");
 
         knowledge.retrieveFileMap(include, null);
-	}
+    }
 
-	@Test
-	public void testBuilder() throws Exception {
+//    @Test
+    public void _testBuilder() throws Exception {
 //		I_ResourceService service = (I_ResourceService) ClusterInfo.getRegisteredService(controller, "ResourceService", "1.0", new Object[] {null});
 
 //		RmMapBinding binder = new RmMapBinding(controller);
-		Archetype archetype = knowledge.retrieveArchetype("openEHR-EHR-EVALUATION.evaluation_test_data_types.v1");
-		String templateId = "test data types";
-		
-		//build the archetype map manually...
-		knowledge.retrieveArchetype("openEHR-EHR-CLUSTER.cluster_test_data_types.v1");
-		
-		Map<String, String> props = new HashMap<String, String>();
-		props.put("archetypeId", "openEHR-EHR-EVALUATION.evaluation_test_data_types.v1");
-		props.put("templateId", "test data types");
-		
-		TEMPLATE testTemplate = knowledge.retrieveOpenehrTemplate("test data types");
-		Flattener flattener = new Flattener();
-		
-		Archetype instance = flattener.toFlattenedArchetype(testTemplate, knowledge.getArchetypeMap());
-		
-		
-		assertNotNull(instance);
-		
-		//try to build an actual COMPOSITION from the instance...
-		OetBinding generator = I_RmBinding.getInstance();
-		Evaluation eval = (Evaluation)generator.create(instance, templateId, knowledge.getArchetypeMap(), GenerationStrategy.MAXIMUM);
+        Archetype archetype = knowledge.retrieveArchetype("openEHR-EHR-EVALUATION.evaluation_test_data_types.v1");
+        String templateId = "test data types";
 
-		assertNotNull(eval);
-		
+        //build the archetype map manually...
+        knowledge.retrieveArchetype("openEHR-EHR-CLUSTER.cluster_test_data_types.v1");
+
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("archetypeId", "openEHR-EHR-EVALUATION.evaluation_test_data_types.v1");
+        props.put("templateId", "test data types");
+
+        TEMPLATE testTemplate = knowledge.retrieveOpenehrTemplate("test data types");
+        Flattener flattener = new Flattener();
+
+        Archetype instance = flattener.toFlattenedArchetype(testTemplate, knowledge.getArchetypeMap());
+
+
+        assertNotNull(instance);
+
+        //try to build an actual COMPOSITION from the instance...
+        OetBinding generator = I_RmBinding.getInstance();
+        Evaluation eval = (Evaluation) generator.create(instance, templateId, knowledge.getArchetypeMap(), GenerationStrategy.MAXIMUM);
+
+        assertNotNull(eval);
+
 //
 //		Activity activity = (Activity) composition.itemAtPath("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001]");
 //		
 //		assertNotNull(activity);
 //		
 //		Activity newact = (Activity) activity.clone();
-		
-		//increment activity id
-		
-		
+
+        //increment activity id
+
+
 //		assertNotNull(newact.parentPath(null));
 
         I_CompositionSerializer inspector = I_CompositionSerializer.getInstance();
@@ -95,7 +97,7 @@ I_KnowledgeCache knowledge;
 //		builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
 //		Gson gson = builder.setPrettyPrinting().create();
 //		String mapjson = gson.toJson(retmap);
-		System.out.println(mapjson);
+        System.out.println(mapjson);
 
         //----------------------------------------
 //        RMStructureHandler handler = new RMStructureHandler(ClusterController.instance(), eval);
@@ -114,13 +116,13 @@ I_KnowledgeCache knowledge;
 //        Locatable loc = newinstance.getLocatable();
 //
 //        assertEquals("does not match", eval, loc);
-		
-		
-	}
 
 
-    @Test
-    public void testSerializer() throws Exception {
+    }
+
+
+//    @Test
+    public void _testSerializer() throws Exception {
         String templateId = "COLNEC_history_of_past_illness.v0";
 
 //        I_ResourceService service = (I_ResourceService) ClusterInfo.getRegisteredService(controller, "ResourceService", "1.0", new Object[] {null});
@@ -136,9 +138,9 @@ I_KnowledgeCache knowledge;
 
         //do some traversal
 
-        Evaluation evaluation = (Evaluation)obj;
+        Evaluation evaluation = (Evaluation) obj;
 
-        Locatable item = ((ItemTree)evaluation.getData()).getItems().get(0);
+        Locatable item = ((ItemTree) evaluation.getData()).getItems().get(0);
 
         RMDataSerializer serializer = new RMDataSerializer(item);
 //        serializer.write2tempfile();
@@ -151,8 +153,8 @@ I_KnowledgeCache knowledge;
 
     }
 
-    @Test
-    public void testLocallySerialized() throws Exception {
+//    @Test
+    public void _testLocallySerialized() throws Exception {
         LocatableHelper locatableHelper = new LocatableHelper();
         String templateId = "section  observation test";
 
@@ -172,7 +174,7 @@ I_KnowledgeCache knowledge;
 
         //do some traversal
 
-        Composition composition = (Composition)obj;
+        Composition composition = (Composition) obj;
 
         //get the event series of the observation
         Object item = composition.itemAtPath("/content[openEHR-EHR-SECTION.visual_acuity_simple_test.v1 and name/value='Visual Acuity Simple Test']/items[at0025]/items[openEHR-EHR-OBSERVATION.visual_acuity.v1 and name/value='Visual Acuity']/data[at0001]/events[at0002 and name/value='Visual Acuity Measurement']");
@@ -180,9 +182,9 @@ I_KnowledgeCache knowledge;
         if (!(item instanceof PointEvent))
             fail("wrong item selected");
 
-        History history = ((PointEvent)item).getParent();
+        History history = ((PointEvent) item).getParent();
 
-        PointEvent newEvent = (PointEvent) locatableHelper.clone(((Locatable)item));
+        PointEvent newEvent = (PointEvent) locatableHelper.clone(((Locatable) item));
 
         locatableHelper.insertHistoryEvent(history, newEvent);
 
@@ -211,7 +213,6 @@ I_KnowledgeCache knowledge;
         assertNotNull(newComposition);
 
     }
-
 
 
 }

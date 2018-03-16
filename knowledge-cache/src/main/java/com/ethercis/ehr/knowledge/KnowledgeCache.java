@@ -524,10 +524,10 @@ public class KnowledgeCache implements I_KnowledgeCache {
 		log.debug("retrieveArchetype(" + key + ")");
 		Archetype at = atArchetypeCache.get(key);
 		if (at == null) {
-			InputStream in = null;
+			FileInputStream in = null;
 			try {
 				in = getStream(key, KnowledgeType.ARCHETYPE);
-                at = new ADLParser(in, DEFAULT_ENCODING).parse();
+                at = new ADLParser(in).parse();
 				atArchetypeCache.put(key, at);
 			} catch (Exception e) {
                 errorMap.put(key, e.getMessage());
@@ -556,7 +556,7 @@ public class KnowledgeCache implements I_KnowledgeCache {
 		log.debug("retrieveOpenehrTemplate(" + key + ")");
 		TEMPLATE template = atTemplatesCache.get(key);
 		if (template == null) {
-			InputStream in = null;
+			FileInputStream in = null;
 			try {
 				in = getStream(key, KnowledgeType.TEMPLATE);
 
@@ -588,7 +588,7 @@ public class KnowledgeCache implements I_KnowledgeCache {
 		log.debug("retrieveOperationalTemplate(" + key + ")");
 		OPERATIONALTEMPLATE template = atOptCache.get(key);
 		if (template == null) {
-			InputStream in = null;
+			FileInputStream in = null;
 			try {
 				in = getStream(key, KnowledgeType.OPT);
 
@@ -647,7 +647,7 @@ public class KnowledgeCache implements I_KnowledgeCache {
 	}
 
 	@SuppressWarnings("resource")
-	private InputStream getStream(String key, KnowledgeType what) throws IOException {
+	private FileInputStream getStream(String key, KnowledgeType what) throws IOException {
 		File file = retrieveFile(key, what);
 		return file != null ? new FileInputStream(file) : null;
 	}

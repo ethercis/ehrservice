@@ -27,6 +27,7 @@ import com.ethercis.ehr.keyvalues.serializer.I_SerialMap;
 import com.ethercis.ehr.keyvalues.serializer.SerialMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.rm.RMObject;
@@ -459,25 +460,31 @@ public class MapInspector {
             } else if (value instanceof List) {
                 if (CompositionSerializer.TAG_OTHER_PARTICIPATIONS.equals(key)) {
                     int index = 0;
-                    for (Map participation : (List<Map>) value) {
-                        Map<String, Object> participationMap = new HashMap<>();
-                        participationMap.putAll(participation);
+                    for (Object _participation : (List<Map>) value) {
+                        if (_participation instanceof LinkedTreeMap || _participation instanceof Map) {
+                            Map<String, Object> participation = (Map)_participation;
+                            Map<String, Object> participationMap = new HashMap<>();
+                            participationMap.putAll(participation);
 //                        participationMap.remove(CompositionSerializer.TAG_VALUE);
-                        participationMap.put(CompositionSerializer.TAG_VALUE, participation.get(CompositionSerializer.TAG_VALUE));
+                            participationMap.put(CompositionSerializer.TAG_VALUE, participation.get(CompositionSerializer.TAG_VALUE));
 //                        participationMap.remove(CompositionSerializer.TAG_PATH);
-                        participationMap.put(CompositionSerializer.TAG_PATH, participation.get(CompositionSerializer.TAG_PATH) + "/participation:" + index++);
+                            participationMap.put(CompositionSerializer.TAG_PATH, participation.get(CompositionSerializer.TAG_PATH) + "/participation:" + index++);
 
-                        Object taggedValue = participationMap.get(CompositionSerializer.TAG_VALUE);
-                        if (taggedValue instanceof Participation)
-                            participationMap.put(TAG_OBJECT, taggedValue);
-                        else if (taggedValue instanceof Map) {
-                            Map<String, Object> valueMap = new HashMap<>();
-                            valueMap.put(CompositionSerializer.TAG_VALUE, taggedValue);
-                            participationMap.put(TAG_OBJECT, ParticipationVBean.getInstance(valueMap));
-                        } else
-                            throw new IllegalArgumentException("Participation could not be parsed properly...");
+                            Object taggedValue = participationMap.get(CompositionSerializer.TAG_VALUE);
+                            if (taggedValue instanceof Participation)
+                                participationMap.put(TAG_OBJECT, taggedValue);
+                            else if (taggedValue instanceof Map) {
+                                Map<String, Object> valueMap = new HashMap<>();
+                                valueMap.put(CompositionSerializer.TAG_VALUE, taggedValue);
+                                participationMap.put(TAG_OBJECT, ParticipationVBean.getInstance(valueMap));
+                            } else
+                                throw new IllegalArgumentException("Participation could not be parsed properly...");
 
-                        stack.push(participationMap);
+                            stack.push(participationMap);
+                        }
+                        else {
+                            log.debug("possible inconsistency in other_participation, type:"+_participation.getClass());
+                        }
                     }
                 } else if (CompositionSerializer.TAG_NAME.equals(key)) {
                     //ignore node names (contained in item path)

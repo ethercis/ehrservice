@@ -21,7 +21,9 @@ import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.json.*;
 import com.ethercis.ehr.encode.wrappers.json.serializer.*;
 import com.ethercis.ehr.encode.wrappers.json.writer.*;
+import com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw._ArrayListAdapter;
 import com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw.ArrayListAdapter;
+import com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw._LinkedTreeMapAdapter;
 import com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw.LinkedTreeMapAdapter;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
@@ -119,6 +121,12 @@ public class EncodeUtil {
             .registerTypeAdapter(History.class, new HistorySerializer(adapterType))
             .registerTypeAdapter(PointEvent.class, new PointEventSerializer(adapterType))
             .registerTypeHierarchyAdapter(ElementWrapper.class, new ElementWrapperSerializer(adapterType));
+            return builder;
+        }
+        else if (adapterType == I_DvTypeAdapter.AdapterType._DBJSON2RAWJSON){
+            GsonBuilder builder = new GsonBuilder()
+                    .registerTypeAdapter(LinkedTreeMap.class, new _LinkedTreeMapAdapter())
+                    .registerTypeAdapter(ArrayList.class, new _ArrayListAdapter());
             return builder;
         }
         else if (adapterType == I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON){

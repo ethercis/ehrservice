@@ -19,13 +19,8 @@ package com.ethercis.ehr.encode.rawjson;
 
 import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,7 +42,7 @@ public class LightRawJsonEncoder {
         }
         Map<String, Object> fromDB = gsondb.create().fromJson(jsonbOrigin, Map.class);
 
-        GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON);
+        GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType._DBJSON2RAWJSON);
         String raw = gsonRaw.create().toJson(fromDB);
 
         return raw;
@@ -59,11 +54,14 @@ public class LightRawJsonEncoder {
         if (jsonbOrigin.startsWith("[")){ //strip the expression as an array
             jsonbOrigin = jsonbOrigin.trim().substring(1, jsonbOrigin.length()-1);
         }
-        Map<String, Object> fromDB = gsondb.create().fromJson(jsonbOrigin, Map.class);
+        Map<String, Object> fromDB = new CompositionMap(gsondb.create().fromJson(jsonbOrigin, Map.class)).restructure();
+        Map<String, Object> fromDB2 = gsondb.create().fromJson(jsonbOrigin, Map.class);
 
         GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON);
+//        GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance();
         String raw = gsonRaw.create().toJson(fromDB);
-        Map retmap = gsonRaw.create().fromJson(raw, Map.class);
+        GsonBuilder gsonBuilder = EncodeUtil.getGsonBuilderInstance();
+        Map retmap = gsonBuilder.create().fromJson(raw, Map.class);
 
         return retmap;
     }

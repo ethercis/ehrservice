@@ -22,7 +22,8 @@ package com.ethercis.ehr.encode.wrappers.json;
  */
 public interface I_DvTypeAdapter {
 
-    public enum AdapterType {PG_JSONB, RAW_JSON, DBJSON2RAWJSON}
+    public enum AdapterType {PG_JSONB, RAW_JSON, _DBJSON2RAWJSON, DBJSON2RAWJSON;
+    }
 
     String matchNodePredicate =
             "/(content|protocol|events|data|description|instruction|items|activities|activity|composition|entry|evaluation|observation|action|at)\\[([(0-9)|(A-Z)|(a-z)|\\-|_|\\.]*)\\]";
@@ -35,4 +36,5 @@ public interface I_DvTypeAdapter {
     String ARCHETYPE_NODE_ID = "archetype_node_id";
     String ITEMS = "items";
     String VALUE = "value";
+    String ELEMENT = "ELEMENT";
 }

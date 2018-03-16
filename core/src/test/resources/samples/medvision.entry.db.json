@@ -1,0 +1,173 @@
+{
+  "/name": [
+    {
+      "value": "Encounter"
+    }
+  ],
+  "/composition[openEHR-EHR-COMPOSITION.encounter.v1 and name/value='Encounter']": {
+    "/content[openEHR-EHR-OBSERVATION.blood_pressure.v1]": [
+      {
+        "/name": [
+          {
+            "value": "Blood Pressure"
+          }
+        ],
+        "/data[at0001]": {
+          "/name": [
+            {
+              "value": "history"
+            }
+          ],
+          "/events": {
+            "/events[at0006]": [
+              {
+                "/name": [
+                  {
+                    "value": "any event"
+                  }
+                ],
+                "/time": {
+                  "/name": [
+                    {
+                      "value": "any event"
+                    }
+                  ],
+                  "/value": {
+                    "value": "1900-01-01T00:00:00.000Z",
+                    "epoch_offset": -2208988800000
+                  },
+                  "/$PATH$": "/content[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/events[at0006 and name/value='any event']/time",
+                  "/$CLASS$": "DvDateTime"
+                },
+                "/data[at0003]": {
+                  "/items[at0004]": [
+                    {
+                      "/name": [
+                        {
+                          "value": "Systolic"
+                        }
+                      ],
+                      "/value": {
+                        "units": "mm[Hg]",
+                        "accuracy": 0.0,
+                        "magnitude": 132.0,
+                        "precision": 0,
+                        "accuracyPercent": false
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/events[at0006 and name/value='any event']/data[at0003]/items[at0004 and name/value='Systolic']",
+                      "/$CLASS$": "DvQuantity"
+                    }
+                  ],
+                  "/items[at0005]": [
+                    {
+                      "/name": [
+                        {
+                          "value": "Diastolic"
+                        }
+                      ],
+                      "/value": {
+                        "units": "mm[Hg]",
+                        "accuracy": 0.0,
+                        "magnitude": 92.0,
+                        "precision": 0,
+                        "accuracyPercent": false
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/events[at0006 and name/value='any event']/data[at0003]/items[at0005 and name/value='Diastolic']",
+                      "/$CLASS$": "DvQuantity"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "/origin": {
+            "/name": [
+              {
+                "value": "history"
+              }
+            ],
+            "/value": {
+              "value": "1900-01-01T00:00:00.000Z",
+              "epoch_offset": -2208988800000
+            },
+            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/origin",
+            "/$CLASS$": "DvDateTime"
+          }
+        }
+      }
+    ],
+    "/content[openEHR-EHR-OBSERVATION.heart_rate-pulse.v1]": [
+      {
+        "/name": [
+          {
+            "value": "Pulse"
+          }
+        ],
+        "/data[at0002]": {
+          "/name": [
+            {
+              "value": "history"
+            }
+          ],
+          "/events": {
+            "/events[at0003]": [
+              {
+                "/name": [
+                  {
+                    "value": "Any event"
+                  }
+                ],
+                "/time": {
+                  "/name": [
+                    {
+                      "value": "Any event"
+                    }
+                  ],
+                  "/value": {
+                    "value": "1900-01-01T00:00:00.000Z",
+                    "epoch_offset": -2208988800000
+                  },
+                  "/$PATH$": "/content[openEHR-EHR-OBSERVATION.heart_rate-pulse.v1 and name/value='Pulse']/data[at0002]/events[at0003 and name/value='Any event']/time",
+                  "/$CLASS$": "DvDateTime"
+                },
+                "/data[at0001]": {
+                  "/items[at0004]": [
+                    {
+                      "/name": [
+                        {
+                          "value": "Rate"
+                        }
+                      ],
+                      "/value": {
+                        "units": "/min",
+                        "accuracy": 0.0,
+                        "magnitude": 113.0,
+                        "precision": 0,
+                        "accuracyPercent": false
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-OBSERVATION.heart_rate-pulse.v1 and name/value='Pulse']/data[at0002]/events[at0003 and name/value='Any event']/data[at0001]/items[at0004 and name/value='Rate']",
+                      "/$CLASS$": "DvQuantity"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "/origin": {
+            "/name": [
+              {
+                "value": "history"
+              }
+            ],
+            "/value": {
+              "value": "1900-01-01T00:00:00.000Z",
+              "epoch_offset": -2208988800000
+            },
+            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.heart_rate-pulse.v1 and name/value='Pulse']/data[at0002]/origin",
+            "/$CLASS$": "DvDateTime"
+          }
+        }
+      }
+    ]
+  }
+}

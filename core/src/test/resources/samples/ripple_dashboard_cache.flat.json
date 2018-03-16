@@ -1,0 +1,19 @@
+{
+    "ctx/language": "en",
+    "ctx/territory": "GB",
+    "ctx/composer_name": "Silvia Blake",
+    "ctx/time": "2017-04-21T18:56:55.830Z",
+    "ctx/id_namespace": "HOSPITAL-NS",
+    "ctx/id_scheme": "HOSPITAL-NS",
+    "ctx/health_care_facility|name": "Ripple",
+    "ctx/health_care_facility|id": "9091",
+    "ripple_dashboard_cache/context/orders": 200,
+    "ripple_dashboard_cache/context/orders_date": "2017-04-21T18:56:55.831Z",
+    "ripple_dashboard_cache/context/vitals": 1,
+    "ripple_dashboard_cache/context/vitals_date": "2017-04-21T18:56:55.831Z",
+    "ripple_dashboard_cache/context/results": 56,
+    "ripple_dashboard_cache/context/results_date": "2017-04-21T18:56:55.831Z",
+    "ripple_dashboard_cache/context/diagnoses": 5,
+    "ripple_dashboard_cache/context/diagnoses_date": "2017-04-21T18:56:55.831Z"
+}
+

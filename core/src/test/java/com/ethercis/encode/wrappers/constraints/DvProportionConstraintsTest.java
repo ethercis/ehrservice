@@ -44,10 +44,11 @@ public class DvProportionConstraintsTest {
 	public void test() throws Exception {
 		
 		//check for required fields
-		assertTrue(constraints.isAttributeRequired("magnitude"));
+		assertTrue(constraints.isAttributeRequired("denominator"));
+		assertTrue(constraints.isAttributeRequired("numerator"));
 		assertFalse(constraints.isAttributeRequired("value")); //does not exist...
 		
-		assertEquals(double.class, constraints.getAttributeClass("magnitude"));
+		assertEquals(double.class, constraints.getAttributeClass("denominator"));
 
 //        Set<String> units = constraints.getUnits();
 //        assertEquals(2, units.size());

@@ -42,7 +42,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  * Bind the abstract representation of a SELECT clause into a SQL expression
  * Created by christian on 5/4/2016.
  */
-public class SelectBinder {
+public class SelectBinder implements I_SelectBinder {
 
     Logger logger = LogManager.getLogger(SelectBinder.class);
 
@@ -229,7 +229,10 @@ public class SelectBinder {
                 if (mapper.getClassName(variableDefinition.getIdentifier()).equals("COMPOSITION")){
                     //substitute this variable definition by a function definition
                     isWholeComposition = true;
-                    selectQuery.addSelect(DSL.field("ehr.js_composition("+ENTRY.COMPOSITION_ID+")").as("data"));
+                    selectQuery.addSelect(DSL.field("ehr.js_composition("+ENTRY.COMPOSITION_ID+")").as(DATA));
+                    //add the composition uuid
+                    VariableDefinition variableDef = new VariableDefinition("uid/value", COMPOSITION_UID, "UUID", false);
+                    selectQuery.addSelect(compositionAttributeQuery.makeField(null, null, variableDef, true, I_QueryImpl.Clause.SELECT));
                     continue;
                 }
 

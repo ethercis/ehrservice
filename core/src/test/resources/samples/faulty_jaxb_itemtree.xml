@@ -1,0 +1,275 @@
+<composition xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             archetype_node_id="openEHR-EHR-COMPOSITION.encounter.v1">
+    <name>
+        <value>Referral</value>
+
+    </name>
+    <uid xmlns:v1="http://schemas.openehr.org/v1" xsi:type="v1:OBJECT_VERSION_ID">
+        <value>42cb96d4-1e4b-42fb-9edf-907bded7a693::testsg.ethercis.org::1</value>
+
+    </uid>
+    <archetype_details>
+        <archetype_id>
+            <value>openEHR-EHR-COMPOSITION.encounter.v1</value>
+
+        </archetype_id>
+        <template_id>
+            <value>RIPPLE - Minimal referral.v0</value>
+
+        </template_id>
+        <rm_version>1.0.1</rm_version>
+
+    </archetype_details>
+    <language>
+        <terminology_id>
+            <value>ISO_639-1</value>
+
+        </terminology_id>
+        <code_string>en</code_string>
+
+    </language>
+    <territory>
+        <terminology_id>
+            <value>ISO_3166-1</value>
+
+        </terminology_id>
+        <code_string>GB</code_string>
+
+    </territory>
+    <category>
+        <value>event</value>
+        <defining_code>
+            <terminology_id>
+                <value>openehr</value>
+
+            </terminology_id>
+            <code_string>433</code_string>
+
+        </defining_code>
+
+    </category>
+    <composer xmlns:v1="http://schemas.openehr.org/v1" xsi:type="v1:PARTY_IDENTIFIED">
+        <name>c4h_ripple_osi</name>
+
+    </composer>
+    <context>
+        <start_time>
+            <value>2015-11-02T16:44:19.711Z</value>
+
+        </start_time>
+        <setting>
+            <value>other care</value>
+            <defining_code>
+                <terminology_id>
+                    <value>openehr</value>
+
+                </terminology_id>
+                <code_string>238</code_string>
+
+            </defining_code>
+
+        </setting>
+
+    </context>
+    <content xmlns:v1="http://schemas.openehr.org/v1" archetype_node_id="openEHR-EHR-SECTION.referral_details_rcp.v1"
+             xsi:type="v1:SECTION">
+        <name>
+            <value>Referral details</value>
+
+        </name>
+        <archetype_details>
+            <archetype_id>
+                <value>openEHR-EHR-SECTION.referral_details_rcp.v1</value>
+
+            </archetype_id>
+            <rm_version>1.0.1</rm_version>
+
+        </archetype_details>
+        <items archetype_node_id="openEHR-EHR-INSTRUCTION.request-referral.v1" xsi:type="v1:INSTRUCTION">
+            <name>
+                <value>Referral request</value>
+
+            </name>
+            <archetype_details>
+                <archetype_id>
+                    <value>openEHR-EHR-INSTRUCTION.request-referral.v1</value>
+
+                </archetype_id>
+                <rm_version>1.0.1</rm_version>
+
+            </archetype_details>
+            <language>
+                <terminology_id>
+                    <value>ISO_639-1</value>
+
+                </terminology_id>
+                <code_string>en</code_string>
+
+            </language>
+            <encoding>
+                <terminology_id>
+                    <value>IANA_character-sets</value>
+
+                </terminology_id>
+                <code_string>UTF-8</code_string>
+
+            </encoding>
+            <subject xsi:type="v1:PARTY_SELF"/>
+            <narrative>
+                <value>instruction narrative</value>
+
+            </narrative>
+
+        </items>
+
+        <items archetype_node_id="openEHR-EHR-ACTION.referral_uk.v1" xsi:type="v1:ACTION">
+            <name>
+                <value>Schedule appointment</value>
+
+            </name>
+            <archetype_details>
+                <archetype_id>
+                    <value>openEHR-EHR-ACTION.referral_uk.v1</value>
+
+                </archetype_id>
+                <rm_version>1.0.1</rm_version>
+
+            </archetype_details>
+            <language>
+                <terminology_id>
+                    <value>ISO_639-1</value>
+
+                </terminology_id>
+                <code_string>en</code_string>
+
+            </language>
+            <encoding>
+                <terminology_id>
+                    <value>IANA_character-sets</value>
+
+                </terminology_id>
+                <code_string>UTF-8</code_string>
+
+            </encoding>
+            <subject xsi:type="v1:PARTY_SELF"/>
+            <protocol archetype_node_id="at0015" xsi:type="v1:ITEM_TREE">
+                <name>
+                    <value>Tree</value>
+
+                </name>
+                <items archetype_node_id="openEHR-EHR-CLUSTER.address.v1" xsi:type="v1:CLUSTER">
+                    <name>
+                        <value>Receiver</value>
+
+                    </name>
+                    <archetype_details>
+                        <archetype_id>
+                            <value>openEHR-EHR-CLUSTER.address.v1</value>
+
+                        </archetype_id>
+                        <rm_version>1.0.1</rm_version>
+
+                    </archetype_details>
+                    <items archetype_node_id="at0001" xsi:type="v1:CLUSTER">
+                        <name>
+                            <value>Address</value>
+
+                        </name>
+                        <items archetype_node_id="at0006" xsi:type="v1:ELEMENT">
+                            <name>
+                                <value>Address Type</value>
+
+                            </name>
+                            <value xsi:type="v1:DV_CODED_TEXT">
+                                <value>Business</value>
+                                <defining_code>
+                                    <terminology_id>
+                                        <value>local</value>
+
+                                    </terminology_id>
+                                    <code_string>at0013</code_string>
+
+                                </defining_code>
+
+                            </value>
+
+                        </items>
+                        <items archetype_node_id="at0002" xsi:type="v1:ELEMENT">
+                            <name>
+                                <value>Location</value>
+
+                            </name>
+                            <value xsi:type="v1:DV_TEXT">
+                                <value>Leeds General</value>
+
+                            </value>
+
+                        </items>
+
+                    </items>
+
+                </items>
+
+            </protocol>
+            <time>
+                <value>2015-11-02T12:29:37.261Z</value>
+
+            </time>
+            <description archetype_node_id="at0001" xsi:type="v1:ITEM_TREE">
+                <name>
+                    <value>Tree</value>
+
+                </name>
+                <items archetype_node_id="at0011" xsi:type="v1:ELEMENT">
+                    <name>
+                        <value>Referral to</value>
+
+                    </name>
+                    <value xsi:type="v1:DV_TEXT">
+                        <value>CST1</value>
+
+                    </value>
+
+                </items>
+                <items archetype_node_id="at0026" xsi:type="v1:ELEMENT">
+                    <name>
+                        <value>Appointment schedule</value>
+
+                    </name>
+                    <value xsi:type="v1:DV_INTERVAL">
+                        <lower xsi:type="v1:DV_DATE_TIME">
+                            <value>2015-02-10T10:00:00.000Z</value>
+
+                        </lower>
+                        <upper xsi:type="v1:DV_DATE_TIME">
+                            <value>2015-02-10T11:00:00.000Z</value>
+
+                        </upper>
+                        <lower_unbounded>false</lower_unbounded>
+                        <upper_unbounded>false</upper_unbounded>
+
+                    </value>
+
+                </items>
+
+            </description>
+            <ism_transition>
+                <current_state>
+                    <value>Scheduled</value>
+                    <defining_code>
+                        <terminology_id>
+                            <value>openehr</value>
+
+                        </terminology_id>
+                        <code_string>529</code_string>
+
+                    </defining_code>
+
+                </current_state>
+
+            </ism_transition>
+
+        </items>
+
+    </content>
+</composition>

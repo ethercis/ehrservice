@@ -39,20 +39,21 @@ public class PathAttribute {
         this.path = path;
     }
 
-    public PathAttribute(){}
+    public PathAttribute() {
+    }
 
-    String nodeNameFromPath(String key){
+    String nodeNameFromPath(String key) {
         String namePart = AND_NAME_VALUE;
         int startAt = path.indexOf(key.substring(0, key.indexOf("]")));
 
-        if (startAt > 0){
-            return path.substring(path.indexOf(namePart, startAt)+namePart.length(), path.indexOf("]", startAt)-1);
+        if (startAt >= 0) {
+            return path.substring(path.indexOf(namePart, startAt) + namePart.length(), path.indexOf("]", startAt) - 1);
         }
         return null;
     }
 
-    String parentArchetypeNodeId(String key){
-        if (path==null)
+    String parentArchetypeNodeId(String key) {
+        if (path == null)
             return null;
 
         List<String> pathSegments = Locatable.dividePathIntoSegments(path);
@@ -62,27 +63,26 @@ public class PathAttribute {
         if (compareKey.endsWith("]"))
             compareKey = compareKey.substring(0, compareKey.length() - 1);
 
-        for (int i = 0; i < pathSegments.size(); i++){
+        for (int i = 0; i < pathSegments.size(); i++) {
             String pathNode = pathSegments.get(i);
-            if (pathNode.startsWith(compareKey)){
+            if (pathNode.startsWith(compareKey)) {
                 if (i > 0) {
                     String parentNode = pathSegments.get(i - 1);
                     String parentArchetypeNodeId;
                     if (parentNode.contains(AND_NAME_VALUE))
-                        parentArchetypeNodeId = parentNode.substring(parentNode.indexOf("[")+1, parentNode.indexOf(AND_NAME_VALUE)).trim();
+                        parentArchetypeNodeId = parentNode.substring(parentNode.indexOf("[") + 1, parentNode.indexOf(AND_NAME_VALUE)).trim();
                     else
-                        parentArchetypeNodeId = parentNode.substring(parentNode.indexOf("[")+1, parentNode.indexOf("]")).trim();
+                        parentArchetypeNodeId = parentNode.substring(parentNode.indexOf("[") + 1, parentNode.indexOf("]")).trim();
                     return parentArchetypeNodeId;
-                }
-                else
+                } else
                     return null;
             }
         }
         return null;
     }
 
-    String parentNodeName(String key){
-        if (path==null)
+    String parentNodeName(String key) {
+        if (path == null)
             return null;
 
         List<String> pathSegments = Locatable.dividePathIntoSegments(path);
@@ -92,24 +92,23 @@ public class PathAttribute {
         if (compareKey.endsWith("]"))
             compareKey = compareKey.substring(0, compareKey.length() - 1);
 
-        for (int i = 0; i < pathSegments.size(); i++){
+        for (int i = 0; i < pathSegments.size(); i++) {
             String pathNode = pathSegments.get(i);
-            if (pathNode.startsWith(compareKey)){
+            if (pathNode.startsWith(compareKey)) {
                 if (i > 0) {
                     String parentNode = pathSegments.get(i - 1);
                     String parentArchetypeNodeId = null;
                     if (parentNode.contains(AND_NAME_VALUE))
-                        parentArchetypeNodeId = parentNode.substring(parentNode.indexOf(AND_NAME_VALUE)+AND_NAME_VALUE.length(), parentNode.indexOf("]")-1).trim();
+                        parentArchetypeNodeId = parentNode.substring(parentNode.indexOf(AND_NAME_VALUE) + AND_NAME_VALUE.length(), parentNode.indexOf("]") - 1).trim();
                     return parentArchetypeNodeId;
-                }
-                else
+                } else
                     return null;
             }
         }
         return null;
     }
 
-    String structuralNodeKey(LinkedTreeMap map){
+    String structuralNodeKey(LinkedTreeMap map) {
         for (Object entry : map.entrySet()) {
             String key = (String) ((Map.Entry) entry).getKey();
             if (key.matches(I_DvTypeAdapter.matchNodePredicate)) {
@@ -160,5 +159,26 @@ public class PathAttribute {
             }
         }
         return null;
+    }
+
+    String archetypeNodeId() {
+
+        String archetypeNodeId;
+
+        if (path == null)
+            return null;
+
+        List<String> pathSegments = Locatable.dividePathIntoSegments(path);
+        String lastSegment = pathSegments.get(pathSegments.size() - 1);
+
+        if (!lastSegment.contains("[")) //attribute
+            return null;
+
+        if (lastSegment.contains(AND_NAME_VALUE))
+            archetypeNodeId = lastSegment.substring(lastSegment.indexOf("[")+1, lastSegment.indexOf(AND_NAME_VALUE)).trim();
+        else
+            archetypeNodeId = lastSegment.substring(lastSegment.indexOf("[")+1, lastSegment.indexOf("]") - 1).trim();
+
+        return archetypeNodeId;
     }
 }

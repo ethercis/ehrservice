@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<composition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	archetype_node_id="openEHR-EHR-COMPOSITION.testcomp1.v1" 
+	xmlns="http://schemas.openehr.org/v1">
+	<name>
+		<value>teleconsult</value>
+	</name>
+	<archetype_details>
+		<archetype_id>
+			<value>openEHR-EHR-COMPOSITION.testcomp1.v1</value>
+		</archetype_id>
+		<template_id>
+			<value>TestTemplate1</value>
+		</template_id>
+		<rm_version>1.0.1</rm_version>
+	</archetype_details>
+	<language>
+		<terminology_id>
+			<value>ISO_639-1</value>
+		</terminology_id>
+		<code_string>en</code_string>
+	</language>
+	<territory>
+		<terminology_id>
+			<value>ISO_3166-1</value>
+		</terminology_id>
+		<code_string>NZ</code_string>
+	</territory>
+	<category>
+		<value>persistent</value>
+		<defining_code>
+			<terminology_id>
+				<value>openehr</value>
+			</terminology_id>
+			<code_string>431</code_string>
+		</defining_code>
+	</category>
+
+	<composer xsi:type="PARTY_IDENTIFIED">
+		<name>guest</name>
+	</composer>
+	<content xsi:type="OBSERVATION" archetype_node_id="at0000">
+		<name>
+			<value>Height/Length</value>
+			<language>
+				<code_string>en</code_string>
+			</language>
+		</name>
+		<uid xsi:type="HIER_OBJECT_ID">
+			<value>2c5f44c7-9d6d-4f87-b826-023dd89da7f6</value>
+		</uid>
+		<archetype_details>
+			<archetype_id>
+				<value>openEHR-EHR-OBSERVATION.height.v1</value>
+			</archetype_id>
+			<rm_version>1.0.0</rm_version>
+		</archetype_details>
+		<data archetype_node_id="at0001">
+			<name>
+				<value>history</value>
+				<language>
+					<code_string>en</code_string>
+				</language>
+			</name>
+			<uid xsi:type="HIER_OBJECT_ID">
+				<value>322c6186-a769-4ff4-a889-0e5e219a8ebd</value>
+			</uid>
+			<archetype_details>
+				<archetype_id>
+					<value>openEHR-EHR-OBSERVATION.height.v1</value>
+				</archetype_id>
+				<rm_version>1.0.0</rm_version>
+			</archetype_details>
+			<events xsi:type="POINT_EVENT" archetype_node_id="at0002">
+				<name>
+					<value>Any event</value>
+					<language>
+						<code_string>en</code_string>
+					</language>
+				</name>
+				<uid xsi:type="HIER_OBJECT_ID">
+					<value>3f2ae62b-2ba2-4abf-83e3-3fd93d185e3c</value>
+				</uid>
+				<archetype_details>
+					<archetype_id>
+						<value>openEHR-EHR-OBSERVATION.height.v1</value>
+					</archetype_id>
+					<rm_version>1.0.0</rm_version>
+				</archetype_details>
+				<time>
+					<value>Wed Nov 28 11:38:00 ICT 2012</value>
+				</time>
+				<data xsi:type="ITEM_TREE" archetype_node_id="at0003">
+					<name>
+						<value>Simple</value>
+						<language>
+							<code_string>en</code_string>
+						</language>
+					</name>
+					<uid xsi:type="HIER_OBJECT_ID">
+						<value>fa6675fa-41a1-4e3d-af61-fcdc0bea3ca6</value>
+					</uid>
+					<archetype_details>
+						<archetype_id>
+							<value>openEHR-EHR-OBSERVATION.height.v1</value>
+						</archetype_id>
+						<rm_version>1.0.0</rm_version>
+					</archetype_details>
+					<items xsi:type="ELEMENT" archetype_node_id="at0004">
+						<name>
+							<value>Height/Length</value>
+							<language>
+								<code_string>en</code_string>
+							</language>
+						</name>
+						<uid xsi:type="HIER_OBJECT_ID">
+							<value>6c180ce3-dcd2-4d00-b8b9-5638f5b6bce2</value>
+						</uid>
+						<archetype_details>
+							<archetype_id>
+								<value>openEHR-EHR-OBSERVATION.height.v1</value>
+							</archetype_id>
+							<rm_version>1.0.0</rm_version>
+						</archetype_details>
+						<value xsi:type="DV_QUANTITY">
+							<magnitude>34.0</magnitude>
+						</value>
+					</items>
+					<items xsi:type="ELEMENT" archetype_node_id="at0018">
+						<name>
+							<value>Comment</value>
+							<language>
+								<code_string>en</code_string>
+							</language>
+						</name>
+						<uid xsi:type="HIER_OBJECT_ID">
+							<value>827a8c12-d1e4-4465-a00a-387daa1c5200</value>
+						</uid>
+						<archetype_details>
+							<archetype_id>
+								<value>openEHR-EHR-OBSERVATION.height.v1</value>
+							</archetype_id>
+							<rm_version>1.0.0</rm_version>
+						</archetype_details>
+						<value xsi:type="DV_TEXT">
+							<value></value>
+						</value>
+					</items>
+				</data>
+				<state xsi:type="ITEM_TREE" archetype_node_id="at0013">
+					<name>
+						<value>Tree</value>
+						<language>
+							<code_string>en</code_string>
+						</language>
+					</name>
+					<uid xsi:type="HIER_OBJECT_ID">
+						<value>fa35b84c-1283-4953-b90c-f889f4552729</value>
+					</uid>
+					<archetype_details>
+						<archetype_id>
+							<value>openEHR-EHR-OBSERVATION.height.v1</value>
+						</archetype_id>
+						<rm_version>1.0.0</rm_version>
+					</archetype_details>
+					<items xsi:type="ELEMENT" archetype_node_id="at0014">
+						<name>
+							<value>Position</value>
+							<language>
+								<code_string>en</code_string>
+							</language>
+						</name>
+
+						<value xsi:type="DV_CODED_TEXT">
+							<value>at0016</value>
+						</value>
+					</items>
+					<items xsi:type="ELEMENT" archetype_node_id="at0019">
+						<name>
+							<value>Confounding factors</value>
+							<language>
+								<code_string>en</code_string>
+							</language>
+						</name>
+						<uid xsi:type="HIER_OBJECT_ID">
+							<value>8bcca79a-406d-4321-978f-622c50820c38</value>
+						</uid>
+						<archetype_details>
+							<archetype_id>
+								<value>openEHR-EHR-OBSERVATION.height.v1</value>
+							</archetype_id>
+							<rm_version>1.0.0</rm_version>
+						</archetype_details>
+						<value xsi:type="DV_TEXT">
+							<value></value>
+						</value>
+					</items>
+				</state>
+			</events>
+		</data>
+	</content>
+	<is_active>false</is_active>
+</composition>

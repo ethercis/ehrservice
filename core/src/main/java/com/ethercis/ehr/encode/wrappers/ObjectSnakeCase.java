@@ -28,6 +28,6 @@ public class ObjectSnakeCase extends SnakeCase {
     }
 
     public String camelToUpperSnake(){
-        return camelToUpperSnake();
+        return super.camelToUpperSnake();
     }
 }

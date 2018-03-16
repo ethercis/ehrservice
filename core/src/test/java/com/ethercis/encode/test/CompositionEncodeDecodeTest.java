@@ -42,16 +42,20 @@ import java.util.regex.Pattern;
 public class CompositionEncodeDecodeTest extends TestCase {
     //	ClusterController controller;
     I_KnowledgeCache knowledge;
-    static final String FLAT_JSON_INPUT_DIRECTORY = "core/src/test/resources/flat_json_input";
-    static final String TEST_OUTPUT_DIRECTORY = "core/src/test/resources/test_output";
+    static final String FLAT_JSON_INPUT_DIRECTORY = "src/test/resources/flat_json_input";
+    static final String TEST_OUTPUT_DIRECTORY = "src/test/resources/test_output";
     static boolean regressionTest = true;
+    private String resourcesRootPath;
 
     @Before
     public void setUp() throws Exception {
+
+        setResourcesRootPath();
+
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "core/src/test/resources/knowledge/archetypes");
-        props.put("knowledge.path.template", "core/src/test/resources/knowledge/templates");
-        props.put("knowledge.path.opt", "core/src/test/resources/knowledge/operational_templates");
+        props.put("knowledge.path.archetype", resourcesRootPath + "/shared_knowledge/archetypes");
+        props.put("knowledge.path.template", resourcesRootPath + "/shared_knowledge/templates");
+        props.put("knowledge.path.opt", resourcesRootPath + "/shared_knowledge/operational_templates");
         props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
         knowledge = new KnowledgeCache(null, props);
@@ -59,6 +63,13 @@ public class CompositionEncodeDecodeTest extends TestCase {
         Pattern include = Pattern.compile(".*");
 
         knowledge.retrieveFileMap(include, null);
+    }
+
+    private void setResourcesRootPath() {
+        resourcesRootPath = getClass()
+                .getClassLoader()
+                .getResource(".")
+                .getFile();
     }
 
     String readTestOutputFile(String path) throws IOException {

@@ -1,0 +1,239 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.problem_list.v1]": {
+    "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1]": [
+      {
+        "/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]": [
+          {
+            "/data[at0001]": {
+              "/items[at0002]": {
+                "/name": "Problem/Diagnosis name",
+                "/value": {
+                  "value": "Hay fever"
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis']/data[at0001]/items[at0002]",
+                "/$CLASS$": "DvText"
+              },
+              "/items[at0009]": {
+                "/name": "Clinical description",
+                "/value": {
+                  "value": "only in summer"
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis']/data[at0001]/items[at0009]",
+                "/$CLASS$": "DvText"
+              },
+              "/items[at0077]": {
+                "/name": "Date/time of onset",
+                "/value": {
+                  "value": "1995-01-22T16:00:00.000Z",
+                  "epoch_offset": 790790400000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis']/data[at0001]/items[at0077]",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          },
+          {
+            "/data[at0001]": {
+              "/items[at0002]": {
+                "/name": "Problem/Diagnosis name",
+                "/value": {
+                  "value": "angina pectoris",
+                  "definingCode": {
+                    "codeString": "299757012",
+                    "terminologyId": {
+                      "name": "SNOMED-CT",
+                      "value": "SNOMED-CT"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #2']/data[at0001]/items[at0002]",
+                "/$CLASS$": "DvCodedText"
+              },
+              "/items[at0003]": {
+                "/name": "Date/time clinically recognised",
+                "/value": {
+                  "value": "2000-07-17T00:00:00.000Z",
+                  "epoch_offset": 963792000000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #2']/data[at0001]/items[at0003]",
+                "/$CLASS$": "DvDateTime"
+              },
+              "/items[at0073]": {
+                "/name": "Diagnostic certainty",
+                "/value": {
+                  "value": "Suspected",
+                  "definingCode": {
+                    "codeString": "at0074",
+                    "terminologyId": {
+                      "name": "local",
+                      "value": "local"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #2']/data[at0001]/items[at0073]",
+                "/$CLASS$": "DvCodedText"
+              },
+              "/items[at0077]": {
+                "/name": "Date/time of onset",
+                "/value": {
+                  "value": "2000-07-17T12:30:37.553Z",
+                  "epoch_offset": 963837037553
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #2']/data[at0001]/items[at0077]",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          },
+          {
+            "/data[at0001]": {
+              "/items[at0002]": {
+                "/name": "Problem/Diagnosis name",
+                "/value": {
+                  "value": "asthma",
+                  "definingCode": {
+                    "codeString": "301485011",
+                    "terminologyId": {
+                      "name": "SNOMED-CT",
+                      "value": "SNOMED-CT"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #3']/data[at0001]/items[at0002]",
+                "/$CLASS$": "DvCodedText"
+              },
+              "/items[at0003]": {
+                "/name": "Date/time clinically recognised",
+                "/value": {
+                  "value": "1984-09-09T00:00:00.000Z",
+                  "epoch_offset": 463536000000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #3']/data[at0001]/items[at0003]",
+                "/$CLASS$": "DvDateTime"
+              },
+              "/items[at0077]": {
+                "/name": "Date/time of onset",
+                "/value": {
+                  "value": "1984-07-17T12:30:37.553Z",
+                  "epoch_offset": 458915437553
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #3']/data[at0001]/items[at0077]",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          },
+          {
+            "/data[at0001]": {
+              "/items[at0002]": {
+                "/name": "Problem/Diagnosis name",
+                "/value": {
+                  "value": "eczema",
+                  "definingCode": {
+                    "codeString": "71923017",
+                    "terminologyId": {
+                      "name": "SNOMED-CT",
+                      "value": "SNOMED-CT"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #4']/data[at0001]/items[at0002]",
+                "/$CLASS$": "DvCodedText"
+              },
+              "/items[at0003]": {
+                "/name": "Date/time clinically recognised",
+                "/value": {
+                  "value": "1985-03-22T00:00:00.000Z",
+                  "epoch_offset": 480297600000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #4']/data[at0001]/items[at0003]",
+                "/$CLASS$": "DvDateTime"
+              },
+              "/items[at0077]": {
+                "/name": "Date/time of onset",
+                "/value": {
+                  "value": "1985-03-22T12:30:37.553Z",
+                  "epoch_offset": 480342637553
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #4']/data[at0001]/items[at0077]",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          },
+          {
+            "/data[at0001]": {
+              "/items[at0002]": {
+                "/name": "Problem/Diagnosis name",
+                "/value": {
+                  "value": "homeless single person",
+                  "definingCode": {
+                    "codeString": "250503019",
+                    "terminologyId": {
+                      "name": "SNOMED-CT",
+                      "value": "SNOMED-CT"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #5']/data[at0001]/items[at0002]",
+                "/$CLASS$": "DvCodedText"
+              },
+              "/items[at0003]": {
+                "/name": "Date/time clinically recognised",
+                "/value": {
+                  "value": "2014-07-25T00:00:00.000Z",
+                  "epoch_offset": 1406246400000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #5']/data[at0001]/items[at0003]",
+                "/$CLASS$": "DvDateTime"
+              },
+              "/items[at0077]": {
+                "/name": "Date/time of onset",
+                "/value": {
+                  "value": "2014-07-24T12:30:37.553Z",
+                  "epoch_offset": 1406205037553
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #5']/data[at0001]/items[at0077]",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          },
+          {
+            "/data[at0001]": {
+              "/items[at0002]": {
+                "/name": "Problem/Diagnosis name",
+                "/value": {
+                  "value": "myocardial infarction",
+                  "definingCode": {
+                    "codeString": "22298006",
+                    "terminologyId": {
+                      "name": "SNOMED-CT",
+                      "value": "SNOMED-CT"
+                    }
+                  }
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #6']/data[at0001]/items[at0002]",
+                "/$CLASS$": "DvCodedText"
+              },
+              "/items[at0003]": {
+                "/name": "Date/time clinically recognised",
+                "/value": {
+                  "value": "2010-09-12T00:00:00.000Z",
+                  "epoch_offset": 1284249600000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #6']/data[at0001]/items[at0003]",
+                "/$CLASS$": "DvDateTime"
+              },
+              "/items[at0077]": {
+                "/name": "Date/time of onset",
+                "/value": {
+                  "value": "2010-09-10T00:00:00.000Z",
+                  "epoch_offset": 1284076800000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1 and name/value='Problems and issues']/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Problem/Diagnosis #6']/data[at0001]/items[at0077]",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

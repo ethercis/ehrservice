@@ -1,0 +1,25 @@
+language: java
+
+branches:
+  only:
+    - develop
+
+before_install:
+  - chmod +x install.sh
+  - chmod +x custom_build.sh
+  - chmod +x install_3rd_party_jars.sh
+  - chmod +x push_reports.sh
+  - sudo /etc/init.d/postgresql stop
+  - sudo docker run -d -it --rm  --name="pgtest" -e POSTGRES_PASSWORD=postgres -p 5432:5432 serefarikan/ethercis-pg:v1
+  - sleep 20
+
+install: ./install.sh
+
+script: ./custom_build.sh
+
+after_script:
+  - sudo docker stop pgtest
+  - echo stopped docker
+
+after_success:
+  - ./push_reports.sh

@@ -1,0 +1,130 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.referral.v0 and name/value='Laboratory order']": {
+    "/content[openEHR-EHR-ACTION.laboratory_test.v1]": [
+      {
+        "/time": {
+          "/name": "Laboratory test tracker",
+          "/value": {
+            "value": "2015-02-22T00:11:02.518+02:00",
+            "epoch_offset": 1424556662518
+          },
+          "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value='Laboratory test tracker']/time",
+          "/$CLASS$": "DvDateTime"
+        },
+        "/description[at0001]": {
+          "/items[at0017 and name/value='Test name']": {
+            "/name": "Test name",
+            "/value": {
+              "value": "Urea, electrolytes and creatinine measurement",
+              "definingCode": {
+                "codeString": "444164000",
+                "terminologyId": {
+                  "name": "SNOMED-CT",
+                  "value": "SNOMED-CT"
+                }
+              }
+            },
+            "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value='Laboratory test tracker']/description[at0001]/items[at0017 and name/value='Test name']",
+            "/$CLASS$": "DvCodedText"
+          }
+        },
+        "/ism_transition/careflow_step": {
+          "/name": "Laboratory test tracker",
+          "/value": {
+            "value": "Test requested",
+            "definingCode": {
+              "codeString": "at0003",
+              "terminologyId": {
+                "name": "local",
+                "value": "local"
+              }
+            }
+          },
+          "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value='Laboratory test tracker']/ism_transition/careflow_step",
+          "/$CLASS$": "DvCodedText"
+        },
+        "/ism_transition/current_state": {
+          "/name": "Laboratory test tracker",
+          "/value": {
+            "value": "planned",
+            "definingCode": {
+              "codeString": "526",
+              "terminologyId": {
+                "name": "openehr",
+                "value": "openehr"
+              }
+            }
+          },
+          "/$PATH$": "/content[openEHR-EHR-ACTION.laboratory_test.v1 and name/value='Laboratory test tracker']/ism_transition/current_state",
+          "/$CLASS$": "DvCodedText"
+        }
+      }
+    ],
+    "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1]": [
+      {
+        "/uid": {
+          "/name": "uid",
+          "/value": {
+            "root": {
+              "value": "bcab0cd2-df8a-4623-a63b-8697cbb18fb6"
+            },
+            "value": "bcab0cd2-df8a-4623-a63b-8697cbb18fb6"
+          },
+          "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value='Laboratory Test request']",
+          "/$CLASS$": "HierObjectID"
+        },
+        "/narrative": {
+          "/name": "Laboratory Test request",
+          "/value": {
+            "value": "Urea, electrolytes and creatinine measurement"
+          },
+          "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value='Laboratory Test request']/narrative",
+          "/$CLASS$": "DvText"
+        },
+        "/activities[at0001 and name/value='Lab Request']": {
+          "/timing": {
+            "/name": "Lab Request",
+            "/value": {
+              "value": "R5/2015-08-12T22:00:00+02:00/P2M",
+              "charset": {
+                "codeString": "UTF-8",
+                "terminologyId": {
+                  "name": "IANA_character-sets",
+                  "value": "IANA_character-sets"
+                }
+              },
+              "language": {
+                "codeString": "en",
+                "terminologyId": {
+                  "name": "ISO_639-1",
+                  "value": "ISO_639-1"
+                }
+              },
+              "formalism": "timing"
+            },
+            "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value='Laboratory Test request']/activities[at0001 and name/value='Lab Request']/timing",
+            "/$CLASS$": "DvParsable"
+          },
+          "/action_archetype_id": "/.*/",
+          "/description[at0009]": {
+            "/items[at0121 and name/value='Service requested']": {
+              "/name": "Service requested",
+              "/value": {
+                "value": "Urea, electrolytes and creatinine measurement",
+                "definingCode": {
+                  "codeString": "444164000",
+                  "terminologyId": {
+                    "name": "SNOMED-CT",
+                    "value": "SNOMED-CT"
+                  }
+                }
+              },
+              "/$PATH$": "/content[openEHR-EHR-INSTRUCTION.request-lab_test.v1 and name/value='Laboratory Test request']/activities[at0001 and name/value='Lab Request']/description[at0009]/items[at0121 and name/value='Service requested']",
+              "/$CLASS$": "DvCodedText"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

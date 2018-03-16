@@ -1,0 +1,19 @@
+{
+  "ctx/composer_name": "Dr George Shannon",
+  "ctx/health_care_facility|id": "999999-345",
+  "ctx/health_care_facility|name": "Home",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2016-12-20T00:11:02.518+02:00",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|code": "91936005",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/_provider|name": "iHEALTHLINK Discharge",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/_provider|id": "http://showcase.1.rippleosi.org/1234567",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|value": "allergy to penicillin",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|terminology": "SNOMED-CT",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/manifestation:0|code": "28926001",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/manifestation:0|value": "eruption due to drug",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/manifestation:0|terminology": "SNOMED-CT",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/comment": "History unclear"
+}

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw;
+
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
@@ -29,58 +30,61 @@ import java.util.ArrayList;
  */
 public class ArrayListAdapter extends TypeAdapter<ArrayList> implements I_DvTypeAdapter {
 
-	protected AdapterType adapterType = AdapterType.DBJSON2RAWJSON;
-	protected String archetypeNodeId = null;
-	protected String key = null;
+    protected AdapterType adapterType = AdapterType._DBJSON2RAWJSON;
+    protected String archetypeNodeId = null;
+    protected String key = null;
 
-	public ArrayListAdapter(AdapterType adapterType) {
-		super();
-		this.adapterType = adapterType;
-	}
+    public ArrayListAdapter(AdapterType adapterType) {
+        super();
+        this.adapterType = adapterType;
+    }
 
-	public ArrayListAdapter(String archetypeNodeId, String key) {
-		super();
-		this.adapterType = AdapterType.DBJSON2RAWJSON;
-		this.archetypeNodeId = archetypeNodeId;
-		this.key = key;
-	}
+    public ArrayListAdapter(String archetypeNodeId, String key) {
+        super();
+        this.adapterType = AdapterType._DBJSON2RAWJSON;
+        this.archetypeNodeId = archetypeNodeId;
+        this.key = key;
+    }
 
-	public ArrayListAdapter(String archetypeNodeId) {
-		super();
-		this.adapterType = AdapterType.DBJSON2RAWJSON;
-		this.archetypeNodeId = archetypeNodeId;
-	}
+    public ArrayListAdapter(String archetypeNodeId) {
+        super();
+        this.adapterType = AdapterType._DBJSON2RAWJSON;
+        this.archetypeNodeId = archetypeNodeId;
+    }
 
-	public ArrayListAdapter() {
-		super();
-		this.adapterType = AdapterType.DBJSON2RAWJSON;
-	}
+    public ArrayListAdapter() {
+        super();
+        this.adapterType = AdapterType._DBJSON2RAWJSON;
+    }
 
-//	@Override
-	public ArrayList read(JsonReader arg0) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    //	@Override
+    public ArrayList read(JsonReader arg0) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-//	@Override
-	public void write(JsonWriter writer, ArrayList arrayList) throws IOException {
-		writer.beginArray();
+    //	@Override
+    public void write(JsonWriter writer, ArrayList arrayList) throws IOException {
+
 //		System.out.println("begin array -----------------------------");
-		for (Object entry: arrayList){
-			if (entry instanceof LinkedTreeMap){
-				LinkedTreeMap itemMap = (LinkedTreeMap)entry;
-				String path = new PathAttribute().findPath(itemMap);
-				String nodeName = "";
-				if (path != null)
-					nodeName =new PathAttribute(path).nodeNameFromPath(key);
-				new LinkedTreeMapAdapter(archetypeNodeId, nodeName).write(writer, itemMap);
-			}
-			else
-				throw new IllegalArgumentException("unhandled item in array:"+entry);
-		}
+        for (Object entry : arrayList) {
+            if (entry instanceof LinkedTreeMap) {
+                LinkedTreeMap itemMap = (LinkedTreeMap) entry;
+                String path = new PathAttribute().findPath(itemMap);
+                String nodeName = "";
+                if (path != null) {
+                    if (key == null)
+                        nodeName = new PathAttribute(path).nodeNameFromPath(itemMap.keySet().stream().findFirst().get().toString());
+                    else
+                        nodeName = new PathAttribute(path).nodeNameFromPath(key);
+                }
+                new LinkedTreeMapAdapter(archetypeNodeId, nodeName).write(writer, itemMap);
+            } else
+                throw new IllegalArgumentException("unhandled item in array:" + entry);
+        }
 //		System.out.println("end array -----------------------------");
-		writer.endArray();
-		return;
-	}
+
+        return;
+    }
 
 }

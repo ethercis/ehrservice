@@ -1,0 +1,28 @@
+
+{
+  "ctx/composer_name": "Dr Joyce Smith",
+  "ctx/health_care_facility|id": "999999-345",
+  "ctx/health_care_facility|name": "Northumbria Community NHS",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2015-02-24T00:11:02.518+02:00",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|value": "Atorvastatin",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|code": "173134014",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/medication_name|terminology": "SNOMED-CT",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|code": "oral",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|value": "56899401000001110",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/route:0|terminology": "SNOMED-CT",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_amount_description": "40mg",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/dose_timing_description": "at night",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:0/medication_item/course_details/start_datetime": "2012-02-01T17:19:59.490Z",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/medication_name|value": "Salbutamol 100micrograms/dose breath actuated inhaler CFC free",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/medication_name|code": "320151000",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/medication_name|terminology": "SNOMED-CT",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/route:0|code": "inhalation",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/route:0|value": "64072601000001116",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/route:0|terminology": "SNOMED-CT",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/dose_directions_description": "2 puffs as required for wheeze",
+  "current_medication_list/medication_and_medical_devices:0/current_medication:0/medication_statement:1/medication_item/course_details/start_datetime": "2012-02-01T17:19:59.490Z"
+}

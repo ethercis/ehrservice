@@ -19,8 +19,8 @@ import org.openehr.am.template.JaxbUtil;
 
 public class TemplateParserTest {
 
-	@Test
-	public void testParseSimpleTemplate() throws Exception {
+//	@Test
+	public void _testParseSimpleTemplate() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("prescription.oet");
 		TEMPLATE template = (TEMPLATE) JaxbUtil.unmarshal(new StreamSource(is),TEMPLATE.class);
 

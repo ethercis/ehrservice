@@ -1,0 +1,209 @@
+<composition xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" archetype_node_id="openEHR-EHR-COMPOSITION.prescription.v1">
+    <name>
+        <value>Prescription</value>
+    </name>
+    <uid xmlns:v1="http://schemas.openehr.org/v1" xsi:type="v1:OBJECT_VERSION_ID">
+        <value>19859987-035f-454e-b93c-724901bf9bce::vm01.ethercis.org::1</value>
+    </uid>
+    <archetype_details>
+        <archetype_id>
+            <value>openEHR-EHR-COMPOSITION.prescription.v1</value>
+        </archetype_id>
+        <template_id>
+            <value>COLNEC Medication</value>
+        </template_id>
+        <rm_version>1.0.1</rm_version>
+    </archetype_details>
+    <language>
+        <terminology_id>
+            <value>ISO_639-1</value>
+        </terminology_id>
+        <code_string>en</code_string>
+    </language>
+    <territory>
+        <terminology_id>
+            <value>ISO_3166-1</value>
+        </terminology_id>
+        <code_string>GB</code_string>
+    </territory>
+    <category>
+        <value>event</value>
+        <defining_code>
+            <terminology_id>
+                <value>openehr</value>
+            </terminology_id>
+            <code_string>433</code_string>
+        </defining_code>
+    </category>
+    <composer xmlns:v1="http://schemas.openehr.org/v1" xsi:type="v1:PARTY_IDENTIFIED">
+        <external_ref>
+            <id xsi:type="v1:GENERIC_ID">
+                <value>1234-5678</value>
+                <scheme>2.16.840.1.113883.2.1.4.3</scheme>
+            </id>
+            <namespace>NHS-UK</namespace>
+            <type>ANY</type>
+        </external_ref>
+        <name>Composer</name>
+    </composer>
+    <context>
+        <start_time>
+            <value>2016-09-19T10:27:51.581+07:00</value>
+        </start_time>
+        <end_time>
+            <value>2016-09-19T17:28:31.862+07:00</value>
+        </end_time>
+        <location>TEST LAB</location>
+        <setting>
+            <value>other care</value>
+            <defining_code>
+                <terminology_id>
+                    <value>openehr</value>
+                </terminology_id>
+                <code_string>238</code_string>
+            </defining_code>
+        </setting>
+        <other_context xsi:nil="true"/>
+        <health_care_facility>
+            <external_ref>
+                <id xmlns:v1="http://schemas.openehr.org/v1" xsi:type="v1:GENERIC_ID">
+                    <value>123456-123</value>
+                    <scheme>2.16.840.1.113883.2.1.4.3</scheme>
+                </id>
+                <namespace>NHS-UK</namespace>
+                <type>ANY</type>
+            </external_ref>
+            <name>FACILITY</name>
+        </health_care_facility>
+    </context>
+    <content xmlns:v1="http://schemas.openehr.org/v1" archetype_node_id="openEHR-EHR-SECTION.medications.v1" xsi:type="v1:SECTION">
+        <name>
+            <value>Medications</value>
+        </name>
+        <archetype_details>
+            <archetype_id>
+                <value>openEHR-EHR-SECTION.medications.v1</value>
+            </archetype_id>
+            <rm_version>1.0.1</rm_version>
+        </archetype_details>
+        <items archetype_node_id="openEHR-EHR-INSTRUCTION.medication.v1" xsi:type="v1:INSTRUCTION">
+            <name>
+                <value>Medication order</value>
+            </name>
+            <archetype_details>
+                <archetype_id>
+                    <value>openEHR-EHR-INSTRUCTION.medication.v1</value>
+                </archetype_id>
+                <rm_version>1.0.1</rm_version>
+            </archetype_details>
+            <language>
+                <terminology_id>
+                    <value>ISO_639-1</value>
+                </terminology_id>
+                <code_string>en</code_string>
+            </language>
+            <encoding>
+                <terminology_id>
+                    <value>IANA_character-sets</value>
+                </terminology_id>
+                <code_string>UTF-8</code_string>
+            </encoding>
+            <subject xsi:type="v1:PARTY_SELF"/>
+            <narrative>
+                <value>Take Aspiring 1/2hr before breakfast</value>
+            </narrative>
+            <activities archetype_node_id="at0001">
+                <name>
+                    <value>Medication activity</value>
+                </name>
+                <description archetype_node_id="openEHR-EHR-ITEM_TREE.medication_mod.v1" xsi:type="v1:ITEM_TREE">
+                    <name>
+                        <value>Medication description</value>
+                    </name>
+                    <items archetype_node_id="at0001" xsi:type="v1:ELEMENT">
+                        <name>
+                            <value>Name of medication</value>
+                        </name>
+                        <value xsi:type="v1:DV_TEXT">
+                            <value>Aspirin</value>
+                        </value>
+                    </items>
+                    <items archetype_node_id="at0003" xsi:type="v1:ELEMENT">
+                        <name>
+                            <value>Strength per dose unit</value>
+                        </name>
+                        <value xsi:type="v1:DV_QUANTITY">
+                            <accuracy>0.0</accuracy>
+                            <magnitude>500.0</magnitude>
+                            <units>mg</units>
+                            <precision>0</precision>
+                        </value>
+                    </items>
+                    <items archetype_node_id="at0006" xsi:type="v1:ELEMENT">
+                        <name>
+                            <value>Dose unit</value>
+                        </name>
+                        <value xsi:type="v1:DV_CODED_TEXT">
+                            <value>tablet</value>
+                            <defining_code>
+                                <terminology_id>
+                                    <value>local</value>
+                                </terminology_id>
+                                <code_string>at0001</code_string>
+                            </defining_code>
+                        </value>
+                    </items>
+                    <items archetype_node_id="at0057" xsi:type="v1:CLUSTER">
+                        <name>
+                            <value>Timing</value>
+                        </name>
+                        <items archetype_node_id="at0064" xsi:type="v1:CLUSTER">
+                            <name>
+                                <value>Relative</value>
+                            </name>
+                            <items archetype_node_id="at0065" xsi:type="v1:ELEMENT">
+                                <name>
+                                    <value>Timing</value>
+                                </name>
+                                <value xsi:type="v1:DV_QUANTITY">
+                                    <accuracy>0.0</accuracy>
+                                    <magnitude>0.5</magnitude>
+                                    <units>h</units>
+                                    <precision>1</precision>
+                                </value>
+                            </items>
+                            <items archetype_node_id="at0066" xsi:type="v1:ELEMENT">
+                                <name>
+                                    <value>Qualifier</value>
+                                </name>
+                                <value xsi:type="v1:DV_CODED_TEXT">
+                                    <value>before</value>
+                                    <defining_code>
+                                        <terminology_id>
+                                            <value>local</value>
+                                        </terminology_id>
+                                        <code_string>at0068</code_string>
+                                    </defining_code>
+                                </value>
+                            </items>
+                            <items archetype_node_id="at0067" xsi:type="v1:ELEMENT">
+                                <name>
+                                    <value>Event</value>
+                                </name>
+                                <value xsi:type="v1:DV_TEXT">
+                                    <value>ACM</value>
+                                </value>
+                            </items>
+                        </items>
+                    </items>
+                </description>
+                <timing>
+                    <value>R/2016-09-17T00:00:00Z/P1M</value>
+                    <formalism>ISO8601</formalism>
+                </timing>
+                <action_archetype_id>openEHR-EHR-ACTION\.medication\.v1</action_archetype_id>
+            </activities>
+        </items>
+    </content>
+</composition>
+
