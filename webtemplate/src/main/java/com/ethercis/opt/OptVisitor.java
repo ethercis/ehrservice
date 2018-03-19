@@ -342,7 +342,7 @@ public class OptVisitor extends RmBinding {
             nodeMap = new Element(ccobj, termDef).toMap(nodeId, path, new NodeChildren(childrenNodeMap).include(path));
             if (!childrenList.isEmpty()) {
                 //get the first child of this element (only one child allowed for an element)
-                nodeMap.put(Constants.CHILDREN, childrenList);
+                nodeMap.put(Constants.CONSTRAINTS, childrenList);
                 String valueItemPath = new ValueItem(childrenList).path();
 
                 //add the SQL path

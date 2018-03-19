@@ -18,11 +18,9 @@
 
 package com.ethercis.opt.mapper;
 
+import com.ethercis.opt.NodeId;
 import com.ethercis.opt.TermDefinition;
-import org.openehr.schemas.v1.CATTRIBUTE;
-import org.openehr.schemas.v1.CCOMPLEXOBJECT;
-import org.openehr.schemas.v1.COBJECT;
-import org.openehr.schemas.v1.IntervalOfInteger;
+import org.openehr.schemas.v1.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,13 +46,25 @@ public class Element {
         Map validationMap = new HashMap<>();
 
         elementMap.put(Constants.AQL_PATH, path);
+        elementMap.put(Constants.CATEGORY, Constants.LITTERAL_ELEMENT);
 
         if (validationMap.size() > 0)
             elementMap.put(Constants.VALIDATION, validationMap);
 
         elementMap.put(Constants.NODE_ID, nodeId);
         elementMap.put(Constants.NAME, termDef.get(nodeId).getValue());
+        elementMap.put(Constants.ID, new NodeId(termDef.get(nodeId).getValue()).ehrscape());
         elementMap.put(Constants.DESCRIPTION, termDef.get(nodeId).getDescription());
+
+        if (ccomplexobject.getOccurrences() != null){
+            elementMap.put(Constants.MIN, ccomplexobject.getOccurrences().getLower() == 0 ?
+                    (ccomplexobject.getOccurrences().getLowerUnbounded() == true ? -1 : 0) :
+                    ccomplexobject.getOccurrences().getLower());
+            elementMap.put(Constants.MAX, ccomplexobject.getOccurrences().getUpper() == 0 ?
+                    (ccomplexobject.getOccurrences().getUpperUnbounded() == true ? -1 : 0) :
+                    ccomplexobject.getOccurrences().getUpper());
+
+        }
 
         Map rangeMap = new HashMap<>();
 
@@ -66,6 +76,15 @@ public class Element {
                 rangeMap.put(Constants.MAX_OP, cattribute.getExistence().isSetUpperIncluded() ? "<=" : "<");
                 rangeMap.put(Constants.MAX, cattribute.getExistence().isSetUpper() ? cattribute.getExistence().getUpper() : -1);
             }
+            else if (cattribute instanceof CSINGLEATTRIBUTE && cattribute.getRmAttributeName().equals(Constants.NAME)){
+                //check if node name is overriden in the template
+                String overridenName = new NodeNameAttribute(cattribute).staticName();
+                if (overridenName != null){
+                    elementMap.put(Constants.NAME, overridenName);
+                    elementMap.put(Constants.ID, new NodeId(overridenName).ehrscape());
+                }
+            }
+
             if (cattribute.getChildrenArray().length > 0) {
                 List<Map<String, Object>> children = new ArrayList<>();
                 Map<String, Object> childrenMap = new HashMap<>();
@@ -84,7 +103,7 @@ public class Element {
                     children.add(childrenMap);
                 }
                 if (children.size() > 0)
-                    elementMap.put(Constants.CHILDREN, children);
+                    elementMap.put(Constants.CONSTRAINTS, children);
             }
         }
 

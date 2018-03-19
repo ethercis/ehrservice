@@ -5,22 +5,38 @@
   ],
   "concept": "RIPPLE - Conformance Test template",
   "tree": {
+    "min": 1,
+    "max": 1,
     "children": [
       {
+        "min": 0,
         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]",
+        "max": -1,
         "children": [
           {
+            "min": 0,
             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]",
+            "max": -1,
             "children": [
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]",
+                "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]",
+                    "max": -1,
                     "children": [
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0006]",
-                        "children": [
+                        "name": "Date sent",
+                        "description": "Date that the distribution was sent.",
+                        "id": "date_sent",
+                        "category": "ELEMENT",
+                        "type": "DV_DATE_TIME",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0006]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -40,15 +56,17 @@
                             "type": "DV_DATE_TIME"
                           }
                         ],
-                        "name": "Date sent",
-                        "description": "Date that the distribution was sent.",
-                        "type": "DV_DATE_TIME",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0006]}\u0027",
                         "node_id": "at0006"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0008]",
-                        "children": [
+                        "name": "Group category",
+                        "description": "A named category of group e.g. Social work, patient representatives to whom the distribution applies.",
+                        "id": "group_category",
+                        "category": "ELEMENT",
+                        "type": "DV_TEXT",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0008]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -68,15 +86,17 @@
                             "type": "DV_TEXT"
                           }
                         ],
-                        "name": "Group category",
-                        "description": "A named category of group e.g. Social work, patient representatives to whom the distribution applies.",
-                        "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0008]}\u0027",
                         "node_id": "at0008"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0012]",
-                        "children": [
+                        "name": "Urgent",
+                        "description": "If true the notification should be distributed made as a matter of urgency.",
+                        "id": "urgent",
+                        "category": "ELEMENT",
+                        "type": "DV_BOOLEAN",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0012]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -98,26 +118,28 @@
                             "type": "DV_BOOLEAN"
                           }
                         ],
-                        "name": "Urgent",
-                        "description": "If true the notification should be distributed made as a matter of urgency.",
-                        "type": "DV_BOOLEAN",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0012]}\u0027",
                         "node_id": "at0012"
                       }
                     ],
                     "name": "Distribution",
                     "description": "Details of the target of communication distribution, whether to identified individual parties or as a category.",
+                    "id": "distribution",
                     "type": "CLUSTER",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "openEHR-EHR-CLUSTER.distribution.v1"
                   }
                 ],
                 "name": "Tree",
                 "description": "@ internal @",
+                "id": "tree",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0008"
               },
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]",
+                "max": 1,
                 "children": [
                   {
                     "mandatory_attributes": [
@@ -138,14 +160,24 @@
                     "type": "DV_TEXT"
                   },
                   {
+                    "min": 1,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]",
+                    "max": -1,
                     "children": [
                       {
+                        "min": 1,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]",
+                        "max": 1,
                         "children": [
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0076]",
-                            "children": [
+                            "name": "Supplementary information to follow",
+                            "description": "True indicates that additional information has been identified and will be forwarded when available eg incomplete pathology test results.",
+                            "id": "supplementary_information_to_follow",
+                            "category": "ELEMENT",
+                            "type": "DV_BOOLEAN",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0076]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -167,15 +199,17 @@
                                 "type": "DV_BOOLEAN"
                               }
                             ],
-                            "name": "Supplementary information to follow",
-                            "description": "True indicates that additional information has been identified and will be forwarded when available eg incomplete pathology test results.",
-                            "type": "DV_BOOLEAN",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0076]}\u0027",
                             "node_id": "at0076"
                           },
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0121]",
-                            "children": [
+                            "name": "Procedure requested",
+                            "description": "Identification of the service requested. This is often coded with an external terminology.",
+                            "id": "procedure_requested",
+                            "category": "ELEMENT",
+                            "type": "DV_TEXT",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0121]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -195,15 +229,17 @@
                                 "type": "DV_TEXT"
                               }
                             ],
-                            "name": "Procedure requested",
-                            "description": "Identification of the service requested. This is often coded with an external terminology.",
-                            "type": "DV_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0121]}\u0027",
                             "node_id": "at0121"
                           },
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0144]",
-                            "children": [
+                            "name": "Latest date service required",
+                            "description": "The latest date that is acceptable for the service to be completed.",
+                            "id": "latest_date_service_required",
+                            "category": "ELEMENT",
+                            "type": "DV_DATE_TIME",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0144]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -223,16 +259,14 @@
                                 "type": "DV_DATE_TIME"
                               }
                             ],
-                            "name": "Latest date service required",
-                            "description": "The latest date that is acceptable for the service to be completed.",
-                            "type": "DV_DATE_TIME",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0144]}\u0027",
                             "node_id": "at0144"
                           }
                         ],
                         "name": "Tree",
                         "description": "@ internal @",
+                        "id": "tree",
                         "type": "ITEM_TREE",
+                        "category": "DATA_STRUCTURE",
                         "node_id": "at0009"
                       },
                       {
@@ -245,6 +279,7 @@
                           "min_op": "\u003e\u003d",
                           "max": 1
                         },
+                        "category": "ATTRIBUTE",
                         "type": "STRING"
                       },
                       {
@@ -267,20 +302,31 @@
                           "min_op": "\u003e\u003d",
                           "max": 1
                         },
+                        "category": "ATTRIBUTE",
                         "type": "DV_PARSABLE"
                       }
                     ],
                     "name": "Request",
                     "description": "Current Activity.",
+                    "id": "request",
                     "type": "ACTIVITY",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "at0001"
                   },
                   {
+                    "min": 1,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]",
+                    "max": 1,
                     "children": [
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0076]",
-                        "children": [
+                        "name": "Supplementary information to follow",
+                        "description": "True indicates that additional information has been identified and will be forwarded when available eg incomplete pathology test results.",
+                        "id": "supplementary_information_to_follow",
+                        "category": "ELEMENT",
+                        "type": "DV_BOOLEAN",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0076]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -302,15 +348,17 @@
                             "type": "DV_BOOLEAN"
                           }
                         ],
-                        "name": "Supplementary information to follow",
-                        "description": "True indicates that additional information has been identified and will be forwarded when available eg incomplete pathology test results.",
-                        "type": "DV_BOOLEAN",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0076]}\u0027",
                         "node_id": "at0076"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0121]",
-                        "children": [
+                        "name": "Procedure requested",
+                        "description": "Identification of the service requested. This is often coded with an external terminology.",
+                        "id": "procedure_requested",
+                        "category": "ELEMENT",
+                        "type": "DV_TEXT",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0121]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -330,15 +378,17 @@
                             "type": "DV_TEXT"
                           }
                         ],
-                        "name": "Procedure requested",
-                        "description": "Identification of the service requested. This is often coded with an external terminology.",
-                        "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0121]}\u0027",
                         "node_id": "at0121"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0144]",
-                        "children": [
+                        "name": "Latest date service required",
+                        "description": "The latest date that is acceptable for the service to be completed.",
+                        "id": "latest_date_service_required",
+                        "category": "ELEMENT",
+                        "type": "DV_DATE_TIME",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0144]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -358,16 +408,14 @@
                             "type": "DV_DATE_TIME"
                           }
                         ],
-                        "name": "Latest date service required",
-                        "description": "The latest date that is acceptable for the service to be completed.",
-                        "type": "DV_DATE_TIME",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0144]}\u0027",
                         "node_id": "at0144"
                       }
                     ],
                     "name": "Tree",
                     "description": "@ internal @",
+                    "id": "tree",
                     "type": "ITEM_TREE",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "at0009"
                   },
                   {
@@ -380,6 +428,7 @@
                       "min_op": "\u003e\u003d",
                       "max": 1
                     },
+                    "category": "ATTRIBUTE",
                     "type": "STRING"
                   },
                   {
@@ -402,12 +451,15 @@
                       "min_op": "\u003e\u003d",
                       "max": 1
                     },
+                    "category": "ATTRIBUTE",
                     "type": "DV_PARSABLE"
                   }
                 ],
-                "name": "Request",
+                "name": "Request 3",
                 "description": "Current Activity.",
+                "id": "request_3",
                 "type": "ACTIVITY",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0001"
               },
               {
@@ -434,6 +486,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "PARTY_PROXY"
               },
               {
@@ -452,6 +505,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "DV_TEXT"
               },
               {
@@ -474,6 +528,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               },
               {
@@ -496,25 +551,36 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               }
             ],
             "name": "Procedure request",
             "description": "Request for a procedure to be performed.",
+            "id": "procedure_request",
             "type": "INSTRUCTION",
+            "category": "DATA_STRUCTURE",
             "node_id": "openEHR-EHR-INSTRUCTION.request-procedure.v1"
           },
           {
+            "min": 0,
             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]",
+            "max": -1,
             "children": [
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]",
+                "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]",
+                    "max": 1,
                     "children": [
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]",
+                        "max": 1,
                         "children": [
                           {
                             "mandatory_attributes": [
@@ -535,11 +601,19 @@
                             "type": "DV_TEXT"
                           },
                           {
+                            "min": 1,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]",
+                            "max": 1,
                             "children": [
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0005]",
-                                "children": [
+                                "name": "Regularity",
+                                "description": "The observed regularity of the pulse or heart beat.",
+                                "id": "regularity",
+                                "category": "ELEMENT",
+                                "type": "DV_CODED_TEXT",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0005]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -589,15 +663,17 @@
                                     "type": "DV_CODED_TEXT"
                                   }
                                 ],
-                                "name": "Regularity",
-                                "description": "The observed regularity of the pulse or heart beat.",
-                                "type": "DV_CODED_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0005]}\u0027",
                                 "node_id": "at0005"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
-                                "children": [
+                                "name": "Rate",
+                                "description": "The rate, measured in beats per minute.",
+                                "id": "rate",
+                                "category": "ELEMENT",
+                                "type": "MULTIPLE",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0004]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -673,15 +749,17 @@
                                     "type": "DV_QUANTITY"
                                   }
                                 ],
-                                "name": "Rate",
-                                "description": "The rate, measured in beats per minute.",
-                                "type": "MULTIPLE",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0004]}\u0027",
                                 "node_id": "at0004"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1022]",
-                                "children": [
+                                "name": "Clinical Description",
+                                "description": "Narrative description about the findings.",
+                                "id": "clinical_description",
+                                "category": "ELEMENT",
+                                "type": "DV_TEXT",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1022]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -701,15 +779,17 @@
                                     "type": "DV_TEXT"
                                   }
                                 ],
-                                "name": "Clinical Description",
-                                "description": "Narrative description about the findings.",
-                                "type": "DV_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1022]}\u0027",
                                 "node_id": "at1022"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1023]",
-                                "children": [
+                                "name": "Clinical Interpretation",
+                                "description": "Single word, phrase or brief description represents the clinical meaning and significance of the pulse or heart beat findings.",
+                                "id": "clinical_interpretation",
+                                "category": "ELEMENT",
+                                "type": "DV_TEXT",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1023]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -729,22 +809,22 @@
                                     "type": "DV_TEXT"
                                   }
                                 ],
-                                "name": "Clinical Interpretation",
-                                "description": "Single word, phrase or brief description represents the clinical meaning and significance of the pulse or heart beat findings.",
-                                "type": "DV_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1023]}\u0027",
                                 "node_id": "at1023"
                               }
                             ],
                             "name": "structure",
                             "description": "@ internal @",
+                            "id": "structure",
                             "type": "ITEM_TREE",
+                            "category": "DATA_STRUCTURE",
                             "node_id": "at0001"
                           }
                         ],
-                        "name": "Any event",
+                        "name": "First event",
                         "description": "Default, unspecified point in time or interval event which may be explicitly defined in a template or at run-time.",
+                        "id": "first_event",
                         "type": "EVENT",
+                        "category": "DATA_STRUCTURE",
                         "node_id": "at0003"
                       },
                       {
@@ -766,11 +846,19 @@
                         "type": "DV_TEXT"
                       },
                       {
+                        "min": 1,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]",
+                        "max": 1,
                         "children": [
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0005]",
-                            "children": [
+                            "name": "Regularity",
+                            "description": "The observed regularity of the pulse or heart beat.",
+                            "id": "regularity",
+                            "category": "ELEMENT",
+                            "type": "DV_CODED_TEXT",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0005]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -820,15 +908,17 @@
                                 "type": "DV_CODED_TEXT"
                               }
                             ],
-                            "name": "Regularity",
-                            "description": "The observed regularity of the pulse or heart beat.",
-                            "type": "DV_CODED_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0005]}\u0027",
                             "node_id": "at0005"
                           },
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
-                            "children": [
+                            "name": "Rate",
+                            "description": "The rate, measured in beats per minute.",
+                            "id": "rate",
+                            "category": "ELEMENT",
+                            "type": "MULTIPLE",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0004]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -898,15 +988,17 @@
                                 "type": "DV_QUANTITY"
                               }
                             ],
-                            "name": "Rate",
-                            "description": "The rate, measured in beats per minute.",
-                            "type": "MULTIPLE",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0004]}\u0027",
                             "node_id": "at0004"
                           },
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1005]",
-                            "children": [
+                            "name": "Pulse Presence",
+                            "description": "Identification of a pulse or heart beat.",
+                            "id": "pulse_presence",
+                            "category": "ELEMENT",
+                            "type": "DV_CODED_TEXT",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1005]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -944,15 +1036,17 @@
                                 "type": "DV_CODED_TEXT"
                               }
                             ],
-                            "name": "Pulse Presence",
-                            "description": "Identification of a pulse or heart beat.",
-                            "type": "DV_CODED_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1005]}\u0027",
                             "node_id": "at1005"
                           },
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1023]",
-                            "children": [
+                            "name": "Clinical Interpretation",
+                            "description": "Single word, phrase or brief description represents the clinical meaning and significance of the pulse or heart beat findings.",
+                            "id": "clinical_interpretation",
+                            "category": "ELEMENT",
+                            "type": "DV_TEXT",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1023]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -972,26 +1066,28 @@
                                 "type": "DV_TEXT"
                               }
                             ],
-                            "name": "Clinical Interpretation",
-                            "description": "Single word, phrase or brief description represents the clinical meaning and significance of the pulse or heart beat findings.",
-                            "type": "DV_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1023]}\u0027",
                             "node_id": "at1023"
                           }
                         ],
                         "name": "structure",
                         "description": "@ internal @",
+                        "id": "structure",
                         "type": "ITEM_TREE",
+                        "category": "DATA_STRUCTURE",
                         "node_id": "at0001"
                       }
                     ],
-                    "name": "Any event",
+                    "name": "Second event",
                     "description": "Default, unspecified point in time or interval event which may be explicitly defined in a template or at run-time.",
+                    "id": "second_event",
                     "type": "EVENT",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "at0003"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]",
+                    "max": 1,
                     "children": [
                       {
                         "mandatory_attributes": [
@@ -1023,11 +1119,19 @@
                         "type": "DV_CODED_TEXT"
                       },
                       {
+                        "min": 1,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/data[at0001]",
+                        "max": 1,
                         "children": [
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/data[at0001]/items[at0004]",
-                            "children": [
+                            "name": "Rate",
+                            "description": "The rate, measured in beats per minute.",
+                            "id": "rate",
+                            "category": "ELEMENT",
+                            "type": "MULTIPLE",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/data[at0001],/items[at0004]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -1097,24 +1201,30 @@
                                 "type": "DV_QUANTITY"
                               }
                             ],
-                            "name": "Rate",
-                            "description": "The rate, measured in beats per minute.",
-                            "type": "MULTIPLE",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/data[at0001],/items[at0004]}\u0027",
                             "node_id": "at0004"
                           }
                         ],
                         "name": "structure",
                         "description": "@ internal @",
+                        "id": "structure",
                         "type": "ITEM_TREE",
+                        "category": "DATA_STRUCTURE",
                         "node_id": "at0001"
                       },
                       {
+                        "min": 1,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/state[at0012]",
+                        "max": 1,
                         "children": [
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/state[at0012]/items[at0013]",
-                            "children": [
+                            "name": "Position",
+                            "description": "The body position of the subject during the observation.",
+                            "id": "position",
+                            "category": "ELEMENT",
+                            "type": "DV_CODED_TEXT",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/state[at0012],/items[at0013]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -1164,15 +1274,17 @@
                                 "type": "DV_CODED_TEXT"
                               }
                             ],
-                            "name": "Position",
-                            "description": "The body position of the subject during the observation.",
-                            "type": "DV_CODED_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/state[at0012],/items[at0013]}\u0027",
                             "node_id": "at0013"
                           },
                           {
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/state[at0012]/items[at1018]",
-                            "children": [
+                            "name": "Confounding Factors",
+                            "description": "Narrative description about any incidental factors that may be affect interpretation of the physical findings.",
+                            "id": "confounding_factors",
+                            "category": "ELEMENT",
+                            "type": "DV_TEXT",
+                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/state[at0012],/items[at1018]}\u0027",
+                            "constraints": [
                               {
                                 "mandatory_attributes": [
                                   {
@@ -1192,16 +1304,14 @@
                                 "type": "DV_TEXT"
                               }
                             ],
-                            "name": "Confounding Factors",
-                            "description": "Narrative description about any incidental factors that may be affect interpretation of the physical findings.",
-                            "type": "DV_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/state[at0012],/items[at1018]}\u0027",
                             "node_id": "at1018"
                           }
                         ],
                         "name": "List",
                         "description": "@ internal @",
+                        "id": "list",
                         "type": "ITEM_TREE",
+                        "category": "DATA_STRUCTURE",
                         "node_id": "at0012"
                       },
                       {
@@ -1220,6 +1330,7 @@
                           "min_op": "\u003e\u003d",
                           "max": 1
                         },
+                        "category": "ATTRIBUTE",
                         "type": "DV_DURATION"
                       },
                       {
@@ -1242,6 +1353,7 @@
                           "min_op": "\u003e\u003d",
                           "max": 1
                         },
+                        "category": "ATTRIBUTE",
                         "type": "DV_CODED_TEXT"
                       },
                       {
@@ -1260,12 +1372,15 @@
                           "min_op": "\u003e\u003d",
                           "max": 1
                         },
+                        "category": "ATTRIBUTE",
                         "type": "DV_DATE_TIME"
                       }
                     ],
                     "name": "Maximum",
                     "description": "Maximum rate of the pulse or heart beat observed during a period of exertion.",
+                    "id": "maximum",
                     "type": "INTERVAL_EVENT",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "at1036"
                   },
                   {
@@ -1284,20 +1399,31 @@
                       "min_op": "\u003e\u003d",
                       "max": 1
                     },
+                    "category": "ATTRIBUTE",
                     "type": "DV_DATE_TIME"
                   }
                 ],
                 "name": "history",
                 "description": "@ internal @",
+                "id": "history",
                 "type": "HISTORY",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0002"
               },
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]",
+                "max": 1,
                 "children": [
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[at1037]",
-                    "children": [
+                    "name": "Findings Location",
+                    "description": "Body site where the pulse or heart beat findings were observed.",
+                    "id": "findings_location",
+                    "category": "ELEMENT",
+                    "type": "DV_CODED_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[at1037]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -1365,18 +1491,22 @@
                         "type": "DV_CODED_TEXT"
                       }
                     ],
-                    "name": "Findings Location",
-                    "description": "Body site where the pulse or heart beat findings were observed.",
-                    "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[at1037]}\u0027",
                     "node_id": "at1037"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]",
+                    "max": 1,
                     "children": [
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0021]",
-                        "children": [
+                        "name": "Unique device identifier (UDI)",
+                        "description": "A numeric or alphanumeric string that is associated with this device within a given system.",
+                        "id": "unique_device_identifier_(udi)",
+                        "category": "ELEMENT",
+                        "type": "DV_IDENTIFIER",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0021]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -1408,15 +1538,17 @@
                             "type": "DV_IDENTIFIER"
                           }
                         ],
-                        "name": "Unique device identifier (UDI)",
-                        "description": "A numeric or alphanumeric string that is associated with this device within a given system.",
-                        "type": "DV_IDENTIFIER",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0021]}\u0027",
                         "node_id": "at0021"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0008]",
-                        "children": [
+                        "name": "Comment",
+                        "description": "Additional narrative about the device not captured in other fields.",
+                        "id": "comment",
+                        "category": "ELEMENT",
+                        "type": "DV_TEXT",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0008]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -1436,15 +1568,17 @@
                             "type": "DV_TEXT"
                           }
                         ],
-                        "name": "Comment",
-                        "description": "Additional narrative about the device not captured in other fields.",
-                        "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0008]}\u0027",
                         "node_id": "at0008"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0005]",
-                        "children": [
+                        "name": "Date of manufacture",
+                        "description": "Date the device was manufactured.",
+                        "id": "date_of_manufacture",
+                        "category": "ELEMENT",
+                        "type": "DV_DATE_TIME",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0005]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -1464,15 +1598,17 @@
                             "type": "DV_DATE_TIME"
                           }
                         ],
-                        "name": "Date of manufacture",
-                        "description": "Date the device was manufactured.",
-                        "type": "DV_DATE_TIME",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0005]}\u0027",
                         "node_id": "at0005"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0004]",
-                        "children": [
+                        "name": "Manufacturer",
+                        "description": "Name of manufacturer.",
+                        "id": "manufacturer",
+                        "category": "ELEMENT",
+                        "type": "DV_TEXT",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0004]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -1492,15 +1628,17 @@
                             "type": "DV_TEXT"
                           }
                         ],
-                        "name": "Manufacturer",
-                        "description": "Name of manufacturer.",
-                        "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0004]}\u0027",
                         "node_id": "at0004"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0001]",
-                        "children": [
+                        "name": "Device name",
+                        "description": "Identification of the medical device, preferably by a common name, a formal fully descriptive name or, if required, by class or category of device.",
+                        "id": "device_name",
+                        "category": "ELEMENT",
+                        "type": "DV_TEXT",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0001]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -1520,15 +1658,17 @@
                             "type": "DV_TEXT"
                           }
                         ],
-                        "name": "Device name",
-                        "description": "Identification of the medical device, preferably by a common name, a formal fully descriptive name or, if required, by class or category of device.",
-                        "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0001]}\u0027",
                         "node_id": "at0001"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0024]",
-                        "children": [
+                        "name": "Other identifier",
+                        "description": "Unspecified identifier, which can be further specified in a template or at run time.",
+                        "id": "other_identifier",
+                        "category": "ELEMENT",
+                        "type": "DV_IDENTIFIER",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0024]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -1560,21 +1700,25 @@
                             "type": "DV_IDENTIFIER"
                           }
                         ],
-                        "name": "Other identifier",
-                        "description": "Unspecified identifier, which can be further specified in a template or at run time.",
-                        "type": "DV_IDENTIFIER",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0024]}\u0027",
                         "node_id": "at0024"
                       }
                     ],
                     "name": "Medical Device",
                     "description": "An instrument, apparatus, implant, material or similar, used in the provision of healthcare. In this context, a medical device includes a broad range of devices which act through a variety of physical, mechanical, thermal or similar means but specifically excludes devices which act through medicinal means such as pharmacological, metabolic or immunological methods.  The scope is inclusive of disposable devices as well as durable or persisting devices that require tracking, maintenance activities or regular calibration, recognising that each type of device has specific data recording requirements.",
+                    "id": "medical_device",
                     "type": "CLUSTER",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "openEHR-EHR-CLUSTER.device.v1"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[at1019]",
-                    "children": [
+                    "name": "Method",
+                    "description": "Method used to the pulse observe the pulse or heart beat.",
+                    "id": "method",
+                    "category": "ELEMENT",
+                    "type": "DV_CODED_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[at1019]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -1618,16 +1762,14 @@
                         "type": "DV_CODED_TEXT"
                       }
                     ],
-                    "name": "Method",
-                    "description": "Method used to the pulse observe the pulse or heart beat.",
-                    "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[at1019]}\u0027",
                     "node_id": "at1019"
                   }
                 ],
                 "name": "List",
                 "description": "@ internal @",
+                "id": "list",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0010"
               },
               {
@@ -1654,6 +1796,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "PARTY_PROXY"
               },
               {
@@ -1676,6 +1819,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               },
               {
@@ -1698,23 +1842,35 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               }
             ],
             "name": "Pulse",
             "description": "Measurement of the pulse rate, or heart rate, and description of associated characteristics.",
+            "id": "pulse",
             "type": "OBSERVATION",
+            "category": "DATA_STRUCTURE",
             "node_id": "openEHR-EHR-OBSERVATION.pulse.v1"
           },
           {
+            "min": 0,
             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]",
+            "max": -1,
             "children": [
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]",
+                "max": 1,
                 "children": [
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0003]",
-                    "children": [
+                    "name": "Admission method",
+                    "description": "How the patient was admitted to hospital.",
+                    "id": "admission_method",
+                    "category": "ELEMENT",
+                    "type": "DV_CODED_TEXT",
+                    "constraints": [
                       {
                         "limits": {
                           "min": 1,
@@ -1724,14 +1880,17 @@
                         }
                       }
                     ],
-                    "name": "Admission method",
-                    "description": "How the patient was admitted to hospital.",
-                    "type": "DV_CODED_TEXT",
                     "node_id": "at0003"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0002]",
-                    "children": [
+                    "name": "Date of admission",
+                    "description": "Date patient admitted to hospital.",
+                    "id": "date_of_admission",
+                    "category": "ELEMENT",
+                    "type": "DV_DATE_TIME",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1],0,/data[at0001],/items[at0002]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -1751,15 +1910,17 @@
                         "type": "DV_DATE_TIME"
                       }
                     ],
-                    "name": "Date of admission",
-                    "description": "Date patient admitted to hospital.",
-                    "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1],0,/data[at0001],/items[at0002]}\u0027",
                     "node_id": "at0002"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0009]",
-                    "children": [
+                    "name": "Source of admission",
+                    "description": "The locaton of the patient immediately prior to admission.",
+                    "id": "source_of_admission",
+                    "category": "ELEMENT",
+                    "type": "DV_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1],0,/data[at0001],/items[at0009]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -1779,16 +1940,14 @@
                         "type": "DV_TEXT"
                       }
                     ],
-                    "name": "Source of admission",
-                    "description": "The locaton of the patient immediately prior to admission.",
-                    "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1],0,/data[at0001],/items[at0009]}\u0027",
                     "node_id": "at0009"
                   }
                 ],
                 "name": "Tree",
                 "description": "@ internal @",
+                "id": "tree",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0001"
               },
               {
@@ -1815,6 +1974,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "PARTY_PROXY"
               },
               {
@@ -1837,6 +1997,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               },
               {
@@ -1859,47 +2020,72 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               }
             ],
             "name": "Inpatient admission",
             "description": "Details of inpatient admission, in accordance with AoMRC headings.",
+            "id": "inpatient_admission",
             "type": "ADMIN_ENTRY",
+            "category": "DATA_STRUCTURE",
             "node_id": "openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1"
           },
           {
+            "min": 0,
             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]",
+            "max": -1,
             "children": [
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/protocol[at0036]",
+                "max": 1,
                 "children": [
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/protocol[at0036]/items[at0037]",
                     "name": "Protocol - definition",
                     "description": "All archetypes of the OBSERVATION class can contain a PROTOCOL model which records information on how the information was gathered or measured, and any other information that is not required for safe clinical interpretation of the core Data. Datatypes are identical to those explained in the Data model, above.",
+                    "id": "protocol___definition",
+                    "category": "ELEMENT",
                     "node_id": "at0037"
                   }
                 ],
                 "name": "Tree",
                 "description": "@ internal @",
+                "id": "tree",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0036"
               },
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]",
+                "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]",
+                    "max": 1,
                     "children": [
                       {
+                        "min": 1,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]",
+                        "max": 1,
                         "children": [
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]",
+                            "max": -1,
                             "children": [
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0012]",
-                                "children": [
+                                "name": "Quantity",
+                                "description": "A quantity data type used to record a measurement associated with its\u0027 appropriate units.  These are derived from ISO standards and the Reference model enables conversion between these units. The example shown here is length.",
+                                "id": "quantity",
+                                "category": "ELEMENT",
+                                "type": "DV_QUANTITY",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0012]}\u0027",
+                                "constraints": [
                                   {
                                     "terminology_binding": {
                                       "code": "122",
@@ -1948,15 +2134,17 @@
                                     "type": "DV_QUANTITY"
                                   }
                                 ],
-                                "name": "Quantity",
-                                "description": "A quantity data type used to record a measurement associated with its\u0027 appropriate units.  These are derived from ISO standards and the Reference model enables conversion between these units. The example shown here is length.",
-                                "type": "DV_QUANTITY",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0012]}\u0027",
                                 "node_id": "at0012"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0023]",
-                                "children": [
+                                "name": "Interval of Quantity",
+                                "description": "Interval of quantity datatypes allow for the recording of a range of measurements in association with appropriate units eg 1-2cm (prescribed amount of cream for a rash).",
+                                "id": "interval_of_quantity",
+                                "category": "ELEMENT",
+                                "type": "DV_INTERVAL\u003cDV_QUANTITY\u003e",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0023]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2062,15 +2250,17 @@
                                     "type": "DV_INTERVAL"
                                   }
                                 ],
-                                "name": "Interval of Quantity",
-                                "description": "Interval of quantity datatypes allow for the recording of a range of measurements in association with appropriate units eg 1-2cm (prescribed amount of cream for a rash).",
-                                "type": "DV_INTERVAL\u003cDV_QUANTITY\u003e",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0023]}\u0027",
                                 "node_id": "at0023"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0044]",
-                                "children": [
+                                "name": "Identifier",
+                                "description": "Identifier datatypes enable recording of formal data identifiers",
+                                "id": "identifier",
+                                "category": "ELEMENT",
+                                "type": "DV_IDENTIFIER",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0044]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2102,15 +2292,16 @@
                                     "type": "DV_IDENTIFIER"
                                   }
                                 ],
-                                "name": "Identifier",
-                                "description": "Identifier datatypes enable recording of formal data identifiers",
-                                "type": "DV_IDENTIFIER",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0044]}\u0027",
                                 "node_id": "at0044"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0011]",
-                                "children": [
+                                "name": "Text that is sourced from an external terminology",
+                                "description": "Text data type utilising codes derived from an external terminology source eg a SNOMED-CT, LOINC or ICD subset",
+                                "id": "text_that_is_sourced_from_an_external_terminology",
+                                "category": "ELEMENT",
+                                "type": "DV_CODED_TEXT",
+                                "constraints": [
                                   {
                                     "limits": {
                                       "min": 1,
@@ -2120,14 +2311,17 @@
                                     }
                                   }
                                 ],
-                                "name": "Text that is sourced from an external terminology",
-                                "description": "Text data type utilising codes derived from an external terminology source eg a SNOMED-CT, LOINC or ICD subset",
-                                "type": "DV_CODED_TEXT",
                                 "node_id": "at0011"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0022]",
-                                "children": [
+                                "name": "Interval of Integer",
+                                "description": "Interval of integer datatype allows for recording of a range of counts eg 1-2 tablets prescribed.  Maximum and minimum values can be set for the lower count and the upper count.",
+                                "id": "interval_of_integer",
+                                "category": "ELEMENT",
+                                "type": "DV_INTERVAL\u003cDV_COUNT\u003e",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0022]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2187,15 +2381,17 @@
                                     "type": "DV_INTERVAL"
                                   }
                                 ],
-                                "name": "Interval of Integer",
-                                "description": "Interval of integer datatype allows for recording of a range of counts eg 1-2 tablets prescribed.  Maximum and minimum values can be set for the lower count and the upper count.",
-                                "type": "DV_INTERVAL\u003cDV_COUNT\u003e",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0022]}\u0027",
                                 "node_id": "at0022"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0014]",
-                                "children": [
+                                "name": "Date/Time",
+                                "description": "Date/Time datatype allows recording of a date and/or time, including partial dates such as year only or month and year only.  Allow all is the default - so all forms of date/time are permitted.",
+                                "id": "date_time",
+                                "category": "ELEMENT",
+                                "type": "DV_DATE_TIME",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0014]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2216,15 +2412,17 @@
                                     "type": "DV_DATE_TIME"
                                   }
                                 ],
-                                "name": "Date/Time",
-                                "description": "Date/Time datatype allows recording of a date and/or time, including partial dates such as year only or month and year only.  Allow all is the default - so all forms of date/time are permitted.",
-                                "type": "DV_DATE_TIME",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0014]}\u0027",
                                 "node_id": "at0014"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0025]",
-                                "children": [
+                                "name": "Choice",
+                                "description": "Choice datatype allows for a number of types of element to be specified simultaneously and which can constrained or selected within a template or at run-time.  In this example, a text datatype set to Free text or Coded and another that is constrained to Terminology record data about the same data element.",
+                                "id": "choice",
+                                "category": "ELEMENT",
+                                "type": "DV_CODED_TEXT",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0025]}\u0027",
+                                "constraints": [
                                   {
                                     "terminology_binding": {
                                       "code": "124",
@@ -2261,15 +2459,17 @@
                                     "type": "DV_QUANTITY"
                                   }
                                 ],
-                                "name": "Choice",
-                                "description": "Choice datatype allows for a number of types of element to be specified simultaneously and which can constrained or selected within a template or at run-time.  In this example, a text datatype set to Free text or Coded and another that is constrained to Terminology record data about the same data element.",
-                                "type": "DV_CODED_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0025]}\u0027",
                                 "node_id": "at0025"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0013]",
-                                "children": [
+                                "name": "Count",
+                                "description": "Count data types are composed of an integer with no units eg for recording the number of children - in this example the minimum is set at 0 and the maximum not specified.",
+                                "id": "count",
+                                "category": "ELEMENT",
+                                "type": "DV_COUNT",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0013]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2290,15 +2490,17 @@
                                     "type": "DV_COUNT"
                                   }
                                 ],
-                                "name": "Count",
-                                "description": "Count data types are composed of an integer with no units eg for recording the number of children - in this example the minimum is set at 0 and the maximum not specified.",
-                                "type": "DV_COUNT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0013]}\u0027",
                                 "node_id": "at0013"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0024]",
-                                "children": [
+                                "name": "Interval of Date",
+                                "description": "Interval of integer datatype allows for recording of a range of dates eg between September 1, 2008 and September 8, 2008.",
+                                "id": "interval_of_date",
+                                "category": "ELEMENT",
+                                "type": "DV_INTERVAL\u003cDV_DATE_TIME\u003e",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0024]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2358,15 +2560,17 @@
                                     "type": "DV_INTERVAL"
                                   }
                                 ],
-                                "name": "Interval of Date",
-                                "description": "Interval of integer datatype allows for recording of a range of dates eg between September 1, 2008 and September 8, 2008.",
-                                "type": "DV_INTERVAL\u003cDV_DATE_TIME\u003e",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0024]}\u0027",
                                 "node_id": "at0024"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0005]",
-                                "children": [
+                                "name": "Free text or coded",
+                                "description": "Text data type in which free text can be entered or coding can be incorporated either in the template or at run time.",
+                                "id": "free_text_or_coded",
+                                "category": "ELEMENT",
+                                "type": "DV_TEXT",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0005]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2386,15 +2590,17 @@
                                     "type": "DV_TEXT"
                                   }
                                 ],
-                                "name": "Free text or coded",
-                                "description": "Text data type in which free text can be entered or coding can be incorporated either in the template or at run time.",
-                                "type": "DV_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0005]}\u0027",
                                 "node_id": "at0005"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0016]",
-                                "children": [
+                                "name": "Boolean",
+                                "description": "Boolean datatype that allows for true or false answers. ",
+                                "id": "boolean",
+                                "category": "ELEMENT",
+                                "type": "MULTIPLE",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0016]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2460,15 +2666,17 @@
                                     "type": "DV_CODED_TEXT"
                                   }
                                 ],
-                                "name": "Boolean",
-                                "description": "Boolean datatype that allows for true or false answers. ",
-                                "type": "MULTIPLE",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0016]}\u0027",
                                 "node_id": "at0016"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0027]",
-                                "children": [
+                                "name": "URI - resource identifier",
+                                "description": "URI datatypes allow for recording of relationships from this data to data recorded elsewhere.  These links can be within the same EHR, or external eg to a  URL.",
+                                "id": "uri___resource_identifier",
+                                "category": "ELEMENT",
+                                "type": "DV_URI",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0027]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2488,15 +2696,17 @@
                                     "type": "DV_URI"
                                   }
                                 ],
-                                "name": "URI - resource identifier",
-                                "description": "URI datatypes allow for recording of relationships from this data to data recorded elsewhere.  These links can be within the same EHR, or external eg to a  URL.",
-                                "type": "DV_URI",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0027]}\u0027",
                                 "node_id": "at0027"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0015]",
-                                "children": [
+                                "name": "Ordinal",
+                                "description": "Ordinal datatypes pair a number and text - in this way scores can be calculated in software, or progression can be assessed eg if used in a pain score",
+                                "id": "ordinal",
+                                "category": "ELEMENT",
+                                "type": "DV_ORDINAL",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0015]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2552,15 +2762,17 @@
                                     "type": "DV_ORDINAL"
                                   }
                                 ],
-                                "name": "Ordinal",
-                                "description": "Ordinal datatypes pair a number and text - in this way scores can be calculated in software, or progression can be assessed eg if used in a pain score",
-                                "type": "DV_ORDINAL",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0015]}\u0027",
                                 "node_id": "at0015"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0026]",
-                                "children": [
+                                "name": "Multimedia",
+                                "description": "Multimedia datatypes allow for the recording of many types of multimedia files to be captured.  All available types have been explicitly selected in this example.",
+                                "id": "multimedia",
+                                "category": "ELEMENT",
+                                "type": "DV_MULTIMEDIA",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0026]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2580,15 +2792,17 @@
                                     "type": "DV_MULTIMEDIA"
                                   }
                                 ],
-                                "name": "Multimedia",
-                                "description": "Multimedia datatypes allow for the recording of many types of multimedia files to be captured.  All available types have been explicitly selected in this example.",
-                                "type": "DV_MULTIMEDIA",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0026]}\u0027",
                                 "node_id": "at0026"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0006]",
-                                "children": [
+                                "name": "Text that uses Internal codes",
+                                "description": "Text data type which can use an internal vocabulary.  Each of these \u0027internal codes\u0027 can be bound to a terminology code.",
+                                "id": "text_that_uses_internal_codes",
+                                "category": "ELEMENT",
+                                "type": "DV_CODED_TEXT",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0006]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2638,15 +2852,17 @@
                                     "type": "DV_CODED_TEXT"
                                   }
                                 ],
-                                "name": "Text that uses Internal codes",
-                                "description": "Text data type which can use an internal vocabulary.  Each of these \u0027internal codes\u0027 can be bound to a terminology code.",
-                                "type": "DV_CODED_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0006]}\u0027",
                                 "node_id": "at0006"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0028]",
-                                "children": [
+                                "name": "Proportion",
+                                "description": "Proportion datatypes allow for ratios, percent, fractions and proportions to be modelled.",
+                                "id": "proportion",
+                                "category": "ELEMENT",
+                                "type": "DV_PROPORTION",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0028]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2696,21 +2912,25 @@
                                     "type": "DV_PROPORTION"
                                   }
                                 ],
-                                "name": "Proportion",
-                                "description": "Proportion datatypes allow for ratios, percent, fractions and proportions to be modelled.",
-                                "type": "DV_PROPORTION",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0028]}\u0027",
                                 "node_id": "at0028"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0017]",
                                 "name": "Any",
                                 "description": "The datatype for this \u0027any\u0027 element can be specified or constrained in a template or at run-time, but is not explicitly modelled in the archetype.",
+                                "id": "any",
+                                "category": "ELEMENT",
                                 "node_id": "at0017"
                               },
                               {
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0021]",
-                                "children": [
+                                "name": "Duration",
+                                "description": "Duration datatype allows recording of the duration of clinical concepts.  \u0027Allow all time units\u0027 is the default, although specific time units can be explicitly modelled.  Maximum and minum values can be set for each time unit.",
+                                "id": "duration",
+                                "category": "ELEMENT",
+                                "type": "DV_DURATION",
+                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0021]}\u0027",
+                                "constraints": [
                                   {
                                     "mandatory_attributes": [
                                       {
@@ -2730,28 +2950,30 @@
                                     "type": "DV_DURATION"
                                   }
                                 ],
-                                "name": "Duration",
-                                "description": "Duration datatype allows recording of the duration of clinical concepts.  \u0027Allow all time units\u0027 is the default, although specific time units can be explicitly modelled.  Maximum and minum values can be set for each time unit.",
-                                "type": "DV_DURATION",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0021]}\u0027",
                                 "node_id": "at0021"
                               }
                             ],
                             "name": "Heading1",
                             "description": "This is a symbol for a cluster which can have other elements \u0027nested\u0027 within it",
+                            "id": "heading1",
                             "type": "CLUSTER",
+                            "category": "DATA_STRUCTURE",
                             "node_id": "at0004"
                           }
                         ],
                         "name": "Tree",
                         "description": "@ internal @",
+                        "id": "tree",
                         "type": "ITEM_TREE",
+                        "category": "DATA_STRUCTURE",
                         "node_id": "at0003"
                       }
                     ],
                     "name": "Any event",
                     "description": "All archetypes of the OBSERVATION class contain a HISTORY or EVENT model which contains information about the timing of the observation and the \u0027width\u0027 of the information - either a point in time or an inteval.  The default is \u0027Any event\u0027 and it is not specified if this is a Point in time or an Interval",
+                    "id": "any_event",
                     "type": "EVENT",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "at0002"
                   },
                   {
@@ -2770,12 +2992,15 @@
                       "min_op": "\u003e\u003d",
                       "max": 1
                     },
+                    "category": "ATTRIBUTE",
                     "type": "DV_DATE_TIME"
                   }
                 ],
                 "name": "Event Series",
                 "description": "@ internal @",
+                "id": "event_series",
                 "type": "HISTORY",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0001"
               },
               {
@@ -2802,6 +3027,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "PARTY_PROXY"
               },
               {
@@ -2824,6 +3050,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               },
               {
@@ -2846,16 +3073,21 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               }
             ],
             "name": "Demonstration",
             "description": "Demonstration archetype with descriptions and explanations",
+            "id": "demonstration",
             "type": "OBSERVATION",
+            "category": "DATA_STRUCTURE",
             "node_id": "openEHR-EHR-OBSERVATION.demo.v1"
           },
           {
+            "min": 0,
             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]",
+            "max": -1,
             "children": [
               {
                 "mandatory_attributes": [
@@ -3840,11 +4072,19 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]",
+                "max": 1,
                 "children": [
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0065]",
-                    "children": [
+                    "name": "Method",
+                    "description": "Identification of specific method or technique for the procedure.",
+                    "id": "method",
+                    "category": "ELEMENT",
+                    "type": "DV_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0065]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -3882,15 +4122,17 @@
                         "type": "DV_TEXT"
                       }
                     ],
-                    "name": "Method",
-                    "description": "Identification of specific method or technique for the procedure.",
-                    "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0065]}\u0027",
                     "node_id": "at0065"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0066]",
-                    "children": [
+                    "name": "Scheduled date/time",
+                    "description": "The date and/or time on which the procedure is intended to be performed.",
+                    "id": "scheduled_date_time",
+                    "category": "ELEMENT",
+                    "type": "DV_DATE_TIME",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0066]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -3910,15 +4152,17 @@
                         "type": "DV_DATE_TIME"
                       }
                     ],
-                    "name": "Scheduled date/time",
-                    "description": "The date and/or time on which the procedure is intended to be performed.",
-                    "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0066]}\u0027",
                     "node_id": "at0066"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0002]",
-                    "children": [
+                    "name": "Procedure name",
+                    "description": "Identification of the procedure by name.",
+                    "id": "procedure_name",
+                    "category": "ELEMENT",
+                    "type": "DV_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0002]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -3938,15 +4182,17 @@
                         "type": "DV_TEXT"
                       }
                     ],
-                    "name": "Procedure name",
-                    "description": "Identification of the procedure by name.",
-                    "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0002]}\u0027",
                     "node_id": "at0002"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0060]",
-                    "children": [
+                    "name": "Final end date/time",
+                    "description": "The date and/or time when the entire procedure, or the last component of a multicomponent procedure,  was finished.",
+                    "id": "final_end_date_time",
+                    "category": "ELEMENT",
+                    "type": "DV_DATE_TIME",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0060]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -3966,16 +4212,14 @@
                         "type": "DV_DATE_TIME"
                       }
                     ],
-                    "name": "Final end date/time",
-                    "description": "The date and/or time when the entire procedure, or the last component of a multicomponent procedure,  was finished.",
-                    "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0060]}\u0027",
                     "node_id": "at0060"
                   }
                 ],
                 "name": "Tree",
                 "description": "@ internal @",
+                "id": "tree",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0001"
               },
               {
@@ -4327,14 +4571,24 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]",
+                "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]",
+                    "max": 1,
                     "children": [
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0001]",
-                        "children": [
+                        "name": "Unstructured name",
+                        "description": "Name in free text unstructured format.",
+                        "id": "unstructured_name",
+                        "category": "ELEMENT",
+                        "type": "DV_TEXT",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0001]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -4354,15 +4608,17 @@
                             "type": "DV_TEXT"
                           }
                         ],
-                        "name": "Unstructured name",
-                        "description": "Name in free text unstructured format.",
-                        "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0001]}\u0027",
                         "node_id": "at0001"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0006]",
-                        "children": [
+                        "name": "Name type",
+                        "description": "Type of name described.",
+                        "id": "name_type",
+                        "category": "ELEMENT",
+                        "type": "DV_CODED_TEXT",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0006]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -4436,15 +4692,17 @@
                             "type": "DV_CODED_TEXT"
                           }
                         ],
-                        "name": "Name type",
-                        "description": "Type of name described.",
-                        "type": "DV_CODED_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0006]}\u0027",
                         "node_id": "at0006"
                       },
                       {
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0022]",
-                        "children": [
+                        "name": "Preferred name",
+                        "description": "Indicates that this is the name by which a person chooses to be identified.",
+                        "id": "preferred_name",
+                        "category": "ELEMENT",
+                        "type": "DV_BOOLEAN",
+                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0022]}\u0027",
+                        "constraints": [
                           {
                             "mandatory_attributes": [
                               {
@@ -4466,21 +4724,25 @@
                             "type": "DV_BOOLEAN"
                           }
                         ],
-                        "name": "Preferred name",
-                        "description": "Indicates that this is the name by which a person chooses to be identified.",
-                        "type": "DV_BOOLEAN",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0022]}\u0027",
                         "node_id": "at0022"
                       }
                     ],
                     "name": "Person name",
                     "description": "Details of personal name of an individual, provider or third party.",
+                    "id": "person_name",
                     "type": "CLUSTER",
+                    "category": "DATA_STRUCTURE",
                     "node_id": "openEHR-EHR-CLUSTER.person_name.v1"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[at0056]",
-                    "children": [
+                    "name": "Receiver order identifier",
+                    "description": "The ID assigned to the order by the healthcare provider or organisation receiving the request for service. This is also referred to as Filler Order Identifier.",
+                    "id": "receiver_order_identifier",
+                    "category": "ELEMENT",
+                    "type": "DV_IDENTIFIER",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[at0056]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -4512,15 +4774,17 @@
                         "type": "DV_IDENTIFIER"
                       }
                     ],
-                    "name": "Receiver order identifier",
-                    "description": "The ID assigned to the order by the healthcare provider or organisation receiving the request for service. This is also referred to as Filler Order Identifier.",
-                    "type": "DV_IDENTIFIER",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[at0056]}\u0027",
                     "node_id": "at0056"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[at0054]",
-                    "children": [
+                    "name": "Requestor order identifier",
+                    "description": "The local ID assigned to the order by the healthcare provider or organisation requesting the service.",
+                    "id": "requestor_order_identifier",
+                    "category": "ELEMENT",
+                    "type": "DV_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[at0054]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -4540,16 +4804,14 @@
                         "type": "DV_TEXT"
                       }
                     ],
-                    "name": "Requestor order identifier",
-                    "description": "The local ID assigned to the order by the healthcare provider or organisation requesting the service.",
-                    "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[at0054]}\u0027",
                     "node_id": "at0054"
                   }
                 ],
                 "name": "Tree",
                 "description": "@ internal @",
+                "id": "tree",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0053"
               },
               {
@@ -4598,6 +4860,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "ISM_TRANSITION"
               },
               {
@@ -4624,6 +4887,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "PARTY_PROXY"
               },
               {
@@ -4646,6 +4910,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               },
               {
@@ -4664,6 +4929,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "DV_DATE_TIME"
               },
               {
@@ -4686,23 +4952,36 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               }
             ],
             "name": "Procedure",
             "description": "A clinical activity carried out for screening, investigative, diagnostic, curative, therapeutic, evaluative or palliative purposes.",
+            "id": "procedure",
             "type": "ACTION",
+            "category": "DATA_STRUCTURE",
             "node_id": "openEHR-EHR-ACTION.procedure.v1"
           },
           {
+            "min": 0,
             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]",
+            "max": -1,
             "children": [
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]",
+                "max": 1,
                 "children": [
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0003]",
-                    "children": [
+                    "name": "CPR decision",
+                    "description": "The clinical decision on whether cardiopulmonary resuscitation (CPR) should be attempted. In some cases a clear answer may not be available to the recording clinician.",
+                    "id": "cpr_decision",
+                    "category": "ELEMENT",
+                    "type": "DV_CODED_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0003]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -4746,15 +5025,17 @@
                         "type": "DV_CODED_TEXT"
                       }
                     ],
-                    "name": "CPR decision",
-                    "description": "The clinical decision on whether cardiopulmonary resuscitation (CPR) should be attempted. In some cases a clear answer may not be available to the recording clinician.",
-                    "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0003]}\u0027",
                     "node_id": "at0003"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0002]",
-                    "children": [
+                    "name": "Date of CPR decision",
+                    "description": "The date at which the CPR decision was originally taken or last reviewed.",
+                    "id": "date_of_cpr_decision",
+                    "category": "ELEMENT",
+                    "type": "DV_DATE_TIME",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0002]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -4774,15 +5055,17 @@
                         "type": "DV_DATE_TIME"
                       }
                     ],
-                    "name": "Date of CPR decision",
-                    "description": "The date at which the CPR decision was originally taken or last reviewed.",
-                    "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0002]}\u0027",
                     "node_id": "at0002"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0021]",
-                    "children": [
+                    "name": "Comment",
+                    "description": "Other narrative comment pertinent to the CPR decision.",
+                    "id": "comment",
+                    "category": "ELEMENT",
+                    "type": "DV_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0021]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -4802,24 +5085,30 @@
                         "type": "DV_TEXT"
                       }
                     ],
-                    "name": "Comment",
-                    "description": "Other narrative comment pertinent to the CPR decision.",
-                    "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0021]}\u0027",
                     "node_id": "at0021"
                   }
                 ],
                 "name": "Tree",
                 "description": "@ internal @",
+                "id": "tree",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0001"
               },
               {
+                "min": 1,
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/protocol[at0010]",
+                "max": 1,
                 "children": [
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/protocol[at0010]/items[at0009]",
-                    "children": [
+                    "name": "Date for review of CPR decision",
+                    "description": "The date at which the CPR decision should be reviewed.",
+                    "id": "date_for_review_of_cpr_decision",
+                    "category": "ELEMENT",
+                    "type": "DV_DATE_TIME",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/protocol[at0010],/items[at0009]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -4840,15 +5129,17 @@
                         "type": "DV_DATE_TIME"
                       }
                     ],
-                    "name": "Date for review of CPR decision",
-                    "description": "The date at which the CPR decision should be reviewed.",
-                    "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/protocol[at0010],/items[at0009]}\u0027",
                     "node_id": "at0009"
                   },
                   {
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/protocol[at0010]/items[at0014]",
-                    "children": [
+                    "name": "Discussion with informal carer",
+                    "description": "Has resuscitation been discussed with  the patient\u0027s informal carer or carers?",
+                    "id": "discussion_with_informal_carer",
+                    "category": "ELEMENT",
+                    "type": "DV_CODED_TEXT",
+                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/protocol[at0010],/items[at0014]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -4886,16 +5177,14 @@
                         "type": "DV_CODED_TEXT"
                       }
                     ],
-                    "name": "Discussion with informal carer",
-                    "description": "Has resuscitation been discussed with  the patient\u0027s informal carer or carers?",
-                    "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/protocol[at0010],/items[at0014]}\u0027",
                     "node_id": "at0014"
                   }
                 ],
                 "name": "Tree",
                 "description": "@ internal @",
+                "id": "tree",
                 "type": "ITEM_TREE",
+                "category": "DATA_STRUCTURE",
                 "node_id": "at0010"
               },
               {
@@ -4922,6 +5211,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "PARTY_PROXY"
               },
               {
@@ -4944,6 +5234,7 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               },
               {
@@ -4966,32 +5257,49 @@
                   "min_op": "\u003e\u003d",
                   "max": 1
                 },
+                "category": "ATTRIBUTE",
                 "type": "CODE_PHRASE"
               }
             ],
             "name": "CPR decision",
             "description": "The outcome of a clinical decision as to whether cardio-pulmonary resuscitation should be undertaken or not. This is generally referred to in UK clinical guidance as the CPR (Cardio-pulmonary resuscitation) decision.",
+            "id": "cpr_decision",
             "type": "EVALUATION",
+            "category": "DATA_STRUCTURE",
             "node_id": "openEHR-EHR-EVALUATION.cpr_decision_uk.v1"
           }
         ],
         "name": "Ad hoc heading",
         "description": "A generic section header which should be renamed in a template to suit a specific clinical context.",
+        "id": "ad_hoc_heading",
         "type": "SECTION",
+        "category": "DATA_STRUCTURE",
         "node_id": "openEHR-EHR-SECTION.adhoc.v1"
       },
       {
+        "min": 1,
         "aql_path": "/context",
+        "max": 1,
         "children": [
           {
+            "min": 1,
             "aql_path": "/context/other_context[at0001]",
+            "max": 1,
             "children": [
               {
+                "min": 0,
                 "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]",
+                "max": -1,
                 "children": [
                   {
                     "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0001]",
-                    "children": [
+                    "name": "Period of care identifier",
+                    "description": "The period of care to which this composition belongs. This equates to the CONTSYS concept and repesents an admisitrative or contractual spell of care, involving a specific instiution or care provider.",
+                    "id": "period_of_care_identifier",
+                    "category": "ELEMENT",
+                    "type": "DV_TEXT",
+                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0001]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -5011,15 +5319,17 @@
                         "type": "DV_TEXT"
                       }
                     ],
-                    "name": "Period of care identifier",
-                    "description": "The period of care to which this composition belongs. This equates to the CONTSYS concept and repesents an admisitrative or contractual spell of care, involving a specific instiution or care provider.",
-                    "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0001]}\u0027",
                     "node_id": "at0001"
                   },
                   {
                     "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0008]",
-                    "children": [
+                    "name": "Tags",
+                    "description": "*",
+                    "id": "tags",
+                    "category": "ELEMENT",
+                    "type": "DV_TEXT",
+                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0008]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -5039,15 +5349,17 @@
                         "type": "DV_TEXT"
                       }
                     ],
-                    "name": "Tags",
-                    "description": "*",
-                    "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0008]}\u0027",
                     "node_id": "at0008"
                   },
                   {
                     "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0009]",
-                    "children": [
+                    "name": "Attachment",
+                    "description": "*",
+                    "id": "attachment",
+                    "category": "ELEMENT",
+                    "type": "DV_MULTIMEDIA",
+                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0009]}\u0027",
+                    "constraints": [
                       {
                         "mandatory_attributes": [
                           {
@@ -5067,22 +5379,22 @@
                         "type": "DV_MULTIMEDIA"
                       }
                     ],
-                    "name": "Attachment",
-                    "description": "*",
-                    "type": "DV_MULTIMEDIA",
-                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0009]}\u0027",
                     "node_id": "at0009"
                   }
                 ],
                 "name": "Context detail",
                 "description": "Additional contextual detail to be applied to all compositions.",
+                "id": "context_detail",
                 "type": "CLUSTER",
+                "category": "DATA_STRUCTURE",
                 "node_id": "openEHR-EHR-CLUSTER.composition_context_detail.v1"
               }
             ],
             "name": "Tree",
             "description": "@ internal @",
+            "id": "tree",
             "type": "ITEM_TREE",
+            "category": "DATA_STRUCTURE",
             "node_id": "at0001"
           },
           {
@@ -5101,6 +5413,7 @@
               "min_op": "\u003e\u003d",
               "max": 1
             },
+            "category": "ATTRIBUTE",
             "type": "DV_DATE_TIME"
           },
           {
@@ -5123,10 +5436,12 @@
               "min_op": "\u003e\u003d",
               "max": 1
             },
+            "category": "ATTRIBUTE",
             "type": "DV_CODED_TEXT"
           }
         ],
-        "type": "EVENT_CONTEXT"
+        "type": "EVENT_CONTEXT",
+        "category": "DATA_STRUCTURE"
       },
       {
         "aql_path": "/composer",
@@ -5152,6 +5467,7 @@
           "min_op": "\u003e\u003d",
           "max": 1
         },
+        "category": "ATTRIBUTE",
         "type": "PARTY_PROXY"
       },
       {
@@ -5174,6 +5490,7 @@
           "min_op": "\u003e\u003d",
           "max": 1
         },
+        "category": "ATTRIBUTE",
         "type": "CODE_PHRASE"
       },
       {
@@ -5196,6 +5513,7 @@
           "min_op": "\u003e\u003d",
           "max": 1
         },
+        "category": "ATTRIBUTE",
         "type": "DV_CODED_TEXT"
       },
       {
@@ -5218,6 +5536,7 @@
           "min_op": "\u003e\u003d",
           "max": 1
         },
+        "category": "ATTRIBUTE",
         "type": "CODE_PHRASE"
       },
       {
@@ -5241,6 +5560,7 @@
               "min_op": "\u003e\u003d",
               "max": 1
             },
+            "category": "ATTRIBUTE",
             "type": "DV_DATE_TIME"
           },
           {
@@ -5263,6 +5583,7 @@
               "min_op": "\u003e\u003d",
               "max": 1
             },
+            "category": "ATTRIBUTE",
             "type": "DV_CODED_TEXT"
           }
         ],
@@ -5273,7 +5594,9 @@
     ],
     "name": "Encounter",
     "description": "Interaction, contact or care event between a subject of care and healthcare provider(s).",
+    "id": "encounter",
     "type": "COMPOSITION",
+    "category": "DATA_STRUCTURE",
     "node_id": "openEHR-EHR-COMPOSITION.encounter.v1"
   },
   "template_id": "RIPPLE - Conformance Test template",

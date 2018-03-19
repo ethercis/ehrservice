@@ -44,6 +44,7 @@ public class AttributeList {
 
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             Map<String, Object> definition = new HashMap<>();
+            definition.put(Constants.CATEGORY, Constants.LITTERAL_ATTRIBUTE);
             definition.put(Constants.ATTRIBUTE, new SnakeCase(entry.getKey()).camelToSnake());
             definition.put(Constants.NAME, StringUtils.capitalize(entry.getKey()));
             String type = (String) ((Map) entry.getValue()).get(Constants.TYPE);

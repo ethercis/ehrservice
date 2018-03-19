@@ -56,15 +56,17 @@ public class CodePhrase {
 
         List attributeList = new ArrayList<>();
 
-        retmap.put(Constants.TERMINOLOGY, tid.getValue());
+        if (tid != null)
+            retmap.put(Constants.TERMINOLOGY, tid.getValue());
+
         retmap.put(Constants.CONSTRAINT, attributeList);
 
-        for (String code: codeList){
+        for (String code : codeList) {
 
             Map<String, Object> codeMap = new HashMap<>();
 
             codeMap.put(Constants.VALUE, code);
-            if (termDef.get(code) != null){
+            if (termDef.get(code) != null) {
                 codeMap.put(Constants.LABEL, termDef.get(code).getValue());
                 codeMap.put(Constants.DESCRIPTION, termDef.get(code).getDescription());
             }

@@ -20,10 +20,12 @@ package com.ethercis.opt.mapper;
 
 import com.ethercis.opt.Generic;
 import com.ethercis.opt.NodeChildren;
+import com.ethercis.opt.NodeId;
 import com.ethercis.opt.TermDefinition;
 import org.openehr.build.RMObjectBuildingException;
 import org.openehr.schemas.v1.CATTRIBUTE;
 import org.openehr.schemas.v1.CCOMPLEXOBJECT;
+import org.openehr.schemas.v1.CSINGLEATTRIBUTE;
 
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +78,18 @@ public class Structural {
         if (!nodeId.isEmpty()) {
             map.put(Constants.NODE_ID, nodeId);
             map.put(Constants.NAME, termDef.get(nodeId).getValue());
+            map.put(Constants.ID, new NodeId(termDef.get(nodeId).getValue()).ehrscape());
             map.put(Constants.DESCRIPTION, termDef.get(nodeId).getDescription());
+        }
+
+        if (ccomplexobject.getOccurrences() != null){
+            map.put(Constants.MIN, ccomplexobject.getOccurrences().getLower() == 0 ?
+                    (ccomplexobject.getOccurrences().getLowerUnbounded() == true ? -1 : 0) :
+                    ccomplexobject.getOccurrences().getLower());
+            map.put(Constants.MAX, ccomplexobject.getOccurrences().getUpper() == 0 ?
+                    (ccomplexobject.getOccurrences().getUpperUnbounded() == true ? -1 : 0) :
+                    ccomplexobject.getOccurrences().getUpper());
+
         }
 
         if (archetypeNodeId != null) {
@@ -93,10 +106,19 @@ public class Structural {
                 rangeMap.put(Constants.MAX_OP, cattribute.getExistence().isSetUpperIncluded() ? "<=" : "<");
                 rangeMap.put(Constants.MAX, cattribute.getExistence().isSetUpper() ? cattribute.getExistence().getUpper() : -1);
             }
+            else if (cattribute instanceof CSINGLEATTRIBUTE && cattribute.getRmAttributeName().equals(Constants.NAME)){
+                //check if node name is overriden in the template
+                String overridenName = new NodeNameAttribute(cattribute).staticName();
+                if (overridenName != null){
+                    map.put(Constants.NAME, overridenName);
+                    map.put(Constants.ID, new NodeId(overridenName).ehrscape());
+                }
+            }
         }
 
         map.put(Constants.CHILDREN, embedded);
         map.put(Constants.TYPE, rmTypeName);
+        map.put(Constants.CATEGORY, Constants.LITTERAL_STRUCTURE);
 
         return map;
     }

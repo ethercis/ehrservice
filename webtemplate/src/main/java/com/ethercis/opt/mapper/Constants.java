@@ -83,5 +83,11 @@ public class Constants {
     public static final String CONCEPT = "concept";
     public static final String TREE = "tree";
     public static final String ATTRIBUTE_NAME = "attribute_name";
-    public static String PROPORTION_KIND = "type";
+    public static final String ID = "id";
+    public static final String CATEGORY = "category";
+    public static final Object LITTERAL_ELEMENT = "ELEMENT";
+    public static final Object LITTERAL_ATTRIBUTE = "ATTRIBUTE";
+    public static final Object LITTERAL_STRUCTURE = "DATA_STRUCTURE";
+    public static String PROPORTION_KIND = "proportion_kind";
+    public static String CONSTRAINTS = "constraints";
 }
