@@ -16,7 +16,6 @@
  */
 package com.ethercis.ehr.encode.wrappers.json.writer;
 
-import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
@@ -24,10 +23,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
-import org.openehr.rm.datatypes.text.TermMapping;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 /**
  * GSON adapter for DvDateTime

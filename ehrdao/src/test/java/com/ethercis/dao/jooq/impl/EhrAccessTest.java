@@ -12,8 +12,6 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
-import org.openehr.rm.datastructure.itemstructure.ItemStructure;
-import org.openehr.schemas.v1.ITEMSTRUCTURE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -150,7 +148,7 @@ public class EhrAccessTest extends AccessTestCase {
 
     public void testCUD_3() throws Exception {
         String description = "test contribution";
-        String templateId = "section  observation test";
+        String templateId = "section observation test";
         UUID systemId = TestHelper.createDummySystem(testDomainAccess);
         UUID patientId = TestHelper.createDummyPatient(testDomainAccess);
         UUID committerId = TestHelper.createDummyCommitter(testDomainAccess);
@@ -199,13 +197,13 @@ public class EhrAccessTest extends AccessTestCase {
      * test other details in ehr status
      * @throws Exception
      */
-    public void testCUD_4() throws Exception {
+    public void _testCUD_4() throws Exception {
         String otherDetailsTemplateId = "person anonymised parent";
         UUID systemId = TestHelper.createDummySystem(testDomainAccess);
         UUID patientId = TestHelper.createDummyPatient(testDomainAccess);
         UUID committerId = TestHelper.createDummyCommitter(testDomainAccess);
 
-        InputStream is = new FileInputStream(new File("/Development/Dropbox/eCIS_Development/samples/other_details.xml"));
+        InputStream is = new FileInputStream(new File("src/test/resources/samples/other_details.xml"));
 
 
         I_EhrAccess ehrAccess = I_EhrAccess.getInstance(testDomainAccess,

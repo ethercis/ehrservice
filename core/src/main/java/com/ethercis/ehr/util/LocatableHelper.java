@@ -20,8 +20,7 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
-import org.openehr.build.RMObjectBuilder;
-import org.openehr.build.SystemValue;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.rm.Attribute;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.datastructure.history.History;
@@ -588,7 +587,7 @@ public class LocatableHelper {
 
     public static Class parameterClass(Object locatable, String parameterName) throws NoSuchFieldException {
         Class parameterClass = null;
-        RMObjectBuilder objectBuilder = RMObjectBuilder.getInstance();
+        RMBuilder objectBuilder = RMBuilder.getInstance();
         Constructor constructor = objectBuilder.fullConstructor(locatable.getClass());
         Annotation[][] annotations = constructor.getParameterAnnotations();
         for (int i = 0; i < annotations.length; i++){

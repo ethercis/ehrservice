@@ -3,10 +3,10 @@ package com.ethercis.encode.wrappers.constraints;
 
 import com.ethercis.ehr.encode.wrappers.DvProportionVBean;
 import com.ethercis.ehr.encode.wrappers.constraints.DvProportionVConstraints;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.quantity.DvProportion;
 import org.openehr.rm.datatypes.quantity.ProportionKind;
 import org.openehr.rm.support.basic.Interval;
@@ -23,7 +23,7 @@ public class DvProportionConstraintsTest {
 	@Before
 	public void setUp() throws Exception {
 		testProportion = new DvProportionVBean(new DvProportion(1,2, ProportionKind.FRACTION, 0));
-        constraints = new DvProportionVConstraints(RMObjectBuilder.getInstance(), (DvProportion)testProportion.getAdaptee());
+        constraints = new DvProportionVConstraints(RMBuilder.getInstance(), (DvProportion)testProportion.getAdaptee());
 //        properties.add(new CDvProportionItem(new Interval<Double>(new Double(0), new Double(100)), "mg"));
 
         //TODO process where is the bloody CDvProportion class or create one!

@@ -17,9 +17,9 @@
 package com.ethercis.ehr.encode.wrappers.constraints;
 
 
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.Attribute;
 import org.openehr.rm.RMObject;
 import org.openehr.rm.datatypes.basic.DataValue;
@@ -35,7 +35,7 @@ public abstract class DataValueConstraints implements I_VBeanConstraints, Serial
 	String concept; //coded text (support::id)
 	boolean initial = true; //initially created, false if edited
     Map<String, ConstraintAttribute> attributes = new HashMap<String, ConstraintAttribute>();
-    transient RMObjectBuilder builder;
+    transient RMBuilder builder;
 
     private DataValue parent;
 //    private ConstraintOccurrences occurences;
@@ -96,7 +96,7 @@ public abstract class DataValueConstraints implements I_VBeanConstraints, Serial
         }
     }
 	
-	public DataValueConstraints(RMObjectBuilder builder, DataValue parent) {
+	public DataValueConstraints(RMBuilder builder, DataValue parent) {
         this.parent = parent;
         this.builder = builder;
         Class clazz = parent.getClass(); //the actual class of this wrapped value (a Dv type, f.e. DvText)

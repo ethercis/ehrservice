@@ -19,7 +19,6 @@ import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlOptions;
-import org.jooq.util.derby.sys.Sys;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
@@ -41,7 +40,6 @@ import javax.xml.namespace.QName;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Time;
 import java.util.*;
 import java.util.regex.Pattern;
 

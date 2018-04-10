@@ -19,9 +19,7 @@ package com.ethercis.dao.access.interfaces;
 import com.ethercis.dao.access.jooq.EhrAccess;
 import com.ethercis.dao.access.util.ContributionDef;
 import org.openehr.rm.common.archetyped.Locatable;
-import org.openehr.rm.datastructure.itemstructure.ItemStructure;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 

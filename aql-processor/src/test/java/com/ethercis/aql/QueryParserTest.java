@@ -44,10 +44,14 @@ public class QueryParserTest {
     public void setUp(){
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
-        String url = "jdbc:postgresql://localhost:5434/ethercis";
+//        String url = "jdbc:postgresql://localhost:5434/ethercis";
+        String url = "jdbc:postgresql://" + System.getProperty("test.db.host") + ":" + System.getProperty("test.db.port") + "/" + System.getProperty("test.db.name");
+//        String url = "jdbc:postgresql://192.168.2.108:5432/ethercis";
+        String login = System.getProperty("test.db.user");
+        String password = System.getProperty("test.db.password");
 //        String url = "jdbc:postgresql://192.168.2.113:5432/ethercis";
-        String login = "postgres";
-        String password = "postgres";
+//        String login = "postgres";
+//        String password = "postgres";
 
         try {
             this.connection = DriverManager.getConnection(url, login, password);
@@ -702,7 +706,7 @@ public class QueryParserTest {
                 "contains COMPOSITION a "+
 //                "where a/name/value matches {'Discharge summary', 'Referral'} \n" +
 //                "and a/archetype_details/template_id/value matches {'iEHR - Healthlink - Referral.v0','iEHR - Healthlink - Discharge Sumary.v0'}\n" +
-                "orderby  a/context/start_time/value desc";
+                "order by  a/context/start_time/value desc";
 
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);
@@ -732,7 +736,7 @@ public class QueryParserTest {
                 "a/context/start_time/value\n" +
                 "from EHR e \n" +
                 "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1]\n" +
-                "orderby a/context/start_time/value DESC";
+                "order by a/context/start_time/value DESC";
 
 //
         query = "select " +
@@ -763,7 +767,7 @@ public class QueryParserTest {
                 "contains COMPOSITION a "+
 //                "where a/name/value matches {'Discharge summary', 'Referral'} \n" +
 //                "and a/archetype_details/template_id/value matches {'iEHR - Healthlink - Referral.v0','iEHR - Healthlink - Discharge Sumary.v0'}\n" +
-                "orderby  a/context/start_time/value desc";
+                "order by  a/context/start_time/value desc";
 
         QueryProcessor queryProcessor = new QueryProcessor(context);
         QueryParser queryParser = new QueryParser(context, query);

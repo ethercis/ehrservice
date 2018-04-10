@@ -24,6 +24,7 @@ import com.ethercis.aql.sql.binding.JsonbBlockDef;
 import com.ethercis.ehr.encode.rawjson.LightRawJsonEncoder;
 import com.ethercis.ehr.encode.rawjson.RawJsonEncoder;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.google.gson.JsonSyntaxException;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
@@ -96,6 +97,8 @@ public class RawJsonTransform implements I_RawJsonTransform {
                 newValue.setValue(DSL.field(I_SelectBinder.DATA), rawJson);
                 resultSet.add(newValue);
                 record.setValue(DSL.field(I_SelectBinder.DATA), rawJson);
+            } catch (JsonSyntaxException js){
+                System.out.print("duplicate key:"+js);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Could not encode raw json data"+e);
             }

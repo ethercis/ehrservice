@@ -16,7 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
-import org.openehr.build.RMObjectBuilder;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
@@ -38,7 +38,7 @@ public class DvDurationVConstraints extends DataValueConstraints {
     DvDuration min, max; //value range inclusive
     private DvDuration assumed_value_code;
 
-    public DvDurationVConstraints(RMObjectBuilder builder, DataValue parent) {
+    public DvDurationVConstraints(RMBuilder builder, DataValue parent) {
         super(builder, parent);
     }
 

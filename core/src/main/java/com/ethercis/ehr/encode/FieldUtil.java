@@ -16,24 +16,22 @@
  */
 package com.ethercis.ehr.encode;
 
+import com.ethercis.ehr.encode.wrappers.SnakeCase;
+import com.ethercis.ehr.rm.RMBuilder;
+import com.google.gson.internal.Primitives;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openehr.build.RMObjectBuildingException;
+import org.openehr.rm.Attribute;
+import org.openehr.rm.common.generic.PartyProxy;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
-import com.ethercis.ehr.encode.wrappers.SnakeCase;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openehr.build.RMObjectBuilder;
-import org.openehr.build.RMObjectBuildingException;
-import org.openehr.rm.Attribute;
-
-import com.google.gson.internal.Primitives;
-import org.openehr.rm.common.generic.PartyProxy;
-
 public class FieldUtil {
-    private static RMObjectBuilder builder = RMObjectBuilder.getInstance();
+    private static RMBuilder builder = RMBuilder.getInstance();
     private static Logger logger = LogManager.getLogger(FieldUtil.class);
 
     private static void getClassScalarAttributes(Map<String, Object> map, Class<?> clazz) throws SecurityException, NoSuchFieldException {
@@ -74,7 +72,7 @@ public class FieldUtil {
                     Map<String, Object> defMap = new HashMap<>();
                     retmap.put(attr.name(), defMap);
                     defMap.put("type", attrClass.getSimpleName().toUpperCase());
-                } else if (attrClass.getName().contains(RMObjectBuilder.OPENEHR_RM_PACKAGE)) {
+                } else if (attrClass.getName().contains(RMBuilder.OPENEHR_RM_PACKAGE)) {
                     Map<String, Object> submap = getRequiredAttributes(attrClass);
                     submap.put("type", new SnakeCase(attrClass.getSimpleName()).camelToUpperSnake());
                     retmap.put(attr.name(), submap);
@@ -114,7 +112,7 @@ public class FieldUtil {
                 Class attrClass = classMap.get(attr.name());
                 if (attrClass.getName().startsWith("java.lang."))
                     retmap.put(attr.name(), attrClass.getName());
-                else if (attrClass.getName().contains(RMObjectBuilder.OPENEHR_RM_PACKAGE)) {
+                else if (attrClass.getName().contains(RMBuilder.OPENEHR_RM_PACKAGE)) {
                     //check if type is abstract (ex. DvOrdered) due to java type erasure
                     if (Modifier.isAbstract(attrClass.getModifiers())) {
                         //check for getter and access the field to check its actual class

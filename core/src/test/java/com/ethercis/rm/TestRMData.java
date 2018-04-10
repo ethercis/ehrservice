@@ -10,7 +10,6 @@ import com.ethercis.ehr.util.RMDataSerializer;
 import openEHR.v1.template.TEMPLATE;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Before;
-import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.Flattener;
 import org.openehr.rm.common.archetyped.Locatable;

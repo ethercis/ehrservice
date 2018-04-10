@@ -20,7 +20,6 @@ package com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
-import com.ethercis.ehr.util.LocatableHelper;
 import com.google.gson.internal.LinkedTreeMap;
 import org.openehr.rm.common.archetyped.Locatable;
 
@@ -44,7 +43,12 @@ public class PathAttribute {
 
     String nodeNameFromPath(String key) {
         String namePart = AND_NAME_VALUE;
-        int startAt = path.indexOf(key.substring(0, key.indexOf("]")));
+
+        int startAt = -1;
+
+        if (key.indexOf("]") >= 0) {
+            startAt = path.indexOf(key.substring(0, key.indexOf("]")));
+        }
 
         if (startAt >= 0) {
             return path.substring(path.indexOf(namePart, startAt) + namePart.length(), path.indexOf("]", startAt) - 1);

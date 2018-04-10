@@ -20,7 +20,6 @@ import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
-import org.openehr.rm.datatypes.text.Match;
 import org.openehr.rm.datatypes.text.TermMapping;
 import org.openehr.terminology.SimpleTerminologyService;
 

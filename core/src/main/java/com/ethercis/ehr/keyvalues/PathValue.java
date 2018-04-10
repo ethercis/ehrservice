@@ -16,8 +16,6 @@
  */
 package com.ethercis.ehr.keyvalues;
 
-import com.ethercis.ehr.building.ContentBuilder;
-import com.ethercis.ehr.building.ContentUtil;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
@@ -31,6 +29,7 @@ import com.ethercis.ehr.encode.wrappers.element.ChoiceElementWrapper;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.ehr.rm.RMBuilder;
 import com.ethercis.ehr.util.LocatableHelper;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang.ArrayUtils;
@@ -38,7 +37,6 @@ import org.apache.commons.lang.ClassUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.RMObject;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -54,7 +52,6 @@ import org.openehr.rm.datatypes.encapsulated.DvParsable;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
-import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.support.identification.UIDBasedID;
 import org.openehr.rm.support.terminology.TerminologyService;
 import org.openehr.terminology.SimpleTerminologyService;
@@ -62,7 +59,6 @@ import org.openehr.terminology.SimpleTerminologyService;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ECISFLAT handling
@@ -749,7 +745,7 @@ public class PathValue implements I_PathValue {
                     parent.set(attributePath, dataValue);
                 }
                 else { //use RMBuilder for more complex value types: DV_PARSABLE etc.
-                    RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+                    RMBuilder rmObjectBuilder = new RMBuilder();
                     if (!attributeSet.containsKey("charset")){
                         CodePhrase charset = new CodePhrase("IANA_character-sets","UTF-8");
                         attributeSet.put("charset", charset);
@@ -787,7 +783,7 @@ public class PathValue implements I_PathValue {
                     values.put(atributeName, value);
 
                 }
-                else if (attributeClassName.contains(RMObjectBuilder.OPENEHR_RM_PACKAGE)) {
+                else if (attributeClassName.contains(RMBuilder.OPENEHR_RM_PACKAGE)) {
                     String attrClassSimpleName = attributeClassName.substring(attributeClassName.lastIndexOf(".")+1);
                     //get instrumentalized class
                     Class attributeInstrument = VBeanUtil.findInstrumentalizedClass(attrClassSimpleName);

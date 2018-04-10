@@ -18,9 +18,6 @@ package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.CompositionAccess;
 import com.ethercis.dao.access.util.ContributionDef;
-import com.ethercis.jooq.pg.tables.EventContext;
-import com.ethercis.jooq.pg.tables.Identifier;
-import com.ethercis.jooq.pg.tables.Participation;
 import com.ethercis.jooq.pg.tables.records.*;
 import com.ethercis.ehr.util.EhrException;
 import org.joda.time.DateTime;
@@ -34,7 +31,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.ethercis.jooq.pg.Tables.*;
-import static com.ethercis.jooq.pg.Tables.EHR;
 import static com.ethercis.jooq.pg.Tables.PARTY_IDENTIFIED;
 
 /**

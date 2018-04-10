@@ -95,6 +95,8 @@
                             <exclude>junit:junit</exclude>
                             <exclude>jmock:*</exclude>
                             <exclude>*:xml-apis</exclude>
+                            <exclude>org.openehr:*</exclude>
+                            <exclude>openEHR:*</exclude>
                             <exclude>org.apache.maven:lib:tests</exclude>
                         </excludes>
                     </artifactSet>
@@ -138,7 +140,7 @@
     <groupId>ethercis</groupId>
     <artifactId>ecis-core</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.2-SNAPSHOT</version>
     <name>Core EHR RM Handling</name>
     <!--<repositories>-->
         <!--<repository>-->
@@ -150,12 +152,12 @@
         <dependency>
             <groupId>ethercis</groupId>
             <artifactId>ecis-knowledge-cache</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>ethercis</groupId>
             <artifactId>ecis-validation</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openehr</groupId>
@@ -168,29 +170,34 @@
             <version>1.0.1</version>
         </dependency>
         <dependency>
-            <groupId>org.openehr</groupId>
-            <artifactId>openehr-am-rm-term</artifactId>
-            <version>1.0.9</version>
+            <groupId>openehr</groupId>
+            <artifactId>openehr-rm-core</artifactId>
+            <version>1.0.14-ec1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.openehr</groupId>
-            <artifactId>adl-parser</artifactId>
-            <version>1.0.9</version>
+            <groupId>openehr</groupId>
+            <artifactId>openehr-rm-domain</artifactId>
+            <version>1.0.14-ec1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.openehr</groupId>
-            <artifactId>xml-serializer</artifactId>
-            <version>1.0.9</version>
+            <groupId>openehr</groupId>
+            <artifactId>xml-binding</artifactId>
+            <version>1.0.14-ec1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.openehr</groupId>
+            <groupId>openehr</groupId>
             <artifactId>rm-builder</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.14-ec1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.openehr</groupId>
+            <groupId>openehr</groupId>
             <artifactId>oet-parser</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.14-ec1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>openehr</groupId>
+            <artifactId>openehr-aom</artifactId>
+            <version>1.0.14-ec1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.cedarsoftware</groupId>
@@ -346,7 +353,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20.1</version>
+                <version>2.19.1</version>
             </plugin>
         </plugins>
     </reporting>

@@ -4,7 +4,6 @@ import com.ethercis.ehr.building.OetBinding;
 import com.ethercis.ehr.building.GenerationStrategy;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.I_RmBinding;
-import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 

@@ -18,7 +18,6 @@
 
 package com.ethercis.opt;
 
-import com.ethercis.ehr.util.LocatableHelper;
 import org.openehr.rm.common.archetyped.Locatable;
 
 import java.util.List;

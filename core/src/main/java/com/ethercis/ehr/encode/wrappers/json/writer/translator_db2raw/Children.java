@@ -1,5 +1,6 @@
 package com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw;
 
+import com.ethercis.ehr.encode.CompositionSerializer;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
@@ -20,10 +21,32 @@ public class Children {
         boolean isItems = true;
 
         for (String key : linkedTreeMap.keySet()) {
-            if (!key.startsWith("/items")){
+            if (!key.startsWith(CompositionSerializer.TAG_ITEMS)){
                 isItems = false;
             }
         }
         return isItems;
+    }
+
+    public boolean isMultiContent(){
+        int contents = 0;
+
+        for (String key : linkedTreeMap.keySet()) {
+            if (key.startsWith(CompositionSerializer.TAG_CONTENT)){
+                contents++;
+            }
+        }
+        return contents > 0;
+    }
+
+    public int contentCount(){
+        int contents = 0;
+
+        for (String key : linkedTreeMap.keySet()) {
+            if (key.startsWith(CompositionSerializer.TAG_CONTENT)){
+                contents++;
+            }
+        }
+        return contents;
     }
 }

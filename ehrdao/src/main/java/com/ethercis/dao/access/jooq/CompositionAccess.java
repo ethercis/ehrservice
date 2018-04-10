@@ -297,6 +297,9 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
          entry.setCompositionId(compositionRecord.getId());
         content.add(entry);
 
+        if (entry.getComposition() != null)
+            composition = entry.getComposition();
+
         return content.size();
     }
 
@@ -542,7 +545,7 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 
         }
 
-        connection.close();
+//        connection.close();
 
         return compositionHistoryAccess;
     }

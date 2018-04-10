@@ -18,10 +18,11 @@
 package com.ethercis.ehr.encode;
 
 import com.ethercis.ehr.encode.wrappers.*;
+import com.ethercis.ehr.rm.RMBuilder;
 import junit.framework.Assert;
 import org.apache.commons.collections4.MapUtils;
 import org.junit.Test;
-import org.openehr.build.RMObjectBuilder;
+
 import org.openehr.rm.datatypes.quantity.DvInterval;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
@@ -37,7 +38,7 @@ public class FieldUtilTest {
 
     @Test
     public void testFlatten() throws Exception {
-        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+        RMBuilder rmObjectBuilder = new RMBuilder();
 
         DvInterval<DvDateTime> dvDateTimeDvInterval = DvIntervalVBean.createQualifiedInterval(DvDate.class);
 
@@ -53,7 +54,7 @@ public class FieldUtilTest {
 
     @Test
     public void testStructuralEvaluation() throws Exception {
-        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+        RMBuilder rmObjectBuilder = new RMBuilder();
 
         Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("EVALUATION"));
 
@@ -62,7 +63,7 @@ public class FieldUtilTest {
 
     @Test
     public void testStructuralObservation() throws Exception {
-        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+        RMBuilder rmObjectBuilder = new RMBuilder();
 
         Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("OBSERVATION"));
 
@@ -71,7 +72,7 @@ public class FieldUtilTest {
 
     @Test
     public void testStructuralAction() throws Exception {
-        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+        RMBuilder rmObjectBuilder = new RMBuilder();
 
         Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("ACTION"));
 
@@ -80,7 +81,7 @@ public class FieldUtilTest {
 
     @Test
     public void testStructuralInstruction() throws Exception {
-        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+        RMBuilder rmObjectBuilder = new RMBuilder();
 
         Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("ACTION"));
 
@@ -89,7 +90,7 @@ public class FieldUtilTest {
 
     @Test
     public void testStructuralHistory() throws Exception {
-        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+        RMBuilder rmObjectBuilder = new RMBuilder();
 
         Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("HISTORY"));
 
@@ -98,7 +99,7 @@ public class FieldUtilTest {
 
     @Test
     public void testStructuralComposition() throws Exception {
-        RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+        RMBuilder rmObjectBuilder = new RMBuilder();
 
         Map<String, Object> requiredParameters = FieldUtil.getRequiredAttributes(rmObjectBuilder.retrieveRMType("COMPOSITION"));
 

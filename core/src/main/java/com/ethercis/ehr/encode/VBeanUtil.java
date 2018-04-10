@@ -17,11 +17,10 @@
 package com.ethercis.ehr.encode;
 
 import com.ethercis.ehr.encode.wrappers.constraints.DataValueConstraints;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
-import org.openehr.schemas.v1.ARCHETYPECONSTRAINT;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -266,14 +265,14 @@ public class VBeanUtil {
 		}
 	}
 
-    public static DataValueConstraints getConstraintInstance(RMObjectBuilder builder, Object obj) throws Exception {
+    public static DataValueConstraints getConstraintInstance(RMBuilder builder, Object obj) throws Exception {
         if (!(obj instanceof DataValue))
             throw new Exception("invalid object");
 
         if (isConstraintImplemented(obj)){
             Class implementingClass = findConstraintClass(obj);
             try {
-                Constructor<?> constructor = implementingClass.getConstructor(new Class[]{RMObjectBuilder.class, DataValue.class});
+                Constructor<?> constructor = implementingClass.getConstructor(new Class[]{RMBuilder.class, DataValue.class});
                 return (DataValueConstraints)constructor.newInstance(builder, (DataValue)obj);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();

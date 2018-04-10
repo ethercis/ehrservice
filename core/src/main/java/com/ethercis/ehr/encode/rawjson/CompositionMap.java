@@ -30,7 +30,6 @@ public class CompositionMap {
                 if (key.equals("content")) {
                     //build an array
                     Map<String, Object> contentMap = (Map<String, Object>) ((Map.Entry) entry).getValue();
-                    List<Object> contentList = new ArrayList<>();
                     Map<String, Object> nameMapOut = new LinkedTreeMap<>();
                     String contentKey = null;
                     for (Object item : contentMap.entrySet()) {
@@ -61,6 +60,31 @@ public class CompositionMap {
                 }
             }
         }
+
         return structuredMap;
+    }
+
+    private LinkedTreeMap<String, Object> factorizeContent(LinkedTreeMap<String, Object> structuredMap){
+        List<Object> contentList = new ArrayList<>();
+        LinkedTreeMap<String, Object> resultMap = new LinkedTreeMap<>();
+
+        for (Object item : structuredMap.entrySet()) {
+            String itemKey = (String) ((Map.Entry) item).getKey();
+            Object itemValue = ((Map.Entry) item).getValue();
+            LinkedTreeMap<String, Object> newMap = new LinkedTreeMap<>();
+            newMap.put(itemKey, itemValue);
+            if (itemKey.contains(CompositionSerializer.TAG_CONTENT)){
+                contentList.add(newMap);
+            }
+            else {
+                resultMap.putAll(newMap);
+            }
+        }
+
+        if (!contentList.isEmpty()){
+            resultMap.put("content", contentList);
+        }
+
+        return resultMap;
     }
 }

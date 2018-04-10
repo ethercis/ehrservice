@@ -24,8 +24,6 @@ import org.nustaq.serialization.FSTObjectOutput;
 import org.openehr.rm.common.archetyped.Locatable;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Marshal/unmarshal an extended RM composition

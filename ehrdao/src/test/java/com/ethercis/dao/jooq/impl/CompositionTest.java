@@ -64,8 +64,8 @@ public class CompositionTest extends AccessTestCase {
         ehrIdUUID = TestHelper.createDummyEhr(testDomainAccess);
         systemUUID = TestHelper.createDummySystem(testDomainAccess);
         composerUUID = TestHelper.createDummyCommitter(testDomainAccess);
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC_Blood_Pressure.v1.ecisflat.json");
-//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/pathvalues_test1.json");
+        FileReader fileReader = new FileReader("src/test/resources/samples/COLNEC_Blood_Pressure.v1.ecisflat.json");
+//        FileReader fileReader = new FileReader("src/test/resources/samples/pathvalues_test1.json");
 
         kvPairs = FlatJsonUtil.inputStream2Map(fileReader);
 

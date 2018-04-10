@@ -3,7 +3,6 @@ package com.ethercis.ehr.encode.wrappers;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
 
 import java.util.HashMap;

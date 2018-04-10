@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ethercis</groupId>
-  <artifactId>ecis-opt-introspect</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>ecis-webtemplate</artifactId>
+  <version>1.1.2-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -64,6 +64,7 @@
                 <exclude>org/postgresql/**</exclude>
                 <exclude>xsd/**</exclude>
                 <exclude>com/fasterxml/**</exclude>
+                <exclude>openEHR/**</exclude>
               </excludes>
             </filter>
           </filters>
@@ -77,6 +78,7 @@
               <exclude>ethercis:ecis-validation</exclude>
               <exclude>ethercis:ecis-knowledge-cache</exclude>
               <exclude>org.openehr:*</exclude>
+              <exclude>openEHR:*</exclude>
               <exclude>junit:junit</exclude>
               <exclude>jmock:*</exclude>
               <exclude>*:xml-apis</exclude>
@@ -110,17 +112,11 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>local-maven-repo</id>
-      <url>${user.localMavenRepo}</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-core</artifactId>
-      <version>1.1.1-SNAPSHOT</version>
+      <version>1.1.2-SNAPSHOT</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>
@@ -132,7 +128,7 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-knowledge-cache</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.1.2-SNAPSHOT</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>
@@ -144,7 +140,7 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>aql-processor</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.1.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -157,18 +153,6 @@
       <groupId>org.openehr</groupId>
       <artifactId>openEHR.v1.Template</artifactId>
       <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openehr-am-rm-term</artifactId>
-      <version>1.0.9</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>adl-parser</artifactId>
-      <version>1.0.9</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

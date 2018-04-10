@@ -49,6 +49,25 @@ It is set by a JVM parameter, for example:
 
 `-Dserver.node.name=testsg.ethercis.org`
 
+**test setup configuration**
+The following environment variables must be set to run the tests
+
+test.db.host <- host from which PostgreSQL listens on
+test.db.port <- port from which PostgreSQL listens on
+test.db.name <- DB name (ethercis)
+test.db.user <- DB login (postgres)
+test.db.password <- DB password (postgres)
+
+For example:
+
+-Dtest.db.host=localhost
+-Dtest.db.port=5432
+-Dtest.db.name=ethercis
+-Dtest.db.user=postgres
+-Dtest.db.password=postgres
+
+See also pom.xml maven-surefire-plugin configuration
+
 
 
 Dependencies

@@ -16,13 +16,13 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
+import com.ethercis.ehr.rm.RMBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantity;
 import org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantityItem;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.quantity.DvQuantity;
 
@@ -102,7 +102,7 @@ public final class DvQuantityVConstraints extends DataValueConstraints {
 	
 	Map<String, Limits> limits = new HashMap<String, Limits>(); //array list of limits depending on selected unit
 
-	public DvQuantityVConstraints(RMObjectBuilder builder, DataValue self) {
+	public DvQuantityVConstraints(RMBuilder builder, DataValue self) {
 		super(builder, self);
  	}
 

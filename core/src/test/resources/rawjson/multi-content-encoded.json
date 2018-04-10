@@ -1,0 +1,928 @@
+{
+  "@class": "COMPOSITION",
+  "content": {
+    "/name": [
+      {
+        "value": "DiADeM Assessment"
+      }
+    ],
+    "/composition[openEHR-EHR-COMPOSITION.encounter.v1 and name/value='DiADeM Assessment']": {
+      "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0]": [
+        {
+          "/name": [
+            {
+              "value": "6 CIT Assessment"
+            }
+          ],
+          "/data[at0001]": {
+            "/name": [
+              {
+                "value": "Event Series"
+              }
+            ],
+            "/events": {
+              "/events[at0002]": [
+                {
+                  "/name": [
+                    {
+                      "value": "Point in time"
+                    }
+                  ],
+                  "/time": {
+                    "/name": [
+                      {
+                        "value": "Point in time"
+                      }
+                    ],
+                    "/value": {
+                      "value": "2016-06-22T17:28:57.027Z",
+                      "epoch_offset": 1466616537027
+                    },
+                    "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/time",
+                    "/$CLASS$": "DvDateTime"
+                  },
+                  "/data[at0003]": {
+                    "/items[at0004]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "What year?"
+                          }
+                        ],
+                        "/value": {
+                          "value": 0,
+                          "symbol": {
+                            "value": "Correct",
+                            "definingCode": {
+                              "codeString": "at0005",
+                              "terminologyId": {
+                                "name": "local",
+                                "value": "local"
+                              }
+                            }
+                          },
+                          "limitsIndex": -1
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0004 and name/value='What year?']",
+                        "/$CLASS$": "DvOrdinal"
+                      }
+                    ],
+                    "/items[at0007]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "What month?"
+                          }
+                        ],
+                        "/value": {
+                          "value": 0,
+                          "symbol": {
+                            "value": "Correct",
+                            "definingCode": {
+                              "codeString": "at0008",
+                              "terminologyId": {
+                                "name": "local",
+                                "value": "local"
+                              }
+                            }
+                          },
+                          "limitsIndex": -1
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0007 and name/value='What month?']",
+                        "/$CLASS$": "DvOrdinal"
+                      }
+                    ],
+                    "/items[at0010]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "About what time?"
+                          }
+                        ],
+                        "/value": {
+                          "value": 3,
+                          "symbol": {
+                            "value": "Incorrect",
+                            "definingCode": {
+                              "codeString": "at0012",
+                              "terminologyId": {
+                                "name": "local",
+                                "value": "local"
+                              }
+                            }
+                          },
+                          "limitsIndex": -1
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0010 and name/value='About what time?']",
+                        "/$CLASS$": "DvOrdinal"
+                      }
+                    ],
+                    "/items[at0013]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Count backwards"
+                          }
+                        ],
+                        "/value": {
+                          "value": 4,
+                          "symbol": {
+                            "value": "More than 1 error",
+                            "definingCode": {
+                              "codeString": "at0016",
+                              "terminologyId": {
+                                "name": "local",
+                                "value": "local"
+                              }
+                            }
+                          },
+                          "limitsIndex": -1
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0013 and name/value='Count backwards']",
+                        "/$CLASS$": "DvOrdinal"
+                      }
+                    ],
+                    "/items[at0017]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Months in reverse"
+                          }
+                        ],
+                        "/value": {
+                          "value": 0,
+                          "symbol": {
+                            "value": "No error",
+                            "definingCode": {
+                              "codeString": "at0018",
+                              "terminologyId": {
+                                "name": "local",
+                                "value": "local"
+                              }
+                            }
+                          },
+                          "limitsIndex": -1
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0017 and name/value='Months in reverse']",
+                        "/$CLASS$": "DvOrdinal"
+                      }
+                    ],
+                    "/items[at0021]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Repeat address phrase"
+                          }
+                        ],
+                        "/value": {
+                          "value": 0,
+                          "symbol": {
+                            "value": "No errors",
+                            "definingCode": {
+                              "codeString": "at0022",
+                              "terminologyId": {
+                                "name": "local",
+                                "value": "local"
+                              }
+                            }
+                          },
+                          "limitsIndex": -1
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0021 and name/value='Repeat address phrase']",
+                        "/$CLASS$": "DvOrdinal"
+                      }
+                    ],
+                    "/items[at0028]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Total score"
+                          }
+                        ],
+                        "/value": {
+                          "accuracy": 0.0,
+                          "magnitude": 5,
+                          "accuracyPercent": false
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0028 and name/value='Total score']",
+                        "/$CLASS$": "DvCount"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "/origin": {
+              "/name": [
+                {
+                  "value": "Event Series"
+                }
+              ],
+              "/value": {
+                "value": "2016-06-23T01:28:57.027+08:00",
+                "epoch_offset": 1466616537027
+              },
+              "/$PATH$": "/content[openEHR-EHR-OBSERVATION.six_cit_assessment.v0 and name/value='6 CIT Assessment']/data[at0001]/origin",
+              "/$CLASS$": "DvDateTime"
+            }
+          }
+        }
+      ],
+      "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0]": [
+        {
+          "/name": [
+            {
+              "value": "GPCOG screening test"
+            }
+          ],
+          "/data[at0001]": {
+            "/name": [
+              {
+                "value": "Event Series"
+              }
+            ],
+            "/events": {
+              "/events[at0002]": [
+                {
+                  "/name": [
+                    {
+                      "value": "Point in time"
+                    }
+                  ],
+                  "/time": {
+                    "/name": [
+                      {
+                        "value": "Point in time"
+                      }
+                    ],
+                    "/value": {
+                      "value": "2016-06-22T17:28:57.027Z",
+                      "epoch_offset": 1466616537027
+                    },
+                    "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/time",
+                    "/$CLASS$": "DvDateTime"
+                  },
+                  "/data[at0003]": {
+                    "/items[at0038]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Step 1: patient examination"
+                          }
+                        ],
+                        "/items[at0008]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Time orientation"
+                              }
+                            ],
+                            "/value": {
+                              "value": 1,
+                              "symbol": {
+                                "value": "Correct",
+                                "definingCode": {
+                                  "codeString": "at0010",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0008 and name/value='Time orientation']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0011]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Clock drawing - all numbers"
+                              }
+                            ],
+                            "/value": {
+                              "value": 1,
+                              "symbol": {
+                                "value": "Correct",
+                                "definingCode": {
+                                  "codeString": "at0013",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0011 and name/value='Clock drawing - all numbers']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0014]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Clock drawing - specific time"
+                              }
+                            ],
+                            "/value": {
+                              "value": 0,
+                              "symbol": {
+                                "value": "Incorrect",
+                                "definingCode": {
+                                  "codeString": "at0015",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0014 and name/value='Clock drawing - specific time']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0017]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Information"
+                              }
+                            ],
+                            "/value": {
+                              "value": 0,
+                              "symbol": {
+                                "value": "Incorrect",
+                                "definingCode": {
+                                  "codeString": "at0018",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0017 and name/value='Information']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0020]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Recall first name"
+                              }
+                            ],
+                            "/value": {
+                              "value": 0,
+                              "symbol": {
+                                "value": "Incorrect",
+                                "definingCode": {
+                                  "codeString": "at0021",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0020 and name/value='Recall first name']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0023]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Recall surname"
+                              }
+                            ],
+                            "/value": {
+                              "value": 1,
+                              "symbol": {
+                                "value": "Correct",
+                                "definingCode": {
+                                  "codeString": "at0025",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0023 and name/value='Recall surname']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0027]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Recall house number"
+                              }
+                            ],
+                            "/value": {
+                              "value": 0,
+                              "symbol": {
+                                "value": "Incorrect",
+                                "definingCode": {
+                                  "codeString": "at0028",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0027 and name/value='Recall house number']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0030]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Recall street name"
+                              }
+                            ],
+                            "/value": {
+                              "value": 1,
+                              "symbol": {
+                                "value": "Correct",
+                                "definingCode": {
+                                  "codeString": "at0032",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0030 and name/value='Recall street name']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0033]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Recall locality or town"
+                              }
+                            ],
+                            "/value": {
+                              "value": 0,
+                              "symbol": {
+                                "value": "Incorrect",
+                                "definingCode": {
+                                  "codeString": "at0034",
+                                  "terminologyId": {
+                                    "name": "local",
+                                    "value": "local"
+                                  }
+                                }
+                              },
+                              "limitsIndex": -1
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0033 and name/value='Recall locality or town']",
+                            "/$CLASS$": "DvOrdinal"
+                          }
+                        ],
+                        "/items[at0036]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Total score"
+                              }
+                            ],
+                            "/value": {
+                              "accuracy": 0.0,
+                              "magnitude": 1,
+                              "accuracyPercent": false
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0038 and name/value='Step 1: patient examination']/items[at0036 and name/value='Total score']",
+                            "/$CLASS$": "DvCount"
+                          }
+                        ]
+                      }
+                    ],
+                    "/items[at0039]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Step 2: informant interview"
+                          }
+                        ],
+                        "/items[at0037]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Trouble remembering"
+                              }
+                            ],
+                            "/value": {
+                              "value": "Don't know",
+                              "definingCode": {
+                                "codeString": "at0042",
+                                "terminologyId": {
+                                  "name": "local",
+                                  "value": "local"
+                                }
+                              }
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0039 and name/value='Step 2: informant interview']/items[at0037 and name/value='Trouble remembering']",
+                            "/$CLASS$": "DvCodedText"
+                          }
+                        ],
+                        "/items[at0043]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Trouble recalling conversations"
+                              }
+                            ],
+                            "/value": {
+                              "value": "Yes",
+                              "definingCode": {
+                                "codeString": "at0044",
+                                "terminologyId": {
+                                  "name": "local",
+                                  "value": "local"
+                                }
+                              }
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0039 and name/value='Step 2: informant interview']/items[at0043 and name/value='Trouble recalling conversations']",
+                            "/$CLASS$": "DvCodedText"
+                          }
+                        ],
+                        "/items[at0047]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Difficulty finding right words or using wrong words"
+                              }
+                            ],
+                            "/value": {
+                              "value": "Don't know",
+                              "definingCode": {
+                                "codeString": "at0050",
+                                "terminologyId": {
+                                  "name": "local",
+                                  "value": "local"
+                                }
+                              }
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0039 and name/value='Step 2: informant interview']/items[at0047 and name/value='Difficulty finding right words or using wrong words']",
+                            "/$CLASS$": "DvCodedText"
+                          }
+                        ],
+                        "/items[at0051]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Less able to manage money"
+                              }
+                            ],
+                            "/value": {
+                              "value": "Not applicable",
+                              "definingCode": {
+                                "codeString": "at0055",
+                                "terminologyId": {
+                                  "name": "local",
+                                  "value": "local"
+                                }
+                              }
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0039 and name/value='Step 2: informant interview']/items[at0051 and name/value='Less able to manage money']",
+                            "/$CLASS$": "DvCodedText"
+                          }
+                        ],
+                        "/items[at0056]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Less able to manage medication"
+                              }
+                            ],
+                            "/value": {
+                              "value": "No",
+                              "definingCode": {
+                                "codeString": "at0058",
+                                "terminologyId": {
+                                  "name": "local",
+                                  "value": "local"
+                                }
+                              }
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0039 and name/value='Step 2: informant interview']/items[at0056 and name/value='Less able to manage medication']",
+                            "/$CLASS$": "DvCodedText"
+                          }
+                        ],
+                        "/items[at0061]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Needs more assistance with transport"
+                              }
+                            ],
+                            "/value": {
+                              "value": "Don't know",
+                              "definingCode": {
+                                "codeString": "at0064",
+                                "terminologyId": {
+                                  "name": "local",
+                                  "value": "local"
+                                }
+                              }
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0039 and name/value='Step 2: informant interview']/items[at0061 and name/value='Needs more assistance with transport']",
+                            "/$CLASS$": "DvCodedText"
+                          }
+                        ],
+                        "/items[at0066]": [
+                          {
+                            "/name": [
+                              {
+                                "value": "Total score"
+                              }
+                            ],
+                            "/value": {
+                              "accuracy": 0.0,
+                              "magnitude": 1,
+                              "accuracyPercent": false
+                            },
+                            "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0039 and name/value='Step 2: informant interview']/items[at0066 and name/value='Total score']",
+                            "/$CLASS$": "DvCount"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "/origin": {
+              "/name": [
+                {
+                  "value": "Event Series"
+                }
+              ],
+              "/value": {
+                "value": "2016-06-23T01:28:57.027+08:00",
+                "epoch_offset": 1466616537027
+              },
+              "/$PATH$": "/content[openEHR-EHR-OBSERVATION.gpcog_screening_test.v0 and name/value='GPCOG screening test']/data[at0001]/origin",
+              "/$CLASS$": "DvDateTime"
+            }
+          }
+        }
+      ],
+      "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0]": [
+        {
+          "/name": [
+            {
+              "value": "YHSCN - DiADeM assessment"
+            }
+          ],
+          "/data[at0001]": {
+            "/name": [
+              {
+                "value": "Event Series"
+              }
+            ],
+            "/events": {
+              "/events[at0002]": [
+                {
+                  "/name": [
+                    {
+                      "value": "Point in time"
+                    }
+                  ],
+                  "/time": {
+                    "/name": [
+                      {
+                        "value": "Point in time"
+                      }
+                    ],
+                    "/value": {
+                      "value": "2016-06-22T17:28:57.027Z",
+                      "epoch_offset": 1466616537027
+                    },
+                    "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/events[at0002 and name/value='Point in time']/time",
+                    "/$CLASS$": "DvDateTime"
+                  },
+                  "/data[at0003]": {
+                    "/items[at0004]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Functional impairment"
+                          }
+                        ],
+                        "/value": {
+                          "value": "No longer fully independent",
+                          "definingCode": {
+                            "codeString": "at0006",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0004 and name/value='Functional impairment']",
+                        "/$CLASS$": "DvCodedText"
+                      }
+                    ],
+                    "/items[at0007]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Corroborating history"
+                          }
+                        ],
+                        "/value": {
+                          "value": "Corroborating history NOT confirmed",
+                          "definingCode": {
+                            "codeString": "at0010",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0007 and name/value='Corroborating history']",
+                        "/$CLASS$": "DvCodedText"
+                      }
+                    ],
+                    "/items[at0008]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Investigations"
+                          }
+                        ],
+                        "/value": {
+                          "value": "Abnormal Dementia screening bloods",
+                          "definingCode": {
+                            "codeString": "at0013",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0008 and name/value='Investigations']",
+                        "/$CLASS$": "DvCodedText"
+                      }
+                    ],
+                    "/items[at0009]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Exclusion criteria"
+                          }
+                        ],
+                        "/value": {
+                          "value": "NO acute underlying cause to explain confusion",
+                          "definingCode": {
+                            "codeString": "at0014",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0009 and name/value='Exclusion criteria']",
+                        "/$CLASS$": "DvCodedText"
+                      }
+                    ],
+                    "/items[at0022]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Interpretation"
+                          }
+                        ],
+                        "/value": {
+                          "value": "Dementia diagnosis likely",
+                          "definingCode": {
+                            "codeString": "at0029",
+                            "terminologyId": {
+                              "name": "local",
+                              "value": "local"
+                            }
+                          }
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0022 and name/value='Interpretation']",
+                        "/$CLASS$": "DvCodedText"
+                      }
+                    ],
+                    "/items[at0024]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Reason why bloods not done"
+                          }
+                        ],
+                        "/value": {
+                          "value": "Could not find vein"
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0024 and name/value='Reason why bloods not done']",
+                        "/$CLASS$": "DvText"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "/origin": {
+              "/name": [
+                {
+                  "value": "Event Series"
+                }
+              ],
+              "/value": {
+                "value": "2016-06-23T01:28:57.027+08:00",
+                "epoch_offset": 1466616537027
+              },
+              "/$PATH$": "/content[openEHR-EHR-OBSERVATION.yhscn_diadem_assessment.v0 and name/value='YHSCN - DiADeM assessment']/data[at0001]/origin",
+              "/$CLASS$": "DvDateTime"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "context": {
+    "@class": "EVENT_CONTEXT",
+    "setting": {
+      "value": "other care",
+      "@class": "DV_CODED_TEXT",
+      "defining_code": {
+        "@class": "CODE_PHRASE",
+        "code_string": "238",
+        "terminology_id": {
+          "value": "openehr",
+          "@class": "TERMINOLOGY_ID"
+        }
+      }
+    },
+    "start_time": {
+      "value": "2016-06-23T01:28:57UTC",
+      "@class": "DV_DATE_TIME"
+    },
+    "health_care_facility": {
+      "name": "GP Surgery",
+      "@class": "PARTY_IDENTIFIED",
+      "external_ref": {
+        "id": {
+          "value": "1003456",
+          "@class": "GENERIC_ID",
+          "scheme": "nhs.uk"
+        },
+        "type": "PARTY",
+        "@class": "PARTY_REF",
+        "namespace": "nhs.uk"
+      }
+    }
+  },
+  "category": {
+    "value": "Event",
+    "@class": "DV_CODED_TEXT",
+    "defining_code": {
+      "@class": "CODE_PHRASE",
+      "code_string": "433",
+      "terminology_id": {
+        "value": "openehr",
+        "@class": "TERMINOLOGY_ID"
+      }
+    }
+  },
+  "composer": {
+    "name": "Sara",
+    "@class": "PARTY_IDENTIFIED"
+  },
+  "language": {
+    "@class": "CODE_PHRASE",
+    "code_string": "en",
+    "terminology_id": {
+      "value": "ISO_639-1",
+      "@class": "TERMINOLOGY_ID"
+    }
+  },
+  "territory": {
+    "@class": "CODE_PHRASE",
+    "code_string": "GB",
+    "terminology_id": {
+      "value": "ISO_3166-1",
+      "@class": "TERMINOLOGY_ID"
+    }
+  }
+}

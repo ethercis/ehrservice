@@ -18,7 +18,6 @@
 package com.ethercis.aql.sql.queryImpl;
 
 import com.ethercis.aql.definition.I_VariableDefinition;
-import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
 import com.ethercis.aql.sql.binding.I_JoinBinder;
 import com.ethercis.ehr.encode.CompositionSerializer;

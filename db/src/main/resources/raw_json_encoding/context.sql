@@ -3,46 +3,53 @@ CREATE OR REPLACE FUNCTION ehr.js_context(UUID)
   $$
   DECLARE
     context_id ALIAS FOR $1;
-    json_context_query TEXT;
-    json_context       JSON;
-    v_start_time  TIMESTAMP;
-    v_start_time_tzid TEXT;
-    v_end_time TIMESTAMP;
-    v_end_time_tzid TEXT;
-    v_facility UUID;
-    v_location TEXT;
-    v_other_context JSONB;
-    v_setting UUID;
+    json_context_query   TEXT;
+    json_context         JSON;
+    v_start_time         TIMESTAMP;
+    v_start_time_tzid    TEXT;
+    v_end_time           TIMESTAMP;
+    v_end_time_tzid      TEXT;
+    v_facility           UUID;
+    v_location           TEXT;
+    v_other_context      JSONB;
+    v_other_context_text TEXT;
+    v_setting            UUID;
   BEGIN
 
-    IF (context_id IS NULL) THEN
+    IF (context_id IS NULL)
+    THEN
       RETURN NULL;
     END IF;
 
-
     -- build the query
-    SELECT start_time, start_time_tzid, end_time, end_time_tzid, facility, location, other_context, setting
-          FROM ehr.event_context
-          WHERE id = context_id
-          INTO v_start_time, v_start_time_tzid, v_end_time, v_end_time_tzid, v_facility, v_location, v_other_context,v_setting;
+    SELECT
+      start_time,
+      start_time_tzid,
+      end_time,
+      end_time_tzid,
+      facility,
+      location,
+      other_context,
+      setting
+    FROM ehr.event_context
+    WHERE id = context_id
+    INTO v_start_time, v_start_time_tzid, v_end_time, v_end_time_tzid, v_facility, v_location, v_other_context, v_setting;
 
     json_context_query := ' SELECT json_build_object(
                                   ''@class'', ''EVENT_CONTEXT'',
-                                  ''start_time'', ehr.js_dv_date_time('''||v_start_time||''','''|| v_start_time_tzid||'''),';
+                                  ''start_time'', ehr.js_dv_date_time(''' || v_start_time || ''',''' ||
+                          v_start_time_tzid || '''),';
 
     IF (v_end_time IS NOT NULL)
     THEN
-      json_context_query := json_context_query || '''end_date'', ehr.js_dv_date_time('''||v_end_time||''','''|| v_end_time_tzid||'''),';
+      json_context_query :=
+      json_context_query || '''end_date'', ehr.js_dv_date_time(''' || v_end_time || ''',''' || v_end_time_tzid ||
+      '''),';
     END IF;
 
-    IF (SELECT v_location IS NOT NULL)
+    IF (v_location IS NOT NULL)
     THEN
-      json_context_query := json_context_query || '''location'', '||v_location||',';
-    END IF;
-
-    IF (v_other_context IS NOT NULL)
-    THEN
-      json_context_query := json_context_query || '''other_context'', '||v_other_context::TEXT||',';
+      json_context_query := json_context_query || '''location'', ' || v_location || ',';
     END IF;
 
     IF (v_facility IS NOT NULL)
@@ -50,14 +57,29 @@ CREATE OR REPLACE FUNCTION ehr.js_context(UUID)
       json_context_query := json_context_query || '''health_care_facility'', ehr.js_party('''||v_facility||'''),';
     END IF;
 
-    json_context_query := json_context_query || '''setting'',ehr.js_context_setting('''||v_setting||'''))';
+    json_context_query := json_context_query || '''setting'',ehr.js_context_setting(''' || v_setting || '''))';
+
 
     --     IF (participation IS NOT NULL) THEN
     --       json_context_query := json_context_query || '''participation'', participation,';
     --     END IF;
 
+    IF (json_context_query IS NULL)
+    THEN
+      RETURN NULL;
+    END IF;
+
     EXECUTE json_context_query
     INTO STRICT json_context;
+
+    IF (v_other_context IS NOT NULL)
+    THEN
+      --       v_other_context_text := regexp_replace(v_other_context::TEXT, '''', '''''', 'g');
+      json_context := jsonb_insert(
+          json_context::JSONB,
+          '{other_context}', v_other_context::JSONB->'/context/other_context[at0001]'
+      );
+    END IF;
 
     RETURN json_context;
   END

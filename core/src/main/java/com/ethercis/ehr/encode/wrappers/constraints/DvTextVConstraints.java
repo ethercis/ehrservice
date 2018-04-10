@@ -16,7 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
-import org.openehr.build.RMObjectBuilder;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.text.DvText;
 
@@ -25,7 +25,7 @@ import org.openehr.rm.datatypes.text.DvText;
  */
 public class DvTextVConstraints extends DataValueConstraints {
 
-    public DvTextVConstraints(RMObjectBuilder builder, DataValue self) {
+    public DvTextVConstraints(RMBuilder builder, DataValue self) {
         super(builder, self);
     }
 

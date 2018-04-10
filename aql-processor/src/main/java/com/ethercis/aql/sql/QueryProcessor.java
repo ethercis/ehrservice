@@ -206,9 +206,9 @@ public class QueryProcessor  {
             if (!explain)
                 if (new Variables(queryParser.getVariables()).hasDefinedDistinct() || new Variables(queryParser.getVariables()).hasDefinedFunction())
                     result = fetchResultSet(new SuperQuery(context, queryParser.getVariables(), select).select(), result);
-                else
-                    result = (Result<Record>)select.fetch();
-
+                else {
+                    result = (Result<Record>) select.fetch();
+                }
                 if (selectBinder.isWholeComposition()){
                     result = new RawJsonTransform(context).toRawJson(result);
                 }

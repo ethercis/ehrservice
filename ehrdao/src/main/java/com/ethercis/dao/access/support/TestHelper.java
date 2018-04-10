@@ -102,7 +102,7 @@ public class TestHelper {
     public static UUID createDummyContribution(I_DomainAccess domainAccess, UUID ehrId, UUID systemId, UUID committerId) throws Exception {
         String description = "Contribution_" + RandomStringUtils.random(10);
         String templateId = "section  observation test";
-        Integer setting = 233; //primary care
+        Integer setting = 249; //create
 
         I_ContributionAccess contributionAccess = I_ContributionAccess.getNewInstance(domainAccess,
                 ehrId,

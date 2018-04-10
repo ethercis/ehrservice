@@ -17,7 +17,6 @@ import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.FlattenerNew;
 import org.openehr.rm.composition.Composition;
 
-import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
@@ -28,8 +27,10 @@ public class EntryAccessTest extends AccessTestCase {
         setupDomainAccess();
     }
 
-    public void testCreateObservation() throws Exception {
-        String templateId = "section  observation test";
+    //used oet and flattener. not used any more
+    @Deprecated
+    public void _testCreateObservation() throws Exception {
+        String templateId = "section observation test";
         FlattenerNew flattener = new FlattenerNew();
 
 

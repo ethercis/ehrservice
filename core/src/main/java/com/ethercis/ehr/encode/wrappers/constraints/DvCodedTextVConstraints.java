@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
+import com.ethercis.ehr.rm.RMBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
@@ -24,7 +25,6 @@ import org.openehr.am.archetype.constraintmodel.CComplexObject;
 import org.openehr.am.archetype.constraintmodel.ConstraintRef;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.am.openehrprofile.datatypes.text.CCodePhrase;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.text.CodePhrase;
@@ -48,7 +48,7 @@ public class DvCodedTextVConstraints extends DataValueConstraints {
     private Map<String, Map<Integer, String>> defining_codes = new HashMap<String, Map<Integer, String>>();
     private String assumed_definining_code;
 
-    public DvCodedTextVConstraints(RMObjectBuilder builder, DataValue parent) {
+    public DvCodedTextVConstraints(RMBuilder builder, DataValue parent) {
         super(builder, parent);
     }
 

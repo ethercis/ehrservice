@@ -18,7 +18,6 @@
 package com.ethercis.opt;
 
 import com.ethercis.ehr.building.RmBinding;
-import com.ethercis.ehr.util.LocatableHelper;
 import com.ethercis.opt.mapper.*;
 import com.ethercis.opt.mapper.Boolean;
 import com.ethercis.opt.mapper.Date;

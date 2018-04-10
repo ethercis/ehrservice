@@ -8,16 +8,16 @@
     <groupId>ethercis</groupId>
     <artifactId>core-components</artifactId>
     <packaging>pom</packaging>
-    <version>1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
     <name>core-components</name>
 
     <modules>
-        <module>core</module>
-        <module>ehrdao</module>
-        <module>jooq-pq</module>
-        <module>transform</module>
         <module>validation</module>
         <module>knowledge-cache</module>
+        <module>core</module>
+        <module>transform</module>
+        <module>jooq-pq</module>
+        <module>ehrdao</module>
         <module>aql-processor</module>
         <module>webtemplate</module>
     </modules>

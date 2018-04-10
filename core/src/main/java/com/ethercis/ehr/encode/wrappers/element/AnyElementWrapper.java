@@ -19,8 +19,8 @@ package com.ethercis.ehr.encode.wrappers.element;
 
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datatypes.basic.DataValue;
 
@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  */
 public class AnyElementWrapper extends ElementWrapper {
 
-//    transient RMObjectBuilder builder;
+//    transient RMBuilder builder;
 
     public AnyElementWrapper(Element element, CComplexObject ccobj) throws Exception {
         super(element, ccobj);
@@ -43,7 +43,7 @@ public class AnyElementWrapper extends ElementWrapper {
     }
 
     public I_VBeanWrapper getAdaptedValue(String valueToParse) {
-        RMObjectBuilder builder = RMObjectBuilder.getInstance();
+        RMBuilder builder = RMBuilder.getInstance();
         //get the index value
         if (valueToParse.charAt(0) != '@')
             throw new IllegalArgumentException("value to parse must begin with character '@'");

@@ -16,13 +16,11 @@
  */
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
-import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.support.identification.ArchetypeID;
 
 import java.lang.reflect.Type;

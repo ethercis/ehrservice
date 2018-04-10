@@ -1,3 +1,5 @@
+-- CTE enforces 1-to-1 entry-composition relationship since multiple entries can be
+-- associated to one composition. This is not supported at this stage.
 CREATE OR REPLACE FUNCTION ehr.js_composition(UUID)
   RETURNS JSON AS
   $$
@@ -23,6 +25,7 @@ CREATE OR REPLACE FUNCTION ehr.js_composition(UUID)
             LEFT JOIN ehr.territory ON territory.code = composition.territory
             LEFT JOIN ehr.concept ON concept.id = entry.category
           WHERE composition.id = composition_uuid
+        LIMIT 1
       )
       SELECT
         jsonb_strip_nulls(

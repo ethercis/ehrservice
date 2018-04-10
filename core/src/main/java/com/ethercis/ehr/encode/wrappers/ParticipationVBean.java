@@ -89,18 +89,18 @@ public class ParticipationVBean implements I_VBeanWrapper {
     public Participation parse(String value, String... defaults) {
         String[] values = value.split("\\|");
 
-        if (values.length != 3)
+        if (values.length != 4)
             throw new IllegalArgumentException("Passed value is not compatible for a participation (function|performer|mode)");
 
         String modeCodes[] = values[2].split("::");
 
-        if (modeCodes.length != 3)
-            throw new IllegalArgumentException("Passed value is not compatible for mode (mode::terminologyId::code)");
+        if (modeCodes.length != 2)
+            throw new IllegalArgumentException("Passed value is not compatible for mode codephrase (terminologyId::code)");
 
-        String valueMode = modeCodes[0];
+        String valueMode = values[3];
 
         PartyIdentified partyIdentified= new PartyIdentifiedVBean().parse(values[1], defaults);
-        DvCodedText mode = new DvCodedText(valueMode, modeCodes[1], modeCodes[2]);
+        DvCodedText mode = new DvCodedText(valueMode, modeCodes[0], modeCodes[1]);
         DvText function = new DvText(values[0]);
         TerminologyService terminologyService;
         try {

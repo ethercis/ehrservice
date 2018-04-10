@@ -17,9 +17,11 @@
 
 package com.ethercis.dao.access.util;
 
+import com.ethercis.dao.access.support.AccessTestCase;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
+import org.junit.Before;
 import org.junit.Test;
 import org.openehr.rm.composition.Composition;
 
@@ -34,22 +36,17 @@ import static org.junit.Assert.*;
 /**
  * Created by christian on 5/31/2016.
  */
-public class MigrateEntryTest {
+public class MigrateEntryTest extends AccessTestCase {
+
+    @Before
+    public void setUp() throws Exception {
+        setupDomainAccess();
+    }
+
 
     @Test
     public void testMigrateEntries() throws Exception {
-        Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
-        props.put("knowledge.forcecache", "true");
-        props.put("knowledge.cachelocatable", "false");
-//        props.put("db.port", 5434);
-//        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
-//        props.put("url", "jdbc:postgresql://localhost:5434/ethercis");
-        props.put("url", "jdbc:postgresql://192.168.2.108:5432/ethercis");
-
-        MigrateEntry migrateEntry = new MigrateEntry(props);
+        MigrateEntry migrateEntry = new MigrateEntry(testDomainAccess);
         migrateEntry.migrateAll(false);
 
     }
@@ -57,63 +54,36 @@ public class MigrateEntryTest {
 
     @Test
     public void testMigrateSingleEntry() throws Exception {
-        Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
-        props.put("knowledge.forcecache", "true");
-        props.put("knowledge.cachelocatable", "false");
-//        props.put("db.port", 5434);
-//        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
-        props.put("url", "jdbc:postgresql://192.168.2.108:5432/ethercis");
 
 //        UUID uuid = UUID.fromString("2e3c7d66-76eb-4ff9-9afd-c87ecf820583");
         UUID uuid = UUID.fromString("453e7d14-763b-4ab5-8f37-8340f9f4c9f5");
 
-        MigrateEntry migrateEntry = new MigrateEntry(props);
-        String out = migrateEntry.migrateEntry(props, uuid, true);
+        MigrateEntry migrateEntry = new MigrateEntry(testDomainAccess);
+        String out = migrateEntry.migrateEntry(testDomainAccess, uuid, true);
         System.out.println(out);
 
     }
 
     @Test
     public void testMigrateSingleComposition() throws Exception {
-        Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
-        props.put("knowledge.forcecache", "true");
-        props.put("knowledge.cachelocatable", "false");
-//        props.put("db.port", 5434);
-//        props.put("url", "jdbc:postgresql://192.168.2.113:5432/ethercis");
-        props.put("url", "jdbc:postgresql://192.168.2.108:5432/ethercis");
-
 //        UUID uuid = UUID.fromString("2e3c7d66-76eb-4ff9-9afd-c87ecf820583");
         UUID uuid = UUID.fromString("8bcf593c-893d-4325-8fcc-3fa5ca194f38");
 
-        MigrateEntry migrateEntry = new MigrateEntry(props);
-        String out = migrateEntry.migrateComposition(props, uuid, false);
+        MigrateEntry migrateEntry = new MigrateEntry(testDomainAccess);
+        String out = migrateEntry.migrateComposition(testDomainAccess, uuid, false);
         System.out.println(out);
 
     }
 
     @Test
     public void testMigrateXMLImport() throws Exception {
-        String path = "\\Development\\Dropbox\\eCIS_Development\\samples\\";
+        String path = "src/test/resources/samples";
         String document = "RIPPLE_conformanceTesting_RAW.xml";
 
-        Properties props = new Properties();
-        props.put("knowledge.path.archetype", "/Development/Dropbox/eCIS_Development/knowledge/production/archetypes");
-        props.put("knowledge.path.template", "/Development/Dropbox/eCIS_Development/knowledge/production/templates");
-        props.put("knowledge.path.opt", "/Development/Dropbox/eCIS_Development/knowledge/production/operational_templates");
-        props.put("knowledge.forcecache", "true");
-        props.put("knowledge.cachelocatable", "false");
-        props.put("db.port", 5434);
-
-        MigrateEntry migrateEntry = new MigrateEntry(props);
-        I_KnowledgeCache knowledge = new KnowledgeCache(null, props);
+        MigrateEntry migrateEntry = new MigrateEntry(testDomainAccess);
+        I_KnowledgeCache knowledge = testDomainAccess.getKnowledgeManager();
         //import the document
-        String documentPath = path + document;
+        String documentPath = path + "/" + document;
         InputStream is = new FileInputStream(new File(documentPath));
         I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "");
         Composition composition = content.importCanonicalXML(is);

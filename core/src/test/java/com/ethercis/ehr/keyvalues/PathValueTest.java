@@ -189,7 +189,7 @@ public class PathValueTest {
         updateValues.put("/context/participation|function", "Cantine");
         updateValues.put("/context/participation|name", "Joe");
         updateValues.put("/context/participation|identifier", "99999-222");
-        updateValues.put("/context/participation|mode", "face-to-face communication::openehr::216");
+        updateValues.put("/context/participation|mode", "openehr::216|face-to-face communication");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0003]", "at0004|Type 1|");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0008]", "true");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/data[at0001]/items[at0002]/items[openEHR-EHR-CLUSTER.diabetes.v1]/items[at0001]/items[at0007]", "2010-09-24");
@@ -200,11 +200,11 @@ public class PathValueTest {
 
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|function", "Oncologist");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|identifier", "1345678");
-        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|mode", "face-to-face communication::openehr::216");
+        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|mode", "openehr::216|face-to-face communication");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:0|name", "Dr. Knock");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|function", "Oncologist");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|identifier", "999999-8");
-        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|mode", "evil cabinet::openehr::216");
+        updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|mode", "openehr::216|evil cabinet");
         updateValues.put("/content[openEHR-EHR-EVALUATION.verbal_examination.v1]/participation:1|name", "Dr. Caligari");
 
         boolean result = pathValue.update(composition, updateValues);
@@ -223,11 +223,11 @@ public class PathValueTest {
         kvPairs.put("/context/participation:0|function", "Oncologist");
         kvPairs.put("/context/participation:0|name", "Dr. Marcus Johnson");
         kvPairs.put("/context/participation:0|identifier", "1345678");
-        kvPairs.put("/context/participation:0|mode", "face-to-face communication::openehr::216");
+        kvPairs.put("/context/participation:0|mode", "openehr::216|face-to-face communication");
         kvPairs.put("/context/participation:1|function", "Pediatric");
         kvPairs.put("/context/participation:1|name", "Dr. Mabuse");
         kvPairs.put("/context/participation:1|identifier", "99999-123");
-        kvPairs.put("/context/participation:1|mode", "face-to-face communication::openehr::216");
+        kvPairs.put("/context/participation:1|mode", "openehr::216|face-to-face communication");
 
         result = pathValue.update(composition, kvPairs);
         assertTrue(result);

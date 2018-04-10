@@ -16,18 +16,13 @@
  */
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
-import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
-import com.ethercis.ehr.encode.wrappers.json.writer.DvTypeAdapter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import org.openehr.rm.datatypes.text.DvText;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**

@@ -50,84 +50,111 @@ LANGUAGE plpgsql;
 --context.sql
 CREATE OR REPLACE FUNCTION ehr.js_context(UUID)
   RETURNS JSON AS
-$$
-DECLARE
-  context_id ALIAS FOR $1;
-  json_context_query TEXT;
-  json_context       JSON;
-  v_start_time  TIMESTAMP;
-  v_start_time_tzid TEXT;
-  v_end_time TIMESTAMP;
-  v_end_time_tzid TEXT;
-  v_facility UUID;
-  v_location TEXT;
-  v_other_context JSONB;
-  v_setting UUID;
-BEGIN
+  $$
+  DECLARE
+    context_id ALIAS FOR $1;
+    json_context_query   TEXT;
+    json_context         JSON;
+    v_start_time         TIMESTAMP;
+    v_start_time_tzid    TEXT;
+    v_end_time           TIMESTAMP;
+    v_end_time_tzid      TEXT;
+    v_facility           UUID;
+    v_location           TEXT;
+    v_other_context      JSONB;
+    v_other_context_text TEXT;
+    v_setting            UUID;
+  BEGIN
 
-  IF (context_id IS NULL) THEN
-    RETURN NULL;
-  END IF;
+    IF (context_id IS NULL)
+    THEN
+      RETURN NULL;
+    END IF;
 
+    -- build the query
+    SELECT
+      start_time,
+      start_time_tzid,
+      end_time,
+      end_time_tzid,
+      facility,
+      location,
+      other_context,
+      setting
+    FROM ehr.event_context
+    WHERE id = context_id
+    INTO v_start_time, v_start_time_tzid, v_end_time, v_end_time_tzid, v_facility, v_location, v_other_context, v_setting;
 
-  -- build the query
-  SELECT start_time, start_time_tzid, end_time, end_time_tzid, facility, location, other_context, setting
-  FROM ehr.event_context
-  WHERE id = context_id
-  INTO v_start_time, v_start_time_tzid, v_end_time, v_end_time_tzid, v_facility, v_location, v_other_context,v_setting;
-
-  json_context_query := ' SELECT json_build_object(
+    json_context_query := ' SELECT json_build_object(
                                   ''@class'', ''EVENT_CONTEXT'',
-                                  ''start_time'', ehr.js_dv_date_time('''||v_start_time||''','''|| v_start_time_tzid||'''),';
+                                  ''start_time'', ehr.js_dv_date_time(''' || v_start_time || ''',''' ||
+                          v_start_time_tzid || '''),';
 
-  IF (v_end_time IS NOT NULL)
-  THEN
-    json_context_query := json_context_query || '''end_date'', ehr.js_dv_date_time('''||v_end_time||''','''|| v_end_time_tzid||'''),';
-  END IF;
+    IF (v_end_time IS NOT NULL)
+    THEN
+      json_context_query :=
+      json_context_query || '''end_date'', ehr.js_dv_date_time(''' || v_end_time || ''',''' || v_end_time_tzid ||
+      '''),';
+    END IF;
 
-  IF (SELECT v_location IS NOT NULL)
-  THEN
-    json_context_query := json_context_query || '''location'', '||v_location||',';
-  END IF;
+    IF (v_location IS NOT NULL)
+    THEN
+      json_context_query := json_context_query || '''location'', ' || v_location || ',';
+    END IF;
 
-  IF (v_other_context IS NOT NULL)
-  THEN
-    json_context_query := json_context_query || '''other_context'', '||v_other_context::TEXT||',';
-  END IF;
+    IF (v_facility IS NOT NULL)
+    THEN
+      json_context_query := json_context_query || '''health_care_facility'', ehr.js_party('''||v_facility||'''),';
+    END IF;
 
-  IF (v_facility IS NOT NULL)
-  THEN
-    json_context_query := json_context_query || '''health_care_facility'', ehr.js_party('''||v_facility||'''),';
-  END IF;
+    json_context_query := json_context_query || '''setting'',ehr.js_context_setting(''' || v_setting || '''))';
 
-  json_context_query := json_context_query || '''setting'',ehr.js_context_setting('''||v_setting||'''))';
 
-  --     IF (participation IS NOT NULL) THEN
-  --       json_context_query := json_context_query || '''participation'', participation,';
-  --     END IF;
+    --     IF (participation IS NOT NULL) THEN
+    --       json_context_query := json_context_query || '''participation'', participation,';
+    --     END IF;
 
-  EXECUTE json_context_query
-  INTO STRICT json_context;
+    IF (json_context_query IS NULL)
+    THEN
+      RETURN NULL;
+    END IF;
 
-  RETURN json_context;
-END
-$$
+    EXECUTE json_context_query
+    INTO STRICT json_context;
+
+    IF (v_other_context IS NOT NULL)
+    THEN
+      --       v_other_context_text := regexp_replace(v_other_context::TEXT, '''', '''''', 'g');
+      json_context := jsonb_insert(
+          json_context::JSONB,
+          '{other_context}', v_other_context::JSONB->'/context/other_context[at0001]'
+      );
+    END IF;
+
+    RETURN json_context;
+  END
+  $$
 LANGUAGE plpgsql;
 
 -- context_setting.sql
 CREATE OR REPLACE FUNCTION ehr.js_context_setting(UUID)
   RETURNS JSON AS
-$$
-DECLARE
-  concept_id ALIAS FOR $1;
-BEGIN
-  RETURN (
-    SELECT ehr.js_dv_coded_text(description, ehr.js_code_phrase(conceptid :: TEXT, 'openehr'))
-    FROM ehr.concept
-    WHERE id = concept_id AND language = 'en'
-  );
-END
-$$
+  $$
+  DECLARE
+    concept_id ALIAS FOR $1;
+  BEGIN
+
+    IF (concept_id IS NULL) THEN
+      RETURN NULL;
+    END IF;
+
+    RETURN (
+      SELECT ehr.js_dv_coded_text(description, ehr.js_code_phrase(conceptid :: TEXT, 'openehr'))
+      FROM ehr.concept
+      WHERE id = concept_id AND language = 'en'
+    );
+  END
+  $$
 LANGUAGE plpgsql;
 
 -- dv_coded_text.sql
@@ -151,18 +178,29 @@ LANGUAGE plpgsql;
 -- dv_date_time.sql
 CREATE OR REPLACE FUNCTION ehr.js_dv_date_time(TIMESTAMPTZ, TEXT)
   RETURNS JSON AS
-$$
-DECLARE
-  date_time ALIAS FOR $1;
-  time_zone ALIAS FOR $2;
-BEGIN
-  RETURN
-  json_build_object(
-      '@class', 'DV_DATE_TIME',
-      'value', ehr.iso_timestamp(date_time)||time_zone
-  );
-END
-$$
+  $$
+  DECLARE
+    date_time ALIAS FOR $1;
+    time_zone ALIAS FOR $2;
+  BEGIN
+
+    IF (date_time IS NULL)
+    THEN
+      RETURN NULL;
+    END IF;
+
+    IF (time_zone IS NULL)
+    THEN
+      time_zone := 'UTC';
+    END IF;
+
+    RETURN
+      json_build_object(
+          '@class', 'DV_DATE_TIME',
+          'value', ehr.iso_timestamp(date_time)||time_zone
+      );
+  END
+  $$
 LANGUAGE plpgsql;
 
 -- dv_text.sql
@@ -188,49 +226,52 @@ select substring(xmlelement(name x, $1)::varchar from 4 for 19)
 $$ language sql immutable;
 
 -- json_composition_pg10.sql
+-- CTE enforces 1-to-1 entry-composition relationship since multiple entries can be
+-- associated to one composition. This is not supported at this stage.
 CREATE OR REPLACE FUNCTION ehr.js_composition(UUID)
   RETURNS JSON AS
-$$
-DECLARE
-  composition_uuid ALIAS FOR $1;
-BEGIN
-  RETURN (
-    WITH composition_data AS (
-        SELECT
-          composition.language  as language,
-          composition.territory as territory,
-          composition.composer  as composer,
-          event_context.id      as context_id,
-          territory.twoletter   as territory_code,
-          entry.template_id     as template_id,
-          entry.archetype_id    as archetype_id,
-          concept.conceptid     as category_defining_code,
-          concept.description   as category_description,
-          entry.entry           as content
-        FROM ehr.composition
-          INNER JOIN ehr.entry ON entry.composition_id = composition.id
-          LEFT JOIN ehr.event_context ON event_context.composition_id = composition.id
-          LEFT JOIN ehr.territory ON territory.code = composition.territory
-          LEFT JOIN ehr.concept ON concept.id = entry.category
-        WHERE composition.id = composition_uuid
-    )
-    SELECT
-      jsonb_strip_nulls(
-          jsonb_build_object(
-              '@class', 'COMPOSITION',
-              'language', ehr.js_code_phrase(language, 'ISO_639-1'),
-              'territory', ehr.js_code_phrase(territory_code, 'ISO_3166-1'),
-              'composer', ehr.js_party(composer),
-              'category',
-              ehr.js_dv_coded_text(category_description, ehr.js_code_phrase(category_defining_code :: TEXT, 'openehr')),
-              'context', ehr.js_context(context_id),
-              'content', content
-          )
+  $$
+  DECLARE
+    composition_uuid ALIAS FOR $1;
+  BEGIN
+    RETURN (
+      WITH composition_data AS (
+          SELECT
+            composition.language  as language,
+            composition.territory as territory,
+            composition.composer  as composer,
+            event_context.id      as context_id,
+            territory.twoletter   as territory_code,
+            entry.template_id     as template_id,
+            entry.archetype_id    as archetype_id,
+            concept.conceptid     as category_defining_code,
+            concept.description   as category_description,
+            entry.entry           as content
+          FROM ehr.composition
+            INNER JOIN ehr.entry ON entry.composition_id = composition.id
+            LEFT JOIN ehr.event_context ON event_context.composition_id = composition.id
+            LEFT JOIN ehr.territory ON territory.code = composition.territory
+            LEFT JOIN ehr.concept ON concept.id = entry.category
+          WHERE composition.id = composition_uuid
+        LIMIT 1
       )
-    FROM composition_data
-  );
-END
-$$
+      SELECT
+        jsonb_strip_nulls(
+            jsonb_build_object(
+                '@class', 'COMPOSITION',
+                'language', ehr.js_code_phrase(language, 'ISO_639-1'),
+                'territory', ehr.js_code_phrase(territory_code, 'ISO_3166-1'),
+                'composer', ehr.js_party(composer),
+                'category',
+                ehr.js_dv_coded_text(category_description, ehr.js_code_phrase(category_defining_code :: TEXT, 'openehr')),
+                'context', ehr.js_context(context_id),
+                'content', content
+            )
+        )
+      FROM composition_data
+    );
+  END
+  $$
 LANGUAGE plpgsql;
 -- object_version_id.sql
 CREATE OR REPLACE FUNCTION ehr.object_version_id(UUID, TEXT, INT)

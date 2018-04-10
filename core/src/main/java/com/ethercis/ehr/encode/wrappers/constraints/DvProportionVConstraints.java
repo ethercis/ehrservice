@@ -16,7 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
-import org.openehr.build.RMObjectBuilder;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
@@ -102,7 +102,7 @@ public class DvProportionVConstraints extends DataValueConstraints {
 
     Map<String, Limits> limits; //array list of limits depending on selected numerator/denominator
 
-    public DvProportionVConstraints(RMObjectBuilder builder, DataValue parent) {
+    public DvProportionVConstraints(RMBuilder builder, DataValue parent) {
         super(builder, parent);
     }
 

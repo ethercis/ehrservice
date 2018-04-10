@@ -16,18 +16,11 @@
  */
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
-import com.ethercis.ehr.encode.EncodeUtil;
-import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.internal.LinkedTreeMap;
 import org.openehr.rm.composition.content.entry.Evaluation;
-import org.openehr.rm.composition.content.entry.Observation;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
 
 /**
  * GSON adapter for DvDateTime

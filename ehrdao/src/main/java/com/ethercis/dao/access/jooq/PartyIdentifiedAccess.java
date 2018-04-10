@@ -34,6 +34,7 @@ import org.openehr.rm.support.identification.ObjectID;
 import org.openehr.rm.support.identification.PartyRef;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.ethercis.jooq.pg.Tables.IDENTIFIER;
@@ -149,7 +150,7 @@ public class PartyIdentifiedAccess extends DataAccess implements I_PartyIdentifi
 
     @Override
     public Boolean update() throws Exception {
-        return null;
+        return update(Timestamp.valueOf(LocalDateTime.now()));
     }
 
     @Override

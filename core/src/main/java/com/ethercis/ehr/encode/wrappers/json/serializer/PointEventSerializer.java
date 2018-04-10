@@ -17,7 +17,6 @@
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
 import com.google.gson.*;
-import org.openehr.rm.composition.content.entry.Observation;
 import org.openehr.rm.datastructure.history.PointEvent;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 

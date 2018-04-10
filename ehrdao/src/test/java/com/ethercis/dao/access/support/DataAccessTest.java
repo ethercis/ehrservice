@@ -46,9 +46,9 @@ public class DataAccessTest {
     @Test
     public void setupDBCP2Access() throws Exception {
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "core/src/test/resources/knowledge/archetypes");
-        props.put("knowledge.path.template", "core/src/test/resources/knowledge/templates");
-        props.put("knowledge.path.opt", "core/src/test/resources/knowledge/operational_templates");
+        props.put("knowledge.path.archetype", "src/test/resources/knowledge/archetypes");
+        props.put("knowledge.path.template", "src/test/resources/knowledge/templates");
+        props.put("knowledge.path.opt", "src/test/resources/knowledge/operational_templates");
         props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
 
@@ -78,7 +78,7 @@ public class DataAccessTest {
         Result result = context.select(EHR.ID).from(EHR).fetch();
 
         // a new database does not contain any data so empty result is perfectly fine
-        //assertTrue(result.isNotEmpty());
+        assertTrue(result.isNotEmpty());
     }
 
 }

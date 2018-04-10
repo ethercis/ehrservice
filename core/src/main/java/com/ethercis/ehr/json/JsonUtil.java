@@ -28,7 +28,6 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.ValueNode;
 import org.joda.time.Period;
-import org.openehr.rm.composition.Composition;
 
 import java.io.IOException;
 import java.util.*;

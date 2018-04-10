@@ -16,13 +16,13 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.build.SystemValue;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.am.openehrprofile.datatypes.quantity.CDvOrdinal;
 import org.openehr.am.openehrprofile.datatypes.quantity.Ordinal;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.quantity.DvOrdinal;
 import org.openehr.rm.datatypes.text.CodePhrase;
@@ -43,7 +43,7 @@ public class DvOrdinalVConstraints extends DataValueConstraints {
     private Map<Integer, Map<Integer, String>> value_set = new HashMap<Integer, Map<Integer, String>>();
     private Integer assumed_value_code = -1;
 
-    public DvOrdinalVConstraints(RMObjectBuilder builder, DataValue parent) {
+    public DvOrdinalVConstraints(RMBuilder builder, DataValue parent) {
         super(builder, parent);
     }
 

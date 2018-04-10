@@ -16,19 +16,10 @@
  */
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
-import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
-import org.openehr.jaxb.rm.DvText;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
-import org.openehr.rm.datatypes.quantity.datetime.DvDate;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
-import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
-import org.openehr.rm.datatypes.quantity.datetime.DvTime;
-import org.openehr.rm.datatypes.text.CodePhrase;
-import org.openehr.rm.datatypes.text.DvCodedText;
-import org.openehr.rm.support.identification.TerminologyID;
 
 import java.lang.reflect.Type;
 

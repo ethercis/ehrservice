@@ -23,9 +23,9 @@ public abstract class AccessTestCase extends TestCase {
 
     protected void setupDomainAccess() throws Exception {
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "../core/src/test/resources/knowledge/archetypes");
-        props.put("knowledge.path.template", "../core/src/test/resources/knowledge/templates");
-        props.put("knowledge.path.opt", "../core/src/test/resources/knowledge/operational_templates");
+        props.put("knowledge.path.archetype", "src/test/resources/knowledge/archetypes");
+        props.put("knowledge.path.template", "src/test/resources/knowledge/templates");
+        props.put("knowledge.path.opt", "src/test/resources/knowledge/operational_templates");
         props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
 

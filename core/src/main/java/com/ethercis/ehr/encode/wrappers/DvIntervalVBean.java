@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 import org.openehr.rm.datatypes.quantity.DvCount;
 import org.openehr.rm.datatypes.quantity.DvInterval;
 import org.openehr.rm.datatypes.quantity.DvOrdered;
-import org.openehr.rm.datatypes.quantity.DvQuantity;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

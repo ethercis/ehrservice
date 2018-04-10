@@ -70,10 +70,15 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
     private void writeInternal(JsonWriter writer, LinkedTreeMap map) throws IOException {
 
         boolean isItemsOnly = new Children(map).isItemsOnly();
+        boolean isMultiContent = new Children(map).isMultiContent();
+
         int cursor = 0;
         int lastChild = 0;
         if (isItemsOnly) {
             lastChild = map.size() - 1;
+        }
+        else if (isMultiContent){
+            lastChild = new Children(map).contentCount();
         }
 
         for (Object entry : map.entrySet()) {
@@ -101,6 +106,23 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                                 cursor++;
                             }
                             if (cursor > lastChild)
+                                writer.endArray();
+                        }
+                        else if (isMultiContent && key.contains(CompositionSerializer.TAG_CONTENT)){
+                            //assumed sorted (LinkedTreeMap preserve input order)
+                            ((LinkedTreeMap) ((ArrayList) value).get(0)).put(ARCHETYPE_NODE_ID, archetypeNodeId);
+
+                            if (cursor == 0) { //initial
+                                writer.name(jsonKey);
+                                writer.beginArray();
+                                //insert archetype node id
+                                new ArrayListAdapter(archetypeNodeId, key).write(writer, (ArrayList) value);
+                                cursor++;
+                            } else { //next siblings
+                                new LinkedTreeMapAdapter(archetypeNodeId, key).write(writer, (LinkedTreeMap) ((ArrayList) value).get(0));
+                                cursor++;
+                            }
+                            if (cursor > lastChild - 1)
                                 writer.endArray();
                         }
                         else {

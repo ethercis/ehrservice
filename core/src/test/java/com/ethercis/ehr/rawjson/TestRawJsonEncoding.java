@@ -17,9 +17,7 @@
 
 package com.ethercis.ehr.rawjson;
 
-import com.ethercis.ehr.building.GenerationStrategy;
 import com.ethercis.ehr.building.I_ContentBuilder;
-import com.ethercis.ehr.building.LocatableBuilder;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
@@ -30,17 +28,13 @@ import com.ethercis.ehr.knowledge.KnowledgeCache;
 import com.ethercis.ehr.util.FlatJsonCompositionConverter;
 import com.ethercis.ehr.util.I_FlatJsonCompositionConverter;
 import com.ethercis.ehr.util.MapInspector;
-import com.ethercis.ehr.util.RMDataSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.junit.Before;
 import org.junit.Test;
-import org.openehr.build.SystemValue;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
-import org.openehr.rm.composition.content.entry.Evaluation;
-import org.openehr.rm.datastructure.itemstructure.ItemTree;
 
 import java.io.FileReader;
 import java.util.*;

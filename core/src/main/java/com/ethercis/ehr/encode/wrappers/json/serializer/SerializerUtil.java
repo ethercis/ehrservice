@@ -17,12 +17,10 @@
 
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
-import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.wrappers.ObjectSnakeCase;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
 import org.openehr.rm.composition.content.entry.CareEntry;
-import org.openehr.rm.composition.content.entry.Entry;
 
 import java.util.Map;
 

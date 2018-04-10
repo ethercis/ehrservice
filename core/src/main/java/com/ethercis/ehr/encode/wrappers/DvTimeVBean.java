@@ -18,7 +18,6 @@ package com.ethercis.ehr.encode.wrappers;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
-import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
 import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 

@@ -74,7 +74,7 @@ public class WhereBinder {
         }
 
         @Override
-        public void replaceLast(String previous, String newString){
+        public void replaceLast(String previous, String newString) {
             int lastPos = stringBuffer.lastIndexOf(previous);
             if (lastPos >= 0) {
                 stringBuffer.delete(lastPos, lastPos + previous.length());
@@ -83,17 +83,17 @@ public class WhereBinder {
         }
 
         @Override
-        public int lastIndexOf(String string){
+        public int lastIndexOf(String string) {
             return stringBuffer.lastIndexOf(string);
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return stringBuffer.toString();
         }
 
         @Override
-        public int length(){
+        public int length() {
             return stringBuffer.length();
         }
 
@@ -115,19 +115,23 @@ public class WhereBinder {
         this.mapper = mapper;
     }
 
-    private TaggedStringBuffer encodeWhereVariable(UUID comp_id, VariableDefinition variableDefinition, boolean forceSQL){
+    private TaggedStringBuffer encodeWhereVariable(UUID comp_id, VariableDefinition variableDefinition, boolean forceSQL) {
         String identifier = variableDefinition.getIdentifier();
         String className = mapper.getClassName(identifier);
         if (className == null)
-            throw new IllegalArgumentException("Could not bind identifier in WHERE clause:'"+identifier+"'");
+            throw new IllegalArgumentException("Could not bind identifier in WHERE clause:'" + identifier + "'");
         Field<?> field;
-        if (forceSQL){
-            field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.SELECT);
+        if (forceSQL) {
+            if (className.equals("COMPOSITION")) {
+                field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
+            } else {
+                field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.SELECT);
+            }
             if (field == null)
                 return null;
             return new TaggedStringBuffer(field.toString(), TagField.SQLQUERY);
-        }
-        else {
+
+        } else {
             switch (className) {
                 case "COMPOSITION":
                     if (variableDefinition.getPath().startsWith("content")) {
@@ -147,17 +151,16 @@ public class WhereBinder {
         }
     }
 
-    private TaggedStringBuffer buildWhereCondition(UUID comp_id, TaggedStringBuffer taggedBuffer, List item){
-        for (Object part: item) {
+    private TaggedStringBuffer buildWhereCondition(UUID comp_id, TaggedStringBuffer taggedBuffer, List item) {
+        for (Object part : item) {
             if (part instanceof String)
-                taggedBuffer.append((String)part);
+                taggedBuffer.append((String) part);
             else if (part instanceof VariableDefinition) {
                 //substitute the identifier
                 TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) part, false);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
-            }
-            else if (part instanceof List){
+            } else if (part instanceof List) {
                 TaggedStringBuffer taggedStringBuffer = buildWhereCondition(comp_id, taggedBuffer, (List) part);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
@@ -166,11 +169,11 @@ public class WhereBinder {
         return taggedBuffer;
     }
 
-    private Condition wrapInCondition(Condition condition, TaggedStringBuffer taggedStringBuffer, Deque<Operator> operators){
+    private Condition wrapInCondition(Condition condition, TaggedStringBuffer taggedStringBuffer, Deque<Operator> operators) {
         //perform the condition query wrapping depending on the dialect jsquery or sql
         String wrapped;
 
-        switch (taggedStringBuffer.getTagField()){
+        switch (taggedStringBuffer.getTagField()) {
             case JSQUERY:
                 wrapped = JsonbEntryQuery.Jsquery_COMPOSITION_OPEN + taggedStringBuffer.toString() + JsonbEntryQuery.Jsquery_CLOSE;
                 break;
@@ -179,7 +182,7 @@ public class WhereBinder {
                 break;
 
             default:
-                throw new IllegalArgumentException("Unitialized tag pass in query expression");
+                throw new IllegalArgumentException("Uninitialized tag passed in query expression");
         }
 
         if (condition == null)
@@ -189,7 +192,7 @@ public class WhereBinder {
                 condition = condition.and(wrapped);
             else {
                 Operator operator = operators.pop();
-                switch (operator){
+                switch (operator) {
                     case OR:
                         condition = condition.or(wrapped);
                         break;
@@ -203,7 +206,7 @@ public class WhereBinder {
                         Condition condition1 = DSL.condition(wrapped);
                         if (operators.size() > 0) {
                             operator = operators.pop();
-                            switch (operator){
+                            switch (operator) {
                                 case OR:
                                     condition = condition.orNot(condition1);
                                     break;
@@ -213,8 +216,7 @@ public class WhereBinder {
                                 default:
                                     condition = condition.andNot(condition1);
                             }
-                        }
-                        else
+                        } else
                             condition = condition.andNot(condition1);
                         break;
                 }
@@ -224,7 +226,7 @@ public class WhereBinder {
         return condition;
     }
 
-    public Condition bind(UUID comp_id){
+    public Condition bind(UUID comp_id) {
         Deque<Operator> operators = new ArrayDeque<>();
         TaggedStringBuffer taggedBuffer = new TaggedStringBuffer();
         Condition condition = initialCondition;
@@ -232,10 +234,10 @@ public class WhereBinder {
 //        List whereItems = new WhereResolver(whereClause).resolveDateCondition();
         List whereItems = whereClause;
 
-        for (int cursor = 0; cursor < whereItems.size(); cursor++){
+        for (int cursor = 0; cursor < whereItems.size(); cursor++) {
             Object item = whereItems.get(cursor);
             if (item instanceof String) {
-                switch ((String)item){
+                switch ((String) item) {
                     case "OR":
                     case "or":
                         operators.push(Operator.OR);
@@ -258,7 +260,7 @@ public class WhereBinder {
 
                     default:
                         ISODateTime isoDateTime = new ISODateTime(((String) item).replaceAll("'", ""));
-                        if (isoDateTime.isValidDateTimeExpression()){
+                        if (isoDateTime.isValidDateTimeExpression()) {
                             Long timestamp = isoDateTime.toTimeStamp();
                             int lastValuePos = taggedBuffer.lastIndexOf(JSQUERY_EXPR_VALUE);
                             if (lastValuePos > 0) {
@@ -266,27 +268,24 @@ public class WhereBinder {
                             }
                             item = hackItem(taggedBuffer, timestamp.toString());
                             taggedBuffer.append((String) item);
-                        }
-                        else {
+                        } else {
                             item = hackItem(taggedBuffer, (String) item);
                             taggedBuffer.append((String) item);
                         }
                         break;
 
                 }
-            }
-            else if (item instanceof Long){
+            } else if (item instanceof Long) {
                 item = hackItem(taggedBuffer, item.toString());
                 taggedBuffer.append(item.toString());
-            }
-            else if (item instanceof VariableDefinition){
+            } else if (item instanceof VariableDefinition) {
                 if (taggedBuffer.length() > 0) {
                     condition = wrapInCondition(condition, taggedBuffer, operators);
                     taggedBuffer = new TaggedStringBuffer();
                 }
                 //look ahead and check if followed by a sql operator
                 TaggedStringBuffer taggedStringBuffer;
-                if (followSQLOperator(cursor))
+                if (isFollowedBySQLOperator(cursor))
                     taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, true);
                 else
                     taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false);
@@ -296,8 +295,7 @@ public class WhereBinder {
                     taggedBuffer.setTagField(taggedStringBuffer.getTagField());
                 }
 //                condition = wrapInCondition(condition, stringBuffer, operators);
-            }
-            else if (item instanceof List){
+            } else if (item instanceof List) {
                 TaggedStringBuffer taggedStringBuffer = buildWhereCondition(comp_id, taggedBuffer, (List) item);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
@@ -306,7 +304,7 @@ public class WhereBinder {
 
         }
 
-        if (taggedBuffer.length() != 0){
+        if (taggedBuffer.length() != 0) {
             condition = wrapInCondition(condition, taggedBuffer, operators);
         }
 
@@ -315,10 +313,10 @@ public class WhereBinder {
 
 
     //look ahead for a SQL operator
-    private boolean followSQLOperator(int cursor){
-        if (cursor < whereClause.size() - 1){
+    private boolean isFollowedBySQLOperator(int cursor) {
+        if (cursor < whereClause.size() - 1) {
             Object nextToken = whereClause.get(cursor + 1);
-            if (nextToken instanceof String && ((String)nextToken).matches(sqlStatementRegexp))
+            if (nextToken instanceof String && ((String) nextToken).matches(sqlStatementRegexp))
                 return true;
         }
         return false;
@@ -326,20 +324,20 @@ public class WhereBinder {
 
 
     //from AQL grammar
-    Set<String> operators = new HashSet<String>(Arrays.asList("=", "!=", ">", ">=", "<",  "<=", "MATCHES", "EXISTS", "NOT", "(", ")", "{", "}"));
+    Set<String> operators = new HashSet<String>(Arrays.asList("=", "!=", ">", ">=", "<", "<=", "MATCHES", "EXISTS", "NOT", "(", ")", "{", "}"));
 
     //do some temporary hacking for unsupported features
     private Object hackItem(TaggedStringBuffer taggedBuffer, String item) {
         if (operators.contains(item.toUpperCase()))
             return item;
-        if (taggedBuffer.toString().contains(I_JoinBinder.COMPOSITION_JOIN)){
+        if (taggedBuffer.toString().contains(I_JoinBinder.COMPOSITION_JOIN)) {
             if (item.contains("::"))
-                return item.split("::")[0]+"'";
+                return item.split("::")[0] + "'";
         }
-        if (taggedBuffer.stringBuffer.indexOf("#>>") > 0){
+        if (taggedBuffer.stringBuffer.indexOf("#>>") > 0) {
             return item;
         }
-        if (taggedBuffer.stringBuffer.indexOf("#") > 0 && item.contains("'")){ //conventionally double quote for jsquery
+        if (taggedBuffer.stringBuffer.indexOf("#") > 0 && item.contains("'")) { //conventionally double quote for jsquery
             return item.replaceAll("'", "\"");
         }
         return item;

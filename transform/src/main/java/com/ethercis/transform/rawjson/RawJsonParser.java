@@ -19,6 +19,7 @@ package com.ethercis.transform.rawjson;
 
 import com.ethercis.ehr.encode.*;
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
+import com.ethercis.ehr.rm.RMBuilder;
 import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,12 +29,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.Period;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.RMObjectBuildingException;
-import org.openehr.rm.datatypes.quantity.datetime.DvDate;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
-import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
-import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 
 import java.io.Reader;
 import java.util.*;
@@ -48,7 +44,7 @@ public class RawJsonParser {
     private static String valueClass = null;
     private static int depth = 0;
     private static boolean isItems = false;
-    private static RMObjectBuilder rmObjectBuilder = new RMObjectBuilder();
+    private static RMBuilder rmObjectBuilder = new RMBuilder();
 
     public Map<String, Object> parseRawJson(Reader reader){
         GsonBuilder gsonBuilder = new GsonBuilder();

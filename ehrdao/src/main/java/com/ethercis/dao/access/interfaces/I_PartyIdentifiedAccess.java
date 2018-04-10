@@ -17,7 +17,6 @@
 package com.ethercis.dao.access.interfaces;
 
 import com.ethercis.dao.access.jooq.PartyIdentifiedAccess;
-import org.jooq.Result;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.datatypes.basic.DvIdentifier;
 import org.openehr.rm.support.identification.GenericID;
@@ -104,7 +103,7 @@ public interface I_PartyIdentifiedAccess extends I_SimpleCRUD<I_PartyIdentifiedA
      * @return UUID of identified party or null
      */
     public static UUID retrievePartyByIdentifier(I_DomainAccess domainAccess, String value, String issuer){
-        UUID uuid = domainAccess.getContext().fetchOne(IDENTIFIER, IDENTIFIER.ID_VALUE.eq(value).and(IDENTIFIER.ISSUER.eq(issuer))).getParty();
+        UUID uuid = domainAccess.getContext().fetchAny(IDENTIFIER, IDENTIFIER.ID_VALUE.eq(value).and(IDENTIFIER.ISSUER.eq(issuer))).getParty();
 
         if (uuid == null){
             return null;

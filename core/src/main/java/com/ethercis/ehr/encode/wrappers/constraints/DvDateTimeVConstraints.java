@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
+import com.ethercis.ehr.rm.RMBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -24,7 +25,6 @@ import org.openehr.am.archetype.constraintmodel.CAttribute;
 import org.openehr.am.archetype.constraintmodel.CPrimitiveObject;
 import org.openehr.am.archetype.constraintmodel.CSingleAttribute;
 import org.openehr.am.archetype.constraintmodel.primitive.CDateTime;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.support.basic.Interval;
@@ -44,7 +44,7 @@ public class DvDateTimeVConstraints extends DataValueConstraints {
 
     private DvDateTime assumed_value;
 
-    public DvDateTimeVConstraints(RMObjectBuilder builder, DataValue parent) {
+    public DvDateTimeVConstraints(RMBuilder builder, DataValue parent) {
         super(builder, parent);
     }
 

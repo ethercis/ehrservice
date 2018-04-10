@@ -1,0 +1,136 @@
+{
+  "@class": "COMPOSITION",
+  "content": {
+    "/name": [
+      {
+        "value": "Adverse reaction list"
+      }
+    ],
+    "/composition[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1 and name/value='Adverse reaction list']": {
+      "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]": [
+        {
+          "/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]": [
+            {
+              "/name": [
+                {
+                  "value": "Adverse reaction risk"
+                }
+              ],
+              "/data[at0001]": {
+                "/items[at0002]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Causative agent"
+                      }
+                    ],
+                    "/value": {
+                      "value": "ww test 01",
+                      "definingCode": {
+                        "codeString": "1239085",
+                        "terminologyId": {
+                          "name": "SNOMED-CT",
+                          "value": "SNOMED-CT"
+                        }
+                      }
+                    },
+                    "/$PATH$": "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1 and name/value='Allergies and adverse reactions']/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1 and name/value='Adverse reaction risk']/data[at0001]/items[at0002 and name/value='Causative agent']",
+                    "/$CLASS$": "DvCodedText"
+                  }
+                ],
+                "/items[at0009]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Reaction details"
+                      }
+                    ],
+                    "/items[at0011]": [
+                      {
+                        "/name": [
+                          {
+                            "value": "Manifestation"
+                          }
+                        ],
+                        "/value": {
+                          "value": "ww test 01"
+                        },
+                        "/$PATH$": "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1 and name/value='Allergies and adverse reactions']/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1 and name/value='Adverse reaction risk']/data[at0001]/items[at0009 and name/value='Reaction details']/items[at0011 and name/value='Manifestation']",
+                        "/$CLASS$": "DvText"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "context": {
+    "@class": "EVENT_CONTEXT",
+    "setting": {
+      "value": "other care",
+      "@class": "DV_CODED_TEXT",
+      "defining_code": {
+        "@class": "CODE_PHRASE",
+        "code_string": "238",
+        "terminology_id": {
+          "value": "openehr",
+          "@class": "TERMINOLOGY_ID"
+        }
+      }
+    },
+    "start_time": {
+      "value": "2017-01-13T23:26:22UTC",
+      "@class": "DV_DATE_TIME"
+    },
+    "health_care_facility": {
+      "name": "Rippleburgh GP Practice",
+      "@class": "PARTY_IDENTIFIED",
+      "external_ref": {
+        "id": {
+          "value": "999999-345",
+          "@class": "GENERIC_ID",
+          "scheme": "2.16.840.1.113883.2.1.4.3"
+        },
+        "type": "PARTY",
+        "@class": "PARTY_REF",
+        "namespace": "NHS-UK"
+      }
+    }
+  },
+  "category": {
+    "value": "Event",
+    "@class": "DV_CODED_TEXT",
+    "defining_code": {
+      "@class": "CODE_PHRASE",
+      "code_string": "433",
+      "terminology_id": {
+        "value": "openehr",
+        "@class": "TERMINOLOGY_ID"
+      }
+    }
+  },
+  "composer": {
+    "name": "Dr Tony Shannon",
+    "@class": "PARTY_IDENTIFIED"
+  },
+  "language": {
+    "@class": "CODE_PHRASE",
+    "code_string": "en",
+    "terminology_id": {
+      "value": "ISO_639-1",
+      "@class": "TERMINOLOGY_ID"
+    }
+  },
+  "territory": {
+    "@class": "CODE_PHRASE",
+    "code_string": "GB",
+    "terminology_id": {
+      "value": "ISO_3166-1",
+      "@class": "TERMINOLOGY_ID"
+    }
+  }
+}

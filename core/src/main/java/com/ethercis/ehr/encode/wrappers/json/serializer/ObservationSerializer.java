@@ -16,12 +16,8 @@
  */
 package com.ethercis.ehr.encode.wrappers.json.serializer;
 
-import com.ethercis.ehr.encode.EncodeUtil;
-import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.*;
-import org.openehr.rm.composition.content.entry.Instruction;
 import org.openehr.rm.composition.content.entry.Observation;
-import org.openehr.rm.datastructure.itemstructure.ItemTree;
 
 import java.lang.reflect.Type;
 

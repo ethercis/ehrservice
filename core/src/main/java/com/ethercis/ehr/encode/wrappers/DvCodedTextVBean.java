@@ -18,7 +18,6 @@ package com.ethercis.ehr.encode.wrappers;
 
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.DataValueAdapter;
-import org.openehr.am.template.TermMap;
 import org.openehr.rm.datatypes.text.*;
 
 import java.util.ArrayList;

@@ -17,7 +17,6 @@
 
 package com.ethercis.ehr.encode;
 
-import com.ethercis.ehr.building.I_ContentBuilder;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 

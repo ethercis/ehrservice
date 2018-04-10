@@ -17,8 +17,8 @@
 package com.ethercis.ehr.building;
 
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.am.template.TermMap;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.SystemValue;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.common.generic.PartySelf;
@@ -104,7 +104,7 @@ public abstract class RmBinding implements I_RmBinding {
     protected MeasurementService measurementService;
     protected TerminologyService terminologyService;
     protected TerminologyAccess openEHRTerminology;
-    protected RMObjectBuilder builder;
+    protected RMBuilder builder;
     protected TermMap termMap;
 
     protected RmBinding(Map<SystemValue, Object> map) throws Exception {
@@ -138,7 +138,7 @@ public abstract class RmBinding implements I_RmBinding {
             systemValues.put(SystemValue.TERRITORY, I_RmBinding.makeCodePhrase(DEFAULT_TERRITORY));
 
         }
-        builder = RMObjectBuilder.getInstance(systemValues);
+        builder = RMBuilder.getInstance(systemValues);
         termMap = new TermMap();
     }
 

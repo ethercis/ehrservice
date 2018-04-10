@@ -27,7 +27,6 @@ import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -132,7 +131,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         kvPairs.put("/context/participation|function", "Oncologist");
         kvPairs.put("/context/participation|name", "Dr. Marcus Johnson");
         kvPairs.put("/context/participation|identifier", "1345678");
-        kvPairs.put("/context/participation|mode", "face-to-face communication::openehr::216");
+        kvPairs.put("/context/participation|mode", "openehr::216|face-to-face communication|");
         kvPairs.put("/context/location", "local");
         kvPairs.put("/context/setting", "openehr::227|emergency care|");
         kvPairs.put("/composer|identifier", "1345678");
@@ -141,13 +140,13 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         kvPairs.put("/territory", "FR");
         kvPairs.put("/language", "fr");
 
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:0", "Nurse|1345678::Jessica|face-to-face communication::openehr::216");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:1", "Assistant|1345678::2.16.840.1.113883.2.1.4.3::NHS-UK::ANY::D. Mabuse|face-to-face communication::openehr::216");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:0", "Nurse|1345678::Jessica|openehr::216|face-to-face communication|");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:1", "Assistant|1345678::2.16.840.1.113883.2.1.4.3::NHS-UK::ANY::D. Mabuse|openehr::216|face-to-face communication|");
 
         kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#1']/timing", "before sleep");
         kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#1']" +
                         "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "aspirin");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#2]/timing", "lunch");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#2']/timing", "lunch");
         kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#2']" +
                         "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "Atorvastatin");
 
@@ -187,7 +186,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         kvPairs.put("/context/participation|function", "Oncologist");
         kvPairs.put("/context/participation|name", "Dr. Marcus Johnson");
         kvPairs.put("/context/participation|identifier", "1345678");
-        kvPairs.put("/context/participation|mode", "face-to-face communication::openehr::216");
+        kvPairs.put("/context/participation|mode", "openehr::216|face-to-face communication|");
         kvPairs.put("/context/location", "local");
         kvPairs.put("/context/setting", "openehr::227|emergency care|");
         kvPairs.put("/composer|identifier", "1345678");
@@ -196,14 +195,14 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
         kvPairs.put("/territory", "FR");
         kvPairs.put("/language", "fr");
 
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:0", "Nurse|1345678::Jessica|face-to-face communication::openehr::216");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:1", "Assistant|1345678::2.16.840.1.113883.2.1.4.3::NHS-UK::ANY::D. Mabuse|face-to-face communication::openehr::216");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:0", "Nurse|1345678::Jessica|openehr::216|face-to-face communication|");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/participation:1", "Assistant|1345678::2.16.840.1.113883.2.1.4.3::NHS-UK::ANY::D. Mabuse|openehr::216|face-to-face communication|");
 
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001]/timing", "before sleep");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001]" +
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#1']/timing", "before sleep");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#1']" +
                 "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "aspirin");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0002]/timing", "lunch");
-        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0002]" +
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#2']/timing", "lunch");
+        kvPairs.put("/content[openEHR-EHR-SECTION.medications.v1]/items[openEHR-EHR-INSTRUCTION.medication.v1]/activities[at0001, '#2']" +
                 "/description[openEHR-EHR-ITEM_TREE.medication_mod.v1]/items[at0001]", "Atorvastatin");
 
         PvCompoHandler pvCompoHandler = new PvCompoHandler(testDomainAccess, templateId, null);
@@ -232,13 +231,9 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
     public void testCreateComposition2() throws Exception {
 //        Map<String, String> kvPairs = new HashMap<>();
         String templateId = "COLNEC Health Risk Assessment.v1";
-//        String templateId = "COLNEC Medication";
 //        Logger.getRootLogger().setLevel(Level.DEBUG);
         StringBuffer sb = new StringBuffer();
-        Files.readAllLines(Paths.get("C:\\Development\\Dropbox\\eCIS_Development\\test\\health_risk_assessment.ecisflat.json")).forEach(line -> sb.append(line));
-//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/ProblemList_2FLAT.json")).forEach(line -> sb.append(line));
-//        Files.readAllLines(Paths.get("/Development/Dropbox/eCIS_Development/samples/Laboratory_Order_faulty.json")).forEach(line -> sb.append(line));
-//        Files.readAllLines(Paths.get("/Development/Dropbox/COLNEC/colnec_medication.ecisflat.json"), Charset.defaultCharset()).forEach(line -> sb.append(line));
+        Files.readAllLines(Paths.get("src/test/resources/samples/health_risk_assessment.ecisflat.json")).forEach(line -> sb.append(line));
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DvDateTime.class, new DvDateTimeAdapter());
@@ -294,7 +289,7 @@ public class EcisFlatPersistenceTest extends AccessTestCase {
 
     }
 
-    public void testRetrieveCompositionNew() throws Exception {
+    public void _testRetrieveCompositionNew() throws Exception {
         UUID uuid = UUID.fromString("55032019-e6e4-4395-adce-e9f475b419c0");
         I_CompositionAccess compositionAccess = I_CompositionAccess.retrieveInstance2(testDomainAccess, uuid);
 

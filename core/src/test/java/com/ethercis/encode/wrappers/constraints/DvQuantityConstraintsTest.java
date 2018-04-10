@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import com.ethercis.ehr.encode.wrappers.DvQuantityVBean;
 import com.ethercis.ehr.encode.wrappers.constraints.DvQuantityVConstraints;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantity;
 import org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantityItem;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.rm.datatypes.quantity.DvQuantity;
 
 import org.openehr.rm.support.basic.Interval;
@@ -27,7 +27,7 @@ public class DvQuantityConstraintsTest {
 	@Before
 	public void setUp() throws Exception {
 		testquantity = new DvQuantityVBean(new DvQuantity(1.2345));
-        constraints = new DvQuantityVConstraints(RMObjectBuilder.getInstance(), (DvQuantity)testquantity.getAdaptee());
+        constraints = new DvQuantityVConstraints(RMBuilder.getInstance(), (DvQuantity)testquantity.getAdaptee());
 
         properties.add(new CDvQuantityItem(new Interval<Double>(new Double(0), new Double(100)), "kg"));
         properties.add(new CDvQuantityItem(new Interval<Double>(new Double(0), new Double(100)), "mg"));

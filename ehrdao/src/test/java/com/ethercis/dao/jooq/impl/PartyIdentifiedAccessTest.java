@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openehr.rm.datatypes.basic.DvIdentifier;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +38,7 @@ public class PartyIdentifiedAccessTest extends AccessTestCase {
         assertEquals("TEST PARTY", newPartyIdentifiedAccess.getPartyName());
 
         newPartyIdentifiedAccess.setPartyName("TEST UPDATE");
-        assertTrue(newPartyIdentifiedAccess.update());
+        assertTrue(newPartyIdentifiedAccess.update(Timestamp.valueOf(LocalDateTime.now())));
 
         newPartyIdentifiedAccess = I_PartyIdentifiedAccess.retrieveInstance(testDomainAccess, id);
         assertEquals("TEST UPDATE", newPartyIdentifiedAccess.getPartyName());

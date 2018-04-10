@@ -19,7 +19,6 @@ package com.ethercis.dao.access.jooq;
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
-import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.jooq.pg.tables.records.*;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.logging.log4j.LogManager;

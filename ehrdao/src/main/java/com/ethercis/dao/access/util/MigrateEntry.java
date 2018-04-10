@@ -46,13 +46,17 @@ import static com.ethercis.jooq.pg.Tables.*;
 public class MigrateEntry {
     static Logger logger = LogManager.getLogger(MigrateEntry.class);
     protected static I_DomainAccess domainAccess;
-    protected static DSLContext context;
-    protected static I_KnowledgeCache knowledge;
+//    protected static DSLContext context;
+//    protected static I_KnowledgeCache knowledge;
 
     static boolean isInitialized = false;
 
     public MigrateEntry(Properties props) throws Exception {
         setupDomainAccess(props);
+    }
+
+    public MigrateEntry(I_DomainAccess access) throws Exception {
+        setupDomainAccess(access);
     }
 
     protected static void setupDomainAccess(Properties props) throws Exception {
@@ -62,7 +66,7 @@ public class MigrateEntry {
         props.put("knowledge.forcecache", "true");
         props.put("knowledge.cachelocatable", "false");
 
-        knowledge = new KnowledgeCache(null, props);
+        I_KnowledgeCache knowledge = new KnowledgeCache(null, props);
 
         Map<String, Object> properties = new HashMap<>();
         properties.put(I_DomainAccess.KEY_DIALECT, "POSTGRES");
@@ -79,11 +83,17 @@ public class MigrateEntry {
             e.printStackTrace();
         }
 
-        context = domainAccess.getContext();
+//        context = domainAccess.getContext();
 
         isInitialized = true;
 
         logger.info("MIGRATING Composition at:"+properties.get("url"));
+    }
+
+    protected static void setupDomainAccess(I_DomainAccess access) throws Exception {
+        domainAccess = access;
+//        context = access.getContext();
+        isInitialized = true;
     }
 
     public static String dumpSerialized(Composition composition) throws Exception {
@@ -111,12 +121,24 @@ public class MigrateEntry {
         setupDomainAccess(properties);
 
         //get the entry id for the composition
-        UUID entryId = context.select(ENTRY.ID).from(ENTRY).where(ENTRY.COMPOSITION_ID.eq(compositionId)).fetchOne(ENTRY.ID);
+        UUID entryId = domainAccess.getContext().select(ENTRY.ID).from(ENTRY).where(ENTRY.COMPOSITION_ID.eq(compositionId)).fetchOne(ENTRY.ID);
 
         if (entryId == null)
             throw new IllegalArgumentException("Could not retrieve composition:"+compositionId);
 
         return migrateEntry(properties, entryId, debug);
+    }
+
+    public static  String migrateComposition(I_DomainAccess access, UUID compositionId, boolean debug) throws Exception {
+        setupDomainAccess(access);
+
+        //get the entry id for the composition
+        UUID entryId = domainAccess.getContext().select(ENTRY.ID).from(ENTRY).where(ENTRY.COMPOSITION_ID.eq(compositionId)).fetchOne(ENTRY.ID);
+
+        if (entryId == null)
+            throw new IllegalArgumentException("Could not retrieve composition:"+compositionId);
+
+        return migrateEntry(access, entryId, debug);
     }
 
     /**
@@ -130,6 +152,18 @@ public class MigrateEntry {
     public static  String migrateEntry(Properties properties, UUID entryId, boolean debug) throws Exception {
         setupDomainAccess(properties);
 //        System.setProperty("validation.lenient", "true");
+        return migrate(domainAccess, entryId, debug);
+
+    }
+
+    public static  String migrateEntry(I_DomainAccess access, UUID entryId, boolean debug) throws Exception {
+        setupDomainAccess(access);
+//        System.setProperty("validation.lenient", "true");
+        return migrate(domainAccess, entryId, debug);
+
+    }
+
+    private static String migrate(I_DomainAccess domainAccess, UUID entryId, boolean debug) throws Exception {
         I_EntryAccess entryAccess = I_EntryAccess.retrieveInstance(domainAccess, entryId);
 
         if (entryAccess == null)
@@ -151,18 +185,17 @@ public class MigrateEntry {
         }
         else
             throw new IllegalArgumentException("Could not retrieve entry:"+entryId);
-
     }
 
     public static Composition migrate(String jsonEntry, String templateId) throws Exception {
-        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, domainAccess.getKnowledgeManager(), templateId);
         content.setLenient(true);
         Composition composition = content.buildCompositionFromJson(jsonEntry);
         return composition;
     }
 
     public static void migrateAll(boolean debug) throws Exception {
-        Result<Record1<UUID>> result = context.select(ENTRY.ID).from(ENTRY).fetch();
+        Result<Record1<UUID>> result = domainAccess.getContext().select(ENTRY.ID).from(ENTRY).fetch();
 
         if (result == null)
             throw new IllegalArgumentException("Empty DB");
@@ -173,7 +206,7 @@ public class MigrateEntry {
         for (Record record: result){
             UUID entryId = (UUID)record.getValue("id");
             try {
-                String serialized = migrateEntry(null, entryId, debug);
+                String serialized = migrateEntry(domainAccess, entryId, debug);
                 if (debug){
                     //check for any remaining default in serialized
                     if (serialized.contains("DEFAULT") || serialized.contains("1900-01-01")){

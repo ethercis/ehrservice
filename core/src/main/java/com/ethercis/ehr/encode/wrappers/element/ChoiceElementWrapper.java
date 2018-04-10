@@ -20,8 +20,8 @@ package com.ethercis.ehr.encode.wrappers.element;
 import com.ethercis.ehr.encode.DataValueAdapter;
 import com.ethercis.ehr.encode.VBeanUtil;
 import com.ethercis.ehr.encode.wrappers.I_VBeanWrapper;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.openehr.am.archetype.constraintmodel.CComplexObject;
-import org.openehr.build.RMObjectBuilder;
 import org.openehr.build.RMObjectBuildingException;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datatypes.basic.DataValue;
@@ -35,7 +35,7 @@ import java.util.List;
 public class ChoiceElementWrapper extends ElementWrapper {
 
     private List<String> choiceRmClasses;
-//    transient RMObjectBuilder builder;
+//    transient RMBuilder builder;
 
     public ChoiceElementWrapper(Element element, CComplexObject ccobj, List<String> choiceRmClasses) throws Exception {
         super(element, ccobj);
@@ -44,7 +44,7 @@ public class ChoiceElementWrapper extends ElementWrapper {
     }
 
     public Class getChoice(int i) throws RMObjectBuildingException {
-        RMObjectBuilder builder = RMObjectBuilder.getInstance();
+        RMBuilder builder = RMBuilder.getInstance();
         if (i < 0 || i >= choiceRmClasses.size()) {
             throw new RMObjectBuildingException("The choice index ("+(i+1)+") is not within boundaries, max:"+choiceRmClasses.size());
 //            return null;

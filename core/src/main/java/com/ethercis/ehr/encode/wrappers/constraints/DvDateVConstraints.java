@@ -16,7 +16,7 @@
  */
 package com.ethercis.ehr.encode.wrappers.constraints;
 
-import org.openehr.build.RMObjectBuilder;
+import com.ethercis.ehr.rm.RMBuilder;
 import org.joda.time.DateTime;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.constraintmodel.CAttribute;
@@ -38,7 +38,7 @@ public class DvDateVConstraints extends DataValueConstraints {
 
     private DvDate assumed_value;
 
-   public DvDateVConstraints(RMObjectBuilder builder, DataValue parent) {
+   public DvDateVConstraints(RMBuilder builder, DataValue parent) {
         super(builder, parent);
     }
 
