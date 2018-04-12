@@ -1,3 +1,10 @@
+@rem ##########################################################################
+@rem this file came from https://github.com/gradle/gradle/blob/master/gradlew.bat
+@rem see the url above for license terms etc.
+@rem ##########################################################################
+
+
+
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem
