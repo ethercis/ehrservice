@@ -29,7 +29,9 @@
                     "max": -1,
                     "children": [
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0006]",
+                        "max": 1,
                         "name": "Date sent",
                         "description": "Date that the distribution was sent.",
                         "id": "date_sent",
@@ -59,7 +61,9 @@
                         "node_id": "at0006"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0008]",
+                        "max": -1,
                         "name": "Group category",
                         "description": "A named category of group e.g. Social work, patient representatives to whom the distribution applies.",
                         "id": "group_category",
@@ -89,7 +93,9 @@
                         "node_id": "at0008"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0012]",
+                        "max": 1,
                         "name": "Urgent",
                         "description": "If true the notification should be distributed made as a matter of urgency.",
                         "id": "urgent",
@@ -101,7 +107,7 @@
                             "mandatory_attributes": [
                               {
                                 "attribute": "value",
-                                "type": "STRING"
+                                "type": "BOOLEAN"
                               }
                             ],
                             "attribute_name": "value",
@@ -170,7 +176,9 @@
                         "max": 1,
                         "children": [
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0076]",
+                            "max": 1,
                             "name": "Supplementary information to follow",
                             "description": "True indicates that additional information has been identified and will be forwarded when available eg incomplete pathology test results.",
                             "id": "supplementary_information_to_follow",
@@ -182,7 +190,7 @@
                                 "mandatory_attributes": [
                                   {
                                     "attribute": "value",
-                                    "type": "STRING"
+                                    "type": "BOOLEAN"
                                   }
                                 ],
                                 "attribute_name": "value",
@@ -202,7 +210,9 @@
                             "node_id": "at0076"
                           },
                           {
+                            "min": 1,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0121]",
+                            "max": 1,
                             "name": "Procedure requested",
                             "description": "Identification of the service requested. This is often coded with an external terminology.",
                             "id": "procedure_requested",
@@ -232,7 +242,9 @@
                             "node_id": "at0121"
                           },
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0144]",
+                            "max": 1,
                             "name": "Latest date service required",
                             "description": "The latest date that is acceptable for the service to be completed.",
                             "id": "latest_date_service_required",
@@ -319,7 +331,9 @@
                     "max": 1,
                     "children": [
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0076]",
+                        "max": 1,
                         "name": "Supplementary information to follow",
                         "description": "True indicates that additional information has been identified and will be forwarded when available eg incomplete pathology test results.",
                         "id": "supplementary_information_to_follow",
@@ -331,7 +345,7 @@
                             "mandatory_attributes": [
                               {
                                 "attribute": "value",
-                                "type": "STRING"
+                                "type": "BOOLEAN"
                               }
                             ],
                             "attribute_name": "value",
@@ -351,7 +365,9 @@
                         "node_id": "at0076"
                       },
                       {
+                        "min": 1,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0121]",
+                        "max": 1,
                         "name": "Procedure requested",
                         "description": "Identification of the service requested. This is often coded with an external terminology.",
                         "id": "procedure_requested",
@@ -381,7 +397,9 @@
                         "node_id": "at0121"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0144]",
+                        "max": 1,
                         "name": "Latest date service required",
                         "description": "The latest date that is acceptable for the service to be completed.",
                         "id": "latest_date_service_required",
@@ -606,7 +624,9 @@
                             "max": 1,
                             "children": [
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0005]",
+                                "max": 1,
                                 "name": "Regularity",
                                 "description": "The observed regularity of the pulse or heart beat.",
                                 "id": "regularity",
@@ -666,7 +686,9 @@
                                 "node_id": "at0005"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
+                                "max": 1,
                                 "name": "Rate",
                                 "description": "The rate, measured in beats per minute.",
                                 "id": "rate",
@@ -752,7 +774,9 @@
                                 "node_id": "at0004"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1022]",
+                                "max": 1,
                                 "name": "Clinical Description",
                                 "description": "Narrative description about the findings.",
                                 "id": "clinical_description",
@@ -782,7 +806,9 @@
                                 "node_id": "at1022"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1023]",
+                                "max": -1,
                                 "name": "Clinical Interpretation",
                                 "description": "Single word, phrase or brief description represents the clinical meaning and significance of the pulse or heart beat findings.",
                                 "id": "clinical_interpretation",
@@ -851,7 +877,9 @@
                         "max": 1,
                         "children": [
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0005]",
+                            "max": 1,
                             "name": "Regularity",
                             "description": "The observed regularity of the pulse or heart beat.",
                             "id": "regularity",
@@ -911,7 +939,9 @@
                             "node_id": "at0005"
                           },
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
+                            "max": 1,
                             "name": "Rate",
                             "description": "The rate, measured in beats per minute.",
                             "id": "rate",
@@ -991,7 +1021,9 @@
                             "node_id": "at0004"
                           },
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1005]",
+                            "max": 1,
                             "name": "Pulse Presence",
                             "description": "Identification of a pulse or heart beat.",
                             "id": "pulse_presence",
@@ -1039,7 +1071,9 @@
                             "node_id": "at1005"
                           },
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1023]",
+                            "max": -1,
                             "name": "Clinical Interpretation",
                             "description": "Single word, phrase or brief description represents the clinical meaning and significance of the pulse or heart beat findings.",
                             "id": "clinical_interpretation",
@@ -1124,7 +1158,9 @@
                         "max": 1,
                         "children": [
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/data[at0001]/items[at0004]",
+                            "max": 1,
                             "name": "Rate",
                             "description": "The rate, measured in beats per minute.",
                             "id": "rate",
@@ -1217,7 +1253,9 @@
                         "max": 1,
                         "children": [
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/state[at0012]/items[at0013]",
+                            "max": 1,
                             "name": "Position",
                             "description": "The body position of the subject during the observation.",
                             "id": "position",
@@ -1277,7 +1315,9 @@
                             "node_id": "at0013"
                           },
                           {
+                            "min": 0,
                             "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/state[at0012]/items[at1018]",
+                            "max": 1,
                             "name": "Confounding Factors",
                             "description": "Narrative description about any incidental factors that may be affect interpretation of the physical findings.",
                             "id": "confounding_factors",
@@ -1416,7 +1456,9 @@
                 "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[at1037]",
+                    "max": 1,
                     "name": "Findings Location",
                     "description": "Body site where the pulse or heart beat findings were observed.",
                     "id": "findings_location",
@@ -1499,7 +1541,9 @@
                     "max": 1,
                     "children": [
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0021]",
+                        "max": 1,
                         "name": "Unique device identifier (UDI)",
                         "description": "A numeric or alphanumeric string that is associated with this device within a given system.",
                         "id": "unique_device_identifier_(udi)",
@@ -1541,7 +1585,9 @@
                         "node_id": "at0021"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0008]",
+                        "max": 1,
                         "name": "Comment",
                         "description": "Additional narrative about the device not captured in other fields.",
                         "id": "comment",
@@ -1571,7 +1617,9 @@
                         "node_id": "at0008"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0005]",
+                        "max": 1,
                         "name": "Date of manufacture",
                         "description": "Date the device was manufactured.",
                         "id": "date_of_manufacture",
@@ -1601,7 +1649,9 @@
                         "node_id": "at0005"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0004]",
+                        "max": 1,
                         "name": "Manufacturer",
                         "description": "Name of manufacturer.",
                         "id": "manufacturer",
@@ -1631,7 +1681,9 @@
                         "node_id": "at0004"
                       },
                       {
+                        "min": 1,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0001]",
+                        "max": 1,
                         "name": "Device name",
                         "description": "Identification of the medical device, preferably by a common name, a formal fully descriptive name or, if required, by class or category of device.",
                         "id": "device_name",
@@ -1661,7 +1713,9 @@
                         "node_id": "at0001"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0024]",
+                        "max": -1,
                         "name": "Other identifier",
                         "description": "Unspecified identifier, which can be further specified in a template or at run time.",
                         "id": "other_identifier",
@@ -1711,7 +1765,9 @@
                     "node_id": "openEHR-EHR-CLUSTER.device.v1"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[at1019]",
+                    "max": 1,
                     "name": "Method",
                     "description": "Method used to the pulse observe the pulse or heart beat.",
                     "id": "method",
@@ -1864,7 +1920,9 @@
                 "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0003]",
+                    "max": 1,
                     "name": "Admission method",
                     "description": "How the patient was admitted to hospital.",
                     "id": "admission_method",
@@ -1883,7 +1941,9 @@
                     "node_id": "at0003"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0002]",
+                    "max": 1,
                     "name": "Date of admission",
                     "description": "Date patient admitted to hospital.",
                     "id": "date_of_admission",
@@ -1913,7 +1973,9 @@
                     "node_id": "at0002"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0009]",
+                    "max": 1,
                     "name": "Source of admission",
                     "description": "The locaton of the patient immediately prior to admission.",
                     "id": "source_of_admission",
@@ -2042,7 +2104,9 @@
                 "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/protocol[at0036]/items[at0037]",
+                    "max": 1,
                     "name": "Protocol - definition",
                     "description": "All archetypes of the OBSERVATION class can contain a PROTOCOL model which records information on how the information was gathered or measured, and any other information that is not required for safe clinical interpretation of the core Data. Datatypes are identical to those explained in the Data model, above.",
                     "id": "protocol___definition",
@@ -2078,7 +2142,9 @@
                             "max": -1,
                             "children": [
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0012]",
+                                "max": 1,
                                 "name": "Quantity",
                                 "description": "A quantity data type used to record a measurement associated with its\u0027 appropriate units.  These are derived from ISO standards and the Reference model enables conversion between these units. The example shown here is length.",
                                 "id": "quantity",
@@ -2137,7 +2203,9 @@
                                 "node_id": "at0012"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0023]",
+                                "max": 1,
                                 "name": "Interval of Quantity",
                                 "description": "Interval of quantity datatypes allow for the recording of a range of measurements in association with appropriate units eg 1-2cm (prescribed amount of cream for a rash).",
                                 "id": "interval_of_quantity",
@@ -2253,7 +2321,9 @@
                                 "node_id": "at0023"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0044]",
+                                "max": 1,
                                 "name": "Identifier",
                                 "description": "Identifier datatypes enable recording of formal data identifiers",
                                 "id": "identifier",
@@ -2295,7 +2365,9 @@
                                 "node_id": "at0044"
                               },
                               {
+                                "min": 1,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0011]",
+                                "max": 1,
                                 "name": "Text that is sourced from an external terminology",
                                 "description": "Text data type utilising codes derived from an external terminology source eg a SNOMED-CT, LOINC or ICD subset",
                                 "id": "text_that_is_sourced_from_an_external_terminology",
@@ -2314,7 +2386,9 @@
                                 "node_id": "at0011"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0022]",
+                                "max": 1,
                                 "name": "Interval of Integer",
                                 "description": "Interval of integer datatype allows for recording of a range of counts eg 1-2 tablets prescribed.  Maximum and minimum values can be set for the lower count and the upper count.",
                                 "id": "interval_of_integer",
@@ -2384,7 +2458,9 @@
                                 "node_id": "at0022"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0014]",
+                                "max": 1,
                                 "name": "Date/Time",
                                 "description": "Date/Time datatype allows recording of a date and/or time, including partial dates such as year only or month and year only.  Allow all is the default - so all forms of date/time are permitted.",
                                 "id": "date_time",
@@ -2415,7 +2491,9 @@
                                 "node_id": "at0014"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0025]",
+                                "max": 1,
                                 "name": "Choice",
                                 "description": "Choice datatype allows for a number of types of element to be specified simultaneously and which can constrained or selected within a template or at run-time.  In this example, a text datatype set to Free text or Coded and another that is constrained to Terminology record data about the same data element.",
                                 "id": "choice",
@@ -2462,7 +2540,9 @@
                                 "node_id": "at0025"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0013]",
+                                "max": 1,
                                 "name": "Count",
                                 "description": "Count data types are composed of an integer with no units eg for recording the number of children - in this example the minimum is set at 0 and the maximum not specified.",
                                 "id": "count",
@@ -2493,7 +2573,9 @@
                                 "node_id": "at0013"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0024]",
+                                "max": 1,
                                 "name": "Interval of Date",
                                 "description": "Interval of integer datatype allows for recording of a range of dates eg between September 1, 2008 and September 8, 2008.",
                                 "id": "interval_of_date",
@@ -2563,7 +2645,9 @@
                                 "node_id": "at0024"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0005]",
+                                "max": 1,
                                 "name": "Free text or coded",
                                 "description": "Text data type in which free text can be entered or coding can be incorporated either in the template or at run time.",
                                 "id": "free_text_or_coded",
@@ -2593,7 +2677,9 @@
                                 "node_id": "at0005"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0016]",
+                                "max": 1,
                                 "name": "Boolean",
                                 "description": "Boolean datatype that allows for true or false answers. ",
                                 "id": "boolean",
@@ -2605,7 +2691,7 @@
                                     "mandatory_attributes": [
                                       {
                                         "attribute": "value",
-                                        "type": "STRING"
+                                        "type": "BOOLEAN"
                                       }
                                     ],
                                     "attribute_name": "value",
@@ -2669,7 +2755,9 @@
                                 "node_id": "at0016"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0027]",
+                                "max": 1,
                                 "name": "URI - resource identifier",
                                 "description": "URI datatypes allow for recording of relationships from this data to data recorded elsewhere.  These links can be within the same EHR, or external eg to a  URL.",
                                 "id": "uri___resource_identifier",
@@ -2699,7 +2787,9 @@
                                 "node_id": "at0027"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0015]",
+                                "max": 1,
                                 "name": "Ordinal",
                                 "description": "Ordinal datatypes pair a number and text - in this way scores can be calculated in software, or progression can be assessed eg if used in a pain score",
                                 "id": "ordinal",
@@ -2765,7 +2855,9 @@
                                 "node_id": "at0015"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0026]",
+                                "max": 1,
                                 "name": "Multimedia",
                                 "description": "Multimedia datatypes allow for the recording of many types of multimedia files to be captured.  All available types have been explicitly selected in this example.",
                                 "id": "multimedia",
@@ -2795,7 +2887,9 @@
                                 "node_id": "at0026"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0006]",
+                                "max": -1,
                                 "name": "Text that uses Internal codes",
                                 "description": "Text data type which can use an internal vocabulary.  Each of these \u0027internal codes\u0027 can be bound to a terminology code.",
                                 "id": "text_that_uses_internal_codes",
@@ -2855,7 +2949,9 @@
                                 "node_id": "at0006"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0028]",
+                                "max": 1,
                                 "name": "Proportion",
                                 "description": "Proportion datatypes allow for ratios, percent, fractions and proportions to be modelled.",
                                 "id": "proportion",
@@ -2915,7 +3011,9 @@
                                 "node_id": "at0028"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0017]",
+                                "max": 1,
                                 "name": "Any",
                                 "description": "The datatype for this \u0027any\u0027 element can be specified or constrained in a template or at run-time, but is not explicitly modelled in the archetype.",
                                 "id": "any",
@@ -2923,7 +3021,9 @@
                                 "node_id": "at0017"
                               },
                               {
+                                "min": 0,
                                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0021]",
+                                "max": 1,
                                 "name": "Duration",
                                 "description": "Duration datatype allows recording of the duration of clinical concepts.  \u0027Allow all time units\u0027 is the default, although specific time units can be explicitly modelled.  Maximum and minum values can be set for each time unit.",
                                 "id": "duration",
@@ -4077,10 +4177,12 @@
                 "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0065]",
-                    "name": "Method",
+                    "max": 1,
+                    "name": "Method 1",
                     "description": "Identification of specific method or technique for the procedure.",
-                    "id": "method",
+                    "id": "method_1",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
                     "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0065]}\u0027",
@@ -4125,7 +4227,9 @@
                     "node_id": "at0065"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0066]",
+                    "max": 1,
                     "name": "Scheduled date/time",
                     "description": "The date and/or time on which the procedure is intended to be performed.",
                     "id": "scheduled_date_time",
@@ -4155,7 +4259,9 @@
                     "node_id": "at0066"
                   },
                   {
+                    "min": 1,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0002]",
+                    "max": 1,
                     "name": "Procedure name",
                     "description": "Identification of the procedure by name.",
                     "id": "procedure_name",
@@ -4185,7 +4291,9 @@
                     "node_id": "at0002"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0060]",
+                    "max": 1,
                     "name": "Final end date/time",
                     "description": "The date and/or time when the entire procedure, or the last component of a multicomponent procedure,  was finished.",
                     "id": "final_end_date_time",
@@ -4581,7 +4689,9 @@
                     "max": 1,
                     "children": [
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0001]",
+                        "max": 1,
                         "name": "Unstructured name",
                         "description": "Name in free text unstructured format.",
                         "id": "unstructured_name",
@@ -4611,7 +4721,9 @@
                         "node_id": "at0001"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0006]",
+                        "max": 1,
                         "name": "Name type",
                         "description": "Type of name described.",
                         "id": "name_type",
@@ -4695,7 +4807,9 @@
                         "node_id": "at0006"
                       },
                       {
+                        "min": 0,
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0022]",
+                        "max": 1,
                         "name": "Preferred name",
                         "description": "Indicates that this is the name by which a person chooses to be identified.",
                         "id": "preferred_name",
@@ -4707,7 +4821,7 @@
                             "mandatory_attributes": [
                               {
                                 "attribute": "value",
-                                "type": "STRING"
+                                "type": "BOOLEAN"
                               }
                             ],
                             "attribute_name": "value",
@@ -4735,7 +4849,9 @@
                     "node_id": "openEHR-EHR-CLUSTER.person_name.v1"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[at0056]",
+                    "max": 1,
                     "name": "Receiver order identifier",
                     "description": "The ID assigned to the order by the healthcare provider or organisation receiving the request for service. This is also referred to as Filler Order Identifier.",
                     "id": "receiver_order_identifier",
@@ -4777,7 +4893,9 @@
                     "node_id": "at0056"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[at0054]",
+                    "max": 1,
                     "name": "Requestor order identifier",
                     "description": "The local ID assigned to the order by the healthcare provider or organisation requesting the service.",
                     "id": "requestor_order_identifier",
@@ -4974,7 +5092,9 @@
                 "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0003]",
+                    "max": 1,
                     "name": "CPR decision",
                     "description": "The clinical decision on whether cardiopulmonary resuscitation (CPR) should be attempted. In some cases a clear answer may not be available to the recording clinician.",
                     "id": "cpr_decision",
@@ -5028,7 +5148,9 @@
                     "node_id": "at0003"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0002]",
+                    "max": 1,
                     "name": "Date of CPR decision",
                     "description": "The date at which the CPR decision was originally taken or last reviewed.",
                     "id": "date_of_cpr_decision",
@@ -5058,7 +5180,9 @@
                     "node_id": "at0002"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0021]",
+                    "max": 1,
                     "name": "Comment",
                     "description": "Other narrative comment pertinent to the CPR decision.",
                     "id": "comment",
@@ -5101,7 +5225,9 @@
                 "max": 1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/protocol[at0010]/items[at0009]",
+                    "max": 1,
                     "name": "Date for review of CPR decision",
                     "description": "The date at which the CPR decision should be reviewed.",
                     "id": "date_for_review_of_cpr_decision",
@@ -5132,7 +5258,9 @@
                     "node_id": "at0009"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/protocol[at0010]/items[at0014]",
+                    "max": 1,
                     "name": "Discussion with informal carer",
                     "description": "Has resuscitation been discussed with  the patient\u0027s informal carer or carers?",
                     "id": "discussion_with_informal_carer",
@@ -5292,7 +5420,9 @@
                 "max": -1,
                 "children": [
                   {
+                    "min": 0,
                     "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0001]",
+                    "max": 1,
                     "name": "Period of care identifier",
                     "description": "The period of care to which this composition belongs. This equates to the CONTSYS concept and repesents an admisitrative or contractual spell of care, involving a specific instiution or care provider.",
                     "id": "period_of_care_identifier",
@@ -5322,7 +5452,9 @@
                     "node_id": "at0001"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0008]",
+                    "max": -1,
                     "name": "Tags",
                     "description": "*",
                     "id": "tags",
@@ -5352,7 +5484,9 @@
                     "node_id": "at0008"
                   },
                   {
+                    "min": 0,
                     "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0009]",
+                    "max": -1,
                     "name": "Attachment",
                     "description": "*",
                     "id": "attachment",

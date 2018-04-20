@@ -60,8 +60,8 @@ public class OptVisitorTest extends TestCase {
         String expectedJson = new String(Files.readAllBytes(Paths.get("src/test/resources/RIPPLE-Conformance Test Introspected.json")));
 
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Allergies List.v0");
-        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Problem List.v1");
-//        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("RIPPLE - Conformance Test template");
+//        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Problem List.v1");
+        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("RIPPLE - Conformance Test template");
         Map map = new OptVisitor().traverse(operationaltemplate);
 
         assertNotNull(map);
