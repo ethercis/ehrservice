@@ -19,6 +19,7 @@
 package com.ethercis.opt.mapper;
 
 import com.ethercis.ehr.encode.wrappers.SnakeCase;
+import com.ethercis.opt.AttributeDef;
 import com.ethercis.opt.ValuePoint;
 import org.apache.commons.lang.StringUtils;
 import org.openehr.build.RMObjectBuildingException;
@@ -45,8 +46,11 @@ public class AttributeList {
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             Map<String, Object> definition = new HashMap<>();
             definition.put(Constants.CATEGORY, Constants.LITTERAL_ATTRIBUTE);
-            definition.put(Constants.ATTRIBUTE, new SnakeCase(entry.getKey()).camelToSnake());
-            definition.put(Constants.NAME, StringUtils.capitalize(entry.getKey()));
+//            definition.put(Constants.ATTRIBUTE, new SnakeCase(entry.getKey()).camelToSnake());
+//            definition.put(Constants.NAME, StringUtils.capitalize(entry.getKey()));
+
+            definition.putAll(new AttributeDef(entry.getKey()).naming());
+
             String type = (String) ((Map) entry.getValue()).get(Constants.TYPE);
             definition.put(Constants.TYPE, type);
 

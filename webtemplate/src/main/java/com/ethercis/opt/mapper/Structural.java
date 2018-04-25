@@ -71,6 +71,10 @@ public class Structural {
 
         if (!path.isEmpty())
             map.put(Constants.AQL_PATH, path);
+        else {
+            if (!"COMPOSITION".equals(rmTypeName))
+                return null; //do not add mandatory attribute without a corresponding path
+        }
 
         if (!validationMap.isEmpty())
             map.put(Constants.VALIDATION, validationMap);
@@ -82,7 +86,7 @@ public class Structural {
             map.put(Constants.DESCRIPTION, termDef.get(nodeId).getDescription());
         }
 
-        if (ccomplexobject.getOccurrences() != null){
+        if (ccomplexobject.getOccurrences() != null) {
             map.put(Constants.MIN, ccomplexobject.getOccurrences().getLower() == 0 ?
                     (ccomplexobject.getOccurrences().getLowerUnbounded() == true ? -1 : 0) :
                     ccomplexobject.getOccurrences().getLower());
@@ -105,11 +109,10 @@ public class Structural {
                 rangeMap.put(Constants.MIN, cattribute.getExistence().isSetLower() ? cattribute.getExistence().getLower() : -1);
                 rangeMap.put(Constants.MAX_OP, cattribute.getExistence().isSetUpperIncluded() ? "<=" : "<");
                 rangeMap.put(Constants.MAX, cattribute.getExistence().isSetUpper() ? cattribute.getExistence().getUpper() : -1);
-            }
-            else if (cattribute instanceof CSINGLEATTRIBUTE && cattribute.getRmAttributeName().equals(Constants.NAME)){
+            } else if (cattribute instanceof CSINGLEATTRIBUTE && cattribute.getRmAttributeName().equals(Constants.NAME)) {
                 //check if node name is overriden in the template
                 String overridenName = new NodeNameAttribute(cattribute).staticName();
-                if (overridenName != null){
+                if (overridenName != null) {
                     map.put(Constants.NAME, overridenName);
                     map.put(Constants.ID, new NodeId(overridenName).ehrscape());
                 }

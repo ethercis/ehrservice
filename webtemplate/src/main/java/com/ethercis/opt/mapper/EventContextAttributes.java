@@ -18,6 +18,7 @@
 
 package com.ethercis.opt.mapper;
 
+import com.ethercis.opt.AttributeDef;
 import org.openehr.build.RMObjectBuildingException;
 
 import java.util.HashMap;
@@ -34,7 +35,8 @@ public class EventContextAttributes {
     public Map<String, Object> toMap() throws NoSuchFieldException, RMObjectBuildingException {
         Map<String, Object> eventContextMap = new HashMap<>();
 
-        eventContextMap.put(Constants.ATTRIBUTE, Constants.CONTEXT);
+//        eventContextMap.put(Constants.ATTRIBUTE, Constants.CONTEXT);
+        eventContextMap.putAll(new AttributeDef(Constants.CONTEXT).naming());
         eventContextMap.put(Constants.RM_TYPE, EVENT_CONTEXT);
         eventContextMap.put(Constants.NODE_ID, "");
         eventContextMap.put(Constants.MAX, 1);

@@ -61,15 +61,29 @@ public class OptVisitorTest extends TestCase {
 
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Allergies List.v0");
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Problem List.v1");
-        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("RIPPLE - Conformance Test template");
+        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE) knowledge.retrieveTemplate("RIPPLE - Conformance Test template");
         Map map = new OptVisitor().traverse(operationaltemplate);
 
         assertNotNull(map);
 
-        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n","").replaceAll("\\r", ""));
+        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
     }
 
-    String toJson(Map<String, Object> map){
+    public void testTraverseAnyCR113() throws Exception {
+
+        String expectedJson = new String(Files.readAllBytes(Paths.get("src/test/resources/RIPPLE-Conformance Test Introspected.json")));
+
+//        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Allergies List.v0");
+//        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Problem List.v1");
+        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE) knowledge.retrieveTemplate("IDCR - Immunisation summary.v0");
+        Map map = new OptVisitor().traverse(operationaltemplate);
+
+        assertNotNull(map);
+
+        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
+    }
+
+    String toJson(Map<String, Object> map) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
         return gson.toJson(map);

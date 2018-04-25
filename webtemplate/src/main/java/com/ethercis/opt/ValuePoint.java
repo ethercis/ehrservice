@@ -50,8 +50,10 @@ public class ValuePoint {
         Map<String, String> attributeSpec = new HashMap<>();
 
         for (int i = 0; i < attributes.length; i++) {
-            if ((i % 2) == 0) //value name
-                attributeSpec.put(Constants.ATTRIBUTE, attributes[i]);
+            if ((i % 2) == 0) {//value name
+//                attributeSpec.put(Constants.ATTRIBUTE, attributes[i]);
+                attributeSpec.putAll(new AttributeDef(attributes[i]).naming());
+            }
             else {
                 attributeSpec.put(Constants.TYPE, attributes[i]);
                 definitionList.add(attributeSpec);
@@ -78,7 +80,10 @@ public class ValuePoint {
 
             Map<String, String> attributeSpec = new HashMap<>();
 
-            attributeSpec.put(Constants.ATTRIBUTE, new SnakeCase(attribute.getKey()).camelToSnake());
+//            attributeSpec.put(Constants.ATTRIBUTE, new SnakeCase(attribute.getKey()).camelToSnake());
+
+            attributeSpec.putAll(new AttributeDef(attribute.getKey()).naming());
+
             attributeSpec.put(Constants.TYPE, String.valueOf(((Map) attribute.getValue()).get("type")));
 
             definitionList.add(attributeSpec);

@@ -253,8 +253,10 @@ public class OptVisitor extends RmBinding {
                         try {
                             for (COBJECT cobj : children) {
                                 Map cobjectMap = handleCObject(opt, cobj, termDef, attrName, pathloop);
-                                if (cobjectMap != null)
+                                if (cobjectMap != null) {
+                                    cobjectMap.put(Constants.AQL_PATH, pathloop);
                                     childrenList.add(cobjectMap);
+                                }
 //                            log.debug("attrName=" + attrName + ": attrValue=" + attrValue);
                             }
                         } catch (Exception e) {
