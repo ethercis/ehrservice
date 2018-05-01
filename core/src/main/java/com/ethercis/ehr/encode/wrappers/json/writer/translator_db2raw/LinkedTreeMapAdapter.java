@@ -23,6 +23,8 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import java.util.Map;
  */
 public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements I_DvTypeAdapter {
 
+    Logger logger = LogManager.getLogger(LinkedTreeMapAdapter.class);
 
     protected AdapterType adapterType = AdapterType._DBJSON2RAWJSON;
     protected String parentArchetypeNodeId = null;
@@ -76,8 +79,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
         int lastChild = 0;
         if (isItemsOnly) {
             lastChild = map.size() - 1;
-        }
-        else if (isMultiContent){
+        } else if (isMultiContent) {
             lastChild = new Children(map).contentCount();
         }
 
@@ -91,6 +93,20 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
 
                 if (value == null)
                     continue;
+
+                //for activities and events, process it as arrays
+                if (key.equals(CompositionSerializer.TAG_EVENTS) || key.equals(CompositionSerializer.TAG_ACTIVITIES)){
+                    //get the entry key
+                    //TODO: support more than one entry!!!
+                    if (((LinkedTreeMap)value).entrySet().toArray().length > 1){
+                        logger.warn("Detected more than one entry for "+key+"; size found:"+((LinkedTreeMap)value).entrySet().toArray().length);
+                    }
+                    Map.Entry entry1 = (Map.Entry) ((LinkedTreeMap)value).entrySet().toArray()[0];
+                    key = (String)entry1.getKey();
+                    value = entry1.getValue();
+                    ((LinkedTreeMap) ((ArrayList) value).get(0)).put(AT_CLASS, new DomainStructure(archetypeNodeId).archetypeSlotType());
+                }
+
 
                 if (value instanceof ArrayList) {
                     if (!key.equals(CompositionSerializer.TAG_NAME)) {
@@ -107,10 +123,12 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                             }
                             if (cursor > lastChild)
                                 writer.endArray();
-                        }
-                        else if (isMultiContent && key.contains(CompositionSerializer.TAG_CONTENT)){
+                        } else if (isMultiContent && key.contains(CompositionSerializer.TAG_CONTENT)) {
                             //assumed sorted (LinkedTreeMap preserve input order)
-                            ((LinkedTreeMap) ((ArrayList) value).get(0)).put(ARCHETYPE_NODE_ID, archetypeNodeId);
+                            if (value instanceof ArrayList && ((ArrayList) value).size() > 0 && ((ArrayList) value).get(0) instanceof LinkedTreeMap) {
+                                ((LinkedTreeMap) ((ArrayList) value).get(0)).put(ARCHETYPE_NODE_ID, archetypeNodeId);
+                                ((LinkedTreeMap) ((ArrayList) value).get(0)).put(AT_CLASS, new DomainStructure(archetypeNodeId).archetypeSlotType());
+                            }
 
                             if (cursor == 0) { //initial
                                 writer.name(jsonKey);
@@ -124,8 +142,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                             }
                             if (cursor > lastChild - 1)
                                 writer.endArray();
-                        }
-                        else {
+                        } else {
                             writer.name(jsonKey);
                             writer.beginArray();
                             new ArrayListAdapter(archetypeNodeId, key).write(writer, (ArrayList) value);
@@ -136,16 +153,21 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                         //protective against old entries in the DB...
                         Object nameDefinition = ((Map) (((ArrayList) value).get(0))).get("value");
                         if (nameDefinition instanceof String)
-                            writeNameAsValue(writer, (String)nameDefinition);
+                            writeNameAsValue(writer, (String) nameDefinition);
                         else //ignore
                             ;
                     }
                 } else if (value instanceof LinkedTreeMap) {
                     LinkedTreeMap valueMap = (LinkedTreeMap) value;
                     //get the value point type and add it to the value map
-                    String elementType = (String) map.get(CompositionSerializer.TAG_CLASS);
-                    if (elementType != null) {
+                    if (valueMap.containsKey(CompositionSerializer.TAG_CLASS)) {
+                        String elementType = (String) valueMap.get(CompositionSerializer.TAG_CLASS);
                         valueMap.put(AT_CLASS, new SnakeCase(elementType).camelToUpperSnake());
+                        valueMap.remove(CompositionSerializer.TAG_CLASS);
+                        //TODO: CHC, 180426 temporary fix, modify DB encoding to not include name for attribute.
+                        if (key.contains("/time") && valueMap.containsKey(CompositionSerializer.TAG_NAME)){
+                            valueMap.remove(CompositionSerializer.TAG_NAME);
+                        }
                     }
                     writer.name(jsonKey);
                     new LinkedTreeMapAdapter().write(writer, valueMap);
@@ -156,15 +178,16 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                     } else if (key.equals(CompositionSerializer.TAG_PATH)) {
                         writer.name(AT_CLASS).value(ELEMENT);
                         //get the actual archetypeNodeId from path
-                        archetypeNodeId = new PathAttribute((String)value).archetypeNodeId();
-                        writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                        archetypeNodeId = new PathAttribute((String) value).archetypeNodeId();
+//                        writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                        new ArchetypeNodeId(writer, archetypeNodeId).write();
                     } else if (key.equals(CompositionSerializer.TAG_NAME)) {
 //                        System.out.println("name:" + NAME);
                         writeNameAsValue(writer, value.toString());
 //                        writer.name(NAME).value((String) value);
                     } else {
 //                        System.out.println("name:" + key);
-                        writer.name(key).value((String) value);
+                        writer.name(jsonKey).value((String) value);
                     }
                 } else if (value instanceof Double) {
 //                    System.out.println("name:" + new SnakeCase(key).camelToSnake());
@@ -198,8 +221,13 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
         if (path != null && nodeKey != null) {
             String archetypeNodeId = new PathAttribute(path).parentArchetypeNodeId(nodeKey);
 //            String parentNodeName = new PathAttribute(path).parentNodeName(nodeKey);
-            if (archetypeNodeId != null)
-                writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+            if (archetypeNodeId != null) {
+//                writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                new ArchetypeNodeId(writer, archetypeNodeId).write();
+            }
+        }
+        else if (parentArchetypeNodeId != null){
+            new ArchetypeNodeId(writer, parentArchetypeNodeId).write();
         }
 
         writeInternal(writer, map);

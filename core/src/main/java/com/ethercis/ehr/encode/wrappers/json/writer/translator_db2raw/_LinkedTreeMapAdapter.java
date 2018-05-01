@@ -186,23 +186,29 @@ public class _LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements
             if (path != null && nodeKey != null) {
                 String archetypeNodeId = new PathAttribute(path).parentArchetypeNodeId(nodeKey);
 //            String parentNodeName = new PathAttribute(path).parentNodeName(nodeKey);
-                if (archetypeNodeId != null)
-                    writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                if (archetypeNodeId != null) {
+//                    writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                    new ArchetypeNodeId(writer, archetypeNodeId).write();
+                }
             }
 //            if (parentNodeName != null)
 //                writeNameAsValue(writer, parentNodeName);
             isRoot = false;
         } else {
-            if (parentArchetypeNodeId != null)
-                writer.name(ARCHETYPE_NODE_ID).value(parentArchetypeNodeId);
+            if (parentArchetypeNodeId != null) {
+//                writer.name(ARCHETYPE_NODE_ID).value(parentArchetypeNodeId);
+                new ArchetypeNodeId(writer, parentArchetypeNodeId).write();
+            }
             else {
                 String nodeKey = new PathAttribute().structuralNodeKey(map);
                 String path = new PathAttribute().findPath(map);
                 if (path != null && nodeKey != null) {
                     String archetypeNodeId = new PathAttribute(path).parentArchetypeNodeId(nodeKey);
 //            String parentNodeName = new PathAttribute(path).parentNodeName(nodeKey);
-                    if (archetypeNodeId != null)
-                        writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                    if (archetypeNodeId != null) {
+//                        writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
+                        new ArchetypeNodeId(writer, archetypeNodeId).write();
+                    }
                 }
             }
 

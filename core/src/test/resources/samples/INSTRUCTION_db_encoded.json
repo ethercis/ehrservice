@@ -1,0 +1,214 @@
+{
+  "/composition[openEHR-EHR-COMPOSITION.medication_list.v0 and name/value='Medication statement list']": {
+    "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1]": [
+      {
+        "/items[openEHR-EHR-INSTRUCTION.medication_order.v1]": [
+          {
+            "/activities": {
+              "/activities[at0001]": [
+                {
+                  "/description[at0002]": {
+                    "/items[at0091]": [
+                      {
+                        "/value": {
+                          "value": "IM Intra Muscular"
+                        },
+                        "/$CLASS$": "DvText",
+                        "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/description[at0002]/items[at0091 and name/value='Route']",
+                        "/name": [
+                          {
+                            "value": "Route"
+                          }
+                        ]
+                      }
+                    ],
+                    "/items[at0113]": [
+                      {
+                        "/items[openEHR-EHR-CLUSTER.medication_course_summary.v0]": [
+                          {
+                            "/items[at0001]": [
+                              {
+                                "/value": {
+                                  "value": "Active",
+                                  "definingCode": {
+                                    "codeString": "at0021",
+                                    "terminologyId": {
+                                      "name": "local",
+                                      "value": "local"
+                                    }
+                                  }
+                                },
+                                "/$CLASS$": "DvCodedText",
+                                "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/description[at0002]/items[at0113 and name/value='Order details']/items[openEHR-EHR-CLUSTER.medication_course_summary.v0 and name/value='Order summary']/items[at0001 and name/value='Course status']",
+                                "/name": [
+                                  {
+                                    "value": "Course status"
+                                  }
+                                ]
+                              }
+                            ],
+                            "/name": [
+                              {
+                                "value": "Order summary"
+                              }
+                            ]
+                          }
+                        ],
+                        "/items[at0012]": [
+                          {
+                            "/value": {
+                              "value": "2017-12-12T09:13:26.000Z",
+                              "epoch_offset": 1513070006000
+                            },
+                            "/$CLASS$": "DvDateTime",
+                            "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/description[at0002]/items[at0113 and name/value='Order details']/items[at0012 and name/value='Order start date/time']",
+                            "/name": [
+                              {
+                                "value": "Order start date/time"
+                              }
+                            ]
+                          }
+                        ],
+                        "/name": [
+                          {
+                            "value": "Order details"
+                          }
+                        ]
+                      }
+                    ],
+                    "/items[at0044]": [
+                      {
+                        "/value": {
+                          "value": "tes"
+                        },
+                        "/$CLASS$": "DvText",
+                        "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/description[at0002]/items[at0044 and name/value='Additional instruction']",
+                        "/name": [
+                          {
+                            "value": "Additional instruction"
+                          }
+                        ]
+                      }
+                    ],
+                    "/items[at0173]": [
+                      {
+                        "/value": {
+                          "value": "test"
+                        },
+                        "/$CLASS$": "DvText",
+                        "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/description[at0002]/items[at0173 and name/value='Dose amount description']",
+                        "/name": [
+                          {
+                            "value": "Dose amount description"
+                          }
+                        ]
+                      },
+                      {
+                        "/value": {
+                          "value": "40mg"
+                        },
+                        "/$CLASS$": "DvText",
+                        "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/description[at0002]/items[at0173 and name/value='Dose timing description']",
+                        "/name": [
+                          {
+                            "value": "Dose timing description"
+                          }
+                        ]
+                      }
+                    ],
+                    "/items[at0070]": [
+                      {
+                        "/value": {
+                          "value": "test",
+                          "definingCode": {
+                            "codeString": "173134014",
+                            "terminologyId": {
+                              "name": "external",
+                              "value": "external"
+                            }
+                          }
+                        },
+                        "/$CLASS$": "DvCodedText",
+                        "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/description[at0002]/items[at0070 and name/value='Medication item']",
+                        "/name": [
+                          {
+                            "value": "Medication item"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "/timing": {
+                    "/value": {
+                      "charset": {
+                        "codeString": "UTF-8",
+                        "terminologyId": {
+                          "name": "IANA_character-sets",
+                          "value": "IANA_character-sets"
+                        }
+                      },
+                      "formalism": "timing",
+                      "language": {
+                        "codeString": "en",
+                        "terminologyId": {
+                          "name": "ISO_639-1",
+                          "value": "ISO_639-1"
+                        }
+                      },
+                      "value": "R5/2017-06-26T10:00:00Z/P1M"
+                    },
+                    "/$CLASS$": "DvParsable",
+                    "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/activities[at0001 and name/value='Order']/timing"
+                  },
+                  "/action_archetype_id": "/.*/",
+                  "/name": [
+                    {
+                      "value": "Order"
+                    }
+                  ]
+                }
+              ]
+            },
+            "/uid": {
+              "/value": {
+                "root": {
+                  "value": "45e3f9f3-abe9-4f79-b1d2-18d0b3433ff9"
+                },
+                "value": "45e3f9f3-abe9-4f79-b1d2-18d0b3433ff9"
+              },
+              "/$CLASS$": "HierObjectID",
+              "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/uid",
+              "/name": [
+                {
+                  "value": "45e3f9f3-abe9-4f79-b1d2-18d0b3433ff9"
+                }
+              ]
+            },
+            "/narrative": {
+              "/value": {
+                "value": "test - IM Intra Muscular - test 40mg"
+              },
+              "/$CLASS$": "DvText",
+              "/$PATH$": "/content[openEHR-EHR-SECTION.medication_medical_devices_rcp.v1 and name/value='Medication and medical devices']/items[openEHR-EHR-INSTRUCTION.medication_order.v1 and name/value='Medication order']/narrative",
+              "/name": [
+                {
+                  "value": "Medication order"
+                }
+              ]
+            },
+            "/name": [
+              {
+                "value": "Medication order"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "/name": [
+    {
+      "value": "Medication statement list"
+    }
+  ]
+}

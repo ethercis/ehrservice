@@ -19,6 +19,11 @@ package com.ethercis.ehr.encode.rawjson;
 
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -195,246 +200,282 @@ public class LightRawJsonEncoderTest {
         System.out.println(translated);
     }
 
-        @Test
-        public void testLightEncoding2() {
-                String jsonbOrigin =
-                                       "  {\n" +
-                                       "    \"/name\": [\n" +
-                                       "      {\n" +
-                                       "        \"value\": \"Laboratory test panel\"\n" +
-                                       "      }\n" +
-                                       "    ],\n" +
-                                       "    \"/items[at0002]\": [\n" +
-                                       "      {\n" +
-                                       "        \"/name\": [\n" +
-                                       "          {\n" +
-                                       "            \"value\": \"Laboratory result\"\n" +
-                                       "          }\n" +
-                                       "        ],\n" +
-                                       "        \"/items[at0001]\": [\n" +
-                                       "          {\n" +
-                                       "            \"/name\": [\n" +
-                                       "              {\n" +
-                                       "                \"value\": \"white blood cell count\"\n" +
-                                       "              }\n" +
-                                       "            ],\n" +
-                                       "            \"/value\": {\n" +
-                                       "              \"units\": \"10*9/l\",\n" +
-                                       "              \"accuracy\": 0.0,\n" +
-                                       "              \"magnitude\": 4.7,\n" +
-                                       "              \"precision\": 0,\n" +
-                                       "              \"normalRange\": {\n" +
-                                       "                \"interval\": {\n" +
-                                       "                  \"lower\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 3.6,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"upper\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 11.0,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"lowerIncluded\": true,\n" +
-                                       "                  \"upperIncluded\": true\n" +
-                                       "                }\n" +
-                                       "              },\n" +
-                                       "              \"accuracyPercent\": false\n" +
-                                       "            },\n" +
-                                       "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result']/items[at0001 and name/value='white blood cell count']\",\n" +
-                                       "            \"/$CLASS$\": \"DvQuantity\"\n" +
-                                       "          }\n" +
-                                       "        ]\n" +
-                                       "      },\n" +
-                                       "      {\n" +
-                                       "        \"/name\": [\n" +
-                                       "          {\n" +
-                                       "            \"value\": \"Laboratory result #2\"\n" +
-                                       "          }\n" +
-                                       "        ],\n" +
-                                       "        \"/items[at0001]\": [\n" +
-                                       "          {\n" +
-                                       "            \"/name\": [\n" +
-                                       "              {\n" +
-                                       "                \"value\": \"neutrophil count\"\n" +
-                                       "              }\n" +
-                                       "            ],\n" +
-                                       "            \"/value\": {\n" +
-                                       "              \"units\": \"10*9/l\",\n" +
-                                       "              \"accuracy\": 0.0,\n" +
-                                       "              \"magnitude\": 4.9,\n" +
-                                       "              \"precision\": 0,\n" +
-                                       "              \"normalRange\": {\n" +
-                                       "                \"interval\": {\n" +
-                                       "                  \"lower\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 1.8,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"upper\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 7.5,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"lowerIncluded\": true,\n" +
-                                       "                  \"upperIncluded\": true\n" +
-                                       "                }\n" +
-                                       "              },\n" +
-                                       "              \"accuracyPercent\": false\n" +
-                                       "            },\n" +
-                                       "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #2']/items[at0001 and name/value='neutrophil count']\",\n" +
-                                       "            \"/$CLASS$\": \"DvQuantity\"\n" +
-                                       "          }\n" +
-                                       "        ]\n" +
-                                       "      },\n" +
-                                       "      {\n" +
-                                       "        \"/name\": [\n" +
-                                       "          {\n" +
-                                       "            \"value\": \"Laboratory result #3\"\n" +
-                                       "          }\n" +
-                                       "        ],\n" +
-                                       "        \"/items[at0001]\": [\n" +
-                                       "          {\n" +
-                                       "            \"/name\": [\n" +
-                                       "              {\n" +
-                                       "                \"value\": \"lymphocyte count\"\n" +
-                                       "              }\n" +
-                                       "            ],\n" +
-                                       "            \"/value\": {\n" +
-                                       "              \"units\": \"10*9/l\",\n" +
-                                       "              \"accuracy\": 0.0,\n" +
-                                       "              \"magnitude\": 3.2,\n" +
-                                       "              \"precision\": 0,\n" +
-                                       "              \"normalRange\": {\n" +
-                                       "                \"interval\": {\n" +
-                                       "                  \"lower\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 1.0,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"upper\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 4.0,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"lowerIncluded\": true,\n" +
-                                       "                  \"upperIncluded\": true\n" +
-                                       "                }\n" +
-                                       "              },\n" +
-                                       "              \"accuracyPercent\": false\n" +
-                                       "            },\n" +
-                                       "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #3']/items[at0001 and name/value='lymphocyte count']\",\n" +
-                                       "            \"/$CLASS$\": \"DvQuantity\"\n" +
-                                       "          }\n" +
-                                       "        ]\n" +
-                                       "      },\n" +
-                                       "      {\n" +
-                                       "        \"/name\": [\n" +
-                                       "          {\n" +
-                                       "            \"value\": \"Laboratory result #4\"\n" +
-                                       "          }\n" +
-                                       "        ],\n" +
-                                       "        \"/items[at0001]\": [\n" +
-                                       "          {\n" +
-                                       "            \"/name\": [\n" +
-                                       "              {\n" +
-                                       "                \"value\": \"61928009\"\n" +
-                                       "              }\n" +
-                                       "            ],\n" +
-                                       "            \"/value\": {\n" +
-                                       "              \"units\": \"10*9/l\",\n" +
-                                       "              \"accuracy\": 0.0,\n" +
-                                       "              \"magnitude\": 198.0,\n" +
-                                       "              \"precision\": 0,\n" +
-                                       "              \"normalRange\": {\n" +
-                                       "                \"interval\": {\n" +
-                                       "                  \"lower\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 140.0,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"upper\": {\n" +
-                                       "                    \"units\": \"10*9/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 400.0,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"lowerIncluded\": true,\n" +
-                                       "                  \"upperIncluded\": true\n" +
-                                       "                }\n" +
-                                       "              },\n" +
-                                       "              \"accuracyPercent\": false\n" +
-                                       "            },\n" +
-                                       "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #4']/items[at0001 and name/value='61928009']\",\n" +
-                                       "            \"/$CLASS$\": \"DvQuantity\"\n" +
-                                       "          }\n" +
-                                       "        ]\n" +
-                                       "      },\n" +
-                                       "      {\n" +
-                                       "        \"/name\": [\n" +
-                                       "          {\n" +
-                                       "            \"value\": \"Laboratory result #5\"\n" +
-                                       "          }\n" +
-                                       "        ],\n" +
-                                       "        \"/items[at0001]\": [\n" +
-                                       "          {\n" +
-                                       "            \"/name\": [\n" +
-                                       "              {\n" +
-                                       "                \"value\": \"271026005\"\n" +
-                                       "              }\n" +
-                                       "            ],\n" +
-                                       "            \"/value\": {\n" +
-                                       "              \"units\": \"g/l\",\n" +
-                                       "              \"accuracy\": 0.0,\n" +
-                                       "              \"magnitude\": 153.0,\n" +
-                                       "              \"precision\": 0,\n" +
-                                       "              \"normalRange\": {\n" +
-                                       "                \"interval\": {\n" +
-                                       "                  \"lower\": {\n" +
-                                       "                    \"units\": \"g/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 130.0,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"upper\": {\n" +
-                                       "                    \"units\": \"g/l\",\n" +
-                                       "                    \"accuracy\": 0.0,\n" +
-                                       "                    \"magnitude\": 180.0,\n" +
-                                       "                    \"precision\": 0,\n" +
-                                       "                    \"accuracyPercent\": false\n" +
-                                       "                  },\n" +
-                                       "                  \"lowerIncluded\": true,\n" +
-                                       "                  \"upperIncluded\": true\n" +
-                                       "                }\n" +
-                                       "              },\n" +
-                                       "              \"accuracyPercent\": false\n" +
-                                       "            },\n" +
-                                       "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #5']/items[at0001 and name/value='271026005']\",\n" +
-                                       "            \"/$CLASS$\": \"DvQuantity\"\n" +
-                                       "          }\n" +
-                                       "        ]\n" +
-                                       "      }\n" +
-                                       "    ]\n" +
-                                       "  }\n";
-                String translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsString("test");
-                assertNotNull(translated);
-                System.out.println(translated);
-        }
+    @Test
+    public void testLightEncoding2() {
+        String jsonbOrigin =
+                "  {\n" +
+                        "    \"/name\": [\n" +
+                        "      {\n" +
+                        "        \"value\": \"Laboratory test panel\"\n" +
+                        "      }\n" +
+                        "    ],\n" +
+                        "    \"/items[at0002]\": [\n" +
+                        "      {\n" +
+                        "        \"/name\": [\n" +
+                        "          {\n" +
+                        "            \"value\": \"Laboratory result\"\n" +
+                        "          }\n" +
+                        "        ],\n" +
+                        "        \"/items[at0001]\": [\n" +
+                        "          {\n" +
+                        "            \"/name\": [\n" +
+                        "              {\n" +
+                        "                \"value\": \"white blood cell count\"\n" +
+                        "              }\n" +
+                        "            ],\n" +
+                        "            \"/value\": {\n" +
+                        "              \"units\": \"10*9/l\",\n" +
+                        "              \"accuracy\": 0.0,\n" +
+                        "              \"magnitude\": 4.7,\n" +
+                        "              \"precision\": 0,\n" +
+                        "              \"normalRange\": {\n" +
+                        "                \"interval\": {\n" +
+                        "                  \"lower\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 3.6,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"upper\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 11.0,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"lowerIncluded\": true,\n" +
+                        "                  \"upperIncluded\": true\n" +
+                        "                }\n" +
+                        "              },\n" +
+                        "              \"accuracyPercent\": false\n" +
+                        "            },\n" +
+                        "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result']/items[at0001 and name/value='white blood cell count']\",\n" +
+                        "            \"/$CLASS$\": \"DvQuantity\"\n" +
+                        "          }\n" +
+                        "        ]\n" +
+                        "      },\n" +
+                        "      {\n" +
+                        "        \"/name\": [\n" +
+                        "          {\n" +
+                        "            \"value\": \"Laboratory result #2\"\n" +
+                        "          }\n" +
+                        "        ],\n" +
+                        "        \"/items[at0001]\": [\n" +
+                        "          {\n" +
+                        "            \"/name\": [\n" +
+                        "              {\n" +
+                        "                \"value\": \"neutrophil count\"\n" +
+                        "              }\n" +
+                        "            ],\n" +
+                        "            \"/value\": {\n" +
+                        "              \"units\": \"10*9/l\",\n" +
+                        "              \"accuracy\": 0.0,\n" +
+                        "              \"magnitude\": 4.9,\n" +
+                        "              \"precision\": 0,\n" +
+                        "              \"normalRange\": {\n" +
+                        "                \"interval\": {\n" +
+                        "                  \"lower\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 1.8,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"upper\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 7.5,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"lowerIncluded\": true,\n" +
+                        "                  \"upperIncluded\": true\n" +
+                        "                }\n" +
+                        "              },\n" +
+                        "              \"accuracyPercent\": false\n" +
+                        "            },\n" +
+                        "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #2']/items[at0001 and name/value='neutrophil count']\",\n" +
+                        "            \"/$CLASS$\": \"DvQuantity\"\n" +
+                        "          }\n" +
+                        "        ]\n" +
+                        "      },\n" +
+                        "      {\n" +
+                        "        \"/name\": [\n" +
+                        "          {\n" +
+                        "            \"value\": \"Laboratory result #3\"\n" +
+                        "          }\n" +
+                        "        ],\n" +
+                        "        \"/items[at0001]\": [\n" +
+                        "          {\n" +
+                        "            \"/name\": [\n" +
+                        "              {\n" +
+                        "                \"value\": \"lymphocyte count\"\n" +
+                        "              }\n" +
+                        "            ],\n" +
+                        "            \"/value\": {\n" +
+                        "              \"units\": \"10*9/l\",\n" +
+                        "              \"accuracy\": 0.0,\n" +
+                        "              \"magnitude\": 3.2,\n" +
+                        "              \"precision\": 0,\n" +
+                        "              \"normalRange\": {\n" +
+                        "                \"interval\": {\n" +
+                        "                  \"lower\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 1.0,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"upper\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 4.0,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"lowerIncluded\": true,\n" +
+                        "                  \"upperIncluded\": true\n" +
+                        "                }\n" +
+                        "              },\n" +
+                        "              \"accuracyPercent\": false\n" +
+                        "            },\n" +
+                        "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #3']/items[at0001 and name/value='lymphocyte count']\",\n" +
+                        "            \"/$CLASS$\": \"DvQuantity\"\n" +
+                        "          }\n" +
+                        "        ]\n" +
+                        "      },\n" +
+                        "      {\n" +
+                        "        \"/name\": [\n" +
+                        "          {\n" +
+                        "            \"value\": \"Laboratory result #4\"\n" +
+                        "          }\n" +
+                        "        ],\n" +
+                        "        \"/items[at0001]\": [\n" +
+                        "          {\n" +
+                        "            \"/name\": [\n" +
+                        "              {\n" +
+                        "                \"value\": \"61928009\"\n" +
+                        "              }\n" +
+                        "            ],\n" +
+                        "            \"/value\": {\n" +
+                        "              \"units\": \"10*9/l\",\n" +
+                        "              \"accuracy\": 0.0,\n" +
+                        "              \"magnitude\": 198.0,\n" +
+                        "              \"precision\": 0,\n" +
+                        "              \"normalRange\": {\n" +
+                        "                \"interval\": {\n" +
+                        "                  \"lower\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 140.0,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"upper\": {\n" +
+                        "                    \"units\": \"10*9/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 400.0,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"lowerIncluded\": true,\n" +
+                        "                  \"upperIncluded\": true\n" +
+                        "                }\n" +
+                        "              },\n" +
+                        "              \"accuracyPercent\": false\n" +
+                        "            },\n" +
+                        "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #4']/items[at0001 and name/value='61928009']\",\n" +
+                        "            \"/$CLASS$\": \"DvQuantity\"\n" +
+                        "          }\n" +
+                        "        ]\n" +
+                        "      },\n" +
+                        "      {\n" +
+                        "        \"/name\": [\n" +
+                        "          {\n" +
+                        "            \"value\": \"Laboratory result #5\"\n" +
+                        "          }\n" +
+                        "        ],\n" +
+                        "        \"/items[at0001]\": [\n" +
+                        "          {\n" +
+                        "            \"/name\": [\n" +
+                        "              {\n" +
+                        "                \"value\": \"271026005\"\n" +
+                        "              }\n" +
+                        "            ],\n" +
+                        "            \"/value\": {\n" +
+                        "              \"units\": \"g/l\",\n" +
+                        "              \"accuracy\": 0.0,\n" +
+                        "              \"magnitude\": 153.0,\n" +
+                        "              \"precision\": 0,\n" +
+                        "              \"normalRange\": {\n" +
+                        "                \"interval\": {\n" +
+                        "                  \"lower\": {\n" +
+                        "                    \"units\": \"g/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 130.0,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"upper\": {\n" +
+                        "                    \"units\": \"g/l\",\n" +
+                        "                    \"accuracy\": 0.0,\n" +
+                        "                    \"magnitude\": 180.0,\n" +
+                        "                    \"precision\": 0,\n" +
+                        "                    \"accuracyPercent\": false\n" +
+                        "                  },\n" +
+                        "                  \"lowerIncluded\": true,\n" +
+                        "                  \"upperIncluded\": true\n" +
+                        "                }\n" +
+                        "              },\n" +
+                        "              \"accuracyPercent\": false\n" +
+                        "            },\n" +
+                        "            \"/$PATH$\": \"/content[openEHR-EHR-OBSERVATION.laboratory_test.v0 and name/value='Laboratory test']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_panel.v0 and name/value='Laboratory test panel']/items[at0002 and name/value='Laboratory result #5']/items[at0001 and name/value='271026005']\",\n" +
+                        "            \"/$CLASS$\": \"DvQuantity\"\n" +
+                        "          }\n" +
+                        "        ]\n" +
+                        "      }\n" +
+                        "    ]\n" +
+                        "  }\n";
+        String translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsString("test");
+        assertNotNull(translated);
+        System.out.println(translated);
+    }
+
+
+    @Test
+    public void testLightEncodingAction() throws IOException {
+        String jsonbOrigin = new String(Files.readAllBytes(Paths.get("src/test/resources/samples/ACTION_db_encoded.json")));
+
+        Map translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("data");
+
+        assertNotNull(translated);
+    }
+
+    @Test
+    public void testLightEncodingMultiple() throws IOException {
+        String jsonbOrigin = new String(Files.readAllBytes(Paths.get("src/test/resources/samples/Multiple_db_encoding.json")));
+
+        Map translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("data");
+
+        assertNotNull(translated);
+    }
+
+    /**
+     * simulate:
+     * "select a as data from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']
+     *      contains COMPOSITION
+     *      a[openEHR-EHR-COMPOSITION.medication_list.v0]
+     *      where a/name/value='Medication statement list'"
+     * @throws IOException
+     */
+    @Test
+    public void testLightEncodingInstruction() throws IOException {
+        String jsonbOrigin = new String(Files.readAllBytes(Paths.get("src/test/resources/samples/INSTRUCTION_db_encoded.json")));
+
+        Map translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("data");
+
+        assertNotNull(translated);
+    }
 
 }

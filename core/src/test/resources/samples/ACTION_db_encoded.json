@@ -1,0 +1,145 @@
+{
+  "category": {
+    "@class": "DV_CODED_TEXT",
+    "value": "Event",
+    "defining_code": {
+      "terminology_id": {
+        "@class": "TERMINOLOGY_ID",
+        "value": "openehr"
+      },
+      "code_string": "433",
+      "@class": "CODE_PHRASE"
+    }
+  },
+  "context": {
+    "start_time": {
+      "@class": "DV_DATE_TIME",
+      "value": "2017-03-23T22:11:02+02:00"
+    },
+    "setting": {
+      "@class": "DV_CODED_TEXT",
+      "value": "other care",
+      "defining_code": {
+        "terminology_id": {
+          "@class": "TERMINOLOGY_ID",
+          "value": "openehr"
+        },
+        "code_string": "238",
+        "@class": "CODE_PHRASE"
+      }
+    },
+    "health_care_facility": {
+      "external_ref": {
+        "namespace": "NHS-UK",
+        "type": "PARTY",
+        "id": {
+          "scheme": "2.16.840.1.113883.2.1.4.3",
+          "@class": "GENERIC_ID",
+          "value": "999999-345"
+        },
+        "@class": "PARTY_REF"
+      },
+      "name": "Rippleburgh GP Practice",
+      "@class": "PARTY_IDENTIFIED"
+    },
+    "@class": "EVENT_CONTEXT"
+  },
+  "language": {
+    "terminology_id": {
+      "@class": "TERMINOLOGY_ID",
+      "value": "ISO_639-1"
+    },
+    "code_string": "en",
+    "@class": "CODE_PHRASE"
+  },
+  "content": {
+    "/composition[openEHR-EHR-COMPOSITION.health_summary.v1 and name/value='Immunisation summary']": {
+      "/content[openEHR-EHR-ACTION.immunisation_procedure.v1]": [
+        {
+          "/time": {
+            "/value": {
+              "value": "2017-03-23T07:45:20.622Z",
+              "epoch_offset": 1490255120622
+            },
+            "/$CLASS$": "DvDateTime",
+            "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value='Immunisation procedure']/time",
+            "/name": [
+              {
+                "value": "Immunisation procedure"
+              }
+            ]
+          },
+          "/description[at0001]": {
+            "/items[at0002]": [
+              {
+                "/value": {
+                  "value": "Tetanus"
+                },
+                "/$CLASS$": "DvText",
+                "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value='Immunisation procedure']/description[at0001]/items[at0002 and name/value='Immunisation name']",
+                "/name": [
+                  {
+                    "value": "Immunisation name"
+                  }
+                ]
+              }
+            ],
+            "/items[at0015]": [
+              {
+                "/value": {
+                  "value": "Booster needed in 12 months"
+                },
+                "/$CLASS$": "DvText",
+                "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value='Immunisation procedure']/description[at0001]/items[at0015 and name/value='Comment']",
+                "/name": [
+                  {
+                    "value": "Comment"
+                  }
+                ]
+              }
+            ],
+            "/items[at0004]": [
+              {
+                "/value": {
+                  "accuracyPercent": false,
+                  "magnitude": 3,
+                  "accuracy": 0
+                },
+                "/$CLASS$": "DvCount",
+                "/$PATH$": "/content[openEHR-EHR-ACTION.immunisation_procedure.v1 and name/value='Immunisation procedure']/description[at0001]/items[at0004 and name/value='Series number']",
+                "/name": [
+                  {
+                    "value": "Series number"
+                  }
+                ]
+              }
+            ]
+          },
+          "/name": [
+            {
+              "value": "Immunisation procedure"
+            }
+          ]
+        }
+      ]
+    },
+    "/name": [
+      {
+        "value": "Immunisation summary"
+      }
+    ]
+  },
+  "composer": {
+    "name": "Dr Jennifer Handley",
+    "@class": "PARTY_IDENTIFIED"
+  },
+  "territory": {
+    "terminology_id": {
+      "@class": "TERMINOLOGY_ID",
+      "value": "ISO_3166-1"
+    },
+    "code_string": "GB",
+    "@class": "CODE_PHRASE"
+  },
+  "@class": "COMPOSITION"
+}
