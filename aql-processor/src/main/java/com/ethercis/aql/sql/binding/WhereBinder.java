@@ -23,6 +23,7 @@ import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.aql.sql.queryImpl.I_QueryImpl;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
 import com.ethercis.aql.sql.queryImpl.value_field.ISODateTime;
+import com.ethercis.ehr.encode.CompositionSerializer;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -41,7 +42,9 @@ public class WhereBinder {
     protected final List whereClause;
     private IdentifierMapper mapper;
     private Condition initialCondition;
-    private String sqlStatementRegexp = "(?i)(like|ilike|in|not in)"; //list of subquery and operators
+    private boolean isWholeComposition = false;
+    String compositionName = null;
+    private String sqlSetStatementRegexp = "(?i)(like|ilike|in|not in)"; //list of subquery and operators
 
     private enum Operator {OR, XOR, AND, NOT, EXISTS}
 
@@ -88,6 +91,20 @@ public class WhereBinder {
         }
 
         @Override
+        public int indexOf(String string) {
+            return stringBuffer.indexOf(string);
+        }
+
+        @Override
+        public void replace(String previous, String newString) {
+            int indexOf = stringBuffer.indexOf(previous);
+            if (indexOf >= 0) {
+                stringBuffer.delete(indexOf, indexOf + previous.length());
+                stringBuffer.insert(indexOf, newString);
+            }
+        }
+
+        @Override
         public String toString() {
             return stringBuffer.toString();
         }
@@ -106,6 +123,11 @@ public class WhereBinder {
         public void setTagField(TagField tagField) {
             this.tagField = tagField;
         }
+
+        @Override
+        public boolean startWith(String tag) {
+            return stringBuffer.indexOf(tag) == 1; //starts with a quote!
+        }
     }
 
     public WhereBinder(JsonbEntryQuery jsonbEntryQuery, CompositionAttributeQuery compositionAttributeQuery, List whereClause, IdentifierMapper mapper) {
@@ -113,9 +135,10 @@ public class WhereBinder {
         this.compositionAttributeQuery = compositionAttributeQuery;
         this.whereClause = whereClause;
         this.mapper = mapper;
+        this.isWholeComposition = isWholeComposition;
     }
 
-    private TaggedStringBuffer encodeWhereVariable(UUID comp_id, VariableDefinition variableDefinition, boolean forceSQL) {
+    private TaggedStringBuffer encodeWhereVariable(UUID comp_id, VariableDefinition variableDefinition, boolean forceSQL, String compositionName) {
         String identifier = variableDefinition.getIdentifier();
         String className = mapper.getClassName(identifier);
         if (className == null)
@@ -136,7 +159,12 @@ public class WhereBinder {
                 case "COMPOSITION":
                     if (variableDefinition.getPath().startsWith("content")) {
                         field = jsonbEntryQuery.whereField(comp_id, identifier, variableDefinition);
-                        return new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
+                        TaggedStringBuffer taggedStringBuffer = new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
+                        if (compositionName != null && taggedStringBuffer.startWith(CompositionSerializer.TAG_COMPOSITION)) {
+                            //add the composition name into the composition predicate
+                            taggedStringBuffer.replace("]", " and name/value='" + compositionName + "']");
+                        }
+                        return taggedStringBuffer;
                     }
                 case "EHR":
                     field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
@@ -157,7 +185,7 @@ public class WhereBinder {
                 taggedBuffer.append((String) part);
             else if (part instanceof VariableDefinition) {
                 //substitute the identifier
-                TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) part, false);
+                TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) part, false, null);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
             } else if (part instanceof List) {
@@ -284,16 +312,30 @@ public class WhereBinder {
                     taggedBuffer = new TaggedStringBuffer();
                 }
                 //look ahead and check if followed by a sql operator
-                TaggedStringBuffer taggedStringBuffer;
-                if (isFollowedBySQLOperator(cursor))
-                    taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, true);
-                else
-                    taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false);
+                TaggedStringBuffer taggedStringBuffer = null;
+                if (isFollowedBySQLSetOperator(cursor))
+                    taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, true, null);
+                else {
+                    if (((VariableDefinition) item).getPath() != null && isWholeComposition) {
+                        //assume a composition
+                        //look ahead for name/value condition (used to produce the composition root)
+                        if (compositionName == null)
+                            compositionName = compositionNameValue(((VariableDefinition) item).getIdentifier());
+
+                        if (compositionName != null) {
+                            taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false, compositionName);
+                        } else
+                            throw new IllegalArgumentException("A composition name/value is required to resolve where statement when querying for a whole composition");
+                    } else
+                        taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false, null);
+                }
 
                 if (taggedStringBuffer != null) {
                     taggedBuffer.append(taggedStringBuffer.toString());
                     taggedBuffer.setTagField(taggedStringBuffer.getTagField());
                 }
+                //check for a composition name if applicable
+//                if (((VariableDefinition) item).getAlias())
 //                condition = wrapInCondition(condition, stringBuffer, operators);
             } else if (item instanceof List) {
                 TaggedStringBuffer taggedStringBuffer = buildWhereCondition(comp_id, taggedBuffer, (List) item);
@@ -313,13 +355,35 @@ public class WhereBinder {
 
 
     //look ahead for a SQL operator
-    private boolean isFollowedBySQLOperator(int cursor) {
+    private boolean isFollowedBySQLSetOperator(int cursor) {
         if (cursor < whereClause.size() - 1) {
             Object nextToken = whereClause.get(cursor + 1);
-            if (nextToken instanceof String && ((String) nextToken).matches(sqlStatementRegexp))
+            if (nextToken instanceof String && ((String) nextToken).matches(sqlSetStatementRegexp))
                 return true;
         }
         return false;
+    }
+
+    //look ahead for a SQL operator
+    private String compositionNameValue(String symbol) {
+
+        String token = null;
+        int lcursor; //skip the current variable
+
+        for (lcursor = 0; lcursor < whereClause.size() - 1; lcursor++) {
+            if (whereClause.get(lcursor) instanceof VariableDefinition
+                    && (((VariableDefinition) whereClause.get(lcursor)).getIdentifier().equals(symbol))
+                    && (((VariableDefinition) whereClause.get(lcursor)).getPath().equals("name/value"))
+                    ) {
+                Object nextToken = whereClause.get(lcursor + 2);
+                if (nextToken instanceof String) {
+                    token = (String) nextToken;
+                    break;
+                }
+            }
+        }
+
+        return token;
     }
 
 
@@ -345,5 +409,9 @@ public class WhereBinder {
 
     public void setInitialCondition(Condition initialCondition) {
         this.initialCondition = initialCondition;
+    }
+
+    public void setIsWholeComposition() {
+        isWholeComposition = true;
     }
 }

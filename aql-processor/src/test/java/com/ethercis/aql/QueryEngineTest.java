@@ -1143,7 +1143,7 @@ public class QueryEngineTest {
                 "    min(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as min_diastolic,\n" +
                 "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as avg_systolic,\n" +
                 "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as avg_diastolic\n" +
-                "    from EHR e[ehr_id/value='bb872277-40c4-44fb-8691-530be31e1ee9']\n" +
+                "    from EHR e\n" +
                 "    contains COMPOSITION a contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1]\n";
 
         records = queryEngine.perform(query);
@@ -1437,12 +1437,41 @@ public class QueryEngineTest {
     }
 
     @Test
-    public void testCR73_2() throws Exception {
+         public void testCR73_2() throws Exception {
         String query = "select " +
                 "a as data" +
                 " from EHR e" +
                 " contains COMPOSITION a[openEHR-EHR-COMPOSITION.report.v1]" +
                 " where a/name/value='Generic PROMS'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR73_3() throws Exception {
+        String query = "select " +
+                "a as data" +
+                " from EHR e" +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.health_summary.v1]" +
+                " where a/name/value='Immunisation summary' " +
+                " limit 1";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR73_with_where_clause_relative_to_composition() throws Exception {
+        String query = "select a as data from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']\n" +
+                "   contains COMPOSITION a[openEHR-EHR-COMPOSITION.health_summary.v1]\n" +
+                "   where a/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/description[at0001]/items[at0002]/value/value = 'lupus'\n" +
+                "         and a/name/value='Immunisation summary'" +
+                "   limit 10";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

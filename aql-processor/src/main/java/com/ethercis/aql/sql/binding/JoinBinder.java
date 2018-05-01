@@ -45,7 +45,10 @@ public class JoinBinder implements I_JoinBinder {
     private boolean composerJoined = false;
     private boolean ehrJoined = false;
 
-    public JoinBinder(boolean isWholeComposition) {
+    SelectQuery<?> selectQuery;
+
+    public JoinBinder(SelectQuery<?> selectQuery, boolean isWholeComposition) {
+        this.selectQuery = selectQuery;
         this.isWholeComposition = isWholeComposition;
     }
 
@@ -56,10 +59,9 @@ public class JoinBinder implements I_JoinBinder {
     /**
      * Warning: JOIN sequence is important!
      *
-     * @param selectQuery
      * @param compositionAttributeQuery
      */
-    public void addJoinClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
+    public SelectQuery<?> addJoinClause(CompositionAttributeQuery compositionAttributeQuery) {
 //        if (isWholeComposition)
 //            return;
         if (compositionAttributeQuery.isJoinSubject()) {
@@ -83,6 +85,8 @@ public class JoinBinder implements I_JoinBinder {
         if (compositionAttributeQuery.isJoinEhrStatus() || compositionAttributeQuery.containsEhrStatus()) {
             joinEhrStatus(selectQuery, compositionAttributeQuery);
         }
+
+        return selectQuery;
     }
 
     private void joinComposition(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {

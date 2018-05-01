@@ -98,7 +98,6 @@ public class PathResolver {
 
     public String pathOf(String identifier){
         return mapper.getPath(identifier);
-
     }
 
     /**
@@ -197,5 +196,9 @@ public class PathResolver {
 
     public boolean hasPathExpression(){
         return mapper.hasPathExpression();
+    }
+
+    public String rootOf(String identifier) {
+        return mapper.getArchetypeId(identifier);
     }
 }

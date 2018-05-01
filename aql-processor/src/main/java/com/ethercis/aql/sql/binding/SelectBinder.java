@@ -229,6 +229,7 @@ public class SelectBinder implements I_SelectBinder {
                 if (mapper.getClassName(variableDefinition.getIdentifier()).equals("COMPOSITION")){
                     //substitute this variable definition by a function definition
                     isWholeComposition = true;
+                    whereBinder.setIsWholeComposition();
                     selectQuery.addSelect(DSL.field("ehr.js_composition("+ENTRY.COMPOSITION_ID+")").as(DATA));
                     //add the composition uuid
                     VariableDefinition variableDef = new VariableDefinition("uid/value", COMPOSITION_UID, "UUID", false);

@@ -33,9 +33,11 @@ import static com.ethercis.jooq.pg.Tables.*;
 public class FromBinder {
 
     boolean isWholeComposition;
+    SelectQuery<?> selectQuery;
 
-    public FromBinder(boolean isWholeComposition) {
+    public FromBinder(boolean isWholeComposition, SelectQuery<?> selectQuery) {
         this.isWholeComposition = isWholeComposition;
+        this.selectQuery = selectQuery;
     }
 
     public FromBinder() {
@@ -44,7 +46,7 @@ public class FromBinder {
 
     //    private boolean compositionJoined = false;
 
-    public void addFromClause(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery, QueryParser queryParser){
+    public SelectQuery<?> addFromClause(){
 
         selectQuery.addFrom(ENTRY);
 
@@ -59,6 +61,8 @@ public class FromBinder {
 //                        .eq(EHR.ID));
 //            compositionJoined = true;
 //        }
+
+        return selectQuery;
 
     }
 }

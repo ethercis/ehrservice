@@ -147,7 +147,7 @@ public class QueryProcessor  {
                             if (condition != null)
                                 select.addConditions(Operator.AND, condition);
                             select.addFrom(ENTRY);
-                            new JoinBinder().addJoinClause(select, queryStep.getCompositionAttributeQuery());
+                            select = new JoinBinder(select, false).addJoinClause(queryStep.getCompositionAttributeQuery());
 
                             if (first) {
                                 unionSetQuery = select;
@@ -201,8 +201,10 @@ public class QueryProcessor  {
         else {
             SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, SelectBinder.OptimizationMode.TEMPLATE_BATCH, null);
             SelectQuery<?> select = selectBinder.bind(queryParser.getInSetExpression(), count, queryParser.getOrderAttributes());
-            new FromBinder(selectBinder.isWholeComposition()).addFromClause(select, selectBinder.getCompositionAttributeQuery(), queryParser);
-            new JoinBinder(selectBinder.isWholeComposition()).addJoinClause(select, selectBinder.getCompositionAttributeQuery());
+            select = new FromBinder(selectBinder.isWholeComposition(), select).addFromClause();
+            select = new JoinBinder(select, selectBinder.isWholeComposition()).addJoinClause(selectBinder.getCompositionAttributeQuery());
+            select = new LimitBinding(queryParser, select).bind();
+
             if (!explain)
                 if (new Variables(queryParser.getVariables()).hasDefinedDistinct() || new Variables(queryParser.getVariables()).hasDefinedFunction())
                     result = fetchResultSet(new SuperQuery(context, queryParser.getVariables(), select).select(), result);

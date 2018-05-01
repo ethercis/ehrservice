@@ -32,6 +32,10 @@ public interface I_TaggedStringBuffer {
 
     int lastIndexOf(String string);
 
+    int indexOf(String string);
+
+    void replace(String previous, String newString);
+
     String toString();
 
     int length();
@@ -39,4 +43,6 @@ public interface I_TaggedStringBuffer {
     WhereBinder.TagField getTagField();
 
     void setTagField(WhereBinder.TagField tagField);
+
+    boolean startWith(String tag);
 }
