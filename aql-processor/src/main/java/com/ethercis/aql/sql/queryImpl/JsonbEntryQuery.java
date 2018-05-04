@@ -20,7 +20,7 @@ package com.ethercis.aql.sql.queryImpl;
 import com.ethercis.aql.definition.I_VariableDefinition;
 import com.ethercis.aql.sql.PathResolver;
 import com.ethercis.aql.sql.binding.I_JoinBinder;
-import com.ethercis.aql.sql.binding.WhereClause;
+import com.ethercis.aql.sql.queryImpl.value_field.NodePredicate;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -80,6 +80,9 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     public final static String Jsquery_CLOSE = " '::jsquery";
     private static final String namedItemPrefix = " and name/value='";
     public static final String TAG_COMPOSITION = "/composition";
+    public static final String AQL_NODE_NAME_PREDICATE_MARKER = "$AQL_NODE_NAME_PREDICATE$";
+
+    public static final String AQL_NODE_NAME_PREDICATE_FUNCTION = "ehr.aql_node_name_predicate";
 
     private static boolean useEntry = false;
 
@@ -118,6 +121,8 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     public enum OTHER_ITEM {OTHER_DETAILS, OTHER_CONTEXT}
 
     //deals with special tree based entities
+    //this is required to encode structure like events of events (events:{events[at0001] ... events[at000x]}
+    //the same is applicable to activities. These are in fact pseudo arrays.
     private static void encodeTreeMapNodeId(List<String> jqueryPath, String nodeId) {
         if (nodeId.startsWith(TAG_EVENTS)) {
             //this is an exception since events are represented in an event tree
@@ -143,17 +148,33 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         String nodeId = null;
         for (int i = offset; i < segments.size(); i++) {
             nodeId = segments.get(i);
-            if (nodeId.contains(namedItemPrefix)) {
-                nodeId = nodeId.substring(0, nodeId.indexOf(namedItemPrefix)) + "]";
-            } else if (nodeId.contains(",")) {
-                nodeId = nodeId.substring(0, nodeId.indexOf(",")) + "]";
-            }
-
             nodeId = "/" + nodeId;
 
             encodeTreeMapNodeId(jqueryPath, nodeId);
 
-            jqueryPath.add(nodeId);
+            //CHC, 180502. See CR#95 for more on this.
+            //IDENTIFIER_PATH_PART is provided by CONTAINMENT.
+            NodePredicate nodePredicate = new NodePredicate(nodeId);
+            if (path_part.equals(PATH_PART.IDENTIFIER_PATH_PART)) {
+                nodeId = nodePredicate.removeNameValuePredicate();
+                jqueryPath.add(nodeId);
+            }
+            //VARIABLE_PATH_PART is provided by the user. It may contain name/value node predicate
+            //see http://www.openehr.org/releases/QUERY/latest/docs/AQL/AQL.html#_node_predicate
+            else if (path_part.equals(PATH_PART.VARIABLE_PATH_PART)) {
+                if (nodePredicate.hasPredicate()) {
+                    //do the formatting to allow name/value node predicate processing
+                    String predicate = nodePredicate.predicate();
+                    nodeId = new NodePredicate(nodeId).removeNameValuePredicate();
+                    jqueryPath.add(nodeId);
+                    //encode it to prepare for plpgsql function call: marker followed by the name/value predicate
+                    jqueryPath.add(AQL_NODE_NAME_PREDICATE_MARKER);
+                    jqueryPath.add(predicate);
+                } else {
+                    nodeId = nodePredicate.removeNameValuePredicate();
+                    jqueryPath.add(nodeId);
+                }
+            }
 
             if (isList(nodeId)) {
                 if (path_part.equals(PATH_PART.VARIABLE_PATH_PART) && !(i == segments.size() - 1))
@@ -271,10 +292,12 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
         resolveArrayIndex(itemPathArray);
 
+        itemPathArray = resolveNodePredicate(itemPathArray);
+
         String itemPath = StringUtils.join(itemPathArray.toArray(new String[]{}), ",");
 
-
-        itemPath = wrapQuery(itemPath, JSONBSelector_COMPOSITION_OPEN, JSONBSelector_CLOSE);
+        if (!itemPath.startsWith(AQL_NODE_NAME_PREDICATE_FUNCTION))
+            itemPath = wrapQuery(itemPath, JSONBSelector_COMPOSITION_OPEN, JSONBSelector_CLOSE);
 
         //TODO: smarter typecast required (e.g. template based)
         if (itemPathArray.get(itemPathArray.size() - 1).contains("magnitude")) { //force explicit type cast for DvQuantity
@@ -321,14 +344,13 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
                 String compositionRootArchetype = pathResolver.rootOf(variableDefinition.getIdentifier());
                 //temporary!
                 entry_root = CompositionSerializer.TAG_COMPOSITION + "[" + compositionRootArchetype + "]";
-            }
-            else
+            } else
                 throw new IllegalArgumentException("Could not find a path for identifier:" + variableDefinition.getIdentifier());
         }
 
         List<String> itemPathArray = new ArrayList<>();
 
-        if (entry_root == null){
+        if (entry_root == null) {
             //TODO: try to resolve the entry root from the where clause (f.e. a/name/value='a name'
             throw new IllegalArgumentException("a name/value expression for composition must be specified, where clause cannot be built without");
         }
@@ -369,10 +391,78 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
                     itemPathArray.set(i - 1, index.toString());
                 }
                 //remove to the name/value short cut part...
-                String nodeIdTrimmed = nodeId.split(",")[0] + "]";
-                itemPathArray.set(i, nodeIdTrimmed);
+//                String nodeIdTrimmed = nodeId.split(",")[0] + "]";
+//                itemPathArray.set(i, nodeIdTrimmed);
+                itemPathArray.set(i, nodeId);
             }
         }
+    }
+
+    private List<String> resolveNodePredicate(List<String> itemPathArray) {
+
+        List<String> resultList = new ArrayList<>();
+        resultList.addAll(itemPathArray);
+
+        while (resultList.contains(AQL_NODE_NAME_PREDICATE_MARKER)) {
+            resultList = resolveNodePredicateCall(resultList);
+        }
+
+        return resultList;
+    }
+
+
+    private List<String> resolveNodePredicateCall(List<String> itemPathArray) {
+
+        List<String> resultList = new ArrayList<>();
+        int startList = 0;
+
+        //check if the list contains an entry with AQL_NODE_NAME_PREDICATE_MARKER
+        if (itemPathArray.contains(AQL_NODE_NAME_PREDICATE_MARKER)) {
+            StringBuffer expression = new StringBuffer();
+            int markerPos = itemPathArray.indexOf(AQL_NODE_NAME_PREDICATE_MARKER);
+            //prepare the function call
+            expression.append(AQL_NODE_NAME_PREDICATE_FUNCTION);
+            expression.append("(");
+            //check if the table clause is already in the sequence in a nested call to aql_node_name_predicate
+            //TODO: better test really...
+            if (!itemPathArray.get(0).startsWith(AQL_NODE_NAME_PREDICATE_FUNCTION)) {
+                expression.append(ENTRY.ENTRY_);
+                startList = 0;
+            } else {
+                expression.append(itemPathArray.get(0));
+                startList = 1;
+            }
+            expression.append(",");
+
+            expression.append(itemPathArray.get(markerPos + 1)); //predicate
+            expression.append(",");
+            expression.append("'");
+            expression.append(StringUtils.join((itemPathArray.subList(startList, markerPos).toArray(new String[]{})), ","));
+            //skip position
+            expression.append("'");
+            expression.append(")");
+
+            //Locate end tag (end of array or next marker)
+            int endPos;
+            if (itemPathArray.subList(markerPos + 1, itemPathArray.size()).contains(AQL_NODE_NAME_PREDICATE_MARKER)) {
+                resultList.add(expression.toString());
+                endPos = markerPos + itemPathArray.subList(markerPos + 1, itemPathArray.size()).indexOf(AQL_NODE_NAME_PREDICATE_MARKER) - 1;
+                resultList.addAll(itemPathArray.subList(endPos, itemPathArray.size()));
+            } else {
+                expression.append("#>>");
+                expression.append("'");
+                expression.append("{");
+                endPos = itemPathArray.size();
+                expression.append(StringUtils.join((itemPathArray.subList(markerPos + 3, endPos).toArray(new String[]{})), ","));
+                expression.append("}");
+                expression.append("'");
+                resultList.add(expression.toString());
+            }
+
+
+            return resultList;
+        } else
+            return itemPathArray;
     }
 
 

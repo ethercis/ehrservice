@@ -900,6 +900,7 @@ public class QueryEngineTest {
     @Test
     public void testQryLike() throws Exception {
         String query = "select " +
+                "  a/name/value,\n " +
                 "  a/uid/value as uid,\n" +
                 "  a/composer/name as author,\n" +
                 "  a/context/start_time/value as dateCreated,\n" +
@@ -908,6 +909,29 @@ public class QueryEngineTest {
                 "from EHR e \n" +
                 "contains COMPOSITION a " +
                 "where a/name/value like 'Medication%' \n" +
+                "order by  a/context/start_time/value desc";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    /**
+     * regular expression (https://www.postgresql.org/docs/current/static/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP)
+     * @throws Exception
+     */
+    @Test
+    public void testQrySimilarTo() throws Exception {
+        String query = "select " +
+                "  a/uid/value as uid,\n" +
+                "  a/composer/name as author,\n" +
+                "  a/context/start_time/value as dateCreated,\n" +
+                "  a/name/value as documentType,\n" +
+                "  a/archetype_details/template_id/value as documentTemplate\n" +
+                "from EHR e \n" +
+                "contains COMPOSITION a " +
+                "where a/name/value SIMILAR TO 'Medication%' \n" +
                 "order by  a/context/start_time/value desc";
 
         records = queryEngine.perform(query);
@@ -1470,8 +1494,24 @@ public class QueryEngineTest {
         String query = "select a as data from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']\n" +
                 "   contains COMPOSITION a[openEHR-EHR-COMPOSITION.health_summary.v1]\n" +
                 "   where a/content[openEHR-EHR-ACTION.immunisation_procedure.v1]/description[at0001]/items[at0002]/value/value = 'lupus'\n" +
-                "         and a/name/value='Immunisation summary'" +
+                "         and a/name/value = 'Immunisation summary'" +
                 "   limit 10";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testCR95_1() throws Exception {
+        String query = "select " +
+                "   b_a/activities[at0001]/description[at0002]/items[at0173, 'Dose amount description']/value/value as dose_amount," +
+                "   b_a/activities[at0001]/description[at0002]/items[at0173, 'Dose timing description']/value/value as dose_timing" +
+                "   from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae'] " +
+                "   contains COMPOSITION a[openEHR-EHR-COMPOSITION.medication_list.v0] " +
+                "       contains INSTRUCTION b_a[openEHR-EHR-INSTRUCTION.medication_order.v1]" +
+                "   where b_a/activities[at0001]/description[at0002]/items[at0173, 'Dose amount description']/value/value='Dose Amount'";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

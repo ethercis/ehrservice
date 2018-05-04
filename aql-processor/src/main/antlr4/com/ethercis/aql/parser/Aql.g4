@@ -124,6 +124,7 @@ identifiedEquality
         | NOT? identifiedOperand MATCHES REGEXPATTERN
         | NOT? identifiedOperand LIKE STRING
         | NOT? identifiedOperand ILIKE STRING
+        | NOT? identifiedOperand SIMILARTO STRING
 //        | NOT identifiedEquality
         | NOT? IN OPEN_PAR queryExpr CLOSE_PAR
         | NOT? EXISTS identifiedPath
@@ -250,6 +251,7 @@ IN : I N ;
 MATCHES : M A T C H E S ;
 LIKE : L I K E ;
 ILIKE : I L I K E ;
+SIMILARTO: S I M I L A R ' ' T O;
 SELECT : S E L E C T ;
 TOP : T O P ;
 FORWARD : F O R W A R D ;

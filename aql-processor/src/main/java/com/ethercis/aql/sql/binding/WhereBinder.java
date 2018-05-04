@@ -22,6 +22,7 @@ import com.ethercis.aql.definition.VariableDefinition;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.aql.sql.queryImpl.I_QueryImpl;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
+import com.ethercis.aql.sql.queryImpl.VariablePath;
 import com.ethercis.aql.sql.queryImpl.value_field.ISODateTime;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import org.jooq.Condition;
@@ -326,8 +327,15 @@ public class WhereBinder {
                             taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false, compositionName);
                         } else
                             throw new IllegalArgumentException("A composition name/value is required to resolve where statement when querying for a whole composition");
-                    } else
-                        taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false, null);
+                    } else {
+                        //if the path contains node predicate expression uses a SQL syntax instead of jsquery
+                        if (new VariablePath(((VariableDefinition) item).getPath()).hasPredicate()) {
+                            taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, true, null);
+                        }
+                        else {
+                            taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false, null);
+                        }
+                    }
                 }
 
                 if (taggedStringBuffer != null) {
@@ -375,7 +383,10 @@ public class WhereBinder {
                     && (((VariableDefinition) whereClause.get(lcursor)).getIdentifier().equals(symbol))
                     && (((VariableDefinition) whereClause.get(lcursor)).getPath().equals("name/value"))
                     ) {
-                Object nextToken = whereClause.get(lcursor + 2);
+                Object nextToken = whereClause.get(lcursor + 1); //check operator
+                if (nextToken instanceof String && !nextToken.equals("="))
+                    throw new IllegalArgumentException("name/value for Composition must be an equality");
+                nextToken = whereClause.get(lcursor + 2);
                 if (nextToken instanceof String) {
                     token = (String) nextToken;
                     break;
