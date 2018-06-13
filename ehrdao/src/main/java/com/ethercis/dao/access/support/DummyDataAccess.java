@@ -17,6 +17,7 @@
 package com.ethercis.dao.access.support;
 
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
 import org.jooq.DSLContext;
 
 import java.util.Map;
@@ -26,12 +27,17 @@ import java.util.Map;
  */
 public class DummyDataAccess extends DataAccess {
 
-    public DummyDataAccess(DSLContext context, I_KnowledgeCache knowledge){
-        super(context, knowledge);
+    public DummyDataAccess(DSLContext context, I_KnowledgeCache knowledge, I_IntrospectCache introspectCache){
+        super(context, knowledge, introspectCache);
 //        this.connection = connectionHandler.getConnection();
     }
 
     public DummyDataAccess(Map<String, Object> map) throws Exception {
         super(map);
+    }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
     }
 }

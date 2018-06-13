@@ -49,7 +49,7 @@ CREATE OR REPLACE FUNCTION ehr.js_context(UUID)
 
     IF (v_location IS NOT NULL)
     THEN
-      json_context_query := json_context_query || '''location'', ' || v_location || ',';
+      json_context_query := json_context_query || '''location'', ''' || v_location || ''',';
     END IF;
 
     IF (v_facility IS NOT NULL)

@@ -4,6 +4,8 @@ import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
 
+import com.ethercis.opt.query.I_IntrospectCache;
+import com.ethercis.opt.query.IntrospectCache;
 import junit.framework.TestCase;
 import org.jooq.DSLContext;
 
@@ -20,6 +22,7 @@ public abstract class AccessTestCase extends TestCase {
     protected I_DomainAccess testDomainAccess;
     protected DSLContext context;
     protected I_KnowledgeCache knowledge;
+    protected I_IntrospectCache introspectCache;
 
     protected void setupDomainAccess() throws Exception {
         Properties props = new Properties();
@@ -50,6 +53,7 @@ public abstract class AccessTestCase extends TestCase {
         }
 
         context = testDomainAccess.getContext();
+        introspectCache = testDomainAccess.getIntrospectCache().load().synchronize();
     }
 
 }

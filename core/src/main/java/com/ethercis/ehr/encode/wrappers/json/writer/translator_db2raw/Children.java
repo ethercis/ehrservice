@@ -21,7 +21,7 @@ public class Children {
         boolean isItems = true;
 
         for (String key : linkedTreeMap.keySet()) {
-            if (!key.startsWith(CompositionSerializer.TAG_ITEMS)){
+            if (!key.startsWith(CompositionSerializer.TAG_ITEMS) && !key.startsWith(CompositionSerializer.TAG_NAME)){
                 isItems = false;
             }
         }

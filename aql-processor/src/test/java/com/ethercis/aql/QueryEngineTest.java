@@ -19,11 +19,16 @@ package com.ethercis.aql;
 
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.knowledge.KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
+import com.ethercis.opt.query.IntrospectCache;
+import com.ethercis.opt.query.MetaData;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -39,16 +44,17 @@ import static org.junit.Assert.*;
  */
 public class QueryEngineTest {
 
-    protected DSLContext context;
-    protected Connection connection;
+    protected static DSLContext context;
+    protected static Connection connection;
     protected static String serverNodeId = System.getProperty("server.node.name") == null ? "test-server" : System.getProperty("server.node.name");
 
     private QueryEngine queryEngine;
-
+    private static I_IntrospectCache introspectCache;
+    private static I_KnowledgeCache knowledge;
     private List<Record> records;
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void beforeClass() {
 
         SQLDialect dialect = SQLDialect.valueOf("POSTGRES");
 //        String url = "jdbc:postgresql://localhost:5434/ethercis";
@@ -57,11 +63,11 @@ public class QueryEngineTest {
         String login = System.getProperty("test.db.user");
         String password = System.getProperty("test.db.password");
         Properties props = new Properties();
-        props.put("knowledge.path.archetype", "src/test/resources/dummy");
-        props.put("knowledge.path.template", "src/test/resources/dummy");
-        props.put("knowledge.path.opt", "src/test/resources/dummy");
+        props.put("knowledge.path.archetype", "src/test/resources/knowledge/adl");
+        props.put("knowledge.path.template", "src/test/resources/knowledge/oet");
+        props.put("knowledge.path.opt", "src/test/resources/knowledge/opt");
+        props.put("knowledge.cachelocatable", "true");
         props.put("knowledge.forcecache", "true");
-        I_KnowledgeCache knowledge;
         try {
             knowledge = new KnowledgeCache(null, props);
         } catch (Exception e) {
@@ -69,7 +75,7 @@ public class QueryEngineTest {
         }
 
         try {
-            this.connection = DriverManager.getConnection(url, login, password);
+            connection = DriverManager.getConnection(url, login, password);
         } catch (SQLException e) {
             throw new IllegalArgumentException("SQL exception occurred while connecting:" + e);
         }
@@ -77,11 +83,25 @@ public class QueryEngineTest {
         if (connection == null)
             throw new IllegalArgumentException("Could not connect to DB");
 
-        this.context = DSL.using(connection, dialect);
+        context = DSL.using(connection, dialect);
 
-        queryEngine = new QueryEngine(context, serverNodeId, knowledge);
+        try {
+            introspectCache = new IntrospectCache(context, knowledge).load().synchronize();
+
+        } catch (Exception e) {
+            fail("could not initialize intropection meta data cache, please check your configuration");
+        }
     }
 
+    @AfterClass
+    public static void afterClass() throws SQLException {
+        connection.close();
+    }
+
+    @Before
+    public void setUp() {
+        queryEngine = new QueryEngine(context, serverNodeId, knowledge, introspectCache);
+    }
 
     @Test
     public void testQryTopOrder() throws Exception {
@@ -198,8 +218,8 @@ public class QueryEngineTest {
                 "from EHR e " +
                 "contains COMPOSITION a[openEHR-EHR-COMPOSITION.report-result.v1] " +
                 "contains OBSERVATION a_a[openEHR-EHR-OBSERVATION.laboratory_test.v0] " +
-                "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]"+
-                "where a/name/value='Laboratory test report' "+
+                "contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]" +
+                "where a/name/value='Laboratory test report' " +
                 "AND e/ehr_status/subject/external_ref/id/value matches {'9999999000'}";
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -230,17 +250,17 @@ public class QueryEngineTest {
         String query = "select a/uid/value as uid, " +
                 "a/composer/name as author, " +
                 "a/context/start_time/value as date_created, " +
-                "a_a/activities/activities[at0001]/name/name as name_activities, " +
-                "a_a/activities/activities[at0001]/timing/value as timing_activities, " +
-                "a_a/activities/activities[at0001]/description[at0002]/items[at0070]/value/value as name, " +
-                "a_a/activities/activities[at0001]/description[at0002]/items[at0109]/value/value as dose_amount, " +
-                "a_a/activities/activities[at0001]/description[at0002]/items[at0055]/value/value as dose_timing, " +
-                "a_a/activities/activities[at0001]/description[at0002]/items[at0113]/items[at0012]/value/value/value as start_date, " +
-                "a_a/items/items/data[at0001]/items/items[at0001]/value/value as name, " +
+                "a_a/activities[at0001]/name/value as name_activities, " +
+                "a_a/activities[at0001]/timing/value as timing_activities, " +
+                "a_a/activities[at0001]/description[at0002]/items[at0070]/value/value as name, " +
+                "a_a/activities[at0001]/description[at0002]/items[at0109]/value/value as dose_amount, " +
+                "a_a/activities[at0001]/description[at0002]/items[at0055]/value/value as dose_timing, " +
+                "a_a/activities[at0001]/description[at0002]/items[at0113]/items[at0012]/value/value/value as start_date, " +
+                "a_a/activities[at0001]/description[at0002]/items[at0070]/value/value as medication_item, " +
                 "a_a/items/items/data[at0001]/items/items[at0001]/value/defining_code/code_string as medication_code, " +
                 "a_a/items/items/data[at0001]/items/items[at0001]/value/defining_code/terminology_id/value as medication_terminology, " +
-                "a_a/items/items/data[at0001]/items/items[at0002]/value/defining_code/code_string as route, " +
-                "a_a/items/items/data[at0001]/items/items[at0003]/value/value as dose_directions " +
+                "a_a/activities[at0001]/description[at0002]/items[at0091]/value/defining_code/code_string as route, " +
+                "a_a/activities[at0001]/description[at0002]/items[at0056] as dose_directions " +
                 "from EHR e " +
                 "contains COMPOSITION a " +
                 "contains INSTRUCTION a_a[openEHR-EHR-INSTRUCTION.medication_order.v0] " +
@@ -919,6 +939,7 @@ public class QueryEngineTest {
 
     /**
      * regular expression (https://www.postgresql.org/docs/current/static/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP)
+     *
      * @throws Exception
      */
     @Test
@@ -986,6 +1007,7 @@ public class QueryEngineTest {
 
     /**
      * experimental, using a specific non openehr entity. skip for now.
+     *
      * @throws Exception
      */
 //    @Test
@@ -1161,12 +1183,12 @@ public class QueryEngineTest {
     @Test
     public void testFunction1() throws Exception {
         String query = "select  \n" +
-                "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as max_systolic,\n" +
-                "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as max_diastolic,\n" +
-                "    min(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as min_systolic,\n" +
-                "    min(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as min_diastolic,\n" +
-                "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1055]/items[at0004]/value/magnitude) as avg_systolic,\n" +
-                "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at1054]/items[at0005]/value/magnitude) as avg_diastolic\n" +
+                "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) as max_systolic,\n" +
+                "    max(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude) as max_diastolic,\n" +
+                "    min(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) as min_systolic,\n" +
+                "    min(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude) as min_diastolic,\n" +
+                "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) as avg_systolic,\n" +
+                "    avg(o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude) as avg_diastolic\n" +
                 "    from EHR e\n" +
                 "    contains COMPOSITION a contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1]\n";
 
@@ -1238,12 +1260,57 @@ public class QueryEngineTest {
         System.out.print(records);
     }
 
+    /**
+     * test with IDCR - Laboratory Test Report.v0
+     * @throws Exception
+     */
+    @Test
+    public void testCR69_2() throws Exception {
+        String query = "select " +
+                "   a/uid/value, " +
+                "   c/items[at0002]/items[at0001]/name/value as substance," +
+                "   c/items[at0002]/items[at0001]/value/magnitude as qty," +
+                "   c/items[at0002]/items[at0001]/value/units as units " +
+                "   from EHR e contains COMPOSITION a contains CLUSTER c[openEHR-EHR-CLUSTER.laboratory_test_panel.v0]";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    /**
+     * test with IDCR - Adverse Reaction List.v1
+     *
+     * @throws Exception
+     */
     @Test
     public void testCR69() throws Exception {
-        String query = "select \n" +
-                "\ta_a/data[at0001]/items[at0009] as Manifestation \n" +
-                "\tfrom EHR e contains COMPOSITION a contains EVALUATION a_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]\n" +
-                "\twhere a/uid/value = 'b10d5ca1-1cfa-46c6-9dc2-e33890e758a3'";
+        String query = "select " +
+                "   a_a/data[at0001]/items[at0009]/items[at0011]/value as Manifestation, " +
+                "   a_a/data[at0001]/items[at0009]/items[at0032]/value as comment " +
+                "   from EHR e contains COMPOSITION a contains EVALUATION a_a[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]" +
+                "   where " +
+                "   a_a/data[at0001]/items[at0009]/items[at0011]/value = 'terrble sneezing'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+
+    /**
+     * test with IDCR - Relevant contacts.v0
+     * @throws Exception
+     */
+    @Test
+    public void testCR69_3() throws Exception {
+        String query = "select " +
+                "   a/uid/value, " +
+                "   c/items[at0002]/value as issue " +
+                "   from EHR e contains COMPOSITION a contains CLUSTER c[openEHR-EHR-CLUSTER.telecom_uk.v1]" +
+                "   where a/uid/value = '00a494ac-e0e4-4ca4-8127-c90694ebe6f1'";
 
         records = queryEngine.perform(query);
         assertNotNull(records);
@@ -1301,6 +1368,7 @@ public class QueryEngineTest {
 
     /**
      * CR #79 is not closed. skip this test.
+     *
      * @throws Exception
      */
 //    @Test
@@ -1461,7 +1529,7 @@ public class QueryEngineTest {
     }
 
     @Test
-         public void testCR73_2() throws Exception {
+    public void testCR73_2() throws Exception {
         String query = "select " +
                 "a as data" +
                 " from EHR e" +
@@ -1503,6 +1571,7 @@ public class QueryEngineTest {
         System.out.print(records);
     }
 
+    //test node name/value predicate
     @Test
     public void testCR95_1() throws Exception {
         String query = "select " +
@@ -1512,6 +1581,60 @@ public class QueryEngineTest {
                 "   contains COMPOSITION a[openEHR-EHR-COMPOSITION.medication_list.v0] " +
                 "       contains INSTRUCTION b_a[openEHR-EHR-INSTRUCTION.medication_order.v1]" +
                 "   where b_a/activities[at0001]/description[at0002]/items[at0173, 'Dose amount description']/value/value='Dose Amount'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        assertEquals(2, records.size());
+        System.out.print(records);
+    }
+
+    //test smart type cast for
+    @Test
+    public void testCR24() throws Exception {
+        String query = "select  \n" +
+                "    o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude as max_systolic,\n" +
+                "    o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as max_diastolic,\n" +
+                "    o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude as min_systolic,\n" +
+                "    o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as min_diastolic,\n" +
+                "    o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude as avg_systolic,\n" +
+                "    o_bp/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as avg_diastolic\n" +
+                "    from EHR e\n" +
+                "    contains COMPOSITION a contains OBSERVATION o_bp[openEHR-EHR-OBSERVATION.blood_pressure.v1]\n";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testRob_Skype() throws Exception {
+        String query = "select a as data from EHR e" +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.adverse_reaction_list.v1]" +
+                " where a/name/value='Adverse reaction list'" +
+                " and a/uid/value = '81765f9c-855c-41f7-b67e-810f9f2e1516'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void testRob_Skype2() throws Exception {
+        String query = "select" +
+                "   a/uid/value as uid," +
+                "   a/composer/name as author," +
+                "   a/context/start_time/value as date_created," +
+                "   a_a/activities[at0001]/description[at0009]/items[at0121]/value/value as name," +
+                "   a_a/activities[at0001]/description[at0009]/items[at0121]/value/defining_code/code_string as code," +
+                "   a_a/activities[at0001]/description[at0009]/items[at0121]/value/defining_code/terminology_id/value as terminology," +
+                "   b_a/description[at0001]/items[at0017]/value/value as Test_name," +
+                "   b_a/time/value as date_ordered from EHR e" +
+                " contains COMPOSITION a" +
+                " contains (   INSTRUCTION a_a[openEHR-EHR-INSTRUCTION.request-lab_test.v1] or   ACTION b_a[openEHR-EHR-ACTION.laboratory_test.v0])" +
+                " where a/name/value='Laboratory order'";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

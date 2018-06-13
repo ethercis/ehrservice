@@ -254,6 +254,10 @@ public class OptVisitor extends RmBinding {
                             for (COBJECT cobj : children) {
                                 Map cobjectMap = handleCObject(opt, cobj, termDef, attrName, pathloop);
                                 if (cobjectMap != null) {
+                                    //although an item tree is an attribute, the node id should be specified (ex. data, protocol etc.)
+                                    if (cobj.getRmTypeName().equals(Constants.ITEM_TREE) && !pathloop.endsWith("]")){
+                                        pathloop = pathloop + "["+cobj.getNodeId()+"]";
+                                    }
                                     cobjectMap.put(Constants.AQL_PATH, pathloop);
                                     childrenList.add(cobjectMap);
                                 }
@@ -299,11 +303,12 @@ public class OptVisitor extends RmBinding {
         } else if ("DV_TIME".equals(rmTypeName)) {
             nodeMap = new Time(ccobj, termDef).toMap(name);
         } else if ("DV_PARSABLE".equals(rmTypeName)) {
-            nodeMap = new ValueType(ccobj, termDef).toMap(rmTypeName, name);
-            //get the DvOrdered type defining this interval
-            String dvOrderedTypeName = rmTypeName.substring(rmTypeName.indexOf("<") + 1, rmTypeName.indexOf(">"));
-            Class orderedClass = builder.retrieveRMType(dvOrderedTypeName);
-            nodeMap = new ValueType(ccobj, termDef).toMap("DV_INTERVAL<" + orderedClass.getSimpleName().toUpperCase() + ">", name);
+//            nodeMap = new ValueType(ccobj, termDef).toMap(rmTypeName, name);
+//            //get the DvOrdered type defining this interval
+//            String dvOrderedTypeName = rmTypeName.substring(rmTypeName.indexOf("<") + 1, rmTypeName.indexOf(">"));
+//            Class orderedClass = builder.retrieveRMType(dvOrderedTypeName);
+//            nodeMap = new ValueType(ccobj, termDef).toMap("DV_INTERVAL<" + orderedClass.getSimpleName().toUpperCase() + ">", name);
+            nodeMap = new Parsable(ccobj, termDef).toMap(rmTypeName);
         } else if ("DV_MULTIMEDIA".equals(rmTypeName)) {
             nodeMap = new ValueType(ccobj, termDef).toMap(rmTypeName, name);
         } else if ("DV_BOOLEAN".equals(rmTypeName)) {
@@ -347,7 +352,8 @@ public class OptVisitor extends RmBinding {
                 String valueItemPath = new ValueItem(childrenList).path();
 
                 //add the SQL path
-                nodeMap.put(Constants.SQL_PATH, new JsonbQuery(path + "/" + valueItemPath).generate());
+                //TODO: externalize the creation of jsonb select. Make it 'raw' (no transform, cast, function call...)
+//                nodeMap.put(Constants.SQL_PATH, new JsonbQuery(path + "/" + valueItemPath).generate());
             }
 
             if (childrenList.size() > 1 && heterogeneousTypes(childrenList)) {

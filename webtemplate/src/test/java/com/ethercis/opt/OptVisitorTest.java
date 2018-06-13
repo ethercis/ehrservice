@@ -69,18 +69,18 @@ public class OptVisitorTest extends TestCase {
         assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
     }
 
-    public void testTraverseAnyCR113() throws Exception {
+    public void testTraverseWithDvParsable() throws Exception {
 
-        String expectedJson = new String(Files.readAllBytes(Paths.get("src/test/resources/RIPPLE-Conformance Test Introspected.json")));
+//        String expectedJson = new String(Files.readAllBytes(Paths.get("src/test/resources/RIPPLE-Conformance Test Introspected.json")));
 
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Allergies List.v0");
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Problem List.v1");
-        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE) knowledge.retrieveTemplate("IDCR - Immunisation summary.v0");
+        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE) knowledge.retrieveTemplate("IDCR - Transfer of Care Summary TEST.v1");
         Map map = new OptVisitor().traverse(operationaltemplate);
 
         assertNotNull(map);
 
-        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
+//        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
     }
 
     String toJson(Map<String, Object> map) {

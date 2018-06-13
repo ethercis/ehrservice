@@ -23,8 +23,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.PredicateUtils;
-import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.collections.map.PredicatedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.rm.RMObject;
@@ -170,7 +171,7 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	
 	@SuppressWarnings("unchecked")
 	protected Map<String, Object> newMultiMap(){
-		return MapUtils.multiValueMap(new HashMap<String, Object>());
+		return new MultiValueMap<>();
 	}
 
 	protected Map<String, Object> mapName(DvText aName){

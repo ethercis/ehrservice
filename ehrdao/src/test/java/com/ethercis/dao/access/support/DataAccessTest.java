@@ -75,7 +75,7 @@ public class DataAccessTest {
         context = testDomainAccess.getContext();
 
         //try a query with this pool
-        Result result = context.select(EHR.ID).from(EHR).fetch();
+        Result result = context.select(EHR_.ID).from(EHR_).fetch();
 
         // a new database does not contain any data so empty result is perfectly fine
         assertTrue(result.isNotEmpty());

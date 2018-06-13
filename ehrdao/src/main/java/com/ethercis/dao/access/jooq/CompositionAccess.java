@@ -23,6 +23,7 @@ import com.ethercis.jooq.pg.enums.ContributionDataType;
 import com.ethercis.jooq.pg.tables.records.CompositionRecord;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.ehr.util.EhrException;
+import com.ethercis.opt.query.I_IntrospectCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -58,8 +59,8 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 //    private boolean committed = false; //used to identified an existing composition to be amended
 //    private Boolean active;
 
-    public CompositionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, String languageCode, String territoryCode, DateTime dateCreated, UUID eventContextId, UUID composerId, UUID ehrId) throws EhrException{
-        super(context, knowledgeManager);
+    public CompositionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache, String languageCode, String territoryCode, DateTime dateCreated, UUID eventContextId, UUID composerId, UUID ehrId) throws EhrException{
+        super(context, knowledgeManager, introspectCache);
         compositionRecord = context.newRecord(COMPOSITION);
         compositionRecord.setId(UUID.randomUUID());
 
@@ -93,8 +94,8 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
         contributionAccess.setState(ContributionDef.ContributionState.COMPLETE);
     }
 
-    public CompositionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, Composition composition, DateTime dateCreated, UUID ehrId) throws Exception{
-        super(context, knowledgeManager);
+    public CompositionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache, Composition composition, DateTime dateCreated, UUID ehrId) throws Exception{
+        super(context, knowledgeManager, introspectCache);
 
         this.composition = composition;
 
@@ -506,7 +507,7 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
                         "WHERE id = ?) \n" +
                 "    AS Version WHERE row_id = ?;";
 
-        Connection connection = domainAccess.getContext().configuration().connectionProvider().acquire();
+        Connection connection = domainAccess.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(versionQuery);
         preparedStatement.setObject(1, id);
         preparedStatement.setInt(2, version);
@@ -580,6 +581,7 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
     public static I_CompositionAccess retrieveInstance(I_DomainAccess domainAccess, UUID id) throws Exception {
 
         I_CompositionAccess compositionAccess = new CompositionAccess(domainAccess);
+
         CompositionRecord compositionRecord = domainAccess.getContext().selectFrom(COMPOSITION).where(COMPOSITION.ID.eq(id)).fetchOne();
         if (compositionRecord == null)
             return null;
@@ -749,4 +751,8 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
     }
 
 
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

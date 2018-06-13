@@ -18,6 +18,8 @@ package com.ethercis.dao.access.support;
 
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
+import com.ethercis.opt.query.IntrospectCache;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.cpdsadapter.DriverAdapterCPDS;
 import org.apache.commons.dbcp2.datasources.SharedPoolDataSource;
@@ -42,42 +44,43 @@ public abstract class DataAccess implements I_DomainAccess {
 
     Logger logger = LogManager.getLogger(DataAccess.class);
 
-//    protected Connection connection;
+    //    protected Connection connection;
     protected DSLContext context;
     protected I_KnowledgeCache knowledgeManager;
+    protected I_IntrospectCache introspectCache;
 
     protected static String serverNodeId = System.getProperty("server.node.name");
 
-    public DataAccess(SQLDialect dialect, String DBURL, String login, String password, I_KnowledgeCache knowledgeManager) throws Exception {
+    public DataAccess(SQLDialect dialect, String DBURL, String login, String password, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache) throws Exception {
         //setup connection
-        setParameters(dialect, DBURL, login, password);
+        setJDBC(dialect, DBURL, login, password);
         this.knowledgeManager = knowledgeManager;
+        this.introspectCache = introspectCache;
     }
 
     /**
      * setup a connection handler from properties
      * the following key/value pairs are allowed:
      * <ul>
-     *     <li>sql_dialect - a valid string describing the sql dialect</li>
-     *     <li>url - a jdbc URL to connect to the DB</li>
-     *     <li>login - a valid login name</li>
-     *     <li>password - password to authenticate</li>
+     * <li>sql_dialect - a valid string describing the sql dialect</li>
+     * <li>url - a jdbc URL to connect to the DB</li>
+     * <li>login - a valid login name</li>
+     * <li>password - password to authenticate</li>
      * </ul>
+     *
      * @param properties
      * @see SQLDialect
      * @see java.sql.DriverManager
-     *
      */
 
     public DataAccess(Map<String, Object> properties) throws Exception {
 
         String serverConnectionMode = (String) properties.get(I_DomainAccess.KEY_CONNECTION_MODE);
 
-        if (serverConnectionMode != null && serverConnectionMode.equals(I_DomainAccess.PG_POOL)){
+        if (serverConnectionMode != null && serverConnectionMode.equals(I_DomainAccess.PG_POOL)) {
             setPGPoolParameters(properties);
             logger.info("Database connection uses POSTGRES CONNECTION POOLING");
-        }
-        else if (serverConnectionMode != null && serverConnectionMode.equals(I_DomainAccess.DBCP2_POOL)){
+        } else if (serverConnectionMode != null && serverConnectionMode.equals(I_DomainAccess.DBCP2_POOL)) {
             setDBCP2Parameters(properties);
             logger.info("Database connection uses DBCP2 CONNECTION POOLING");
         }
@@ -88,33 +91,42 @@ public abstract class DataAccess implements I_DomainAccess {
             String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
             String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
 
-            setParameters(dialect, url, login, password);
+            setJDBC(dialect, url, login, password);
             logger.info("Database connection uses JDBC DRIVER");
-       }
+        }
 
-        knowledgeManager = (I_KnowledgeCache)properties.get(I_DomainAccess.KEY_KNOWLEDGE);
+        knowledgeManager = (I_KnowledgeCache) properties.get(I_DomainAccess.KEY_KNOWLEDGE);
+
+        if (properties.containsKey(I_DomainAccess.KEY_INTROSPECT_CACHE))
+            introspectCache = (I_IntrospectCache) properties.get(I_DomainAccess.KEY_INTROSPECT_CACHE);
+        else
+            introspectCache = new IntrospectCache(getContext(), knowledgeManager);
+
+        introspectCache.load().synchronize();
     }
 
-    public DataAccess(DSLContext context, I_KnowledgeCache knowledgeManager){
+    public DataAccess(DSLContext context, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache) {
 //        this.connection = context == null ? null : context.configuration().connectionProvider().acquire();
         this.context = context;
         this.knowledgeManager = knowledgeManager;
+        this.introspectCache = introspectCache;
     }
 
-    public DataAccess(I_DomainAccess domainAccess){
+    public DataAccess(I_DomainAccess domainAccess) {
 //        this.connection = domainAccess.getConnection();
         this.context = domainAccess.getContext();
         this.knowledgeManager = domainAccess.getKnowledgeManager();
+        this.introspectCache = domainAccess.getIntrospectCache();
+
     }
 
-    private void setParameters(SQLDialect dialect, String DBURL, String login, String password) throws Exception {
+    private void setJDBC(SQLDialect dialect, String DBURL, String login, String password) throws Exception {
         //use a driver
         Connection connection;
         try {
             connection = DriverManager.getConnection(DBURL, login, password);
-        }
-        catch (SQLException e){
-            throw new IllegalArgumentException("SQL exception occurred while connecting:"+e);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL exception occurred while connecting:" + e);
         }
 
         if (connection == null)
@@ -127,19 +139,19 @@ public abstract class DataAccess implements I_DomainAccess {
     private void setPGPoolParameters(Map<String, Object> properties) throws Exception {
 //        Connection connection;
 
-        SQLDialect dialect = SQLDialect.valueOf((String)properties.get(I_DomainAccess.KEY_DIALECT));
-        String host = (String)properties.get(I_DomainAccess.KEY_HOST);
-        String port = (String)properties.get(I_DomainAccess.KEY_PORT);
-        String login = (String)properties.get(I_DomainAccess.KEY_LOGIN);
-        String password = (String)properties.get(I_DomainAccess.KEY_PASSWORD);
-        String database = (String)properties.get(I_DomainAccess.KEY_DATABASE);
+        SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
+        String host = (String) properties.get(I_DomainAccess.KEY_HOST);
+        String port = (String) properties.get(I_DomainAccess.KEY_PORT);
+        String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
+        String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
+        String database = (String) properties.get(I_DomainAccess.KEY_DATABASE);
 //        String schema = (String)properties.get(I_DomainAccess.KEY_SCHEMA);
         Integer max_connection = 10;
         if (properties.containsKey(I_DomainAccess.KEY_MAX_CONNECTION))
-            max_connection = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
+            max_connection = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
         Integer initial_connections = null;
         if (properties.containsKey(I_DomainAccess.KEY_INITIAL_CONNECTIONS))
-            initial_connections = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS));
+            initial_connections = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS));
 
 
         //use a datasource
@@ -157,15 +169,14 @@ public abstract class DataAccess implements I_DomainAccess {
             source.setDatabaseName(database);
             this.context = DSL.using(source, dialect);
             logger.info("PG_POOL settings:");
-            logger.info("host:"+host);
-            logger.info("port:"+port);
-            logger.info("database:"+database);
-            logger.info("max_connections:"+max_connection);
+            logger.info("host:" + host);
+            logger.info("port:" + port);
+            logger.info("database:" + database);
+            logger.info("max_connections:" + max_connection);
 
 
-        }
-        catch (Exception e){
-            throw new IllegalArgumentException("PG_POOL: SQL exception occurred while connecting:"+e);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("PG_POOL: SQL exception occurred while connecting:" + e);
         }
 
 //        thtext = DSL.using(source, dialect);
@@ -178,52 +189,52 @@ public abstract class DataAccess implements I_DomainAccess {
     }
 
     private void setDBCP2Parameters(Map<String, Object> properties) throws Exception {
-        SQLDialect dialect = SQLDialect.valueOf((String)properties.get(I_DomainAccess.KEY_DIALECT));
-        String url = (String)properties.get(I_DomainAccess.KEY_URL);
-        String login = (String)properties.get(I_DomainAccess.KEY_LOGIN);
-        String password = (String)properties.get(I_DomainAccess.KEY_PASSWORD);
+        SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
+        String url = (String) properties.get(I_DomainAccess.KEY_URL);
+        String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
+        String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
 //        String database = (String)properties.get(I_DomainAccess.KEY_DATABASE);
 ////        String schema = (String)properties.get(I_DomainAccess.KEY_SCHEMA);
         Integer max_connection = 10;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION)))
-            max_connection = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_MAX_CONNECTION)))
+            max_connection = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
         Long waitMs = 50L;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_WAIT_MS)))
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_WAIT_MS)))
             waitMs = Long.parseLong((String) properties.get(I_DomainAccess.KEY_WAIT_MS));
 
         //more optional parameters
         Integer max_idle = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_IDLE)))
-            max_idle = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_IDLE));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_MAX_IDLE)))
+            max_idle = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_MAX_IDLE));
         Integer max_active = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_ACTIVE)))
-            max_active = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_ACTIVE));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_MAX_ACTIVE)))
+            max_active = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_MAX_ACTIVE));
         Boolean testOnBorrow = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_TEST_ON_BORROW)))
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_TEST_ON_BORROW)))
             testOnBorrow = Boolean.parseBoolean((String) properties.get(I_DomainAccess.KEY_TEST_ON_BORROW));
         Boolean setPoolPreparedStatements = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS)))
-            setPoolPreparedStatements = Boolean.parseBoolean((String)properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS)))
+            setPoolPreparedStatements = Boolean.parseBoolean((String) properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS));
         Integer setMaxPreparedStatements = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS)))
-            setMaxPreparedStatements = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS)))
+            setMaxPreparedStatements = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS));
 
         Boolean removeAbandonnned = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED)))
-            removeAbandonnned = Boolean.getBoolean((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED)))
+            removeAbandonnned = Boolean.getBoolean((String) properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED));
         Integer removeAbandonnnedTimeout = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED_TIMEOUT)))
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED_TIMEOUT)))
             removeAbandonnnedTimeout = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED_TIMEOUT));
         Boolean logAbandoned = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_LOG_ABANDONNED)))
-            logAbandoned = Boolean.getBoolean((String)properties.get(I_DomainAccess.KEY_LOG_ABANDONNED));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_LOG_ABANDONNED)))
+            logAbandoned = Boolean.getBoolean((String) properties.get(I_DomainAccess.KEY_LOG_ABANDONNED));
         Boolean autoReconnect = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_AUTO_RECONNECT)))
-            autoReconnect = Boolean.getBoolean((String)properties.get(I_DomainAccess.KEY_AUTO_RECONNECT));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_AUTO_RECONNECT)))
+            autoReconnect = Boolean.getBoolean((String) properties.get(I_DomainAccess.KEY_AUTO_RECONNECT));
 
         Integer initialConnections = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS)))
-            initialConnections = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS)))
+            initialConnections = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_INITIAL_CONNECTIONS));
 
         if (!dialect.equals(SQLDialect.POSTGRES))
             throw new IllegalArgumentException("At this stage only POSTGRES dialect is supported, please check your configuration");
@@ -237,21 +248,21 @@ public abstract class DataAccess implements I_DomainAccess {
             logger.info("url: " + url);
             dataSource.setUsername(login);
             dataSource.setPassword(password);
-            if (setMaxPreparedStatements != null){
+            if (setMaxPreparedStatements != null) {
                 dataSource.setMaxOpenPreparedStatements(setMaxPreparedStatements);
-                logger.info("setMaxOpenPreparedStatements: "+setMaxPreparedStatements);
+                logger.info("setMaxOpenPreparedStatements: " + setMaxPreparedStatements);
             }
-            if (setPoolPreparedStatements != null){
+            if (setPoolPreparedStatements != null) {
                 dataSource.setPoolPreparedStatements(setPoolPreparedStatements);
-                logger.info("setPoolPreparedStatements: "+setPoolPreparedStatements);
+                logger.info("setPoolPreparedStatements: " + setPoolPreparedStatements);
             }
 
             dataSource.setMaxTotal(max_connection);
             dataSource.setMaxWaitMillis(waitMs);
 
-            if (max_idle != null){
+            if (max_idle != null) {
                 dataSource.setMaxIdle(max_idle);
-                logger.info("Pool max idle: "+max_idle);
+                logger.info("Pool max idle: " + max_idle);
             }
 
             if (testOnBorrow != null && testOnBorrow) {
@@ -259,32 +270,32 @@ public abstract class DataAccess implements I_DomainAccess {
                 dataSource.setTestOnReturn(true);
                 dataSource.setTestWhileIdle(true);
                 dataSource.setTestOnBorrow(true);
-                logger.info("Pool setDefaultTestOnBorrow: "+testOnBorrow);
+                logger.info("Pool setDefaultTestOnBorrow: " + testOnBorrow);
             }
 //            dataSource.setDataSourceName("ecis-"+url); //JNDI
 
             if (max_active != null) {
-                logger.info("Pool max active: "+max_active);
+                logger.info("Pool max active: " + max_active);
                 dataSource.setMaxTotal(max_active);
             }
 
             if (removeAbandonnned != null) {
-                logger.info("setRemoveAbandonedOnBorrow: "+removeAbandonnned);
+                logger.info("setRemoveAbandonedOnBorrow: " + removeAbandonnned);
                 dataSource.setRemoveAbandonedOnBorrow(removeAbandonnned);
             }
 
             if (removeAbandonnnedTimeout != null) {
-                logger.info("removeAbandonnnedTimeout: "+removeAbandonnnedTimeout);
+                logger.info("removeAbandonnnedTimeout: " + removeAbandonnnedTimeout);
                 dataSource.setRemoveAbandonedTimeout(removeAbandonnnedTimeout);
             }
 
             if (logAbandoned != null) {
-                logger.info("logAbandoned: "+logAbandoned);
+                logger.info("logAbandoned: " + logAbandoned);
                 dataSource.setLogAbandoned(logAbandoned);
             }
 
             if (initialConnections != null) {
-                logger.info("setInitialSize (initialConnections): "+initialConnections);
+                logger.info("setInitialSize (initialConnections): " + initialConnections);
                 dataSource.setInitialSize(initialConnections);
             }
 
@@ -293,43 +304,42 @@ public abstract class DataAccess implements I_DomainAccess {
             logger.info("Pool max_connections: " + max_connection);
             logger.info("Pool max_wait_millisec: " + waitMs);
             logger.info("");
-        }
-        catch (Exception e){
-            throw new IllegalArgumentException("DBCP2_POOL: Exception occurred while connecting:"+e);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("DBCP2_POOL: Exception occurred while connecting:" + e);
         }
     }
 
 
     private void setDBCP2SharedDataSourceParameters(Map<String, Object> properties) throws Exception {
-        SQLDialect dialect = SQLDialect.valueOf((String)properties.get(I_DomainAccess.KEY_DIALECT));
-        String url = (String)properties.get(I_DomainAccess.KEY_URL);
-        String login = (String)properties.get(I_DomainAccess.KEY_LOGIN);
-        String password = (String)properties.get(I_DomainAccess.KEY_PASSWORD);
+        SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
+        String url = (String) properties.get(I_DomainAccess.KEY_URL);
+        String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
+        String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
 //        String database = (String)properties.get(I_DomainAccess.KEY_DATABASE);
 ////        String schema = (String)properties.get(I_DomainAccess.KEY_SCHEMA);
         Integer max_connection = 10;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION)))
-            max_connection = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_MAX_CONNECTION)))
+            max_connection = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_MAX_CONNECTION));
         Long waitMs = 50L;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_WAIT_MS)))
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_WAIT_MS)))
             waitMs = Long.parseLong((String) properties.get(I_DomainAccess.KEY_WAIT_MS));
 
         //more optional parameters
         Integer max_idle = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_IDLE)))
-            max_idle = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_IDLE));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_MAX_IDLE)))
+            max_idle = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_MAX_IDLE));
         Integer max_active = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_MAX_ACTIVE)))
-            max_active = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_MAX_ACTIVE));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_MAX_ACTIVE)))
+            max_active = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_MAX_ACTIVE));
         Boolean testOnBorrow = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_TEST_ON_BORROW)))
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_TEST_ON_BORROW)))
             testOnBorrow = Boolean.parseBoolean((String) properties.get(I_DomainAccess.KEY_TEST_ON_BORROW));
         Boolean setPoolPreparedStatements = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS)))
-            setPoolPreparedStatements = Boolean.parseBoolean((String)properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS)))
+            setPoolPreparedStatements = Boolean.parseBoolean((String) properties.get(I_DomainAccess.KEY_SET_POOL_PREPARED_STATEMENTS));
         Integer setMaxPreparedStatements = null;
-        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS)))
-            setMaxPreparedStatements = Integer.parseInt((String)properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS));
+        if (StringUtils.isNotEmpty((String) properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS)))
+            setMaxPreparedStatements = Integer.parseInt((String) properties.get(I_DomainAccess.KEY_SET_MAX_PREPARED_STATEMENTS));
 
 //        Boolean removeAbandonnned = null;
 //        if (StringUtils.isNotEmpty((String)properties.get(I_DomainAccess.KEY_REMOVE_ABANDONNED)))
@@ -359,13 +369,13 @@ public abstract class DataAccess implements I_DomainAccess {
             logger.info("url: " + url);
             cpds.setUser(login);
             cpds.setPassword(password);
-            if (setMaxPreparedStatements != null){
+            if (setMaxPreparedStatements != null) {
                 cpds.setMaxPreparedStatements(setMaxPreparedStatements);
-                logger.info("setMaxPreparedStatements: "+setMaxPreparedStatements);
+                logger.info("setMaxPreparedStatements: " + setMaxPreparedStatements);
             }
-            if (setPoolPreparedStatements != null){
+            if (setPoolPreparedStatements != null) {
                 cpds.setPoolPreparedStatements(setPoolPreparedStatements);
-                logger.info("setPoolPreparedStatements: "+setPoolPreparedStatements);
+                logger.info("setPoolPreparedStatements: " + setPoolPreparedStatements);
             }
 
 
@@ -374,9 +384,9 @@ public abstract class DataAccess implements I_DomainAccess {
             dataSource.setMaxTotal(max_connection);
             dataSource.setDefaultMaxWaitMillis(waitMs);
 
-            if (max_idle != null){
+            if (max_idle != null) {
                 cpds.setMaxIdle(max_idle);
-                logger.info("Pool max idle: "+max_idle);
+                logger.info("Pool max idle: " + max_idle);
             }
 
             if (testOnBorrow != null && testOnBorrow) {
@@ -387,22 +397,22 @@ public abstract class DataAccess implements I_DomainAccess {
             }
 //            dataSource.setDataSourceName("ecis-"+url); //JNDI
             if (testOnBorrow != null) {
-                logger.info("Pool setDefaultTestOnBorrow: "+testOnBorrow);
+                logger.info("Pool setDefaultTestOnBorrow: " + testOnBorrow);
                 dataSource.setDefaultTestOnBorrow(testOnBorrow);
             }
             if (max_active != null) {
-                logger.info("Pool max active: "+max_active);
+                logger.info("Pool max active: " + max_active);
                 dataSource.setDefaultMaxTotal(max_active);
-            };
+            }
+            ;
 
             this.context = DSL.using(dataSource, dialect);
 
             logger.info("Pool max_connections: " + max_connection);
             logger.info("Pool max_wait_millisec: " + waitMs);
             logger.info("");
-        }
-        catch (Exception e){
-            throw new IllegalArgumentException("DBCP2_POOL: Exception occurred while connecting:"+e);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("DBCP2_POOL: Exception occurred while connecting:" + e);
         }
     }
 
@@ -426,6 +436,16 @@ public abstract class DataAccess implements I_DomainAccess {
     @Override
     public I_KnowledgeCache getKnowledgeManager() {
         return knowledgeManager;
+    }
+
+    @Override
+    public I_IntrospectCache getIntrospectCache() {
+        return introspectCache;
+    }
+
+    @Override
+    public I_IntrospectCache initializeIntrospectCache() throws Exception {
+        return introspectCache.synchronize();
     }
 
     @Override

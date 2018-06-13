@@ -23,6 +23,8 @@ import com.ethercis.ehr.knowledge.KnowledgeCache;
 import com.ethercis.jooq.pg.tables.records.ConceptRecord;
 import com.ethercis.jooq.pg.tables.records.LanguageRecord;
 import com.ethercis.jooq.pg.tables.records.TerritoryRecord;
+import com.ethercis.opt.query.I_IntrospectCache;
+import com.ethercis.opt.query.IntrospectCache;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -129,7 +131,7 @@ public class TemplateRefSetter {
     }
 
     /**
-     * Populate the Tables using extracted data from the terminology file
+     * Populate the template Table using the templates defined in the knowledge repository (and parsed by in the knowledge cache)
      *
      * @param connection a valid connection to the DB
      * @return true if success false otherwise
@@ -140,13 +142,17 @@ public class TemplateRefSetter {
         log.info("Creating/updating template table...");
 
         //populate the DB using jOOQ
-        OptTemplateRef optTemplateRef = new OptTemplateRef(DSL.using(connection, dialect), knowledgeCache());
+        DSLContext context = DSL.using(connection, dialect);
+        I_KnowledgeCache knowledgeCache = knowledgeCache();
+        I_IntrospectCache introspectCache = new IntrospectCache(context, knowledgeCache);
+
+        OptTemplateRef optTemplateRef = new OptTemplateRef(context, knowledgeCache, introspectCache);
 
         //clean-up
         optTemplateRef.deleteAll();
         optTemplateRef.upsert();
 
-        log.info("Creating terminology table...Done");
+        log.info("Creating template table...Done");
 
         return true;
 

@@ -118,7 +118,7 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
      * @throws EhrException if creation failed
      */
     static I_CompositionAccess getNewInstance(I_DomainAccess domain, String languageCode, String territoryCode, DateTime dateCreated, UUID eventContextId, UUID composerId, UUID ehrId) throws EhrException {
-        return new CompositionAccess(domain.getContext(), domain.getKnowledgeManager(), languageCode, territoryCode, dateCreated, eventContextId, composerId, ehrId);
+        return new CompositionAccess(domain.getContext(), domain.getKnowledgeManager(), domain.getIntrospectCache(), languageCode, territoryCode, dateCreated, eventContextId, composerId, ehrId);
     }
 
     /**
@@ -131,7 +131,7 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
      * @throws EhrException if creation failed
      */
     static I_CompositionAccess getNewInstance(I_DomainAccess domain, Composition composition, DateTime dateCreated, UUID ehrId) throws Exception {
-        return new CompositionAccess(domain.getContext(), domain.getKnowledgeManager(), composition, dateCreated, ehrId);
+        return new CompositionAccess(domain.getContext(), domain.getKnowledgeManager(), domain.getIntrospectCache(), composition, dateCreated, ehrId);
     }
 
     UUID commit(UUID committerId, UUID systemId, ContributionDef.ContributionState state, String description) throws Exception;

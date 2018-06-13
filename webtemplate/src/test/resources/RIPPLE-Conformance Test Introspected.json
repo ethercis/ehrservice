@@ -37,12 +37,14 @@
                         "id": "date_sent",
                         "category": "ELEMENT",
                         "type": "DV_DATE_TIME",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0006]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0006]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -69,12 +71,14 @@
                         "id": "group_category",
                         "category": "ELEMENT",
                         "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0008]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0008]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -101,12 +105,14 @@
                         "id": "urgent",
                         "category": "ELEMENT",
                         "type": "DV_BOOLEAN",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/protocol[at0008],/items[openEHR-EHR-CLUSTER.distribution.v1],0,/items[at0012]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.distribution.v1]/items[at0012]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "BOOLEAN"
                               }
                             ],
@@ -148,9 +154,12 @@
                 "max": 1,
                 "children": [
                   {
+                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/name",
                     "mandatory_attributes": [
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -184,12 +193,14 @@
                             "id": "supplementary_information_to_follow",
                             "category": "ELEMENT",
                             "type": "DV_BOOLEAN",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0076]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0076]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "BOOLEAN"
                                   }
                                 ],
@@ -218,12 +229,14 @@
                             "id": "procedure_requested",
                             "category": "ELEMENT",
                             "type": "DV_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0121]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0121]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -250,12 +263,14 @@
                             "id": "latest_date_service_required",
                             "category": "ELEMENT",
                             "type": "DV_DATE_TIME",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0144]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0144]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -285,6 +300,7 @@
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/action_archetype_id",
                         "name": "ActionArchetypeId",
                         "attribute": "action_archetype_id",
+                        "id": "action_archetype_id",
                         "occurrence": {
                           "min": 1,
                           "max_op": "\u003c\u003d",
@@ -298,16 +314,21 @@
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/timing",
                         "mandatory_attributes": [
                           {
+                            "name": "Formalism",
                             "attribute": "formalism",
+                            "id": "formalism",
                             "type": "STRING"
                           },
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
                         "name": "Timing",
                         "attribute": "timing",
+                        "id": "timing",
                         "occurrence": {
                           "min": 1,
                           "max_op": "\u003c\u003d",
@@ -339,12 +360,14 @@
                         "id": "supplementary_information_to_follow",
                         "category": "ELEMENT",
                         "type": "DV_BOOLEAN",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0076]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0076]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "BOOLEAN"
                               }
                             ],
@@ -373,12 +396,14 @@
                         "id": "procedure_requested",
                         "category": "ELEMENT",
                         "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0121]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0121]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -405,12 +430,14 @@
                         "id": "latest_date_service_required",
                         "category": "ELEMENT",
                         "type": "DV_DATE_TIME",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-INSTRUCTION.request-procedure.v1],0,/activities,/activities[at0001],0,/description[at0009],/items[at0144]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/description[at0009]/items[at0144]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -440,6 +467,7 @@
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/action_archetype_id",
                     "name": "ActionArchetypeId",
                     "attribute": "action_archetype_id",
+                    "id": "action_archetype_id",
                     "occurrence": {
                       "min": 1,
                       "max_op": "\u003c\u003d",
@@ -453,16 +481,21 @@
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/activities[at0001]/timing",
                     "mandatory_attributes": [
                       {
+                        "name": "Formalism",
                         "attribute": "formalism",
+                        "id": "formalism",
                         "type": "STRING"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
                     "name": "Timing",
                     "attribute": "timing",
+                    "id": "timing",
                     "occurrence": {
                       "min": 1,
                       "max_op": "\u003c\u003d",
@@ -484,20 +517,27 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/subject",
                 "mandatory_attributes": [
                   {
+                    "name": "Namespace",
                     "attribute": "namespace",
+                    "id": "namespace",
                     "type": "STRING"
                   },
                   {
+                    "name": "Id",
                     "attribute": "id",
+                    "id": "id",
                     "type": "OBJECT_ID"
                   },
                   {
+                    "name": "Type",
                     "attribute": "type",
+                    "id": "type",
                     "type": "STRING"
                   }
                 ],
                 "name": "Subject",
                 "attribute": "subject",
+                "id": "subject",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -511,12 +551,15 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/narrative",
                 "mandatory_attributes": [
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
                 "name": "Narrative",
                 "attribute": "narrative",
+                "id": "narrative",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -530,16 +573,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/language",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Language",
                 "attribute": "language",
+                "id": "language",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -553,16 +601,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-INSTRUCTION.request-procedure.v1]/encoding",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Encoding",
                 "attribute": "encoding",
+                "id": "encoding",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -587,7 +640,7 @@
             "children": [
               {
                 "min": 1,
-                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]",
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data",
                 "max": 1,
                 "children": [
                   {
@@ -601,9 +654,12 @@
                         "max": 1,
                         "children": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/name",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -632,16 +688,20 @@
                                 "id": "regularity",
                                 "category": "ELEMENT",
                                 "type": "DV_CODED_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0005]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0005]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "DefiningCode",
                                         "attribute": "defining_code",
+                                        "id": "defining_code",
                                         "type": "CODE_PHRASE"
                                       },
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -694,16 +754,20 @@
                                 "id": "rate",
                                 "category": "ELEMENT",
                                 "type": "MULTIPLE",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0004]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/name",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "DefiningCode",
                                         "attribute": "defining_code",
+                                        "id": "defining_code",
                                         "type": "CODE_PHRASE"
                                       },
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -738,13 +802,18 @@
                                       "terminology": "openehr",
                                       "label": "Frequency"
                                     },
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Magnitude",
                                         "attribute": "magnitude",
+                                        "id": "magnitude",
                                         "type": "DOUBLE"
                                       },
                                       {
+                                        "name": "Units",
                                         "attribute": "units",
+                                        "id": "units",
                                         "type": "STRING"
                                       }
                                     ],
@@ -782,12 +851,14 @@
                                 "id": "clinical_description",
                                 "category": "ELEMENT",
                                 "type": "DV_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1022]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1022]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -814,12 +885,14 @@
                                 "id": "clinical_interpretation",
                                 "category": "ELEMENT",
                                 "type": "DV_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1023]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1023]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -854,9 +927,12 @@
                         "node_id": "at0003"
                       },
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/name",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -885,16 +961,20 @@
                             "id": "regularity",
                             "category": "ELEMENT",
                             "type": "DV_CODED_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0005]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0005]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "DefiningCode",
                                     "attribute": "defining_code",
+                                    "id": "defining_code",
                                     "type": "CODE_PHRASE"
                                   },
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -947,16 +1027,20 @@
                             "id": "rate",
                             "category": "ELEMENT",
                             "type": "MULTIPLE",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at0004]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/name",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "DefiningCode",
                                     "attribute": "defining_code",
+                                    "id": "defining_code",
                                     "type": "CODE_PHRASE"
                                   },
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -985,13 +1069,18 @@
                                   "terminology": "openehr",
                                   "label": "Frequency"
                                 },
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "Magnitude",
                                     "attribute": "magnitude",
+                                    "id": "magnitude",
                                     "type": "DOUBLE"
                                   },
                                   {
+                                    "name": "Units",
                                     "attribute": "units",
+                                    "id": "units",
                                     "type": "STRING"
                                   }
                                 ],
@@ -1029,16 +1118,20 @@
                             "id": "pulse_presence",
                             "category": "ELEMENT",
                             "type": "DV_CODED_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1005]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1005]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "DefiningCode",
                                     "attribute": "defining_code",
+                                    "id": "defining_code",
                                     "type": "CODE_PHRASE"
                                   },
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -1079,12 +1172,14 @@
                             "id": "clinical_interpretation",
                             "category": "ELEMENT",
                             "type": "DV_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at0003],0,/data[at0001],/items[at1023]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at0003]/data[at0001]/items[at1023]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -1124,13 +1219,18 @@
                     "max": 1,
                     "children": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/math_function",
                         "mandatory_attributes": [
                           {
+                            "name": "DefiningCode",
                             "attribute": "defining_code",
+                            "id": "defining_code",
                             "type": "CODE_PHRASE"
                           },
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -1166,16 +1266,20 @@
                             "id": "rate",
                             "category": "ELEMENT",
                             "type": "MULTIPLE",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/data[at0001],/items[at0004]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/data[at0001]/items[at0004]/name",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "DefiningCode",
                                     "attribute": "defining_code",
+                                    "id": "defining_code",
                                     "type": "CODE_PHRASE"
                                   },
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -1204,13 +1308,18 @@
                                   "terminology": "openehr",
                                   "label": "Frequency"
                                 },
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/data[at0001]/items[at0004]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "Magnitude",
                                     "attribute": "magnitude",
+                                    "id": "magnitude",
                                     "type": "DOUBLE"
                                   },
                                   {
+                                    "name": "Units",
                                     "attribute": "units",
+                                    "id": "units",
                                     "type": "STRING"
                                   }
                                 ],
@@ -1261,16 +1370,20 @@
                             "id": "position",
                             "category": "ELEMENT",
                             "type": "DV_CODED_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/state[at0012],/items[at0013]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/state[at0012]/items[at0013]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "DefiningCode",
                                     "attribute": "defining_code",
+                                    "id": "defining_code",
                                     "type": "CODE_PHRASE"
                                   },
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -1323,12 +1436,14 @@
                             "id": "confounding_factors",
                             "category": "ELEMENT",
                             "type": "DV_TEXT",
-                            "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/data[at0002],/events,/events[at1036],0,/state[at0012],/items[at1018]}\u0027",
                             "constraints": [
                               {
+                                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/state[at0012]/items[at1018]/value",
                                 "mandatory_attributes": [
                                   {
+                                    "name": "Value",
                                     "attribute": "value",
+                                    "id": "value",
                                     "type": "STRING"
                                   }
                                 ],
@@ -1358,12 +1473,15 @@
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/width",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
                         "name": "Width",
                         "attribute": "width",
+                        "id": "width",
                         "occurrence": {
                           "min": 1,
                           "max_op": "\u003c\u003d",
@@ -1377,16 +1495,21 @@
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/math_function",
                         "mandatory_attributes": [
                           {
+                            "name": "DefiningCode",
                             "attribute": "defining_code",
+                            "id": "defining_code",
                             "type": "CODE_PHRASE"
                           },
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
                         "name": "MathFunction",
                         "attribute": "math_function",
+                        "id": "math_function",
                         "occurrence": {
                           "min": 1,
                           "max_op": "\u003c\u003d",
@@ -1400,12 +1523,15 @@
                         "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/events[at1036]/time",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
                         "name": "Time",
                         "attribute": "time",
+                        "id": "time",
                         "occurrence": {
                           "min": 1,
                           "max_op": "\u003c\u003d",
@@ -1427,12 +1553,15 @@
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/data[at0002]/origin",
                     "mandatory_attributes": [
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
                     "name": "Origin",
                     "attribute": "origin",
+                    "id": "origin",
                     "occurrence": {
                       "min": 1,
                       "max_op": "\u003c\u003d",
@@ -1464,16 +1593,20 @@
                     "id": "findings_location",
                     "category": "ELEMENT",
                     "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[at1037]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[at1037]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "DefiningCode",
                             "attribute": "defining_code",
+                            "id": "defining_code",
                             "type": "CODE_PHRASE"
                           },
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -1549,24 +1682,32 @@
                         "id": "unique_device_identifier_(udi)",
                         "category": "ELEMENT",
                         "type": "DV_IDENTIFIER",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0021]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0021]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Assigner",
                                 "attribute": "assigner",
+                                "id": "assigner",
                                 "type": "STRING"
                               },
                               {
+                                "name": "Id",
                                 "attribute": "id",
+                                "id": "id",
                                 "type": "STRING"
                               },
                               {
+                                "name": "Type",
                                 "attribute": "type",
+                                "id": "type",
                                 "type": "STRING"
                               },
                               {
+                                "name": "Issuer",
                                 "attribute": "issuer",
+                                "id": "issuer",
                                 "type": "STRING"
                               }
                             ],
@@ -1593,12 +1734,14 @@
                         "id": "comment",
                         "category": "ELEMENT",
                         "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0008]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0008]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -1625,12 +1768,14 @@
                         "id": "date_of_manufacture",
                         "category": "ELEMENT",
                         "type": "DV_DATE_TIME",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0005]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0005]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -1657,12 +1802,14 @@
                         "id": "manufacturer",
                         "category": "ELEMENT",
                         "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0004]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0004]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -1689,12 +1836,14 @@
                         "id": "device_name",
                         "category": "ELEMENT",
                         "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0001]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0001]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -1721,24 +1870,32 @@
                         "id": "other_identifier",
                         "category": "ELEMENT",
                         "type": "DV_IDENTIFIER",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[openEHR-EHR-CLUSTER.device.v1],0,/items[at0024]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[openEHR-EHR-CLUSTER.device.v1]/items[at0024]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Assigner",
                                 "attribute": "assigner",
+                                "id": "assigner",
                                 "type": "STRING"
                               },
                               {
+                                "name": "Id",
                                 "attribute": "id",
+                                "id": "id",
                                 "type": "STRING"
                               },
                               {
+                                "name": "Type",
                                 "attribute": "type",
+                                "id": "type",
                                 "type": "STRING"
                               },
                               {
+                                "name": "Issuer",
                                 "attribute": "issuer",
+                                "id": "issuer",
                                 "type": "STRING"
                               }
                             ],
@@ -1773,16 +1930,20 @@
                     "id": "method",
                     "category": "ELEMENT",
                     "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.pulse.v1],0,/protocol[at0010],/items[at1019]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/protocol[at0010]/items[at1019]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "DefiningCode",
                             "attribute": "defining_code",
+                            "id": "defining_code",
                             "type": "CODE_PHRASE"
                           },
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -1832,20 +1993,27 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/subject",
                 "mandatory_attributes": [
                   {
+                    "name": "Namespace",
                     "attribute": "namespace",
+                    "id": "namespace",
                     "type": "STRING"
                   },
                   {
+                    "name": "Id",
                     "attribute": "id",
+                    "id": "id",
                     "type": "OBJECT_ID"
                   },
                   {
+                    "name": "Type",
                     "attribute": "type",
+                    "id": "type",
                     "type": "STRING"
                   }
                 ],
                 "name": "Subject",
                 "attribute": "subject",
+                "id": "subject",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -1859,16 +2027,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/language",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Language",
                 "attribute": "language",
+                "id": "language",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -1882,16 +2055,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.pulse.v1]/encoding",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Encoding",
                 "attribute": "encoding",
+                "id": "encoding",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -1949,12 +2127,14 @@
                     "id": "date_of_admission",
                     "category": "ELEMENT",
                     "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1],0,/data[at0001],/items[at0002]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0002]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -1981,12 +2161,14 @@
                     "id": "source_of_admission",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1],0,/data[at0001],/items[at0009]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/data[at0001]/items[at0009]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -2016,20 +2198,27 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/subject",
                 "mandatory_attributes": [
                   {
+                    "name": "Namespace",
                     "attribute": "namespace",
+                    "id": "namespace",
                     "type": "STRING"
                   },
                   {
+                    "name": "Id",
                     "attribute": "id",
+                    "id": "id",
                     "type": "OBJECT_ID"
                   },
                   {
+                    "name": "Type",
                     "attribute": "type",
+                    "id": "type",
                     "type": "STRING"
                   }
                 ],
                 "name": "Subject",
                 "attribute": "subject",
+                "id": "subject",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -2043,16 +2232,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/language",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Language",
                 "attribute": "language",
+                "id": "language",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -2066,16 +2260,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ADMIN_ENTRY.inpatient_admission_uk.v1]/encoding",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Encoding",
                 "attribute": "encoding",
+                "id": "encoding",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -2123,7 +2322,7 @@
               },
               {
                 "min": 1,
-                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]",
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data",
                 "max": 1,
                 "children": [
                   {
@@ -2150,7 +2349,6 @@
                                 "id": "quantity",
                                 "category": "ELEMENT",
                                 "type": "DV_QUANTITY",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0012]}\u0027",
                                 "constraints": [
                                   {
                                     "terminology_binding": {
@@ -2158,13 +2356,18 @@
                                       "terminology": "openehr",
                                       "label": "Length"
                                     },
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0012]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Magnitude",
                                         "attribute": "magnitude",
+                                        "id": "magnitude",
                                         "type": "DOUBLE"
                                       },
                                       {
+                                        "name": "Units",
                                         "attribute": "units",
+                                        "id": "units",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2211,16 +2414,20 @@
                                 "id": "interval_of_quantity",
                                 "category": "ELEMENT",
                                 "type": "DV_INTERVAL\u003cDV_QUANTITY\u003e",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0023]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0023]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Upper",
                                         "attribute": "upper",
+                                        "id": "upper",
                                         "type": "DV_QUANTITY"
                                       },
                                       {
+                                        "name": "Lower",
                                         "attribute": "lower",
+                                        "id": "lower",
                                         "type": "DV_QUANTITY"
                                       }
                                     ],
@@ -2234,11 +2441,15 @@
                                         },
                                         "mandatory_attributes": [
                                           {
+                                            "name": "Magnitude",
                                             "attribute": "magnitude",
+                                            "id": "magnitude",
                                             "type": "DOUBLE"
                                           },
                                           {
+                                            "name": "Units",
                                             "attribute": "units",
+                                            "id": "units",
                                             "type": "STRING"
                                           }
                                         ],
@@ -2275,11 +2486,15 @@
                                         },
                                         "mandatory_attributes": [
                                           {
+                                            "name": "Magnitude",
                                             "attribute": "magnitude",
+                                            "id": "magnitude",
                                             "type": "DOUBLE"
                                           },
                                           {
+                                            "name": "Units",
                                             "attribute": "units",
+                                            "id": "units",
                                             "type": "STRING"
                                           }
                                         ],
@@ -2329,24 +2544,32 @@
                                 "id": "identifier",
                                 "category": "ELEMENT",
                                 "type": "DV_IDENTIFIER",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0044]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0044]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Assigner",
                                         "attribute": "assigner",
+                                        "id": "assigner",
                                         "type": "STRING"
                                       },
                                       {
+                                        "name": "Id",
                                         "attribute": "id",
+                                        "id": "id",
                                         "type": "STRING"
                                       },
                                       {
+                                        "name": "Type",
                                         "attribute": "type",
+                                        "id": "type",
                                         "type": "STRING"
                                       },
                                       {
+                                        "name": "Issuer",
                                         "attribute": "issuer",
+                                        "id": "issuer",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2394,16 +2617,20 @@
                                 "id": "interval_of_integer",
                                 "category": "ELEMENT",
                                 "type": "DV_INTERVAL\u003cDV_COUNT\u003e",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0022]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0022]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Upper",
                                         "attribute": "upper",
+                                        "id": "upper",
                                         "type": "DV_COUNT"
                                       },
                                       {
+                                        "name": "Lower",
                                         "attribute": "lower",
+                                        "id": "lower",
                                         "type": "DV_COUNT"
                                       }
                                     ],
@@ -2412,7 +2639,9 @@
                                       "upper": {
                                         "mandatory_attributes": [
                                           {
+                                            "name": "Magnitude",
                                             "attribute": "magnitude",
+                                            "id": "magnitude",
                                             "type": "INT"
                                           }
                                         ],
@@ -2430,7 +2659,9 @@
                                       "lower": {
                                         "mandatory_attributes": [
                                           {
+                                            "name": "Magnitude",
                                             "attribute": "magnitude",
+                                            "id": "magnitude",
                                             "type": "INT"
                                           }
                                         ],
@@ -2466,12 +2697,14 @@
                                 "id": "date_time",
                                 "category": "ELEMENT",
                                 "type": "DV_DATE_TIME",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0014]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0014]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2499,7 +2732,6 @@
                                 "id": "choice",
                                 "category": "ELEMENT",
                                 "type": "DV_CODED_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0025]}\u0027",
                                 "constraints": [
                                   {
                                     "terminology_binding": {
@@ -2507,13 +2739,18 @@
                                       "terminology": "openehr",
                                       "label": "Mass"
                                     },
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0025]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Magnitude",
                                         "attribute": "magnitude",
+                                        "id": "magnitude",
                                         "type": "DOUBLE"
                                       },
                                       {
+                                        "name": "Units",
                                         "attribute": "units",
+                                        "id": "units",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2548,12 +2785,14 @@
                                 "id": "count",
                                 "category": "ELEMENT",
                                 "type": "DV_COUNT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0013]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0013]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Magnitude",
                                         "attribute": "magnitude",
+                                        "id": "magnitude",
                                         "type": "INT"
                                       }
                                     ],
@@ -2581,16 +2820,20 @@
                                 "id": "interval_of_date",
                                 "category": "ELEMENT",
                                 "type": "DV_INTERVAL\u003cDV_DATE_TIME\u003e",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0024]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0024]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Upper",
                                         "attribute": "upper",
+                                        "id": "upper",
                                         "type": "DV_DATE_TIME"
                                       },
                                       {
+                                        "name": "Lower",
                                         "attribute": "lower",
+                                        "id": "lower",
                                         "type": "DV_DATE_TIME"
                                       }
                                     ],
@@ -2599,7 +2842,9 @@
                                       "upper": {
                                         "mandatory_attributes": [
                                           {
+                                            "name": "Value",
                                             "attribute": "value",
+                                            "id": "value",
                                             "type": "STRING"
                                           }
                                         ],
@@ -2617,7 +2862,9 @@
                                       "lower": {
                                         "mandatory_attributes": [
                                           {
+                                            "name": "Value",
                                             "attribute": "value",
+                                            "id": "value",
                                             "type": "STRING"
                                           }
                                         ],
@@ -2653,12 +2900,14 @@
                                 "id": "free_text_or_coded",
                                 "category": "ELEMENT",
                                 "type": "DV_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0005]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0005]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2685,12 +2934,14 @@
                                 "id": "boolean",
                                 "category": "ELEMENT",
                                 "type": "MULTIPLE",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0016]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0016]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "BOOLEAN"
                                       }
                                     ],
@@ -2708,13 +2959,18 @@
                                     "type": "DV_BOOLEAN"
                                   },
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0016]/null_flavor",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "DefiningCode",
                                         "attribute": "defining_code",
+                                        "id": "defining_code",
                                         "type": "CODE_PHRASE"
                                       },
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2763,12 +3019,14 @@
                                 "id": "uri___resource_identifier",
                                 "category": "ELEMENT",
                                 "type": "DV_URI",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0027]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0027]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2795,16 +3053,20 @@
                                 "id": "ordinal",
                                 "category": "ELEMENT",
                                 "type": "DV_ORDINAL",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0015]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0015]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Symbol",
                                         "attribute": "symbol",
+                                        "id": "symbol",
                                         "type": "DV_CODED_TEXT"
                                       },
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "INT"
                                       }
                                     ],
@@ -2863,12 +3125,14 @@
                                 "id": "multimedia",
                                 "category": "ELEMENT",
                                 "type": "DV_MULTIMEDIA",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0026]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0026]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "MediaType",
                                         "attribute": "media_type",
+                                        "id": "media_type",
                                         "type": "CODE_PHRASE"
                                       }
                                     ],
@@ -2895,16 +3159,20 @@
                                 "id": "text_that_uses_internal_codes",
                                 "category": "ELEMENT",
                                 "type": "DV_CODED_TEXT",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0006]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0006]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "DefiningCode",
                                         "attribute": "defining_code",
+                                        "id": "defining_code",
                                         "type": "CODE_PHRASE"
                                       },
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -2957,20 +3225,26 @@
                                 "id": "proportion",
                                 "category": "ELEMENT",
                                 "type": "DV_PROPORTION",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0028]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0028]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Type",
                                         "attribute": "type",
+                                        "id": "type",
                                         "type": "PROPORTION_KIND"
                                       },
                                       {
+                                        "name": "Denominator",
                                         "attribute": "denominator",
+                                        "id": "denominator",
                                         "type": "DOUBLE"
                                       },
                                       {
+                                        "name": "Numerator",
                                         "attribute": "numerator",
+                                        "id": "numerator",
                                         "type": "DOUBLE"
                                       }
                                     ],
@@ -3029,12 +3303,14 @@
                                 "id": "duration",
                                 "category": "ELEMENT",
                                 "type": "DV_DURATION",
-                                "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-OBSERVATION.demo.v1],0,/data[at0001],/events,/events[at0002],0,/data[at0003],/items[at0004],0,/items[at0021]}\u0027",
                                 "constraints": [
                                   {
+                                    "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0021]/value",
                                     "mandatory_attributes": [
                                       {
+                                        "name": "Value",
                                         "attribute": "value",
+                                        "id": "value",
                                         "type": "STRING"
                                       }
                                     ],
@@ -3080,12 +3356,15 @@
                     "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/data[at0001]/origin",
                     "mandatory_attributes": [
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
                     "name": "Origin",
                     "attribute": "origin",
+                    "id": "origin",
                     "occurrence": {
                       "min": 1,
                       "max_op": "\u003c\u003d",
@@ -3107,20 +3386,27 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/subject",
                 "mandatory_attributes": [
                   {
+                    "name": "Namespace",
                     "attribute": "namespace",
+                    "id": "namespace",
                     "type": "STRING"
                   },
                   {
+                    "name": "Id",
                     "attribute": "id",
+                    "id": "id",
                     "type": "OBJECT_ID"
                   },
                   {
+                    "name": "Type",
                     "attribute": "type",
+                    "id": "type",
                     "type": "STRING"
                   }
                 ],
                 "name": "Subject",
                 "attribute": "subject",
+                "id": "subject",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -3134,16 +3420,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/language",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Language",
                 "attribute": "language",
+                "id": "language",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -3157,16 +3448,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-OBSERVATION.demo.v1]/encoding",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Encoding",
                 "attribute": "encoding",
+                "id": "encoding",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -3190,13 +3486,18 @@
             "max": -1,
             "children": [
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0041]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3219,13 +3520,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0038]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3248,13 +3554,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0038]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3278,13 +3589,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0068]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3307,13 +3623,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0068]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3337,9 +3658,12 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -3348,11 +3672,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3377,11 +3705,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3414,9 +3746,12 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -3425,11 +3760,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3454,11 +3793,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3491,9 +3834,12 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -3502,11 +3848,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3531,11 +3881,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3568,9 +3922,12 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -3579,11 +3936,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3608,11 +3969,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3645,13 +4010,18 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0039]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3675,13 +4045,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0034]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3704,13 +4079,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0034]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3734,9 +4114,12 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -3745,11 +4128,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3774,11 +4161,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3811,13 +4202,18 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0039]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3840,13 +4236,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0043]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3869,13 +4270,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0047]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3898,13 +4304,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0047]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3928,13 +4339,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0043]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -3958,9 +4374,12 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -3969,11 +4388,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -3998,11 +4421,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4035,13 +4462,18 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0035]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -4065,13 +4497,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0036]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -4095,9 +4532,12 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -4106,11 +4546,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4135,11 +4579,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4185,12 +4633,14 @@
                     "id": "method_1",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0065]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0065]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -4206,9 +4656,12 @@
                         "type": "DV_TEXT"
                       },
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0065]/name",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -4235,12 +4688,14 @@
                     "id": "scheduled_date_time",
                     "category": "ELEMENT",
                     "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0066]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0066]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -4267,12 +4722,14 @@
                     "id": "procedure_name",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0002]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0002]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -4299,12 +4756,14 @@
                     "id": "final_end_date_time",
                     "category": "ELEMENT",
                     "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/description[at0001],/items[at0060]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0060]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -4331,13 +4790,18 @@
                 "node_id": "at0001"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0035]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -4360,9 +4824,12 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -4371,11 +4838,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4400,11 +4871,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4437,9 +4912,12 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -4448,11 +4926,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4477,11 +4959,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4514,13 +5000,18 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0040]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -4543,13 +5034,18 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0040]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -4573,9 +5069,12 @@
                 "type": "DV_CODED_TEXT"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
@@ -4584,11 +5083,15 @@
                   "current_state": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4613,11 +5116,15 @@
                   "careflow_step": {
                     "mandatory_attributes": [
                       {
+                        "name": "DefiningCode",
                         "attribute": "defining_code",
+                        "id": "defining_code",
                         "type": "CODE_PHRASE"
                       },
                       {
+                        "name": "Value",
                         "attribute": "value",
+                        "id": "value",
                         "type": "STRING"
                       }
                     ],
@@ -4650,13 +5157,18 @@
                 "type": "ISM_TRANSITION"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0036]/current_state",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -4697,12 +5209,14 @@
                         "id": "unstructured_name",
                         "category": "ELEMENT",
                         "type": "DV_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0001]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0001]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -4729,16 +5243,20 @@
                         "id": "name_type",
                         "category": "ELEMENT",
                         "type": "DV_CODED_TEXT",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0006]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0006]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "DefiningCode",
                                 "attribute": "defining_code",
+                                "id": "defining_code",
                                 "type": "CODE_PHRASE"
                               },
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "STRING"
                               }
                             ],
@@ -4815,12 +5333,14 @@
                         "id": "preferred_name",
                         "category": "ELEMENT",
                         "type": "DV_BOOLEAN",
-                        "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[openEHR-EHR-CLUSTER.person_name.v1],0,/items[at0022]}\u0027",
                         "constraints": [
                           {
+                            "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[openEHR-EHR-CLUSTER.person_name.v1]/items[at0022]/value",
                             "mandatory_attributes": [
                               {
+                                "name": "Value",
                                 "attribute": "value",
+                                "id": "value",
                                 "type": "BOOLEAN"
                               }
                             ],
@@ -4857,24 +5377,32 @@
                     "id": "receiver_order_identifier",
                     "category": "ELEMENT",
                     "type": "DV_IDENTIFIER",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[at0056]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[at0056]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Assigner",
                             "attribute": "assigner",
+                            "id": "assigner",
                             "type": "STRING"
                           },
                           {
+                            "name": "Id",
                             "attribute": "id",
+                            "id": "id",
                             "type": "STRING"
                           },
                           {
+                            "name": "Type",
                             "attribute": "type",
+                            "id": "type",
                             "type": "STRING"
                           },
                           {
+                            "name": "Issuer",
                             "attribute": "issuer",
+                            "id": "issuer",
                             "type": "STRING"
                           }
                         ],
@@ -4901,12 +5429,14 @@
                     "id": "requestor_order_identifier",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-ACTION.procedure.v1],0,/protocol[at0053],/items[at0054]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/protocol[at0053]/items[at0054]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -4933,13 +5463,18 @@
                 "node_id": "at0053"
               },
               {
+                "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition[at0041]/careflow_step",
                 "mandatory_attributes": [
                   {
+                    "name": "DefiningCode",
                     "attribute": "defining_code",
+                    "id": "defining_code",
                     "type": "CODE_PHRASE"
                   },
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
@@ -4966,12 +5501,15 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/ism_transition",
                 "mandatory_attributes": [
                   {
+                    "name": "CurrentState",
                     "attribute": "current_state",
+                    "id": "current_state",
                     "type": "DV_CODED_TEXT"
                   }
                 ],
                 "name": "IsmTransition",
                 "attribute": "ism_transition",
+                "id": "ism_transition",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -4985,20 +5523,27 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/subject",
                 "mandatory_attributes": [
                   {
+                    "name": "Namespace",
                     "attribute": "namespace",
+                    "id": "namespace",
                     "type": "STRING"
                   },
                   {
+                    "name": "Id",
                     "attribute": "id",
+                    "id": "id",
                     "type": "OBJECT_ID"
                   },
                   {
+                    "name": "Type",
                     "attribute": "type",
+                    "id": "type",
                     "type": "STRING"
                   }
                 ],
                 "name": "Subject",
                 "attribute": "subject",
+                "id": "subject",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -5012,16 +5557,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/language",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Language",
                 "attribute": "language",
+                "id": "language",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -5035,12 +5585,15 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/time",
                 "mandatory_attributes": [
                   {
+                    "name": "Value",
                     "attribute": "value",
+                    "id": "value",
                     "type": "STRING"
                   }
                 ],
                 "name": "Time",
                 "attribute": "time",
+                "id": "time",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -5054,16 +5607,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/encoding",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Encoding",
                 "attribute": "encoding",
+                "id": "encoding",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -5100,16 +5658,20 @@
                     "id": "cpr_decision",
                     "category": "ELEMENT",
                     "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0003]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0003]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "DefiningCode",
                             "attribute": "defining_code",
+                            "id": "defining_code",
                             "type": "CODE_PHRASE"
                           },
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -5156,12 +5718,14 @@
                     "id": "date_of_cpr_decision",
                     "category": "ELEMENT",
                     "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0002]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0002]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -5188,12 +5752,14 @@
                     "id": "comment",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/data[at0001],/items[at0021]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/data[at0001]/items[at0021]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -5233,12 +5799,14 @@
                     "id": "date_for_review_of_cpr_decision",
                     "category": "ELEMENT",
                     "type": "DV_DATE_TIME",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/protocol[at0010],/items[at0009]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/protocol[at0010]/items[at0009]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -5266,16 +5834,20 @@
                     "id": "discussion_with_informal_carer",
                     "category": "ELEMENT",
                     "type": "DV_CODED_TEXT",
-                    "ethercis_sql": "\"ehr\".\"entry\".\"entry\" #\u003e\u003e \u0027{/content[openEHR-EHR-SECTION.adhoc.v1],0,/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1],0,/protocol[at0010],/items[at0014]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/protocol[at0010]/items[at0014]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "DefiningCode",
                             "attribute": "defining_code",
+                            "id": "defining_code",
                             "type": "CODE_PHRASE"
                           },
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -5319,20 +5891,27 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/subject",
                 "mandatory_attributes": [
                   {
+                    "name": "Namespace",
                     "attribute": "namespace",
+                    "id": "namespace",
                     "type": "STRING"
                   },
                   {
+                    "name": "Id",
                     "attribute": "id",
+                    "id": "id",
                     "type": "OBJECT_ID"
                   },
                   {
+                    "name": "Type",
                     "attribute": "type",
+                    "id": "type",
                     "type": "STRING"
                   }
                 ],
                 "name": "Subject",
                 "attribute": "subject",
+                "id": "subject",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -5346,16 +5925,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/language",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Language",
                 "attribute": "language",
+                "id": "language",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -5369,16 +5953,21 @@
                 "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-EVALUATION.cpr_decision_uk.v1]/encoding",
                 "mandatory_attributes": [
                   {
+                    "name": "CodeString",
                     "attribute": "code_string",
+                    "id": "code_string",
                     "type": "STRING"
                   },
                   {
+                    "name": "TerminologyId",
                     "attribute": "terminology_id",
+                    "id": "terminology_id",
                     "type": "TERMINOLOGY_ID"
                   }
                 ],
                 "name": "Encoding",
                 "attribute": "encoding",
+                "id": "encoding",
                 "occurrence": {
                   "min": 1,
                   "max_op": "\u003c\u003d",
@@ -5428,12 +6017,14 @@
                     "id": "period_of_care_identifier",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0001]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0001]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -5460,12 +6051,14 @@
                     "id": "tags",
                     "category": "ELEMENT",
                     "type": "DV_TEXT",
-                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0008]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0008]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "Value",
                             "attribute": "value",
+                            "id": "value",
                             "type": "STRING"
                           }
                         ],
@@ -5492,12 +6085,14 @@
                     "id": "attachment",
                     "category": "ELEMENT",
                     "type": "DV_MULTIMEDIA",
-                    "ethercis_sql": "\"ehr\".\"event_context\".\"other_context\"-\u003e(\u0027/context/other_context[at0001]\u0027) #\u003e\u003e \u0027{/context,/other_context[at0001],/items[openEHR-EHR-CLUSTER.composition_context_detail.v1],0,/items[at0009]}\u0027",
                     "constraints": [
                       {
+                        "aql_path": "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.composition_context_detail.v1]/items[at0009]/value",
                         "mandatory_attributes": [
                           {
+                            "name": "MediaType",
                             "attribute": "media_type",
+                            "id": "media_type",
                             "type": "CODE_PHRASE"
                           }
                         ],
@@ -5535,12 +6130,15 @@
             "aql_path": "/context/start_time",
             "mandatory_attributes": [
               {
+                "name": "Value",
                 "attribute": "value",
+                "id": "value",
                 "type": "STRING"
               }
             ],
             "name": "StartTime",
             "attribute": "start_time",
+            "id": "start_time",
             "occurrence": {
               "min": 1,
               "max_op": "\u003c\u003d",
@@ -5554,16 +6152,21 @@
             "aql_path": "/context/setting",
             "mandatory_attributes": [
               {
+                "name": "DefiningCode",
                 "attribute": "defining_code",
+                "id": "defining_code",
                 "type": "CODE_PHRASE"
               },
               {
+                "name": "Value",
                 "attribute": "value",
+                "id": "value",
                 "type": "STRING"
               }
             ],
             "name": "Setting",
             "attribute": "setting",
+            "id": "setting",
             "occurrence": {
               "min": 1,
               "max_op": "\u003c\u003d",
@@ -5581,20 +6184,27 @@
         "aql_path": "/composer",
         "mandatory_attributes": [
           {
+            "name": "Namespace",
             "attribute": "namespace",
+            "id": "namespace",
             "type": "STRING"
           },
           {
+            "name": "Id",
             "attribute": "id",
+            "id": "id",
             "type": "OBJECT_ID"
           },
           {
+            "name": "Type",
             "attribute": "type",
+            "id": "type",
             "type": "STRING"
           }
         ],
         "name": "Composer",
         "attribute": "composer",
+        "id": "composer",
         "occurrence": {
           "min": 1,
           "max_op": "\u003c\u003d",
@@ -5608,16 +6218,21 @@
         "aql_path": "/language",
         "mandatory_attributes": [
           {
+            "name": "CodeString",
             "attribute": "code_string",
+            "id": "code_string",
             "type": "STRING"
           },
           {
+            "name": "TerminologyId",
             "attribute": "terminology_id",
+            "id": "terminology_id",
             "type": "TERMINOLOGY_ID"
           }
         ],
         "name": "Language",
         "attribute": "language",
+        "id": "language",
         "occurrence": {
           "min": 1,
           "max_op": "\u003c\u003d",
@@ -5631,16 +6246,21 @@
         "aql_path": "/category",
         "mandatory_attributes": [
           {
+            "name": "DefiningCode",
             "attribute": "defining_code",
+            "id": "defining_code",
             "type": "CODE_PHRASE"
           },
           {
+            "name": "Value",
             "attribute": "value",
+            "id": "value",
             "type": "STRING"
           }
         ],
         "name": "Category",
         "attribute": "category",
+        "id": "category",
         "occurrence": {
           "min": 1,
           "max_op": "\u003c\u003d",
@@ -5654,16 +6274,21 @@
         "aql_path": "/territory",
         "mandatory_attributes": [
           {
+            "name": "CodeString",
             "attribute": "code_string",
+            "id": "code_string",
             "type": "STRING"
           },
           {
+            "name": "TerminologyId",
             "attribute": "terminology_id",
+            "id": "terminology_id",
             "type": "TERMINOLOGY_ID"
           }
         ],
         "name": "Territory",
         "attribute": "territory",
+        "id": "territory",
         "occurrence": {
           "min": 1,
           "max_op": "\u003c\u003d",
@@ -5682,12 +6307,15 @@
             "aql_path": "/context/start_time",
             "mandatory_attributes": [
               {
+                "name": "Value",
                 "attribute": "value",
+                "id": "value",
                 "type": "STRING"
               }
             ],
             "name": "StartTime",
             "attribute": "start_time",
+            "id": "start_time",
             "occurrence": {
               "min": 1,
               "max_op": "\u003c\u003d",
@@ -5701,16 +6329,21 @@
             "aql_path": "/context/setting",
             "mandatory_attributes": [
               {
+                "name": "DefiningCode",
                 "attribute": "defining_code",
+                "id": "defining_code",
                 "type": "CODE_PHRASE"
               },
               {
+                "name": "Value",
                 "attribute": "value",
+                "id": "value",
                 "type": "STRING"
               }
             ],
             "name": "Setting",
             "attribute": "setting",
+            "id": "setting",
             "occurrence": {
               "min": 1,
               "max_op": "\u003c\u003d",
@@ -5721,8 +6354,10 @@
             "type": "DV_CODED_TEXT"
           }
         ],
+        "name": "Context",
         "rm_type": "EVENT_CONTEXT",
         "attribute": "context",
+        "id": "context",
         "node_id": ""
       }
     ],

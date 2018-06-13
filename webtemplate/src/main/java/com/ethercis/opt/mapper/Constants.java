@@ -61,7 +61,7 @@ public class Constants {
     public static final String LOWER = "lower";
     public static final String PATTERN = "pattern";
     public static final String OCCURRENCE = "occurrence";
-    public static final String SQL_PATH = "ethercis_sql";
+//    public static final String SQL_PATH = "ethercis_sql";
     public static final String MANDATORY_ATTRIBUTES = "mandatory_attributes";
 
     public static final String COMPOSITION = "COMPOSITION";
@@ -88,6 +88,7 @@ public class Constants {
     public static final Object LITTERAL_ELEMENT = "ELEMENT";
     public static final Object LITTERAL_ATTRIBUTE = "ATTRIBUTE";
     public static final Object LITTERAL_STRUCTURE = "DATA_STRUCTURE";
+    public static final String ITEM_TREE = "ITEM_TREE";
     public static String PROPORTION_KIND = "proportion_kind";
     public static String CONSTRAINTS = "constraints";
 }

@@ -25,6 +25,7 @@ import com.ethercis.jooq.pg.tables.records.EntryRecord;
 import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
@@ -63,30 +64,30 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
     private Composition composition;
 //    private boolean committed = false;
 
-    public EntryAccess(DSLContext context, I_KnowledgeCache knowledge, String templateId, Integer sequence, UUID compositionId, Composition composition) throws Exception {
-        super(context, knowledge);
+    public EntryAccess(DSLContext context, I_KnowledgeCache knowledge, I_IntrospectCache introspectCache, String templateId, Integer sequence, UUID compositionId, Composition composition) throws Exception {
+        super(context, knowledge, introspectCache);
 //        this.connection = connection;
         setFields(templateId, sequence, compositionId, composition);
     }
 
     public EntryAccess(String templateId, Integer sequence, UUID compositionId, Composition composition) throws Exception {
-        super(null, null);
+        super(null, null, null);
 //        this.connection = null;
         setFields(templateId, sequence, compositionId, composition);
     }
 
     public EntryAccess(){
-        super(null, null);
+        super(null, null, null);
 //        this.connection = null;
     }
 
-    public EntryAccess(DSLContext context, I_KnowledgeCache knowledge){
-        super(context, knowledge);
+    public EntryAccess(DSLContext context, I_KnowledgeCache knowledge, I_IntrospectCache introspectCache){
+        super(context, knowledge, introspectCache);
 //        this.connection = connectionHandler.getConnection();
     }
 
     public EntryAccess(I_DomainAccess domainAccess){
-        super(domainAccess.getContext(), domainAccess.getKnowledgeManager());
+        super(domainAccess);
     }
 
     /**
@@ -471,7 +472,7 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
                 "sys_transaction = ? " +
                 "WHERE id = ? ";
 
-        Connection connection = context.configuration().connectionProvider().acquire();
+        Connection connection = getConnection();
         updateStatement = connection.prepareStatement(sql);
         updateStatement.setInt(1, getSequence());
         updateStatement.setObject(2, getCompositionId());
@@ -640,4 +641,8 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         return resultMap;
     }
 
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

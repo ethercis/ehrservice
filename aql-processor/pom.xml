@@ -23,7 +23,7 @@
 
     <groupId>ethercis</groupId>
     <artifactId>aql-processor</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -111,6 +111,8 @@
                         <filter>
                             <artifact>*:*:*</artifact>
                             <excludes>
+                                <exclude>schemaorg_apache_xmlbeans/**</exclude>
+                                <exclude>org/apache/xmlbeans/**</exclude>
                                 <exclude>org/jooq/**</exclude>
                                 <exclude>org/postgresql/**</exclude>
                                 <exclude>xsd/**</exclude>
@@ -129,6 +131,7 @@
                             <exclude>ethercis:ecis-transform</exclude>
                             <exclude>ethercis:ecis-validation</exclude>
                             <exclude>ethercis:ecis-knowledge-cache</exclude>
+                            <exclude>ethercis:ecis-meta-data-cache</exclude>
                             <exclude>junit:junit</exclude>
                             <exclude>jmock:*</exclude>
                             <exclude>*:xml-apis</exclude>
@@ -225,18 +228,59 @@
         </dependency>
         <dependency>
             <groupId>ethercis</groupId>
+            <artifactId>ecis-webtemplate</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ethercis</groupId>
             <artifactId>jooq-pg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ethercis</groupId>
+            <artifactId>ecis-meta-data-cache</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>3.7.3</version>
+            <version>3.10.0</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.4-1204-jdbc42</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>openehr</groupId>
+            <artifactId>openehr-aom</artifactId>
+            <version>1.0.14-ec1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>openehr</groupId>
+            <artifactId>mini-termserv</artifactId>
+            <version>1.0.14-ec1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>openehr</groupId>
+            <artifactId>oet-parser</artifactId>
+            <version>1.0.14-ec1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.8.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.21</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

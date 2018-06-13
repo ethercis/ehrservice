@@ -108,7 +108,7 @@ public class JoinBinder implements I_JoinBinder {
             joinEhr(selectQuery, compositionAttributeQuery);
             selectQuery.addJoin(statusRecordTable,
                     DSL.field(statusRecordTable.field(STATUS.EHR_ID.getName(), UUID.class))
-                            .eq(DSL.field(ehrRecordTable.field(EHR.ID.getName(), UUID.class))));
+                            .eq(DSL.field(ehrRecordTable.field(EHR_.ID.getName(), UUID.class))));
             statusJoined = true;
         }
     }
@@ -153,7 +153,7 @@ public class JoinBinder implements I_JoinBinder {
         if (ehrJoined) return;
         joinComposition(selectQuery, compositionAttributeQuery);
         selectQuery.addJoin(ehrRecordTable,
-                DSL.field(ehrRecordTable.field(EHR.ID.getName(), UUID.class))
+                DSL.field(ehrRecordTable.field(EHR_.ID.getName(), UUID.class))
                         .eq(DSL.field(compositionRecordTable.field(COMPOSITION.EHR_ID.getName(), UUID.class))));
         ehrJoined = true;
     }

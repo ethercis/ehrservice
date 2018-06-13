@@ -20,6 +20,7 @@ package com.ethercis.dao.jooq.impl;
 import com.ethercis.dao.access.handler.PvCompoHandler;
 import com.ethercis.dao.access.interfaces.*;
 import com.ethercis.dao.access.support.AccessTestCase;
+import com.ethercis.dao.access.support.SettingRoleListener;
 import com.ethercis.dao.access.support.RmObjectHelper;
 import com.ethercis.dao.access.support.TestHelper;
 import com.ethercis.dao.access.util.CompositionUtil;
@@ -28,8 +29,8 @@ import com.ethercis.ehr.building.util.CompositionAttributesHelper;
 import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.json.FlatJsonUtil;
 import org.joda.time.DateTime;
-import org.jooq.Result;
-import org.junit.After;
+import org.jooq.*;
+import org.jooq.impl.DefaultExecuteListenerProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.rm.common.generic.PartyIdentified;
@@ -37,11 +38,10 @@ import org.openehr.rm.composition.Composition;
 import org.openehr.rm.datatypes.text.CodePhrase;
 
 import java.io.FileReader;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.ethercis.jooq.pg.Tables.*;
 
 /**
  * ETHERCIS Project ehrservice
@@ -71,21 +71,21 @@ public class CompositionTest extends AccessTestCase {
 
     }
 
-    @After
-    public void tearDown() throws Exception {
-        //display the summary for this ehr Id
-        Result<?> record = testDomainAccess.getContext()
-                .select(EVENT_CONTEXT.OTHER_CONTEXT)
-                .from(EVENT_CONTEXT
-                        .join(COMPOSITION)
-                                .on(EVENT_CONTEXT.COMPOSITION_ID.eq(COMPOSITION.ID))
-                      )
-                .where(COMPOSITION.EHR_ID.eq(ehrIdUUID)).fetch();
-
-        I_EhrAccess.retrieveInstance(testDomainAccess, ehrIdUUID).delete();
-        I_SystemAccess.delete(testDomainAccess, systemUUID);
-        I_PartyIdentifiedAccess.retrieveInstance(testDomainAccess, composerUUID).delete();
-    }
+//    @After
+//    public void tearDown() throws Exception {
+//        //display the summary for this ehr Id
+//        Result<?> record = testDomainAccess.getContext()
+//                .select(EVENT_CONTEXT.OTHER_CONTEXT)
+//                .from(EVENT_CONTEXT
+//                        .join(COMPOSITION)
+//                                .on(EVENT_CONTEXT.COMPOSITION_ID.eq(COMPOSITION.ID))
+//                      )
+//                .where(COMPOSITION.EHR_ID.eq(ehrIdUUID)).fetch();
+//
+//        I_EhrAccess.retrieveInstance(testDomainAccess, ehrIdUUID).delete();
+//        I_SystemAccess.delete(testDomainAccess, systemUUID);
+//        I_PartyIdentifiedAccess.retrieveInstance(testDomainAccess, composerUUID).delete();
+//    }
 
     private UUID commitNewTestComposition() throws Exception {
         Integer changeCode = 276; //Any Event
@@ -163,4 +163,36 @@ public class CompositionTest extends AccessTestCase {
 //        System.out.println(CompositionUtil.dumpFlat(compositionAccess));
 
     }
+
+//    public void testRetrieveComposition() throws Exception {
+//        UUID uuid = UUID.fromString("4e607cd7-1f21-4d16-b14b-4239f48b9b04");
+//
+//        start = System.nanoTime();
+////        ExecuteListenerProvider executeListenerProvider = new DefaultExecuteListenerProvider(new InitializeRoleListener(true, "postgres", new String[]{}));
+//        //get the connection
+//        Connection connection = testDomainAccess.getConnection();
+//        Configuration configuration = testDomainAccess.getContext().configuration().derive();
+//        configuration.set(connection);
+//
+//        I_DomainAccess sessionDomainAccess = I_DomainAccess.getInstance(testDomainAccess.getDataAccess());
+//        sessionDomainAccess.getContext().configuration().set(connection);
+//        sessionDomainAccess.getContext().query("SET ROLE 'postgres';").execute();
+////        CompositionRecord compositionRecord = DSL.using(configuration).selectFrom(COMPOSITION).where(COMPOSITION.ID.eq(uuid)).fetchOne();
+////        System.out.println(compositionRecord.toString());
+////        testDomainAccess.getContext().settings().withStatementType(StatementType.STATIC_STATEMENT);
+//        I_CompositionAccess compositionAccess = I_CompositionAccess.retrieveInstance(sessionDomainAccess, uuid);
+//        sessionDomainAccess.getContext().query("RESET ROLE;").execute();
+//        end = System.nanoTime();
+//        System.out.println("RETRIEVAL TIME(1):" + (end - start) / 1000000 + "[ms]");
+//        assertNotNull(compositionAccess);
+//        System.out.println(CompositionUtil.dumpFlat(compositionAccess));
+//    }
+
+//    public void testJooq310Bug(){
+//        DSLContext context = testDomainAccess.getContext();
+//        ExecuteListenerProvider executeListenerProvider = new DefaultExecuteListenerProvider(new SettingRoleListener(true, "postgres", new String[]{}));
+//        context.configuration().set(executeListenerProvider);
+//        Result result = context.fetch("SELECT table_name FROM information_schema.tables WHERE table_schema='public';");
+//        System.out.println(result);
+//    }
 }

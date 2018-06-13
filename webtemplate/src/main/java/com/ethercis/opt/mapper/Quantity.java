@@ -68,17 +68,20 @@ public class Quantity {
         range.put(Constants.MAX, cdq.getOccurrences().isSetUpper() ? cdq.getOccurrences().getUpper() : -1);
 
 
-        String code = cdq.getProperty().getCodeString();
-        String terminology = cdq.getProperty().getTerminologyId().getValue();
+        if (cdq.getProperty() != null) {
+            String code = cdq.getProperty().getCodeString();
+            String terminology = cdq.getProperty().getTerminologyId().getValue();
 
-        Map<String, String> propertyMap = new HashMap<>();
 
-        propertyMap.put(Constants.CODE, code);
-        propertyMap.put(Constants.TERMINOLOGY, terminology);
-        if (terminology.equals("openehr"))
-            propertyMap.put(Constants.LABEL, new SimpleTerminology(code).label());
+            Map<String, String> propertyMap = new HashMap<>();
 
-        retmap.put(Constants.TERM_BINDING, propertyMap);
+            propertyMap.put(Constants.CODE, code);
+            propertyMap.put(Constants.TERMINOLOGY, terminology);
+            if (terminology.equals("openehr"))
+                propertyMap.put(Constants.LABEL, new SimpleTerminology(code).label());
+
+            retmap.put(Constants.TERM_BINDING, propertyMap);
+        }
 
         List<Map<String, Object>> validationList = new ArrayList<>();
 

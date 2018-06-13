@@ -139,7 +139,7 @@ public class WhereBinder {
         this.isWholeComposition = isWholeComposition;
     }
 
-    private TaggedStringBuffer encodeWhereVariable(UUID comp_id, VariableDefinition variableDefinition, boolean forceSQL, String compositionName) {
+    private TaggedStringBuffer encodeWhereVariable(String templateId, UUID comp_id, VariableDefinition variableDefinition, boolean forceSQL, String compositionName) {
         String identifier = variableDefinition.getIdentifier();
         String className = mapper.getClassName(identifier);
         if (className == null)
@@ -147,9 +147,9 @@ public class WhereBinder {
         Field<?> field;
         if (forceSQL) {
             if (className.equals("COMPOSITION")) {
-                field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
+                field = compositionAttributeQuery.whereField(templateId, comp_id, identifier, variableDefinition);
             } else {
-                field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.SELECT);
+                field = jsonbEntryQuery.makeField(templateId, comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.SELECT);
             }
             if (field == null)
                 return null;
@@ -159,7 +159,7 @@ public class WhereBinder {
             switch (className) {
                 case "COMPOSITION":
                     if (variableDefinition.getPath().startsWith("content")) {
-                        field = jsonbEntryQuery.whereField(comp_id, identifier, variableDefinition);
+                        field = jsonbEntryQuery.whereField(templateId, comp_id, identifier, variableDefinition);
                         TaggedStringBuffer taggedStringBuffer = new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
                         if (compositionName != null && taggedStringBuffer.startWith(CompositionSerializer.TAG_COMPOSITION)) {
                             //add the composition name into the composition predicate
@@ -168,29 +168,29 @@ public class WhereBinder {
                         return taggedStringBuffer;
                     }
                 case "EHR":
-                    field = compositionAttributeQuery.whereField(comp_id, identifier, variableDefinition);
+                    field = compositionAttributeQuery.whereField(templateId, comp_id, identifier, variableDefinition);
                     if (field == null)
                         return null;
                     return new TaggedStringBuffer(field.toString(), TagField.SQLQUERY);
 
                 default:
-                    field = jsonbEntryQuery.whereField(comp_id, identifier, variableDefinition);
+                    field = jsonbEntryQuery.whereField(templateId, comp_id, identifier, variableDefinition);
                     return new TaggedStringBuffer(field.toString(), TagField.JSQUERY);
             }
         }
     }
 
-    private TaggedStringBuffer buildWhereCondition(UUID comp_id, TaggedStringBuffer taggedBuffer, List item) {
+    private TaggedStringBuffer buildWhereCondition(String templateId, UUID comp_id, TaggedStringBuffer taggedBuffer, List item) {
         for (Object part : item) {
             if (part instanceof String)
                 taggedBuffer.append((String) part);
             else if (part instanceof VariableDefinition) {
                 //substitute the identifier
-                TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) part, false, null);
+                TaggedStringBuffer taggedStringBuffer = encodeWhereVariable(templateId, comp_id, (VariableDefinition) part, false, null);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
             } else if (part instanceof List) {
-                TaggedStringBuffer taggedStringBuffer = buildWhereCondition(comp_id, taggedBuffer, (List) part);
+                TaggedStringBuffer taggedStringBuffer = buildWhereCondition(templateId, comp_id, taggedBuffer, (List) part);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
             }
@@ -255,7 +255,7 @@ public class WhereBinder {
         return condition;
     }
 
-    public Condition bind(UUID comp_id) {
+    public Condition bind(String templateId, UUID comp_id) {
         Deque<Operator> operators = new ArrayDeque<>();
         TaggedStringBuffer taggedBuffer = new TaggedStringBuffer();
         Condition condition = initialCondition;
@@ -315,7 +315,7 @@ public class WhereBinder {
                 //look ahead and check if followed by a sql operator
                 TaggedStringBuffer taggedStringBuffer = null;
                 if (isFollowedBySQLSetOperator(cursor))
-                    taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, true, null);
+                    taggedStringBuffer = encodeWhereVariable(templateId, comp_id, (VariableDefinition) item, true, null);
                 else {
                     if (((VariableDefinition) item).getPath() != null && isWholeComposition) {
                         //assume a composition
@@ -324,16 +324,16 @@ public class WhereBinder {
                             compositionName = compositionNameValue(((VariableDefinition) item).getIdentifier());
 
                         if (compositionName != null) {
-                            taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false, compositionName);
+                            taggedStringBuffer = encodeWhereVariable(templateId, comp_id, (VariableDefinition) item, false, compositionName);
                         } else
                             throw new IllegalArgumentException("A composition name/value is required to resolve where statement when querying for a whole composition");
                     } else {
                         //if the path contains node predicate expression uses a SQL syntax instead of jsquery
                         if (new VariablePath(((VariableDefinition) item).getPath()).hasPredicate()) {
-                            taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, true, null);
+                            taggedStringBuffer = encodeWhereVariable(templateId, comp_id, (VariableDefinition) item, true, null);
                         }
                         else {
-                            taggedStringBuffer = encodeWhereVariable(comp_id, (VariableDefinition) item, false, null);
+                            taggedStringBuffer = encodeWhereVariable(templateId, comp_id, (VariableDefinition) item, false, null);
                         }
                     }
                 }
@@ -346,7 +346,7 @@ public class WhereBinder {
 //                if (((VariableDefinition) item).getAlias())
 //                condition = wrapInCondition(condition, stringBuffer, operators);
             } else if (item instanceof List) {
-                TaggedStringBuffer taggedStringBuffer = buildWhereCondition(comp_id, taggedBuffer, (List) item);
+                TaggedStringBuffer taggedStringBuffer = buildWhereCondition(templateId, comp_id, taggedBuffer, (List) item);
                 taggedBuffer.append(taggedStringBuffer.toString());
                 taggedBuffer.setTagField(taggedStringBuffer.getTagField());
                 condition = wrapInCondition(condition, taggedBuffer, operators);

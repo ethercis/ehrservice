@@ -16,8 +16,10 @@
  */
 package com.ethercis.dao.access.interfaces;
 
+import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.dao.access.support.ServiceDataAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 
@@ -55,6 +57,7 @@ public interface I_DomainAccess {
     String KEY_SCHEMA = "schema";
     String KEY_SET_POOL_PREPARED_STATEMENTS = "set_pool_prepared_statement";
     String KEY_SET_MAX_PREPARED_STATEMENTS = "set_max_prepared_statements";
+    String KEY_INTROSPECT_CACHE = "introspect";
 
     /**
      * get jOOQ SQL dialect
@@ -84,13 +87,23 @@ public interface I_DomainAccess {
      */
     I_KnowledgeCache getKnowledgeManager();
 
+    I_IntrospectCache getIntrospectCache();
+
 
     static I_DomainAccess getInstance(Map<String, Object> properties) throws Exception {
         return new ServiceDataAccess(properties);
     }
 
+    static I_DomainAccess getInstance(DataAccess dataAccess) throws Exception {
+        return new ServiceDataAccess(dataAccess);
+    }
+
+
+    I_IntrospectCache initializeIntrospectCache() throws Exception;
 
     void setKnowledgeManager(I_KnowledgeCache knowledgeCache);
 
     String getServerNodeId();
+
+    DataAccess getDataAccess();
 }

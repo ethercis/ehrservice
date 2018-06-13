@@ -17,7 +17,9 @@ import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.FlattenerNew;
 import org.openehr.rm.composition.Composition;
 
+import java.lang.reflect.Array;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -116,6 +118,8 @@ public class EntryAccessTest extends AccessTestCase {
 
         //perform the query
         Map<String, Object> map = I_EntryAccess.queryAqlJson(testDomainAccess, query);
+
+        assertEquals("asthma", ((Map)((List) map.get("resultSet")).get(0)).get("problem"));
 
 //        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 //        new org.codehaus.jackson.map.ObjectMapper().writer().writeValue(byteArrayOutputStream, map);

@@ -53,13 +53,13 @@ public class PartyIdentifiedAccess extends DataAccess implements I_PartyIdentifi
 //    private String partyName;
 
     public PartyIdentifiedAccess(DSLContext context, String partyName) {
-        super(context, null);
+        super(context, null, null);
         partyIdentifiedRecord = context.newRecord(PARTY_IDENTIFIED);
         partyIdentifiedRecord.setName(partyName);
     }
 
     public PartyIdentifiedAccess(DSLContext context){
-        super(context, null);
+        super(context, null, null);
     }
 
     public PartyIdentifiedAccess(I_DomainAccess domainAccess){
@@ -491,4 +491,8 @@ public class PartyIdentifiedAccess extends DataAccess implements I_PartyIdentifi
     }
 
 
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

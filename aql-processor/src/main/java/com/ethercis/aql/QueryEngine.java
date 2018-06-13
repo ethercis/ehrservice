@@ -19,7 +19,10 @@ package com.ethercis.aql;
 
 import com.ethercis.aql.compiler.QueryParser;
 import com.ethercis.aql.sql.QueryProcessor;
+import com.ethercis.aql.sql.queryImpl.TemplateMetaData;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
+import com.ethercis.opt.query.MetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
@@ -31,7 +34,7 @@ import java.util.List;
 /**
  * Created by christian on 2/2/2017.
  */
-public class QueryEngine {
+public class QueryEngine extends TemplateMetaData {
 
     DSLContext context;
     Logger logger = LogManager.getLogger(QueryEngine.class);
@@ -39,20 +42,30 @@ public class QueryEngine {
     I_KnowledgeCache knowledgeCache = null;
 
     public QueryEngine(DSLContext context, String serverNodeId) {
+        super(null);
         this.context = context;
         this.serverNodeId = serverNodeId;
     }
 
     public QueryEngine(DSLContext context, String serverNodeId, I_KnowledgeCache knowledgeCache) {
+        super(null);
         this.context = context;
         this.serverNodeId = serverNodeId;
         this.knowledgeCache = knowledgeCache;
     }
 
+    public QueryEngine(DSLContext context, String serverNodeId, I_KnowledgeCache knowledgeCache, I_IntrospectCache introspectCache) {
+        super(introspectCache);
+        this.context = context;
+        this.serverNodeId = serverNodeId;
+        this.knowledgeCache = knowledgeCache;
+    }
+
+
     public List<Record> perform(String query, boolean explain) throws SQLException {
 
 //        QueryProcessor queryProcessor = new QueryProcessor(context);
-        QueryProcessor queryProcessor = new QueryProcessor(context, knowledgeCache);
+        QueryProcessor queryProcessor = new QueryProcessor(context, knowledgeCache, introspectCache);
         QueryParser queryParser = new QueryParser(context, query);
 
         queryParser.pass1();

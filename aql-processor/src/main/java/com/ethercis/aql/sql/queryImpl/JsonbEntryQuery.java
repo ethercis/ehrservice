@@ -22,17 +22,18 @@ import com.ethercis.aql.sql.PathResolver;
 import com.ethercis.aql.sql.binding.I_JoinBinder;
 import com.ethercis.aql.sql.queryImpl.value_field.NodePredicate;
 import com.ethercis.ehr.encode.CompositionSerializer;
+import com.ethercis.opt.query.I_IntrospectCache;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
+import org.jooq.util.derby.sys.Sys;
 import org.openehr.rm.common.archetyped.Locatable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static com.ethercis.jooq.pg.Tables.*;
 
@@ -42,35 +43,21 @@ import static com.ethercis.jooq.pg.Tables.*;
  */
 public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
-//    //COMP_EXPAND (Composition query)
-//    private static final String SELECT_COMPOSITION_CONTENT_MACRO = COMP_EXPAND.ENTRY+"->(select jsonb_object_keys("+COMP_EXPAND.ENTRY+"))";
-////    private static final String SELECT_COMPOSITION_CONTENT_MACRO = COMP_EXPAND.ENTRY+"->(select json_object_keys("+COMP_EXPAND.ENTRY+"::json))";
-////    private static final String SELECT_COMPOSITION_CONTENT_MACRO = COMP_EXPAND.ENTRY+"->(jsonb_object_keys("+COMP_EXPAND.ENTRY+"))";
-//    private final static String JSONBSelector_COMPOSITION_OPEN = SELECT_COMPOSITION_CONTENT_MACRO +" #>> '{";
-////    private final static String JSONBSelector_COMPOSITION_OPEN = SELECT_COMPOSITION_CONTENT_MACRO +" #> '{";
-//    public final static String Jsquery_COMPOSITION_OPEN = SELECT_COMPOSITION_CONTENT_MACRO +" @@ '";
+    Logger logger = LogManager.getLogger(JsonbEntryQuery.class);
 
-    //ENTRY
-//    private static final String SELECT_COMPOSITION_CONTENT_MACRO = ENTRY.ENTRY.;
-    //    private static final String SELECT_COMPOSITION_CONTENT_MACRO = COMP_EXPAND.ENTRY+"->(select json_object_keys("+COMP_EXPAND.ENTRY+"::json))";
-//    private static final String SELECT_COMPOSITION_CONTENT_MACRO = COMP_EXPAND.ENTRY+"->(jsonb_object_keys("+COMP_EXPAND.ENTRY+"))";
     private final static String JSONBSelector_COMPOSITION_OPEN = ENTRY.ENTRY_ + " #>> '{";
-    //    private final static String JSONBSelector_COMPOSITION_OPEN = SELECT_COMPOSITION_CONTENT_MACRO +" #> '{";
     public final static String Jsquery_COMPOSITION_OPEN = ENTRY.ENTRY_ + " @@ '";
 
 
     //OTHER_DETAILS (Ehr Status Query)
-//    private static final String SELECT_EHR_OTHER_DETAILS_MACRO = STATUS.OTHER_DETAILS+"->('"+ CompositionSerializer.TAG_OTHER_DETAILS+"')";
     private static final String SELECT_EHR_OTHER_DETAILS_MACRO = I_JoinBinder.statusRecordTable.field(STATUS.OTHER_DETAILS) + "->('" + CompositionSerializer.TAG_OTHER_DETAILS + "')";
     private final static String JSONBSelector_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO + " #>> '{";
-    //    private final static String JSONBSelector_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO +" #> '{";
     public final static String Jsquery_EHR_OTHER_DETAILS_OPEN = SELECT_EHR_OTHER_DETAILS_MACRO + " @@ '";
 
     //OTHER_CONTEXT (Composition context other_context Query)
     //TODO: make the prefix dependant on the actual passed argument (eg. context/other_context[at0001])
     private static final String SELECT_EHR_OTHER_CONTEXT_MACRO = EVENT_CONTEXT.OTHER_CONTEXT + "->('" + CompositionSerializer.TAG_OTHER_CONTEXT + "[at0001]" + "')";
     private final static String JSONBSelector_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO + " #>> '{";
-    //    private final static String JSONBSelector_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO +" #> '{";
     public final static String Jsquery_EHR_OTHER_CONTEXT_OPEN = SELECT_EHR_OTHER_CONTEXT_MACRO + " @@ '";
 
     public final static String matchNodePredicate = "/(content|protocol|data|description|instruction|items|activities|activity|composition|entry|evaluation|observation|action|at)\\[([(0-9)|(A-Z)|(a-z)|\\-|_|\\.]*)\\]";
@@ -80,9 +67,6 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     public final static String Jsquery_CLOSE = " '::jsquery";
     private static final String namedItemPrefix = " and name/value='";
     public static final String TAG_COMPOSITION = "/composition";
-    public static final String AQL_NODE_NAME_PREDICATE_MARKER = "$AQL_NODE_NAME_PREDICATE$";
-
-    public static final String AQL_NODE_NAME_PREDICATE_FUNCTION = "ehr.aql_node_name_predicate";
 
     private static boolean useEntry = false;
 
@@ -100,12 +84,20 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
     private static boolean containsJqueryPath = false; //true if at leas one AQL path is contained in expression
     private static boolean jsonDataBlock = false;
+    private boolean ignoreUnresolvedIntrospect = false;
+    private static boolean isNodeNameValuePredicated = false;
+    private static String ENV_IGNORE_UNRESOLVED_INTROSPECT = "aql.ignoreUnresolvedIntrospect";
 
     private String entry_root;
+    //    private MetaData metaData;
+    private I_IntrospectCache introspectCache;
 
-    public JsonbEntryQuery(DSLContext context, PathResolver pathResolver, List<I_VariableDefinition> definitions, String entry_root) {
+    public JsonbEntryQuery(DSLContext context, I_IntrospectCache introspectCache, PathResolver pathResolver, List<I_VariableDefinition> definitions, String entry_root) {
         super(context, pathResolver, definitions);
         this.entry_root = entry_root;
+        this.introspectCache = introspectCache;
+
+        ignoreUnresolvedIntrospect = Boolean.parseBoolean(System.getProperty(ENV_IGNORE_UNRESOLVED_INTROSPECT, "false"));
     }
 
     private static boolean isList(String predicate) {
@@ -162,14 +154,11 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
             //VARIABLE_PATH_PART is provided by the user. It may contain name/value node predicate
             //see http://www.openehr.org/releases/QUERY/latest/docs/AQL/AQL.html#_node_predicate
             else if (path_part.equals(PATH_PART.VARIABLE_PATH_PART)) {
+
                 if (nodePredicate.hasPredicate()) {
+                    isNodeNameValuePredicated = true;
                     //do the formatting to allow name/value node predicate processing
-                    String predicate = nodePredicate.predicate();
-                    nodeId = new NodePredicate(nodeId).removeNameValuePredicate();
-                    jqueryPath.add(nodeId);
-                    //encode it to prepare for plpgsql function call: marker followed by the name/value predicate
-                    jqueryPath.add(AQL_NODE_NAME_PREDICATE_MARKER);
-                    jqueryPath.add(predicate);
+                    jqueryPath = new NodeNameValuePredicate(nodePredicate).path(jqueryPath, nodeId);
                 } else {
                     nodeId = nodePredicate.removeNameValuePredicate();
                     jqueryPath.add(nodeId);
@@ -216,6 +205,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
         if (path_part.equals(PATH_PART.VARIABLE_PATH_PART) && jqueryPath.get(jqueryPath.size() - 1).matches(matchNodePredicate)) {
             jsonDataBlock = true;
         }
+
         return jqueryPath;
     }
 
@@ -263,7 +253,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
 
 
     @Override
-    public Field<?> makeField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
+    public Field<?> makeField(String templateId, UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
         if (entry_root == null) //case of (invalid) composition with null entry!
             return null;
 
@@ -290,16 +280,60 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
             itemPathArray.addAll(jqueryPath(PATH_PART.IDENTIFIER_PATH_PART, path, "0"));
         itemPathArray.addAll(jqueryPath(PATH_PART.VARIABLE_PATH_PART, variableDefinition.getPath(), "0"));
 
+        try {
+            String[] ignoreIterativeOnRegexp;
+            if (System.getenv(ENV_AQL_ARRAY_IGNORE_NODE) != null) {
+                ignoreIterativeOnRegexp = System.getenv(ENV_AQL_ARRAY_IGNORE_NODE).split(",");
+            } else
+                ignoreIterativeOnRegexp = new String[]{"^/content.*", "^/events.*"};
+
+            int depth = 1;
+            if (System.getenv(ENV_AQL_ARRAY_DEPTH) != null) {
+                depth = Integer.parseInt(System.getenv(ENV_AQL_ARRAY_DEPTH));
+            }
+
+            IterativeNode iterativeNode = new IterativeNode(templateId, introspectCache, Arrays.asList(ignoreIterativeOnRegexp), depth);
+            Integer[] pos = iterativeNode.iterativeAt(itemPathArray);
+            itemPathArray = iterativeNode.clipInIterativeMarker(itemPathArray, pos);
+        } catch (Exception e) {
+            ;
+        }
+
         resolveArrayIndex(itemPathArray);
 
-        itemPathArray = resolveNodePredicate(itemPathArray);
+        List<String> referenceItemPathArray = new ArrayList<>();
+        referenceItemPathArray.addAll(itemPathArray);
+        Collections.replaceAll(referenceItemPathArray, I_QueryImpl.AQL_NODE_ITERATIVE_MARKER, "0");
+
+        if (itemPathArray.contains(I_QueryImpl.AQL_NODE_NAME_PREDICATE_MARKER))
+            itemPathArray = new NodePredicateCall(itemPathArray).resolve();
+        else if (itemPathArray.contains(I_QueryImpl.AQL_NODE_ITERATIVE_MARKER))
+            itemPathArray = new JsonbFunctionCall(itemPathArray, I_QueryImpl.AQL_NODE_ITERATIVE_MARKER, I_QueryImpl.AQL_NODE_ITERATIVE_FUNCTION).resolve();
 
         String itemPath = StringUtils.join(itemPathArray.toArray(new String[]{}), ",");
 
-        if (!itemPath.startsWith(AQL_NODE_NAME_PREDICATE_FUNCTION))
+        if (!itemPath.startsWith(AQL_NODE_NAME_PREDICATE_FUNCTION) && !itemPath.contains(I_QueryImpl.AQL_NODE_ITERATIVE_FUNCTION))
             itemPath = wrapQuery(itemPath, JSONBSelector_COMPOSITION_OPEN, JSONBSelector_CLOSE);
 
-        //TODO: smarter typecast required (e.g. template based)
+        //type casting from introspected data value type
+        try {
+            if (introspectCache == null)
+                throw new IllegalArgumentException("MetaDataCache is not initialized");
+            String reducedItemPathArray = new SegmentedPath(referenceItemPathArray).reduce();
+            if (reducedItemPathArray != null && !reducedItemPathArray.isEmpty()) {
+                String type = introspectCache.visitor(templateId).type(reducedItemPathArray);
+                if (type != null) {
+                    String pgType = new PGType(itemPathArray).forRmType(type);
+                    if (pgType != null)
+                        itemPath = "(" + itemPath + ")::" + pgType;
+                }
+            }
+        } catch (Exception e) {
+            if (!ignoreUnresolvedIntrospect)
+                throw new IllegalArgumentException("Unresolved type, missing template?(" + templateId + "), reason:" + e);
+            else
+                logger.warn("Ignoring unresolved introspect (reason:" + e + ")");
+        }
         if (itemPathArray.get(itemPathArray.size() - 1).contains("magnitude")) { //force explicit type cast for DvQuantity
             itemPath = "(" + itemPath + ")::numeric";
         }
@@ -337,7 +371,7 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
     }
 
     @Override
-    public Field<?> whereField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition) {
+    public Field<?> whereField(String templateId, UUID compositionId, String identifier, I_VariableDefinition variableDefinition) {
         String path = pathResolver.pathOf(variableDefinition.getIdentifier());
         if (path == null) {
             if (entry_root == null) {
@@ -396,73 +430,6 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
                 itemPathArray.set(i, nodeId);
             }
         }
-    }
-
-    private List<String> resolveNodePredicate(List<String> itemPathArray) {
-
-        List<String> resultList = new ArrayList<>();
-        resultList.addAll(itemPathArray);
-
-        while (resultList.contains(AQL_NODE_NAME_PREDICATE_MARKER)) {
-            resultList = resolveNodePredicateCall(resultList);
-        }
-
-        return resultList;
-    }
-
-
-    private List<String> resolveNodePredicateCall(List<String> itemPathArray) {
-
-        List<String> resultList = new ArrayList<>();
-        int startList = 0;
-
-        //check if the list contains an entry with AQL_NODE_NAME_PREDICATE_MARKER
-        if (itemPathArray.contains(AQL_NODE_NAME_PREDICATE_MARKER)) {
-            StringBuffer expression = new StringBuffer();
-            int markerPos = itemPathArray.indexOf(AQL_NODE_NAME_PREDICATE_MARKER);
-            //prepare the function call
-            expression.append(AQL_NODE_NAME_PREDICATE_FUNCTION);
-            expression.append("(");
-            //check if the table clause is already in the sequence in a nested call to aql_node_name_predicate
-            //TODO: better test really...
-            if (!itemPathArray.get(0).startsWith(AQL_NODE_NAME_PREDICATE_FUNCTION)) {
-                expression.append(ENTRY.ENTRY_);
-                startList = 0;
-            } else {
-                expression.append(itemPathArray.get(0));
-                startList = 1;
-            }
-            expression.append(",");
-
-            expression.append(itemPathArray.get(markerPos + 1)); //predicate
-            expression.append(",");
-            expression.append("'");
-            expression.append(StringUtils.join((itemPathArray.subList(startList, markerPos).toArray(new String[]{})), ","));
-            //skip position
-            expression.append("'");
-            expression.append(")");
-
-            //Locate end tag (end of array or next marker)
-            int endPos;
-            if (itemPathArray.subList(markerPos + 1, itemPathArray.size()).contains(AQL_NODE_NAME_PREDICATE_MARKER)) {
-                resultList.add(expression.toString());
-                endPos = markerPos + itemPathArray.subList(markerPos + 1, itemPathArray.size()).indexOf(AQL_NODE_NAME_PREDICATE_MARKER) - 1;
-                resultList.addAll(itemPathArray.subList(endPos, itemPathArray.size()));
-            } else {
-                expression.append("#>>");
-                expression.append("'");
-                expression.append("{");
-                endPos = itemPathArray.size();
-                expression.append(StringUtils.join((itemPathArray.subList(markerPos + 3, endPos).toArray(new String[]{})), ","));
-                expression.append("}");
-                expression.append("'");
-                resultList.add(expression.toString());
-            }
-
-
-            return resultList;
-        } else
-            return itemPathArray;
     }
 
 

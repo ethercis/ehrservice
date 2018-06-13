@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ethercis</groupId>
   <artifactId>ecis-validation</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <description>EtherCIS validation module</description>
   <build>
     <plugins>
@@ -60,6 +60,7 @@
             <filter>
               <artifact>*:*:*</artifact>
               <excludes>
+                <exclude>schemaorg_apache_xmlbeans/**</exclude>
                 <exclude>org/jooq/**</exclude>
                 <exclude>org/postgresql/**</exclude>
                 <exclude>xsd/**</exclude>
@@ -76,6 +77,7 @@
               <exclude>ethercis:aql-processor</exclude>
               <exclude>ethercis:ecis-transform</exclude>
               <exclude>ethercis:ecis-knowledge-cache</exclude>
+              <exclude>ethercis:ecis-meta-data-cache</exclude>
               <exclude>junit:junit</exclude>
               <exclude>jmock:*</exclude>
               <exclude>*:xml-apis</exclude>

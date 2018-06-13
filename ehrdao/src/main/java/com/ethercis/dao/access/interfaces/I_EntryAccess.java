@@ -44,7 +44,7 @@ public interface I_EntryAccess extends I_SimpleCRUD<I_EntryAccess, UUID> {
      * @see org.openehr.rm.composition.Composition
      */
     public static I_EntryAccess getNewInstance(I_DomainAccess domain, String templateId, Integer sequence, UUID compositionId, Composition composition) throws Exception {
-        return new EntryAccess(domain.getContext(), domain.getKnowledgeManager(), templateId, sequence, compositionId, composition);
+        return new EntryAccess(domain.getContext(), domain.getKnowledgeManager(), domain.getIntrospectCache(), templateId, sequence, compositionId, composition);
     }
 
     /**
@@ -78,7 +78,7 @@ public interface I_EntryAccess extends I_SimpleCRUD<I_EntryAccess, UUID> {
     }
 
     public static I_EntryAccess EntryAccess(I_DomainAccess domain){
-        return new EntryAccess(domain.getContext(), domain.getKnowledgeManager());
+        return new EntryAccess(domain.getContext(), domain.getKnowledgeManager(), domain.getIntrospectCache());
     }
 
     /**

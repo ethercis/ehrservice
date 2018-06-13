@@ -20,6 +20,8 @@ public class NodeId {
     public String ehrscape(){
         String ehrscapeId = name.replaceAll("/| |-", "_").toLowerCase();
 
+        ehrscapeId = ehrscapeId.replaceAll("([_])\\1{1,}", "$1");
+
         return new SnakeCase(ehrscapeId).camelToSnake();
     }
 }

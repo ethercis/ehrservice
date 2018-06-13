@@ -74,4 +74,9 @@ public class CompoXRefAccess extends DataAccess implements I_CompoXrefAccess {
                 .values(masterUid, childUid, timestamp)
                 .execute();
     }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

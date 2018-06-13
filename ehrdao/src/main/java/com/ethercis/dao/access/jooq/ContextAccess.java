@@ -67,18 +67,18 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
     final static String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ";
 
     public ContextAccess(DSLContext context, EventContext eventContext) throws Exception {
-        super(context, null);
+        super(context, null, null);
         this.context = context;
         eventContextRecord = context.newRecord(EVENT_CONTEXT);
         setRecordFields(UUID.randomUUID(), eventContext);
     }
 
     public ContextAccess(I_DomainAccess domainAccess){
-        super(domainAccess.getContext(), domainAccess.getKnowledgeManager());
+        super(domainAccess);
     }
 
     public ContextAccess(){
-        super(null, null);
+        super(null, null, null);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?::jsonb, ?, ?)" +
                 " RETURNING id";
 
-        Connection connection = context.configuration().connectionProvider().acquire();
+        Connection connection = getConnection();
         PreparedStatement insertStatement = connection.prepareStatement(sql);
         insertStatement.setObject(1, eventContextRecord.getCompositionId());
         insertStatement.setObject(2, eventContextRecord.getStartTime());
@@ -325,7 +325,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
                 "sys_transaction = ? " +
                 "WHERE id = ? ";
 
-        Connection connection = context.configuration().connectionProvider().acquire();
+        Connection connection = getConnection();
         updateStatement = connection.prepareStatement(sql);
         updateStatement.setObject(1, eventContextRecord.getCompositionId());
         updateStatement.setObject(2, eventContextRecord.getStartTime());
@@ -710,4 +710,8 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
         return eventContextRecord.getId();
     }
 
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

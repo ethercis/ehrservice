@@ -4,7 +4,7 @@
   <groupId>ethercis</groupId>
   <artifactId>ecis-ehrdao</artifactId>
   <name>Data Access Layer to RM</name>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -70,11 +70,12 @@
             <filter>
               <artifact>*:*:*</artifact>
               <excludes>
-                <exclude>org/jooq/**</exclude>
                 <exclude>org/openehr/**</exclude>
-                <exclude>org/postgresql/**</exclude>
+                <exclude>schemaorg_apache_xmlbeans/**</exclude>
+                <exclude>org/apache/xmlbeans/**</exclude>
                 <exclude>xsd/**</exclude>
                 <exclude>com/fasterxml/**</exclude>
+                <exclude>com/sun/xml/**</exclude>
                 <exclude>openEHR/**</exclude>
               </excludes>
             </filter>
@@ -87,6 +88,7 @@
               <exclude>ethercis:ecis-transform</exclude>
               <exclude>ethercis:ecis-validation</exclude>
               <exclude>ethercis:ecis-knowledge-cache</exclude>
+              <exclude>ethercis:ecis-meta-data-cache</exclude>
               <exclude>org.openehr:*</exclude>
               <exclude>openEHR:*</exclude>
               <exclude>junit:junit</exclude>
@@ -126,13 +128,13 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-core</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-transform</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -150,20 +152,13 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>jooq-pg</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>aql-processor</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xbean</groupId>
-      <artifactId>xbean</artifactId>
-      <version>2.5</version>
-      <type>pom</type>
+      <version>1.2.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

@@ -29,7 +29,7 @@ import com.ethercis.ehr.building.I_ContentBuilder;
 import com.ethercis.transform.rawjson.RawJsonParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -67,13 +67,18 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
     //set this variable to change the identification  mode in status
     private PARTY_MODE party_identifier = PARTY_MODE.EXTERNAL_REF;
 
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
+
 
     public enum PARTY_MODE {IDENTIFIER, EXTERNAL_REF}
 
     public EhrAccess(DSLContext context, UUID partyId, UUID systemId, UUID directoryId, UUID accessId) throws Exception {
-        super(context, null);
+        super(context, null, null);
 
-        this.ehrRecord = context.newRecord(EHR);
+        this.ehrRecord = context.newRecord(EHR_);
         ehrRecord.setId(UUID.randomUUID());
 
         //retrieveInstanceByNamedSubject an existing status for this party (which should not occur
@@ -110,7 +115,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
 
 
     public EhrAccess(I_DomainAccess domainAccess){
-        super(domainAccess.getContext(), domainAccess.getKnowledgeManager());
+        super(domainAccess);
         //associate a contribution with this composition
         contributionAccess =  I_ContributionAccess.getInstance(this, null);
         contributionAccess.setState(ContributionDef.ContributionState.COMPLETE);
@@ -205,7 +210,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
 
             statusRecord.setSysTransaction(transactionTime);
 
-            Connection connection = context.configuration().connectionProvider().acquire();
+            Connection connection = getConnection();
             PreparedStatement insertStatement = connection.prepareStatement(sql);
             insertStatement.setObject(1, ehrRecord.getId());
             insertStatement.setBoolean(2, statusRecord.getIsQueryable());
@@ -315,7 +320,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
                     "WHERE id = ? ";
 
             statusRecord.setSysTransaction(transactionTime);
-            Connection connection = context.configuration().connectionProvider().acquire();
+            Connection connection = getConnection();
             PreparedStatement updateStatement = connection.prepareStatement(sql);
             updateStatement.setBoolean(1, statusRecord.getIsQueryable());
             updateStatement.setBoolean(2, statusRecord.getIsModifiable());
@@ -525,8 +530,8 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         ehrAccess.statusRecord  = domainAccess.getContext().fetchOne(STATUS, STATUS.ID.eq(status));
 
         try {
-            record = domainAccess.getContext().selectFrom(EHR)
-                    .where(EHR.ID.eq(ehrAccess.statusRecord.getEhrId()))
+            record = domainAccess.getContext().selectFrom(EHR_)
+                    .where(EHR_.ID.eq(ehrAccess.statusRecord.getEhrId()))
                     .fetchOne();
         }
         catch (Exception e){ //possibly not unique for a party: this is not permitted!
@@ -553,8 +558,8 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         Record record;
 
         try {
-            record = context.selectFrom(EHR)
-                    .where(EHR.ID.eq(ehrId))
+            record = context.selectFrom(EHR_)
+                    .where(EHR_.ID.eq(ehrId))
                     .fetchOne();
         }
         catch (Exception e){ //possibly not unique for a party: this is not permitted!
@@ -624,8 +629,8 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
         Record record;
 
         try {
-            record = context.selectFrom(EHR)
-                    .where(EHR.ID.eq(getId()))
+            record = context.selectFrom(EHR_)
+                    .where(EHR_.ID.eq(getId()))
                     .fetchOne();
         }
         catch (Exception e){ //possibly not unique for a party: this is not permitted!
@@ -668,14 +673,14 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
      * @param ehrId
      * @return
      */
-    public static Map<String, String> fetchSubjectIdentifiers(I_DomainAccess domainAccess, UUID ehrId) throws Exception {
+    public static Map<String, Object> fetchSubjectIdentifiers(I_DomainAccess domainAccess, UUID ehrId) throws Exception {
         EhrAccess ehrAccess = (EhrAccess) retrieveInstance(domainAccess, ehrId);
         DSLContext context = domainAccess.getContext();
 
         if (ehrAccess == null)
             throw new IllegalArgumentException("No ehr found for id:" + ehrId);
 
-        Map<String, String> idlist = MapUtils.multiValueMap(new HashMap<String, String>());
+        Map<String, Object> idlist = new MultiValueMap<>();
 
         //getNewInstance the corresponding subject Identifiers
 

@@ -50,7 +50,7 @@ public class EhrAccessTest extends AccessTestCase {
 
         assertNotNull(ehrAccess);
 
-        Map<String, String> idlist = I_EhrAccess.fetchSubjectIdentifiers(testDomainAccess, ehrId);
+        Map<String, Object> idlist = I_EhrAccess.fetchSubjectIdentifiers(testDomainAccess, ehrId);
 
         assertFalse(idlist.isEmpty());
 

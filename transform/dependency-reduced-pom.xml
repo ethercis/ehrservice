@@ -3,8 +3,47 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ethercis</groupId>
   <artifactId>ecis-transform</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
+  <scm>
+    <connection>scm:svn:http://127.0.0.1/dummy</connection>
+    <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+    <url>http://127.0.0.1/dummy</url>
+  </scm>
   <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources/properties</directory>
+      </resource>
+    </resources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <version>1.4</version>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>create</goal>
+              </goals>
+              <configuration>
+                <doCheck>false</doCheck>
+                <doUpdate>false</doUpdate>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <revisionOnScmFailure>no.scm.config.in.pom</revisionOnScmFailure>
+            <format>{0,number,integer}</format>
+            <items>
+              <item>buildNumber</item>
+            </items>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -59,6 +98,8 @@
             <filter>
               <artifact>*:*:*</artifact>
               <excludes>
+                <exclude>schemaorg_apache_xmlbeans/**</exclude>
+                <exclude>org/apache/xmlbeans/**</exclude>
                 <exclude>org/jooq/**</exclude>
                 <exclude>org/postgresql/**</exclude>
                 <exclude>xsd/**</exclude>
@@ -76,6 +117,7 @@
               <exclude>ethercis:aql-processor</exclude>
               <exclude>ethercis:ecis-validation</exclude>
               <exclude>ethercis:ecis-knowledge-cache</exclude>
+              <exclude>ethercis:ecis-meta-data-cache</exclude>
               <exclude>junit:junit</exclude>
               <exclude>jmock:*</exclude>
               <exclude>*:xml-apis</exclude>
@@ -114,14 +156,8 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-core</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>xbean</artifactId>
-          <groupId>org.apache.xbean</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
   <reporting>

@@ -21,6 +21,7 @@ import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
 import com.ethercis.jooq.pg.tables.records.TemplateRecord;
+import com.ethercis.opt.query.I_IntrospectCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
@@ -44,8 +45,8 @@ public class OptTemplateRef extends DataAccess implements I_OptTemplateRef {
         super(domainAccess);
     }
 
-    public OptTemplateRef(DSLContext context, I_KnowledgeCache knowledgeCache) {
-        super(context, knowledgeCache);
+    public OptTemplateRef(DSLContext context, I_KnowledgeCache knowledgeCache, I_IntrospectCache introspectCache) {
+        super(context, knowledgeCache, introspectCache);
     }
 
     @Override
@@ -90,5 +91,10 @@ public class OptTemplateRef extends DataAccess implements I_OptTemplateRef {
         templateRecord.setConcept(definitions.get(getKnowledgeManager().CONCEPT));
         templateRecord.store();
 
+    }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
     }
 }

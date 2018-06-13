@@ -16,6 +16,7 @@
  */
 package com.ethercis.ehr.building;
 
+import com.ethercis.ehr.building.util.ECMultiValuedMap;
 import com.ethercis.ehr.encode.ItemStack;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.encode.wrappers.I_EhrScapeWrapper;
@@ -24,6 +25,7 @@ import com.ethercis.ehr.json.FlatJsonUtil;
 import com.ethercis.ehr.json.TreeMapNode;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.PredicateUtils;
+import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -90,7 +92,7 @@ public class TreeMapBinding {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> newMultiMap() {
-        return MapUtils.multiValueMap(new HashMap<String, Object>());
+        return new MultiValueMap<>();
     }
 
     //set to lower case and replace spaces by '_'

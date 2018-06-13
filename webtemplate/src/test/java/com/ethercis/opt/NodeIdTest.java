@@ -12,8 +12,9 @@ public class NodeIdTest extends TestCase {
     @Test
     public void testFormatting(){
 
-        assertEquals("uri___resource_identifier", new NodeId("URI - resource identifier").ehrscape());
-        assertEquals("state___definition", new NodeId("State - definition").ehrscape());
+        assertEquals("uri_resource_identifier", new NodeId("URI - resource identifier").ehrscape());
+        assertEquals("relationship_role", new NodeId("Relationship/ role").ehrscape());
+        assertEquals("state_definition", new NodeId("State - definition").ehrscape());
         assertEquals("date_time", new NodeId("Date/Time").ehrscape());
         assertEquals("heading1", new NodeId("Heading1").ehrscape());
         assertEquals("heading_1", new NodeId("Heading 1").ehrscape());

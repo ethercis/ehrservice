@@ -26,13 +26,25 @@
         <user.deploy>../../ethercis-deploy</user.deploy>
         <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
     </properties>
+    <scm>
+        <connection>scm:svn:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
     <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>local-maven-repo</id>-->
-            <!--<url>${user.localMavenRepo}</url>-->
-        <!--</repository>-->
+    <!--<repository>-->
+    <!--<id>local-maven-repo</id>-->
+    <!--<url>${user.localMavenRepo}</url>-->
+    <!--</repository>-->
     <!--</repositories>-->
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources/properties</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,6 +94,8 @@
                         <filter>
                             <artifact>*:*:*</artifact>
                             <excludes>
+                                <exclude>schemaorg_apache_xmlbeans/**</exclude>
+                                <exclude>org/apache/xmlbeans/**</exclude>
                                 <exclude>org/jooq/**</exclude>
                                 <exclude>org/postgresql/**</exclude>
                                 <exclude>xsd/**</exclude>
@@ -100,6 +114,7 @@
                             <!--<exclude>ethercis:ecis-transform</exclude>-->
                             <exclude>ethercis:ecis-validation</exclude>
                             <exclude>ethercis:ecis-knowledge-cache</exclude>
+                            <exclude>ethercis:ecis-meta-data-cache</exclude>
                             <exclude>junit:junit</exclude>
                             <exclude>jmock:*</exclude>
                             <exclude>*:xml-apis</exclude>
@@ -143,10 +158,38 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.4</version>
+                    <configuration>
+                        <revisionOnScmFailure>no.scm.config.in.pom</revisionOnScmFailure>
+                        <format>{0,number,integer}</format>
+                        <items>
+                            <item>buildNumber</item>
+                        </items>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <configuration>
+                                <doCheck>false</doCheck>
+                                <doUpdate>false</doUpdate>
+                            </configuration>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>create</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <groupId>ethercis</groupId>
     <artifactId>ecis-transform</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>ethercis</groupId>
@@ -186,7 +229,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.0</version>
+            <version>4.1</version>
         </dependency>
 
     </dependencies>

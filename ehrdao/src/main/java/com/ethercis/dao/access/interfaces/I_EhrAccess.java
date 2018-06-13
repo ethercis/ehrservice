@@ -140,7 +140,7 @@ public interface I_EhrAccess extends I_SimpleCRUD<I_EhrAccess, UUID > {
      * @param ehrId the Ehr Id to search the subject from
      * @return a list of identifiers
      */
-    public static Map<String, String> fetchSubjectIdentifiers(I_DomainAccess domainAccess, UUID ehrId) throws Exception {
+    public static Map<String, Object> fetchSubjectIdentifiers(I_DomainAccess domainAccess, UUID ehrId) throws Exception {
         return EhrAccess.fetchSubjectIdentifiers(domainAccess, ehrId);
     }
 

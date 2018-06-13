@@ -24,7 +24,10 @@ import com.ethercis.aql.sql.binding.*;
 import com.ethercis.aql.sql.postprocessing.I_RawJsonTransform;
 import com.ethercis.aql.sql.postprocessing.RawJsonTransform;
 import com.ethercis.aql.sql.queryImpl.ContainsSet;
+import com.ethercis.aql.sql.queryImpl.TemplateMetaData;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
+import com.ethercis.opt.query.MetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
@@ -50,7 +53,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  *
  * Created by christian on 4/28/2016.
  */
-public class QueryProcessor  {
+public class QueryProcessor  extends TemplateMetaData {
 
     private boolean explain = false;
     DSLContext context;
@@ -58,13 +61,22 @@ public class QueryProcessor  {
     I_KnowledgeCache knowledgeCache = null;
 
     public QueryProcessor(DSLContext context){
+        super(null);
         this.context = context;
     }
 
     public QueryProcessor(DSLContext context, I_KnowledgeCache knowledgeCache){
+        super(null);
         this.context = context;
         this.knowledgeCache = knowledgeCache;
     }
+
+    public QueryProcessor(DSLContext context, I_KnowledgeCache knowledgeCache, I_IntrospectCache introspectCache){
+        super(introspectCache);
+        this.context = context;
+        this.knowledgeCache = knowledgeCache;
+    }
+
 
     public QueryProcessor(DSLContext context, boolean explain){
         this(context);
@@ -105,7 +117,7 @@ public class QueryProcessor  {
                     String label = containmentRecord.getValue(CONTAINMENT.LABEL.getName()).toString();
                     String entry_root = containmentRecord.getValue(ContainsSet.ENTRY_ROOT, String.class);
 
-                    SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, optimizationMode, entry_root);
+                    SelectBinder selectBinder = new SelectBinder(context, introspectCache, queryParser, serverNodeId, optimizationMode, entry_root);
 
                     SelectQuery<?> select;
                     if (cacheQuery.containsKey(template_id)) {
@@ -123,7 +135,7 @@ public class QueryProcessor  {
 
                         cacheQuery.put(template_id,
                                 new QuerySteps(select,
-                                                selectBinder.getWhereConditions(null),
+                                                selectBinder.getWhereConditions(template_id, null),
                                                 template_id,
                                                 selectBinder.getCompositionAttributeQuery(),
                                                 selectBinder.getJsonDataBlock()));
@@ -199,8 +211,8 @@ public class QueryProcessor  {
             }
         }
         else {
-            SelectBinder selectBinder = new SelectBinder(context, queryParser, serverNodeId, SelectBinder.OptimizationMode.TEMPLATE_BATCH, null);
-            SelectQuery<?> select = selectBinder.bind(queryParser.getInSetExpression(), count, queryParser.getOrderAttributes());
+            SelectBinder selectBinder = new SelectBinder(context, introspectCache, queryParser, serverNodeId, SelectBinder.OptimizationMode.TEMPLATE_BATCH, null);
+            SelectQuery<?> select = selectBinder.bind(null, queryParser.getInSetExpression(), count, queryParser.getOrderAttributes());
             select = new FromBinder(selectBinder.isWholeComposition(), select).addFromClause();
             select = new JoinBinder(select, selectBinder.isWholeComposition()).addJoinClause(selectBinder.getCompositionAttributeQuery());
             select = new LimitBinding(queryParser, select).bind();

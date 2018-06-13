@@ -28,4 +28,13 @@ public class ServiceDataAccess extends DataAccess {
     public ServiceDataAccess(Map<String, Object> properties) throws Exception {
         super(properties);
     }
+
+    public ServiceDataAccess(DataAccess dataAccess){
+        super(dataAccess);
+    }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

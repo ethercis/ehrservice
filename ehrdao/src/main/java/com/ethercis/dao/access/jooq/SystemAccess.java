@@ -44,7 +44,7 @@ public class SystemAccess extends DataAccess implements I_SystemAccess {
     private SystemRecord systemRecord;
 
     public SystemAccess(DSLContext context){
-        super(context, null);
+        super(context, null, null);
     }
 
     public SystemAccess(I_DomainAccess domainAccess){
@@ -203,4 +203,9 @@ public class SystemAccess extends DataAccess implements I_SystemAccess {
 
     @Override
     public String getDescription() { return systemRecord.getDescription();}
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

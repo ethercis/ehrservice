@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,6 +83,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
         } else if (isMultiContent) {
             lastChild = new Children(map).contentCount();
         }
+        ArrayList nodeNameValue = null;
 
         for (Object entry : map.entrySet()) {
             if (entry instanceof Map.Entry) {
@@ -95,67 +97,84 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                     continue;
 
                 //for activities and events, process it as arrays
-                if (key.equals(CompositionSerializer.TAG_EVENTS) || key.equals(CompositionSerializer.TAG_ACTIVITIES)){
+                if (key.equals(CompositionSerializer.TAG_EVENTS) || key.equals(CompositionSerializer.TAG_ACTIVITIES)) {
                     //get the entry key
                     //TODO: support more than one entry!!!
-                    if (((LinkedTreeMap)value).entrySet().toArray().length > 1){
-                        logger.warn("Detected more than one entry for "+key+"; size found:"+((LinkedTreeMap)value).entrySet().toArray().length);
+                    if (((LinkedTreeMap) value).entrySet().toArray().length > 1) {
+                        logger.warn("Detected more than one entry for " + key + "; size found:" + ((LinkedTreeMap) value).entrySet().toArray().length);
                     }
-                    Map.Entry entry1 = (Map.Entry) ((LinkedTreeMap)value).entrySet().toArray()[0];
-                    key = (String)entry1.getKey();
+                    Map.Entry entry1 = (Map.Entry) ((LinkedTreeMap) value).entrySet().toArray()[0];
+                    key = (String) entry1.getKey();
                     value = entry1.getValue();
                     ((LinkedTreeMap) ((ArrayList) value).get(0)).put(AT_CLASS, new DomainStructure(archetypeNodeId).archetypeSlotType());
                 }
 
-
                 if (value instanceof ArrayList) {
-                    if (!key.equals(CompositionSerializer.TAG_NAME)) {
-
-                        if (isItemsOnly) {
-                            if (cursor == 0) { //initial
-                                writer.name(jsonKey);
-                                writer.beginArray();
+                    if (isItemsOnly) {
+                        if (cursor == 0) { //initial
+                            writer.name(ITEMS);
+                            writer.beginArray();
+                            if (key.equals(CompositionSerializer.TAG_NAME)) {
+//                                writeNameAsValue(writer, (ArrayList) value);
+                                nodeNameValue = (ArrayList) value;
+                            } else {
                                 new ArrayListAdapter(archetypeNodeId, key).write(writer, (ArrayList) value);
-                                cursor++;
-                            } else { //next siblings
+                            }
+                            cursor++;
+                        } else { //next siblings
+                            if (key.equals(CompositionSerializer.TAG_NAME)) {
+                                nodeNameValue = (ArrayList) value;
+                            } else
                                 new LinkedTreeMapAdapter(archetypeNodeId, key).write(writer, (LinkedTreeMap) ((ArrayList) value).get(0));
-                                cursor++;
-                            }
-                            if (cursor > lastChild)
-                                writer.endArray();
-                        } else if (isMultiContent && key.contains(CompositionSerializer.TAG_CONTENT)) {
-                            //assumed sorted (LinkedTreeMap preserve input order)
-                            if (value instanceof ArrayList && ((ArrayList) value).size() > 0 && ((ArrayList) value).get(0) instanceof LinkedTreeMap) {
-                                ((LinkedTreeMap) ((ArrayList) value).get(0)).put(ARCHETYPE_NODE_ID, archetypeNodeId);
-                                ((LinkedTreeMap) ((ArrayList) value).get(0)).put(AT_CLASS, new DomainStructure(archetypeNodeId).archetypeSlotType());
-                            }
+                            cursor++;
+                        }
+                        if (cursor > lastChild) {
+                            writer.endArray();
+                            writeNameAsValue(writer, nodeNameValue);
+                        }
+                    } else if (isMultiContent && key.contains(CompositionSerializer.TAG_CONTENT)) {
+                        //assumed sorted (LinkedTreeMap preserve input order)
+                        if (value instanceof ArrayList && ((ArrayList) value).size() > 0 && ((ArrayList) value).get(0) instanceof LinkedTreeMap) {
+                            ((LinkedTreeMap) ((ArrayList) value).get(0)).put(ARCHETYPE_NODE_ID, archetypeNodeId);
+                            ((LinkedTreeMap) ((ArrayList) value).get(0)).put(AT_CLASS, new DomainStructure(archetypeNodeId).archetypeSlotType());
+                        }
 
-                            if (cursor == 0) { //initial
-                                writer.name(jsonKey);
-                                writer.beginArray();
+                        if (cursor == 0) { //initial
+                            if (key.equals(CompositionSerializer.TAG_NAME)) {
+//                                writeNameAsValue(writer, (ArrayList) value);
+                                nodeNameValue = (ArrayList) value;
+                            } else {
                                 //insert archetype node id
+                                writer.name(jsonKey);
+                                writer.beginArray();
                                 new ArrayListAdapter(archetypeNodeId, key).write(writer, (ArrayList) value);
-                                cursor++;
-                            } else { //next siblings
-                                new LinkedTreeMapAdapter(archetypeNodeId, key).write(writer, (LinkedTreeMap) ((ArrayList) value).get(0));
-                                cursor++;
                             }
-                            if (cursor > lastChild - 1)
-                                writer.endArray();
+                            cursor++;
+                        } else { //next siblings
+                            if (key.equals(CompositionSerializer.TAG_NAME)) {
+                                nodeNameValue = (ArrayList) value;
+                            } else
+                                new LinkedTreeMapAdapter(archetypeNodeId, key).write(writer, (LinkedTreeMap) ((ArrayList) value).get(0));
+                            cursor++;
+                        }
+                        if (cursor > lastChild - 1) {
+                            writer.endArray();
+                            writeNameAsValue(writer, nodeNameValue);
+                        }
+                    } else {
+                        if (key.equals(CompositionSerializer.TAG_NAME)) {
+//                            writeNameAsValue(writer, (ArrayList) value);
+                            nodeNameValue = (ArrayList) value;
                         } else {
                             writer.name(jsonKey);
                             writer.beginArray();
                             new ArrayListAdapter(archetypeNodeId, key).write(writer, (ArrayList) value);
                             writer.endArray();
+                            if (nodeNameValue == null) {
+                                nodeNameValue = nodeName(map);
+                            }
+                            writeNameAsValue(writer, nodeNameValue);
                         }
-                    } else {
-                        //get the name value
-                        //protective against old entries in the DB...
-                        Object nameDefinition = ((Map) (((ArrayList) value).get(0))).get("value");
-                        if (nameDefinition instanceof String)
-                            writeNameAsValue(writer, (String) nameDefinition);
-                        else //ignore
-                            ;
                     }
                 } else if (value instanceof LinkedTreeMap) {
                     LinkedTreeMap valueMap = (LinkedTreeMap) value;
@@ -165,7 +184,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                         valueMap.put(AT_CLASS, new SnakeCase(elementType).camelToUpperSnake());
                         valueMap.remove(CompositionSerializer.TAG_CLASS);
                         //TODO: CHC, 180426 temporary fix, modify DB encoding to not include name for attribute.
-                        if (key.contains("/time") && valueMap.containsKey(CompositionSerializer.TAG_NAME)){
+                        if (key.contains("/time") && valueMap.containsKey(CompositionSerializer.TAG_NAME)) {
                             valueMap.remove(CompositionSerializer.TAG_NAME);
                         }
                     }
@@ -225,8 +244,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
 //                writer.name(ARCHETYPE_NODE_ID).value(archetypeNodeId);
                 new ArchetypeNodeId(writer, archetypeNodeId).write();
             }
-        }
-        else if (parentArchetypeNodeId != null){
+        } else if (parentArchetypeNodeId != null) {
             new ArchetypeNodeId(writer, parentArchetypeNodeId).write();
         }
 
@@ -278,6 +296,28 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
         writer.beginObject();
         writer.name(VALUE).value(value);
         writer.endObject();
+    }
+
+    void writeNameAsValue(JsonWriter writer, ArrayList value) throws IOException {
+//        return;
+        //get the name value
+        //protective against old entries in the DB...
+        if (value == null)
+            return;
+        Object nameDefinition = ((Map) (value.get(0))).get("value");
+        writeNameAsValue(writer, nameDefinition.toString());
+
+//        writeNameAsValue(writer, );
+    }
+
+    private ArrayList nodeName(Map map) {
+        ArrayList nodeNameValue = null;
+
+        if (map.get(CompositionSerializer.TAG_NAME) != null) {
+            nodeNameValue = (ArrayList) map.get(CompositionSerializer.TAG_NAME);
+        }
+
+        return nodeNameValue;
     }
 
 }

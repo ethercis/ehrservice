@@ -30,7 +30,8 @@ import com.ethercis.ehr.util.I_FlatJsonCompositionConverter;
 import com.ethercis.ehr.util.MapInspector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.commons.collections4.map.MultiValueMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -68,7 +69,7 @@ public class TestRawJsonEncoding {
         knowledge.retrieveFileMap(include, null);
     }
 
-    private String jsonMapToString(Map map){
+    private String jsonMapToString(MultiValueMap map){
         GsonBuilder builder = EncodeUtil.getGsonBuilderInstance();
         Gson gson = builder.setPrettyPrinting().create();
         String mapjson = gson.toJson(map);

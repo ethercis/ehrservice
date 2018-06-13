@@ -51,7 +51,7 @@ public class ContainmentAccess extends DataAccess implements I_ContainmentAccess
     Boolean debug;
 
     public  ContainmentAccess(DSLContext context, UUID entryId, String archetypeId, Map<String, String> ltreeMap, boolean debug){
-        super(context, null);
+        super(context, null, null);
         ltree = new HashMap<>();
         this.entryId = entryId;
         this.debug = debug;
@@ -127,5 +127,10 @@ public class ContainmentAccess extends DataAccess implements I_ContainmentAccess
     @Override
     public void setCompositionId(UUID compositionId) {
         this.compositionId = compositionId;
+    }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
     }
 }

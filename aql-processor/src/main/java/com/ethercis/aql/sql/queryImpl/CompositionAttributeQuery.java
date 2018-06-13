@@ -67,7 +67,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     }
 
     @Override
-    public Field<?> makeField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
+    public Field<?> makeField(String templateId, UUID compositionId, String identifier, I_VariableDefinition variableDefinition, boolean withAlias, Clause clause) {
         //resolve composition attributes and/or context
         columnAlias = variableDefinition.getPath();
         compositionIdField = false;
@@ -183,8 +183,8 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
     }
 
     @Override
-    public Field<?> whereField(UUID compositionId, String identifier, I_VariableDefinition variableDefinition) {
-        return makeField(compositionId, identifier, variableDefinition, false, Clause.WHERE);
+    public Field<?> whereField(String templateId, UUID compositionId, String identifier, I_VariableDefinition variableDefinition) {
+        return makeField(templateId, compositionId, identifier, variableDefinition, false, Clause.WHERE);
     }
 
     private Field<?> uid(UUID compositionId, boolean alias, String aliasStr){
@@ -440,25 +440,25 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         if (useFromEntry()) {
             joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
-                return DSL.field(ehrRecordTable.field(ehrRecordTable.field(EHR.ID.getName())));
+                return DSL.field(ehrRecordTable.field(ehrRecordTable.field(EHR_.ID.getName())));
         }
         else if (!containsEhrStatus()) {
             joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
-                return DSL.field(ehrRecordTable.field(EHR.ID.getName()));
+                return DSL.field(ehrRecordTable.field(EHR_.ID.getName()));
         }
         else {
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
-                return DSL.field(ehrRecordTable.field(EHR.ID.getName()));
+                return DSL.field(ehrRecordTable.field(EHR_.ID.getName()));
         }
     }
 

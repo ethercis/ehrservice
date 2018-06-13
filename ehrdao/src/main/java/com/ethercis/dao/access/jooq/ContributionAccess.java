@@ -25,6 +25,7 @@ import com.ethercis.jooq.pg.enums.ContributionState;
 import com.ethercis.jooq.pg.tables.records.ContributionHistoryRecord;
 import com.ethercis.jooq.pg.tables.records.ContributionRecord;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,9 +50,9 @@ public class ContributionAccess extends DataAccess implements I_ContributionAcce
     private final String signature = "$system$"; //used to sign a contribution during commit
 
 
-    public ContributionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, UUID ehrId, UUID systemId, UUID committerId, String description, Integer changeTypeCode, ContributionDef.ContributionType contributionType, ContributionDef.ContributionState contributionState){
+    public ContributionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache, UUID ehrId, UUID systemId, UUID committerId, String description, Integer changeTypeCode, ContributionDef.ContributionType contributionType, ContributionDef.ContributionState contributionState){
 
-        super(context, knowledgeManager);
+        super(context, knowledgeManager, introspectCache);
 
         this.contributionRecord = context.newRecord(CONTRIBUTION);
 
@@ -67,9 +68,9 @@ public class ContributionAccess extends DataAccess implements I_ContributionAcce
         contributionRecord.setEhrId(ehrId);
     }
 
-    public ContributionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, UUID ehrId){
+    public ContributionAccess(DSLContext context, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache, UUID ehrId){
 
-        super(context, knowledgeManager);
+        super(context, knowledgeManager, introspectCache);
 
         this.contributionRecord = context.newRecord(CONTRIBUTION);
 
@@ -557,5 +558,10 @@ public class ContributionAccess extends DataAccess implements I_ContributionAcce
     @Override
     public UUID getId(){
         return contributionRecord.getId();
+    }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
     }
 }

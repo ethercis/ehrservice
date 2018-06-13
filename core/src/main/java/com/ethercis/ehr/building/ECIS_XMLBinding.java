@@ -544,6 +544,20 @@ public class ECIS_XMLBinding {
 	protected void init(Map<SystemValue, Object> values) {
 		xmlOptions = new XmlOptions();
 
+		xmlOptions.setCharacterEncoding("UTF-8");
+		xmlOptions.setUseDefaultNamespace();
+		HashMap<String, String> uriToPrefixMap = new HashMap<String, String>();
+//		    uriToPrefixMap.put(SCHEMA_XSI, "xsi");
+		uriToPrefixMap.put("", SCHEMA_OPENEHR_ORG_V1);
+		xmlOptions.setLoadSubstituteNamespaces(uriToPrefixMap);
+		xmlOptions.setSaveAggressiveNamespaces();
+		xmlOptions.setSaveNamespacesFirst();
+		xmlOptions.setSaveOuter();
+
+//		xmlOptions.setDocumentType(CompositionDocument.type);
+
+		xmlOptions.setSaveUseOpenFrag();
+
 //=============================================================
 //		HashMap<String, String> uriToPrefixMap = new HashMap<String, String>();
 //		uriToPrefixMap.put(SCHEMA_XSI, "xsi");
@@ -560,11 +574,11 @@ public class ECIS_XMLBinding {
 
 //		xmlOptions.setSavePrettyPrint();
 //		xmlOptions.setCharacterEncoding("UTF-8");
-        xmlOptions.setUseDefaultNamespace();
-        HashMap<String, String> uriToPrefixMap = new HashMap<String, String>();
-//		    uriToPrefixMap.put(SCHEMA_XSI, "xsi");
-        uriToPrefixMap.put("", SCHEMA_OPENEHR_ORG_V1);
-        xmlOptions.setLoadSubstituteNamespaces(uriToPrefixMap);
+//        xmlOptions.setUseDefaultNamespace();
+//        uriToPrefixMap = new HashMap<String, String>();
+////		    uriToPrefixMap.put(SCHEMA_XSI, "xsi");
+//        uriToPrefixMap.put("", SCHEMA_OPENEHR_ORG_V1);
+//        xmlOptions.setLoadSubstituteNamespaces(uriToPrefixMap);
 
 		builder = new RMBuilder(values);
 	}

@@ -143,4 +143,9 @@ public class StatusAccess extends DataAccess implements I_StatusAccess {
         return statusAccess;
 
     }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
+    }
 }

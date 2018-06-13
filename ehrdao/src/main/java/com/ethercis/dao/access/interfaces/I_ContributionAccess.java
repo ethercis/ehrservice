@@ -60,11 +60,11 @@ public interface I_ContributionAccess extends I_SimpleCRUD<I_ContributionAccess,
      * @see com.ethercis.dao.access.util.ContributionDef
      */
     public static I_ContributionAccess getNewInstance(I_DomainAccess domain, UUID ehrId, UUID systemId, UUID composerId, String description, Integer setting, ContributionDef.ContributionType contributionType, ContributionDef.ContributionState contributionState){
-        return new ContributionAccess(domain.getContext(), domain.getKnowledgeManager(), ehrId, systemId, composerId, description, setting, contributionType, contributionState);
+        return new ContributionAccess(domain.getContext(), domain.getKnowledgeManager(), domain.getIntrospectCache(), ehrId, systemId, composerId, description, setting, contributionType, contributionState);
     }
 
     public static I_ContributionAccess getInstance(I_DomainAccess domain, UUID ehrId){
-        return new ContributionAccess(domain.getContext(), domain.getKnowledgeManager(), ehrId);
+        return new ContributionAccess(domain.getContext(), domain.getKnowledgeManager(), domain.getIntrospectCache(), ehrId);
     }
 
     /**

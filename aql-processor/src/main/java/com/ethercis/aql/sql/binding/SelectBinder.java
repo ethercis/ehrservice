@@ -27,6 +27,9 @@ import com.ethercis.aql.sql.postprocessing.I_RawJsonTransform;
 import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.aql.sql.queryImpl.I_QueryImpl;
 import com.ethercis.aql.sql.queryImpl.JsonbEntryQuery;
+import com.ethercis.aql.sql.queryImpl.TemplateMetaData;
+import com.ethercis.opt.query.I_IntrospectCache;
+import com.ethercis.opt.query.MetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
@@ -42,7 +45,7 @@ import static com.ethercis.jooq.pg.Tables.*;
  * Bind the abstract representation of a SELECT clause into a SQL expression
  * Created by christian on 5/4/2016.
  */
-public class SelectBinder implements I_SelectBinder {
+public class SelectBinder extends TemplateMetaData implements I_SelectBinder {
 
     Logger logger = LogManager.getLogger(SelectBinder.class);
 
@@ -60,19 +63,20 @@ public class SelectBinder implements I_SelectBinder {
 
     private OptimizationMode optimizationMode;
 
-    public SelectBinder(DSLContext context, IdentifierMapper mapper, List<I_VariableDefinition> definitions, List whereClause, String serverNodeId, OptimizationMode mode, String entry_root) {
+    public SelectBinder(DSLContext context, I_IntrospectCache introspectCache, IdentifierMapper mapper, List<I_VariableDefinition> definitions, List whereClause, String serverNodeId, OptimizationMode mode, String entry_root) {
+        super(introspectCache);
         this.context = context;
         this.pathResolver = new PathResolver(context, mapper);
         this.mapper = mapper;
         this.selectVariableDefinitions = definitions;
-        this.jsonbEntryQuery = new JsonbEntryQuery(context, pathResolver, definitions, entry_root);
+        this.jsonbEntryQuery = new JsonbEntryQuery(context, introspectCache, pathResolver, definitions, entry_root);
         this.compositionAttributeQuery = new CompositionAttributeQuery(context, pathResolver, definitions, serverNodeId);
         this.whereBinder = new WhereBinder(jsonbEntryQuery, compositionAttributeQuery, whereClause, mapper);
         this.optimizationMode = mode;
     }
 
-    public SelectBinder(DSLContext context, QueryParser parser, String serverNodeId, OptimizationMode mode, String entry_root) {
-        this(context, parser.getIdentifierMapper(), parser.getVariables(), parser.getWhereClause(), serverNodeId, mode, entry_root);
+    public SelectBinder(DSLContext context, I_IntrospectCache introspectCache, QueryParser parser, String serverNodeId, OptimizationMode mode, String entry_root) {
+        this(context, introspectCache, parser.getIdentifierMapper(), parser.getVariables(), parser.getWhereClause(), serverNodeId, mode, entry_root);
     }
 
 
@@ -101,16 +105,16 @@ public class SelectBinder implements I_SelectBinder {
             switch (className){
                 case "COMPOSITION":
                     if (variableDefinition.getPath().startsWith("content")) {
-                        field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                        field = jsonbEntryQuery.makeField(template_id, comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
                         break;
                     }
 
                 case "EHR":
-                    field = compositionAttributeQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                    field = compositionAttributeQuery.makeField(template_id, comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
 //                    selectFields.add(compositionAttributeQuery.selectField(comp_id, identifier, variableDefinition));
                     break;
                 default:
-                    field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                    field = jsonbEntryQuery.makeField(template_id, comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
                     containsJsonDataBlock  = containsJsonDataBlock | jsonbEntryQuery.isJsonDataBlock();
                     if (jsonbEntryQuery.isJsonDataBlock()){
                         //add this field to the list of column to format as RAW JSON
@@ -142,7 +146,7 @@ public class SelectBinder implements I_SelectBinder {
             whereBinder.setInitialCondition(I_JoinBinder.compositionRecordTable.field("id", UUID.class).in(comp_id));
 //        whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.eq(UUID.fromString(DSL.param("comp_id"))));
 //        selectQuery.addConditions();
-            selectQuery.addConditions(whereBinder.bind(comp_id));
+            selectQuery.addConditions(whereBinder.bind(template_id, comp_id));
         }
 
 //        completeFromClause(selectQuery); //as some variables (other_status) may be defined only in where...
@@ -150,8 +154,8 @@ public class SelectBinder implements I_SelectBinder {
         return selectQuery;
     }
 
-    public Condition getWhereConditions(UUID comp_id){
-        Condition condition =  whereBinder.bind(comp_id);
+    public Condition getWhereConditions(String templateId, UUID comp_id){
+        Condition condition =  whereBinder.bind(templateId, comp_id);
         return condition;
     }
 
@@ -160,7 +164,7 @@ public class SelectBinder implements I_SelectBinder {
      * @param inSet
      * @return
      */
-    public SelectQuery<?> bind(Result<?> inSet){
+    public SelectQuery<?> bind(String templateId, Result<?> inSet){
         jsonbEntryQuery.reset();
 
         SelectQuery<?> selectQuery = context.selectQuery();
@@ -172,7 +176,7 @@ public class SelectBinder implements I_SelectBinder {
             SelectQuery<?> subSelect = context.selectQuery();
             switch (className){
                 case "COMPOSITION":
-                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                    field = compositionAttributeQuery.makeField(templateId, null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
 //                    selectFields.add(compositionAttributeQuery.selectField(comp_id, identifier, variableDefinition));
                     break;
                 default:
@@ -188,7 +192,7 @@ public class SelectBinder implements I_SelectBinder {
 //        selectQuery.addFrom(COMP_EXPAND);
         whereBinder.setInitialCondition(I_JoinBinder.compositionRecordTable.field("id", UUID.class).in(inSet));
 //        selectQuery.addConditions();
-        selectQuery.addConditions(whereBinder.bind(null));
+        selectQuery.addConditions(whereBinder.bind(templateId, null));
 
 //        if (topAttributes != null){
 //            selectQuery.addLimit(topAttributes.getWindow());
@@ -214,7 +218,7 @@ public class SelectBinder implements I_SelectBinder {
         return false;
     }
 
-    public SelectQuery<?> bind(SelectQuery<?> containQuery, Integer limit, List<OrderAttribute> orderAttributes){
+    public SelectQuery<?> bind(String templateId, SelectQuery<?> containQuery, Integer limit, List<OrderAttribute> orderAttributes){
         if (orderAttributes!= null && hasPathBasedField(orderAttributes))
             throw new IllegalArgumentException("Order by using a path based expression is not yet implemented");
 
@@ -233,7 +237,7 @@ public class SelectBinder implements I_SelectBinder {
                     selectQuery.addSelect(DSL.field("ehr.js_composition("+ENTRY.COMPOSITION_ID+")").as(DATA));
                     //add the composition uuid
                     VariableDefinition variableDef = new VariableDefinition("uid/value", COMPOSITION_UID, "UUID", false);
-                    selectQuery.addSelect(compositionAttributeQuery.makeField(null, null, variableDef, true, I_QueryImpl.Clause.SELECT));
+                    selectQuery.addSelect(compositionAttributeQuery.makeField(templateId, null, null, variableDef, true, I_QueryImpl.Clause.SELECT));
                     continue;
                 }
 
@@ -247,10 +251,10 @@ public class SelectBinder implements I_SelectBinder {
             Field<?> field;
             switch (className){
                 case "COMPOSITION":
-                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                    field = compositionAttributeQuery.makeField(templateId, null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
                     break;
                 case "EHR":
-                    field = compositionAttributeQuery.makeField(null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
+                    field = compositionAttributeQuery.makeField(templateId, null, identifier, variableDefinition, true, I_QueryImpl.Clause.SELECT);
                     //check for implicit where associated with the FROM EHR clause
 //                    FromDefinition.EhrPredicate predicate = (FromDefinition.EhrPredicate) mapper.getContainer(identifier);
 //                    whereBinder.whereClause.add();
@@ -271,7 +275,7 @@ public class SelectBinder implements I_SelectBinder {
 //            whereBinder.setInitialCondition(COMP_EXPAND.COMPOSITION_ID.in(containQuery.asField()));
             whereBinder.setInitialCondition(I_JoinBinder.compositionRecordTable.field("id", UUID.class).in(containQuery.asField()));
         }
-        selectQuery.addConditions(whereBinder.bind(null));
+        selectQuery.addConditions(whereBinder.bind(templateId, null));
 
         if (limit != null)
             selectQuery.addLimit(limit);
@@ -279,7 +283,7 @@ public class SelectBinder implements I_SelectBinder {
         if (orderAttributes != null && !orderAttributes.isEmpty()) {
             for (OrderAttribute orderAttribute: orderAttributes){
                 //assumes COMPOSITION fields
-                Field<?> field = compositionAttributeQuery.makeField(null, null, orderAttribute.getVariableDefinition(), false, I_QueryImpl.Clause.ORDERBY);
+                Field<?> field = compositionAttributeQuery.makeField(templateId, null, null, orderAttribute.getVariableDefinition(), false, I_QueryImpl.Clause.ORDERBY);
 
                 if (field != null){
                     if (orderAttribute.getDirection() != null) {
@@ -305,7 +309,7 @@ public class SelectBinder implements I_SelectBinder {
     }
 
 
-    public void addOrderParameters(SelectQuery selectQuery, List<OrderAttribute> orderAttributes, UUID comp_id ){
+    public void addOrderParameters(String templateId, SelectQuery selectQuery, List<OrderAttribute> orderAttributes, UUID comp_id ){
         if (orderAttributes != null && !orderAttributes.isEmpty()) {
             for (OrderAttribute orderAttribute: orderAttributes){
                 //assumes COMPOSITION fields
@@ -315,11 +319,11 @@ public class SelectBinder implements I_SelectBinder {
                 Field<?> field;
                 switch (className){
                     case "COMPOSITION":
-                        field = compositionAttributeQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.ORDERBY);
+                        field = compositionAttributeQuery.makeField(templateId, comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.ORDERBY);
 //                    selectFields.add(compositionAttributeQuery.selectField(comp_id, identifier, variableDefinition));
                         break;
                     default:
-                        field = jsonbEntryQuery.makeField(comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.ORDERBY);
+                        field = jsonbEntryQuery.makeField(templateId, comp_id, identifier, variableDefinition, true, I_QueryImpl.Clause.ORDERBY);
 //                    selectFields.add(jsonbEntryQuery.selectField(comp_id, identifier, variableDefinition));
                         break;
                 }

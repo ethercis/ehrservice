@@ -22,6 +22,7 @@ import com.ethercis.aql.sql.QueryProcessor;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.support.DataAccess;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.ethercis.opt.query.I_IntrospectCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.Record;
@@ -39,8 +40,8 @@ public class AqlQueryHandler extends DataAccess {
     Logger logger = LogManager.getLogger(AqlQueryHandler.class);
 
 
-    public AqlQueryHandler(SQLDialect dialect, String DBURL, String login, String password, I_KnowledgeCache knowledgeManager) throws Exception {
-        super(dialect, DBURL, login, password, knowledgeManager);
+    public AqlQueryHandler(SQLDialect dialect, String DBURL, String login, String password, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache) throws Exception {
+        super(dialect, DBURL, login, password, knowledgeManager, introspectCache);
     }
 
     public AqlQueryHandler(I_DomainAccess domainAccess) {
@@ -52,7 +53,7 @@ public class AqlQueryHandler extends DataAccess {
     }
 
     public List<Record> process(String query) throws SQLException {
-        QueryProcessor queryProcessor = new QueryProcessor(getContext(), this.getKnowledgeManager());
+        QueryProcessor queryProcessor = new QueryProcessor(getContext(), this.getKnowledgeManager(), this.getIntrospectCache());
         QueryParser queryParser = new QueryParser(getContext(), query);
 
         queryParser.pass1();
@@ -76,5 +77,10 @@ public class AqlQueryHandler extends DataAccess {
     public String dump(String query) {
         QueryParser queryParser = new QueryParser(getContext(), query);
         return queryParser.dump();
+    }
+
+    @Override
+    public DataAccess getDataAccess() {
+        return this;
     }
 }
