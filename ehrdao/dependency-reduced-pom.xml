@@ -4,7 +4,7 @@
   <groupId>ethercis</groupId>
   <artifactId>ecis-ehrdao</artifactId>
   <name>Data Access Layer to RM</name>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.3.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -128,13 +128,13 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-core</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-transform</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -152,13 +152,13 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>jooq-pg</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>aql-processor</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
