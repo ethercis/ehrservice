@@ -35,6 +35,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 
 /**
@@ -53,7 +55,7 @@ public abstract class DataAccess implements I_DomainAccess {
 
     public DataAccess(SQLDialect dialect, String DBURL, String login, String password, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache) throws Exception {
         //setup connection
-        setJDBC(dialect, DBURL, login, password);
+        simpleJdbcContext(dialect, DBURL, login, password);
         this.knowledgeManager = knowledgeManager;
         this.introspectCache = introspectCache;
     }
@@ -76,22 +78,18 @@ public abstract class DataAccess implements I_DomainAccess {
     public DataAccess(Map<String, Object> properties) throws Exception {
 
         String serverConnectionMode = (String) properties.get(I_DomainAccess.KEY_CONNECTION_MODE);
+        SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
 
         if (serverConnectionMode != null && serverConnectionMode.equals(I_DomainAccess.PG_POOL)) {
-            setPGPoolParameters(properties);
+            pgpoolConnection(dialect, properties);
             logger.info("Database connection uses POSTGRES CONNECTION POOLING");
         } else if (serverConnectionMode != null && serverConnectionMode.equals(I_DomainAccess.DBCP2_POOL)) {
-            setDBCP2Parameters(properties);
+            dbcp2Connection(dialect, properties);
             logger.info("Database connection uses DBCP2 CONNECTION POOLING");
         }
         //default
         else {
-            SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
-            String url = (String) properties.get(I_DomainAccess.KEY_URL);
-            String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
-            String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
-
-            setJDBC(dialect, url, login, password);
+            pgJdbcConnection(dialect, properties);
             logger.info("Database connection uses JDBC DRIVER");
         }
 
@@ -102,7 +100,7 @@ public abstract class DataAccess implements I_DomainAccess {
         else
             introspectCache = new IntrospectCache(getContext(), knowledgeManager);
 
-        introspectCache.load().synchronize();
+//        introspectCache.load().synchronize();
     }
 
     public DataAccess(DSLContext context, I_KnowledgeCache knowledgeManager, I_IntrospectCache introspectCache) {
@@ -120,7 +118,60 @@ public abstract class DataAccess implements I_DomainAccess {
 
     }
 
-    private void setJDBC(SQLDialect dialect, String DBURL, String login, String password) throws Exception {
+    private Properties pgjdbcProperties(Map<String, Object> objectMap){
+        Properties properties = new Properties();
+
+        for (Map.Entry<String, Object> entry: objectMap.entrySet()){
+
+            if (entry.getKey().startsWith(I_DomainAccess.KEY_PGJDBC_PREFIX)){
+                properties.put(entry.getKey().substring(entry.getKey().indexOf(I_DomainAccess.KEY_PGJDBC_PREFIX)+I_DomainAccess.KEY_PGJDBC_PREFIX.length()), entry.getValue().toString());
+            }
+        }
+        return properties;
+    }
+
+    private String propertiesAsStringList(Properties pgProperties){
+        return pgProperties.entrySet()
+                .stream()
+                .map(e -> e.getKey() + "=" + e.getValue().toString())
+                .collect(Collectors.joining(";"));
+    }
+
+
+    private void pgJdbcConnection(SQLDialect dialect, Map<String, Object> properties) throws Exception {
+        String url = (String) properties.get(I_DomainAccess.KEY_URL);
+        Properties pgProperties = pgjdbcProperties(properties);
+
+        if (pgProperties.size() > 0){
+            simpleJdbcContext(dialect, url, pgProperties);
+        }
+        else {
+            String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
+            String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
+
+            simpleJdbcContext(dialect, url, login, password);
+        }
+        logger.info("Database connection uses JDBC DRIVER");
+    }
+
+
+    private void dbcp2Connection(SQLDialect dialect, Map<String, Object> properties) throws Exception {
+        BasicDataSource dataSource = configureDBCP2(properties);
+        Properties pgProperties = pgjdbcProperties(properties);
+        if (pgProperties.size() > 0){
+            //add connection properties to this datasource
+            dataSource.setConnectionProperties(propertiesAsStringList(pgProperties));
+        }
+        else {
+            String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
+            String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
+            dataSource.setUsername(login);
+            dataSource.setPassword(password);
+        }
+        this.context = DSL.using(dataSource, dialect);
+    }
+
+    private void simpleJdbcContext(SQLDialect dialect, String DBURL, String login, String password) throws Exception {
         //use a driver
         Connection connection;
         try {
@@ -136,10 +187,25 @@ public abstract class DataAccess implements I_DomainAccess {
 
     }
 
-    private void setPGPoolParameters(Map<String, Object> properties) throws Exception {
-//        Connection connection;
+    private void simpleJdbcContext(SQLDialect dialect, String DBURL, Properties properties) throws Exception {
+        //use a driver
+        Connection connection;
+        try {
+            connection = DriverManager.getConnection(DBURL, properties);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL exception occurred while connecting:" + e);
+        }
 
-        SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
+        if (connection == null)
+            throw new IllegalArgumentException("Could not connect to DB");
+
+        this.context = DSL.using(connection, dialect);
+
+    }
+
+
+    private void pgpoolConnection(SQLDialect dialect, Map<String, Object> properties) throws Exception {
+//        Connection connection;
         String host = (String) properties.get(I_DomainAccess.KEY_HOST);
         String port = (String) properties.get(I_DomainAccess.KEY_PORT);
         String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
@@ -188,11 +254,9 @@ public abstract class DataAccess implements I_DomainAccess {
 
     }
 
-    private void setDBCP2Parameters(Map<String, Object> properties) throws Exception {
+    private BasicDataSource configureDBCP2(Map<String, Object> properties) throws Exception {
         SQLDialect dialect = SQLDialect.valueOf((String) properties.get(I_DomainAccess.KEY_DIALECT));
         String url = (String) properties.get(I_DomainAccess.KEY_URL);
-        String login = (String) properties.get(I_DomainAccess.KEY_LOGIN);
-        String password = (String) properties.get(I_DomainAccess.KEY_PASSWORD);
 //        String database = (String)properties.get(I_DomainAccess.KEY_DATABASE);
 ////        String schema = (String)properties.get(I_DomainAccess.KEY_SCHEMA);
         Integer max_connection = 10;
@@ -239,15 +303,15 @@ public abstract class DataAccess implements I_DomainAccess {
         if (!dialect.equals(SQLDialect.POSTGRES))
             throw new IllegalArgumentException("At this stage only POSTGRES dialect is supported, please check your configuration");
 
+        BasicDataSource dataSource;
+
         try {
             logger.info("DBCP2_POOL BasicDataSource (http://commons.apache.org/proper/commons-dbcp/configuration.html)");
 
-            BasicDataSource dataSource = new BasicDataSource();
+            dataSource = new BasicDataSource();
             dataSource.setDriverClassName("org.postgresql.Driver");
             dataSource.setUrl(url);
             logger.info("url: " + url);
-            dataSource.setUsername(login);
-            dataSource.setPassword(password);
             if (setMaxPreparedStatements != null) {
                 dataSource.setMaxOpenPreparedStatements(setMaxPreparedStatements);
                 logger.info("setMaxOpenPreparedStatements: " + setMaxPreparedStatements);
@@ -299,14 +363,14 @@ public abstract class DataAccess implements I_DomainAccess {
                 dataSource.setInitialSize(initialConnections);
             }
 
-            this.context = DSL.using(dataSource, dialect);
-
             logger.info("Pool max_connections: " + max_connection);
             logger.info("Pool max_wait_millisec: " + waitMs);
             logger.info("");
         } catch (Exception e) {
             throw new IllegalArgumentException("DBCP2_POOL: Exception occurred while connecting:" + e);
         }
+
+        return dataSource;
     }
 
 
