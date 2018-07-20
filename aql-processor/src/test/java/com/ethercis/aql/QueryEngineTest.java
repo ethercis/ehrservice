@@ -1642,4 +1642,32 @@ public class QueryEngineTest {
         System.out.print(records);
     }
 
+    @Test
+    public void test_CR139() throws Exception {
+        String query = "select a " +
+                "as data " +
+                "from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']" +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1]" +
+                " where a/name/value='Vital Signs Observations'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void test_CR139_FF() throws Exception {
+        String query = "select a" +
+                " as data" +
+                " from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']" +
+                " contains COMPOSITION a[openEHR-EHR-COMPOSITION.problem_list.v1]" +
+                " where a/name/value='Problem list'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
 }
