@@ -1670,4 +1670,19 @@ public class QueryEngineTest {
         System.out.print(records);
     }
 
+    @Test
+    public void test_CR139_FF_2() throws Exception {
+        String query = "select a as data" +
+                " from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']" +
+                "    contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1]"+
+                "       where a/name/value='Vital Signs Observations'"+
+                "       and a/uid/value ='8ce16847-8397-4026-8f29-09650bb02873::local.ethercis.com::2'";
+;
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
 }
