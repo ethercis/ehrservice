@@ -1,0 +1,332 @@
+{
+  "content": [
+    {
+      "archetype_node_id": "openEHR-EHR-SECTION.vital_signs.v1",
+      "@class": "SECTION",
+      "items": [
+        {
+          "archetype_node_id": "openEHR-EHR-OBSERVATION.avpu.v1",
+          "@class": "OBSERVATION",
+          "data": {
+            "events": [
+              {
+                "archetype_node_id": "at0002",
+                "time": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "@class": "DV_DATE_TIME"
+                },
+                "data": {
+                  "archetype_node_id": "at0003",
+                  "items": [
+                    {
+                      "archetype_node_id": "at0004",
+                      "value": {
+                        "value": "Voice",
+                        "defining_code": {
+                          "code_string": "at0006",
+                          "terminology_id": {
+                            "name": "local",
+                            "value": "local"
+                          }
+                        }
+                      },
+                      "@class": "ELEMENT"
+                    }
+                  ]
+                },
+                "@class": "POINT_EVENT"
+              }
+            ],
+            "name": {
+              "value": "Event Series"
+            },
+            "origin": {
+              "value": "2018-02-15T11:23:42.000Z",
+              "@class": "DV_DATE_TIME"
+            },
+            "archetype_node_id": "at0001"
+          }
+        },
+        {
+          "archetype_node_id": "openEHR-EHR-OBSERVATION.pulse.v1",
+          "@class": "OBSERVATION",
+          "data": {
+            "events": [
+              {
+                "archetype_node_id": "at0003",
+                "time": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "@class": "DV_DATE_TIME"
+                },
+                "data": {
+                  "archetype_node_id": "at0001",
+                  "items": [
+                    {
+                      "archetype_node_id": "at0004",
+                      "value": {
+                        "units": "/min",
+                        "accuracy": 0,
+                        "magnitude": 2,
+                        "precision": 0,
+                        "accuracy_percent": false,
+                        "measurement_service": {}
+                      },
+                      "@class": "ELEMENT"
+                    }
+                  ]
+                },
+                "@class": "POINT_EVENT"
+              }
+            ],
+            "name": {
+              "value": "history"
+            },
+            "origin": {
+              "value": "2018-02-15T11:23:42.000Z",
+              "@class": "DV_DATE_TIME"
+            },
+            "archetype_node_id": "at0002"
+          }
+        },
+        {
+          "archetype_node_id": "openEHR-EHR-OBSERVATION.news_uk_rcp.v1",
+          "@class": "OBSERVATION",
+          "data": {
+            "events": [
+              {
+                "archetype_node_id": "at0002",
+                "time": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "@class": "DV_DATE_TIME"
+                },
+                "data": {
+                  "archetype_node_id": "at0003",
+                  "items": [
+                    {
+                      "archetype_node_id": "at0028",
+                      "value": {
+                        "accuracy": 0,
+                        "magnitude": 20,
+                        "accuracy_percent": false
+                      },
+                      "@class": "ELEMENT"
+                    }
+                  ]
+                },
+                "@class": "POINT_EVENT"
+              }
+            ],
+            "name": {
+              "value": "Event Series"
+            },
+            "origin": {
+              "value": "2018-02-15T11:23:42.000Z",
+              "@class": "DV_DATE_TIME"
+            },
+            "archetype_node_id": "at0001"
+          }
+        },
+        {
+          "archetype_node_id": "openEHR-EHR-OBSERVATION.respiration.v1",
+          "@class": "OBSERVATION",
+          "data": {
+            "events": [
+              {
+                "archetype_node_id": "at0002",
+                "time": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "@class": "DV_DATE_TIME"
+                },
+                "data": {
+                  "archetype_node_id": "at0003",
+                  "items": [
+                    {
+                      "archetype_node_id": "at0004",
+                      "value": {
+                        "units": "/min",
+                        "accuracy": 0,
+                        "magnitude": 2,
+                        "precision": 0,
+                        "accuracy_percent": false,
+                        "measurement_service": {}
+                      },
+                      "@class": "ELEMENT"
+                    }
+                  ]
+                },
+                "state": {
+                  "archetype_node_id": "at0022",
+                  "items": [
+                    {
+                      "archetype_node_id": "openEHR-EHR-CLUSTER.ambient_oxygen.v0",
+                      "@class": "CLUSTER",
+                      "items": [
+                        {
+                          "archetype_node_id": "at0057",
+                          "value": {
+                            "value": true
+                          },
+                          "@class": "ELEMENT"
+                        }
+                      ],
+                      "name": {
+                        "value": "Inspired oxygen"
+                      }
+                    }
+                  ]
+                },
+                "@class": "POINT_EVENT"
+              }
+            ],
+            "name": {
+              "value": "history"
+            },
+            "origin": {
+              "value": "2018-02-15T11:23:42.000Z",
+              "@class": "DV_DATE_TIME"
+            },
+            "archetype_node_id": "at0001"
+          }
+        },
+        {
+          "archetype_node_id": "openEHR-EHR-OBSERVATION.blood_pressure.v1",
+          "@class": "OBSERVATION",
+          "data": {
+            "events": [
+              {
+                "archetype_node_id": "at0006",
+                "time": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "@class": "DV_DATE_TIME"
+                },
+                "data": {
+                  "archetype_node_id": "at0003",
+                  "items": [
+                    {
+                      "archetype_node_id": "at0004",
+                      "value": {
+                        "units": "mm[Hg]",
+                        "accuracy": 0,
+                        "magnitude": 2,
+                        "precision": 0,
+                        "accuracy_percent": false,
+                        "measurement_service": {}
+                      },
+                      "@class": "ELEMENT"
+                    },
+                    {
+                      "archetype_node_id": "at0005",
+                      "value": {
+                        "units": "mm[Hg]",
+                        "accuracy": 0,
+                        "magnitude": 2,
+                        "precision": 0,
+                        "accuracy_percent": false,
+                        "measurement_service": {}
+                      },
+                      "@class": "ELEMENT"
+                    }
+                  ]
+                },
+                "@class": "POINT_EVENT"
+              }
+            ],
+            "name": {
+              "value": "history"
+            },
+            "origin": {
+              "value": "2018-02-15T11:23:42.000Z",
+              "@class": "DV_DATE_TIME"
+            },
+            "archetype_node_id": "at0001"
+          }
+        },
+        {
+          "archetype_node_id": "openEHR-EHR-OBSERVATION.body_temperature.v1",
+          "@class": "OBSERVATION",
+          "data": {
+            "events": [
+              {
+                "archetype_node_id": "at0003",
+                "time": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "@class": "DV_DATE_TIME"
+                },
+                "data": {
+                  "archetype_node_id": "at0001",
+                  "items": [
+                    {
+                      "archetype_node_id": "at0004",
+                      "value": {
+                        "units": "°C",
+                        "accuracy": 0,
+                        "magnitude": 2,
+                        "precision": 1,
+                        "accuracy_percent": false,
+                        "measurement_service": {}
+                      },
+                      "@class": "ELEMENT"
+                    }
+                  ]
+                },
+                "@class": "POINT_EVENT"
+              }
+            ],
+            "name": {
+              "value": "History"
+            },
+            "origin": {
+              "value": "2018-02-15T11:23:42.000Z",
+              "@class": "DV_DATE_TIME"
+            },
+            "archetype_node_id": "at0002"
+          }
+        },
+        {
+          "archetype_node_id": "openEHR-EHR-OBSERVATION.indirect_oximetry.v1",
+          "@class": "OBSERVATION",
+          "data": {
+            "events": [
+              {
+                "archetype_node_id": "at0002",
+                "time": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "@class": "DV_DATE_TIME"
+                },
+                "data": {
+                  "archetype_node_id": "at0003",
+                  "items": [
+                    {
+                      "archetype_node_id": "at0006",
+                      "value": {
+                        "type": "PERCENT",
+                        "accuracy": 0,
+                        "numerator": 2,
+                        "precision": 0,
+                        "denominator": 100,
+                        "accuracy_percent": false
+                      },
+                      "@class": "ELEMENT"
+                    }
+                  ]
+                },
+                "@class": "POINT_EVENT"
+              }
+            ],
+            "name": {
+              "value": "Event Series"
+            },
+            "origin": {
+              "value": "2018-02-15T11:23:42.000Z",
+              "@class": "DV_DATE_TIME"
+            },
+            "archetype_node_id": "at0001"
+          }
+        }
+      ],
+      "name": {
+        "value": "Vital Signs Observations"
+      }
+    }
+  ]
+}

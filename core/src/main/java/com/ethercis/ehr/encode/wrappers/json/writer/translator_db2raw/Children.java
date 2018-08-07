@@ -29,6 +29,7 @@ public class Children {
         return isItems;
     }
 
+    //check for multiple items in content
     public boolean isMultiContent(){
         int contents = 0;
 
@@ -37,7 +38,7 @@ public class Children {
                 contents++;
             }
         }
-        return contents > 0;
+        return contents > 1;
     }
 
     public int contentCount(){

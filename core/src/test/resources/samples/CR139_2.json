@@ -1,0 +1,581 @@
+{
+  "/name": [
+    {
+      "value": "Vital Signs Observations"
+    }
+  ],
+  "/composition[openEHR-EHR-COMPOSITION.encounter.v1 and name/value='Vital Signs Observations']": {
+    "/content[openEHR-EHR-SECTION.vital_signs.v1]": [
+      {
+        "/items[openEHR-EHR-OBSERVATION.avpu.v1]": [
+          {
+            "/name": [
+              {
+                "value": "AVPU"
+              }
+            ],
+            "/data[at0001]": {
+              "/name": [
+                {
+                  "value": "Event Series"
+                }
+              ],
+              "/events": {
+                "/events[at0002]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Any event"
+                      }
+                    ],
+                    "/time": {
+                      "/name": [
+                        {
+                          "value": "Any event"
+                        }
+                      ],
+                      "/value": {
+                        "value": "2018-02-15T11:23:42.000Z",
+                        "epoch_offset": 1518693822000
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.avpu.v1 and name/value='AVPU']/data[at0001]/events[at0002 and name/value='Any event']/time",
+                      "/$CLASS$": "DvDateTime"
+                    },
+                    "/data[at0003]": {
+                      "/items[at0004]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "AVPU Observation"
+                            }
+                          ],
+                          "/value": {
+                            "value": "Voice",
+                            "definingCode": {
+                              "codeString": "at0006",
+                              "terminologyId": {
+                                "name": "local",
+                                "value": "local"
+                              }
+                            }
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.avpu.v1 and name/value='AVPU']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[at0004 and name/value='AVPU Observation']",
+                          "/$CLASS$": "DvCodedText"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "/origin": {
+                "/name": [
+                  {
+                    "value": "Event Series"
+                  }
+                ],
+                "/value": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "epoch_offset": 1518693822000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.avpu.v1 and name/value='AVPU']/data[at0001]/origin",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ],
+        "/items[openEHR-EHR-OBSERVATION.pulse.v1]": [
+          {
+            "/name": [
+              {
+                "value": "Pulse/Heart beat"
+              }
+            ],
+            "/data[at0002]": {
+              "/name": [
+                {
+                  "value": "history"
+                }
+              ],
+              "/events": {
+                "/events[at0003]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Any event"
+                      }
+                    ],
+                    "/time": {
+                      "/name": [
+                        {
+                          "value": "Any event"
+                        }
+                      ],
+                      "/value": {
+                        "value": "2018-02-15T11:23:42.000Z",
+                        "epoch_offset": 1518693822000
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.pulse.v1 and name/value='Pulse/Heart beat']/data[at0002]/events[at0003 and name/value='Any event']/time",
+                      "/$CLASS$": "DvDateTime"
+                    },
+                    "/data[at0001]": {
+                      "/items[at0004]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Heart Rate",
+                              "defining_code": {
+                                "codeString": "at1027",
+                                "terminologyId": {
+                                  "name": "local",
+                                  "value": "local"
+                                }
+                              }
+                            }
+                          ],
+                          "/value": {
+                            "units": "/min",
+                            "accuracy": 0,
+                            "magnitude": 2,
+                            "precision": 0,
+                            "accuracyPercent": false,
+                            "measurementService": {}
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.pulse.v1 and name/value='Pulse/Heart beat']/data[at0002]/events[at0003 and name/value='Any event']/data[at0001]/items[at0004 and name/value='Heart Rate']",
+                          "/$CLASS$": "DvQuantity"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "/origin": {
+                "/name": [
+                  {
+                    "value": "history"
+                  }
+                ],
+                "/value": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "epoch_offset": 1518693822000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.pulse.v1 and name/value='Pulse/Heart beat']/data[at0002]/origin",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ],
+        "/items[openEHR-EHR-OBSERVATION.news_uk_rcp.v1]": [
+          {
+            "/name": [
+              {
+                "value": "NEWS (UK RCP)"
+              }
+            ],
+            "/data[at0001]": {
+              "/name": [
+                {
+                  "value": "Event Series"
+                }
+              ],
+              "/events": {
+                "/events[at0002]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Point in time"
+                      }
+                    ],
+                    "/time": {
+                      "/name": [
+                        {
+                          "value": "Point in time"
+                        }
+                      ],
+                      "/value": {
+                        "value": "2018-02-15T11:23:42.000Z",
+                        "epoch_offset": 1518693822000
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.news_uk_rcp.v1 and name/value='NEWS (UK RCP)']/data[at0001]/events[at0002 and name/value='Point in time']/time",
+                      "/$CLASS$": "DvDateTime"
+                    },
+                    "/data[at0003]": {
+                      "/items[at0028]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Total score"
+                            }
+                          ],
+                          "/value": {
+                            "accuracy": 0,
+                            "magnitude": 20,
+                            "accuracyPercent": false
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.news_uk_rcp.v1 and name/value='NEWS (UK RCP)']/data[at0001]/events[at0002 and name/value='Point in time']/data[at0003]/items[at0028 and name/value='Total score']",
+                          "/$CLASS$": "DvCount"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "/origin": {
+                "/name": [
+                  {
+                    "value": "Event Series"
+                  }
+                ],
+                "/value": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "epoch_offset": 1518693822000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.news_uk_rcp.v1 and name/value='NEWS (UK RCP)']/data[at0001]/origin",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ],
+        "/items[openEHR-EHR-OBSERVATION.respiration.v1]": [
+          {
+            "/name": [
+              {
+                "value": "Respirations"
+              }
+            ],
+            "/data[at0001]": {
+              "/name": [
+                {
+                  "value": "history"
+                }
+              ],
+              "/events": {
+                "/events[at0002]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Any event"
+                      }
+                    ],
+                    "/time": {
+                      "/name": [
+                        {
+                          "value": "Any event"
+                        }
+                      ],
+                      "/value": {
+                        "value": "2018-02-15T11:23:42.000Z",
+                        "epoch_offset": 1518693822000
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.respiration.v1 and name/value='Respirations']/data[at0001]/events[at0002 and name/value='Any event']/time",
+                      "/$CLASS$": "DvDateTime"
+                    },
+                    "/data[at0003]": {
+                      "/items[at0004]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Rate"
+                            }
+                          ],
+                          "/value": {
+                            "units": "/min",
+                            "accuracy": 0,
+                            "magnitude": 2,
+                            "precision": 0,
+                            "accuracyPercent": false,
+                            "measurementService": {}
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.respiration.v1 and name/value='Respirations']/data[at0001]/events[at0002 and name/value='Any event']/data[at0003]/items[at0004 and name/value='Rate']",
+                          "/$CLASS$": "DvQuantity"
+                        }
+                      ]
+                    },
+                    "/state[at0022]": {
+                      "/items[openEHR-EHR-CLUSTER.ambient_oxygen.v0]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Inspired oxygen"
+                            }
+                          ],
+                          "/items[at0057]": [
+                            {
+                              "/name": [
+                                {
+                                  "value": "On air"
+                                }
+                              ],
+                              "/value": {
+                                "value": true
+                              },
+                              "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.respiration.v1 and name/value='Respirations']/data[at0001]/events[at0002 and name/value='Any event']/state[at0022]/items[openEHR-EHR-CLUSTER.ambient_oxygen.v0 and name/value='Inspired oxygen']/items[at0057 and name/value='On air']",
+                              "/$CLASS$": "DvBoolean"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "/origin": {
+                "/name": [
+                  {
+                    "value": "history"
+                  }
+                ],
+                "/value": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "epoch_offset": 1518693822000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.respiration.v1 and name/value='Respirations']/data[at0001]/origin",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ],
+        "/items[openEHR-EHR-OBSERVATION.blood_pressure.v1]": [
+          {
+            "/name": [
+              {
+                "value": "Blood Pressure"
+              }
+            ],
+            "/data[at0001]": {
+              "/name": [
+                {
+                  "value": "history"
+                }
+              ],
+              "/events": {
+                "/events[at0006]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Any event"
+                      }
+                    ],
+                    "/time": {
+                      "/name": [
+                        {
+                          "value": "Any event"
+                        }
+                      ],
+                      "/value": {
+                        "value": "2018-02-15T11:23:42.000Z",
+                        "epoch_offset": 1518693822000
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/events[at0006 and name/value='Any event']/time",
+                      "/$CLASS$": "DvDateTime"
+                    },
+                    "/data[at0003]": {
+                      "/items[at0004]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Systolic"
+                            }
+                          ],
+                          "/value": {
+                            "units": "mm[Hg]",
+                            "accuracy": 0,
+                            "magnitude": 2,
+                            "precision": 0,
+                            "accuracyPercent": false,
+                            "measurementService": {}
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/events[at0006 and name/value='Any event']/data[at0003]/items[at0004 and name/value='Systolic']",
+                          "/$CLASS$": "DvQuantity"
+                        }
+                      ],
+                      "/items[at0005]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Diastolic"
+                            }
+                          ],
+                          "/value": {
+                            "units": "mm[Hg]",
+                            "accuracy": 0,
+                            "magnitude": 2,
+                            "precision": 0,
+                            "accuracyPercent": false,
+                            "measurementService": {}
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/events[at0006 and name/value='Any event']/data[at0003]/items[at0005 and name/value='Diastolic']",
+                          "/$CLASS$": "DvQuantity"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "/origin": {
+                "/name": [
+                  {
+                    "value": "history"
+                  }
+                ],
+                "/value": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "epoch_offset": 1518693822000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.blood_pressure.v1 and name/value='Blood Pressure']/data[at0001]/origin",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ],
+        "/items[openEHR-EHR-OBSERVATION.body_temperature.v1]": [
+          {
+            "/name": [
+              {
+                "value": "Body temperature"
+              }
+            ],
+            "/data[at0002]": {
+              "/name": [
+                {
+                  "value": "History"
+                }
+              ],
+              "/events": {
+                "/events[at0003]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Any event"
+                      }
+                    ],
+                    "/time": {
+                      "/name": [
+                        {
+                          "value": "Any event"
+                        }
+                      ],
+                      "/value": {
+                        "value": "2018-02-15T11:23:42.000Z",
+                        "epoch_offset": 1518693822000
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.body_temperature.v1 and name/value='Body temperature']/data[at0002]/events[at0003 and name/value='Any event']/time",
+                      "/$CLASS$": "DvDateTime"
+                    },
+                    "/data[at0001]": {
+                      "/items[at0004]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "Temperature"
+                            }
+                          ],
+                          "/value": {
+                            "units": "°C",
+                            "accuracy": 0,
+                            "magnitude": 2,
+                            "precision": 1,
+                            "accuracyPercent": false,
+                            "measurementService": {}
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.body_temperature.v1 and name/value='Body temperature']/data[at0002]/events[at0003 and name/value='Any event']/data[at0001]/items[at0004 and name/value='Temperature']",
+                          "/$CLASS$": "DvQuantity"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "/origin": {
+                "/name": [
+                  {
+                    "value": "History"
+                  }
+                ],
+                "/value": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "epoch_offset": 1518693822000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.body_temperature.v1 and name/value='Body temperature']/data[at0002]/origin",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ],
+        "/items[openEHR-EHR-OBSERVATION.indirect_oximetry.v1]": [
+          {
+            "/name": [
+              {
+                "value": "Indirect Oximetry"
+              }
+            ],
+            "/data[at0001]": {
+              "/name": [
+                {
+                  "value": "Event Series"
+                }
+              ],
+              "/events": {
+                "/events[at0002]": [
+                  {
+                    "/name": [
+                      {
+                        "value": "Any Event"
+                      }
+                    ],
+                    "/time": {
+                      "/name": [
+                        {
+                          "value": "Any Event"
+                        }
+                      ],
+                      "/value": {
+                        "value": "2018-02-15T11:23:42.000Z",
+                        "epoch_offset": 1518693822000
+                      },
+                      "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.indirect_oximetry.v1 and name/value='Indirect Oximetry']/data[at0001]/events[at0002 and name/value='Any Event']/time",
+                      "/$CLASS$": "DvDateTime"
+                    },
+                    "/data[at0003]": {
+                      "/items[at0006]": [
+                        {
+                          "/name": [
+                            {
+                              "value": "spO2"
+                            }
+                          ],
+                          "/value": {
+                            "type": "PERCENT",
+                            "accuracy": 0,
+                            "numerator": 2,
+                            "precision": 0,
+                            "denominator": 100,
+                            "accuracyPercent": false
+                          },
+                          "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.indirect_oximetry.v1 and name/value='Indirect Oximetry']/data[at0001]/events[at0002 and name/value='Any Event']/data[at0003]/items[at0006 and name/value='spO2']",
+                          "/$CLASS$": "DvProportion"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "/origin": {
+                "/name": [
+                  {
+                    "value": "Event Series"
+                  }
+                ],
+                "/value": {
+                  "value": "2018-02-15T11:23:42.000Z",
+                  "epoch_offset": 1518693822000
+                },
+                "/$PATH$": "/content[openEHR-EHR-SECTION.vital_signs.v1 and name/value='Vital signs']/items[openEHR-EHR-OBSERVATION.indirect_oximetry.v1 and name/value='Indirect Oximetry']/data[at0001]/origin",
+                "/$CLASS$": "DvDateTime"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
