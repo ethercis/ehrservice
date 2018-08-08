@@ -449,7 +449,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         if (useFromEntry()) {
             joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("{0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
                 return DSL.field(ehrRecordTable.field(ehrRecordTable.field(EHR_.ID.getName())));
@@ -457,14 +457,14 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         else if (!containsEhrStatus()) {
             joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("{0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
                 return DSL.field(ehrRecordTable.field(EHR_.ID.getName()));
         }
         else {
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("{0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
                 return DSL.field(ehrRecordTable.field(EHR_.ID.getName()));
