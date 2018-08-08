@@ -114,6 +114,7 @@
                             <exclude>ethercis:ecis-validation</exclude>
                             <exclude>ethercis:ecis-knowledge-cache</exclude>
                             <exclude>ethercis:ecis-meta-data-cache</exclude>
+                            <exclude>ethercis:ecis-opt-introspect</exclude>
                             <exclude>org.openehr:*</exclude>
                             <exclude>openEHR:*</exclude>
                             <exclude>junit:junit</exclude>

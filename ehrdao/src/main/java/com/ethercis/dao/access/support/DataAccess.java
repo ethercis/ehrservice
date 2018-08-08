@@ -124,7 +124,7 @@ public abstract class DataAccess implements I_DomainAccess {
         for (Map.Entry<String, Object> entry: objectMap.entrySet()){
 
             if (entry.getKey().startsWith(I_DomainAccess.KEY_PGJDBC_PREFIX)){
-                properties.put(entry.getKey().substring(entry.getKey().indexOf(I_DomainAccess.KEY_PGJDBC_PREFIX)+I_DomainAccess.KEY_PGJDBC_PREFIX.length()), entry.getValue().toString());
+                properties.put(entry.getKey().substring(entry.getKey().indexOf(I_DomainAccess.KEY_PGJDBC_PREFIX)+I_DomainAccess.KEY_PGJDBC_PREFIX.length() + 1), entry.getValue().toString());
             }
         }
         return properties;

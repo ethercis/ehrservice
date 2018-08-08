@@ -90,8 +90,8 @@ public class DataAccessTest {
         properties.put(I_DomainAccess.KEY_URL, "jdbc:postgresql://" + System.getProperty("test.db.host") + ":" + System.getProperty("test.db.port") + "/" + System.getProperty("test.db.name"));
 //        properties.put(I_DomainAccess.KEY_CONNECTION_MODE, I_DomainAccess.DBCP2_POOL);
         //https://github.com/pgjdbc/pgjdbc
-        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+"user", System.getProperty("test.db.user"));
-        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+"password", System.getProperty("test.db.password"));
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".user", System.getProperty("test.db.user"));
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".password", System.getProperty("test.db.password"));
 
         try {
             testDomainAccess = new DummyDataAccess(properties);
@@ -114,8 +114,8 @@ public class DataAccessTest {
         properties.put(I_DomainAccess.KEY_URL, "jdbc:postgresql://" + System.getProperty("test.db.host") + ":" + System.getProperty("test.db.port") + "/" + System.getProperty("test.db.name"));
         properties.put(I_DomainAccess.KEY_CONNECTION_MODE, I_DomainAccess.DBCP2_POOL);
         //https://github.com/pgjdbc/pgjdbc
-        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+"user", System.getProperty("test.db.user"));
-        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+"password", System.getProperty("test.db.password"));
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".user", System.getProperty("test.db.user"));
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".password", System.getProperty("test.db.password"));
 
         try {
             testDomainAccess = new DummyDataAccess(properties);
