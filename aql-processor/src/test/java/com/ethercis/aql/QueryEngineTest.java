@@ -1702,4 +1702,18 @@ public class QueryEngineTest {
         System.out.print(records);
     }
 
+    @Test
+    public void test_CR144() throws Exception {
+        String query =
+                "select distinct e/ehr_id/value\n" +
+                "from EHR e\n"
+                ;
+        ;
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
 }

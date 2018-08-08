@@ -21,6 +21,7 @@ import com.ethercis.aql.sql.queryImpl.CompositionAttributeQuery;
 import com.ethercis.jooq.pg.tables.records.CompositionRecord;
 import com.ethercis.jooq.pg.tables.records.PartyIdentifiedRecord;
 import com.ethercis.jooq.pg.tables.records.StatusRecord;
+import org.jooq.JoinType;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -92,7 +93,7 @@ public class JoinBinder implements I_JoinBinder {
     private void joinComposition(SelectQuery<?> selectQuery, CompositionAttributeQuery compositionAttributeQuery) {
         if (compositionJoined)
             return;
-        selectQuery.addJoin(compositionRecordTable, DSL.field(compositionRecordTable.field(COMPOSITION.ID)).eq(ENTRY.COMPOSITION_ID));
+        selectQuery.addJoin(compositionRecordTable, JoinType.RIGHT_OUTER_JOIN, DSL.field(compositionRecordTable.field(COMPOSITION.ID)).eq(ENTRY.COMPOSITION_ID));
         compositionJoined = true;
     }
 
@@ -153,6 +154,7 @@ public class JoinBinder implements I_JoinBinder {
         if (ehrJoined) return;
         joinComposition(selectQuery, compositionAttributeQuery);
         selectQuery.addJoin(ehrRecordTable,
+                JoinType.RIGHT_OUTER_JOIN,
                 DSL.field(ehrRecordTable.field(EHR_.ID.getName(), UUID.class))
                         .eq(DSL.field(compositionRecordTable.field(COMPOSITION.EHR_ID.getName(), UUID.class))));
         ehrJoined = true;
