@@ -807,8 +807,9 @@ public class KnowledgeCache implements I_KnowledgeCache {
         sb.append("FOUND OPERATIONAL TEMPLATES:\n");
         sb.append("============================\n");
 
-        for (String atName: optFileMap.keySet())
-            sb.append(atName+":"+(optFileMap.get(atName)).getAbsolutePath()+"\n");
+        for (String atName: optFileMap.keySet()) {
+            sb.append(atName + ":" + (optFileMap.get(atName)).getAbsolutePath() + "\n");
+        }
 
         return sb.toString();
     }

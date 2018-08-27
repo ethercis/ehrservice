@@ -136,10 +136,6 @@
           <artifactId>jooq-pg</artifactId>
           <groupId>ethercis</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>velocity</artifactId>
-          <groupId>org.apache.velocity</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -161,8 +157,20 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
+          <artifactId>xml-beans</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jsr173_api</artifactId>
+          <groupId>javax.xml.bind</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>adl-serializer</artifactId>
           <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-io</artifactId>
+          <groupId>commons-io</groupId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -366,6 +366,7 @@ public abstract class DataAccess implements I_DomainAccess {
             logger.info("Pool max_connections: " + max_connection);
             logger.info("Pool max_wait_millisec: " + waitMs);
             logger.info("");
+
         } catch (Exception e) {
             throw new IllegalArgumentException("DBCP2_POOL: Exception occurred while connecting:" + e);
         }

@@ -115,6 +115,8 @@ public interface I_EntryAccess extends I_SimpleCRUD<I_EntryAccess, UUID> {
      */
     UUID getCompositionId();
 
+    UUID getTemplateUuid();
+
     /**
      * get the template Id (a string) used to build the composition entry
      * @return

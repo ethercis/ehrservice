@@ -58,11 +58,11 @@ public class RmObjectHelper {
     }
 
     public static Composition createDummyCompositionWithParameters(String templateId,
-                                                                   PartyIdentified composer,
-                                                                   CodePhrase language,
-                                                                   CodePhrase encoding,
-                                                                   CodePhrase territory,
-                                                                   EventContext context) throws Exception {
+                                                                        PartyIdentified composer,
+                                                                        CodePhrase language,
+                                                                        CodePhrase encoding,
+                                                                        CodePhrase territory,
+                                                                        EventContext context) throws Exception {
 
         knowledge.retrieveArchetype("openEHR-EHR-COMPOSITION.section_observation_test.v2");
 

@@ -139,6 +139,17 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 
         entryRecord = context.newRecord(ENTRY);
 
+        //resolve template uuid from template table
+        UUID template_uuid = null;
+        try {
+            template_uuid = context.select(TEMPLATE.UID).from(TEMPLATE).where(TEMPLATE.TEMPLATE_ID.eq(templateId)).fetchOne().value1();
+        } catch (Exception e){
+            log.warn("template UUID could not be resolver, entry will be stored without referential integrity ["+ templateId + "]");
+        }
+
+        if (template_uuid != null)
+            entryRecord.setTemplateUuid(template_uuid);
+
         entryRecord.setTemplateId(templateId);
         entryRecord.setSequence(sequence);
         entryRecord.setCompositionId(compositionId);
@@ -544,6 +555,11 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
     @Override
     public UUID getCompositionId() {
         return entryRecord.getCompositionId();
+    }
+
+    @Override
+    public UUID getTemplateUuid() {
+        return entryRecord.getTemplateUuid();
     }
 
     @Override

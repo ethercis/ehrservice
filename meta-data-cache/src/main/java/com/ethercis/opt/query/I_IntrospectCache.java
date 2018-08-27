@@ -1,5 +1,7 @@
 package com.ethercis.opt.query;
 
+import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,4 +33,6 @@ public interface I_IntrospectCache {
     int size();
 
     List<Map<String, String>> visitors() throws Exception;
+
+    I_IntrospectCache setKnowledge(I_KnowledgeCache knowledge);
 }

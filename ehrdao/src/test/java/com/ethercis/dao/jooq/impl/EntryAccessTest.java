@@ -3,9 +3,12 @@ package com.ethercis.dao.jooq.impl;
 import com.ethercis.dao.access.interfaces.I_DomainAccess;
 import com.ethercis.dao.access.interfaces.I_EntryAccess;
 import com.ethercis.dao.access.support.AccessTestCase;
+import com.ethercis.dao.access.support.RmObjectHelper;
 import com.ethercis.ehr.building.GenerationStrategy;
 import com.ethercis.ehr.building.I_RmBinding;
 import com.ethercis.ehr.building.OetBinding;
+import com.ethercis.ehr.building.util.CompositionAttributesHelper;
+import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.EncodeUtil;
 import com.google.gson.Gson;
 import junit.framework.Assert;
@@ -15,7 +18,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.template.FlattenerNew;
+import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.composition.EventContext;
+import org.openehr.rm.datatypes.text.CodePhrase;
 
 import java.lang.reflect.Array;
 import java.sql.Timestamp;
@@ -126,6 +132,27 @@ public class EntryAccessTest extends AccessTestCase {
 //        String bodyContent = byteArrayOutputStream.toString();
 //
 //        System.out.println(bodyContent);
+    }
+
+    @Test
+    public void testCreateEntry() throws Exception {
+        String templateId = "IDCR - Relevant contacts.v0";
+        EventContext eventContext = ContextHelper.createDummyContext();
+        PartyIdentified composer = CompositionAttributesHelper.createComposer("ludwig", "NHS-UK", "999999-9991");
+        Composition aComposition = RmObjectHelper.createDummyQualifiedCompositionWithParameters(templateId,
+                composer,
+                new CodePhrase("ISO_639-1", "en"),
+                new CodePhrase("IANA_character-sets", "UTF-8"),
+                new CodePhrase("ISO_3166-1", "GB"),
+                eventContext);
+
+        //use this composition to create a matching entry
+        I_EntryAccess entryAccess = I_EntryAccess.getNewInstance(testDomainAccess, templateId, 0, UUID.randomUUID(), aComposition);
+
+        assertNotNull(entryAccess.getTemplateUuid());
+
+        //test the creation of the entry
+//        entryAccess.commit();
     }
 
 }
