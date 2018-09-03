@@ -75,12 +75,22 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
 
         boolean isItemsOnly = new Children(map).isItemsOnly();
         boolean isMultiContent = new Children(map).isMultiContent();
+        String parentItemsArchetypeNodeId = null;
 
         int cursor = 0;
         int lastChild = 0;
         if (isItemsOnly) {
+            //get the archetype node id
+            if (map.containsKey(I_DvTypeAdapter.ARCHETYPE_NODE_ID)){
+                parentItemsArchetypeNodeId = (String) map.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
+                map.remove(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
+            }
             lastChild = map.size() - 1;
         } else if (isMultiContent) {
+            if (map.containsKey(I_DvTypeAdapter.ARCHETYPE_NODE_ID)){
+                parentItemsArchetypeNodeId = (String) map.get(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
+                map.remove(I_DvTypeAdapter.ARCHETYPE_NODE_ID);
+            }
             lastChild = new Children(map).contentCount();
         }
         ArrayList nodeNameValue = null;
@@ -130,6 +140,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                         }
                         if (cursor > lastChild) {
                             writer.endArray();
+                            writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(parentItemsArchetypeNodeId);
                             writeNameAsValue(writer, nodeNameValue);
                         }
                     } else if (isMultiContent && key.contains(CompositionSerializer.TAG_CONTENT)) {
@@ -159,6 +170,7 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                         }
                         if (cursor > lastChild - 1) {
                             writer.endArray();
+                            writer.name(I_DvTypeAdapter.ARCHETYPE_NODE_ID).value(parentItemsArchetypeNodeId);
                             writeNameAsValue(writer, nodeNameValue);
                         }
                     } else {
@@ -187,6 +199,16 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
                         if (key.contains("/time") && valueMap.containsKey(CompositionSerializer.TAG_NAME)) {
                             valueMap.remove(CompositionSerializer.TAG_NAME);
                         }
+                    }
+                    if (isNodePredicate(key))
+                        valueMap.put(ARCHETYPE_NODE_ID, archetypeNodeId);
+                    else if (key.equals(CompositionSerializer.TAG_ORIGIN)){
+                        //compact time expression
+                        valueMap = compactTimeMap(valueMap);
+                    }
+                    else if (key.equals(CompositionSerializer.TAG_TIME)){
+                        //compact time expression
+                        valueMap = compactTimeMap(valueMap);
                     }
                     writer.name(jsonKey);
                     new LinkedTreeMapAdapter().write(writer, valueMap);
@@ -318,6 +340,30 @@ public class LinkedTreeMapAdapter extends TypeAdapter<LinkedTreeMap> implements 
         }
 
         return nodeNameValue;
+    }
+
+    private boolean isNodePredicate(String key){
+        //a key in the form '/xyz[atNNNN]'
+        if (key.startsWith("/") && key.contains("[") && key.contains("]"))
+            return true;
+        else
+            return false;
+    }
+
+    private LinkedTreeMap compactTimeMap(LinkedTreeMap valueMap){
+        LinkedTreeMap compactMap = new LinkedTreeMap();
+        for (Object item: valueMap.entrySet()){
+            String key = (String) ((Map.Entry) item).getKey();
+            if (key.equals(CompositionSerializer.TAG_VALUE)){
+                String value = (String) ((LinkedTreeMap) ((Map.Entry) item).getValue()).get("value");
+                compactMap.put(CompositionSerializer.TAG_VALUE, value);
+            }
+            else {
+                compactMap.put(((Map.Entry)item).getKey(), ((Map.Entry)item).getValue());
+            }
+
+        }
+        return compactMap;
     }
 
 }

@@ -17,6 +17,8 @@
 
 package com.ethercis.ehr.encode.rawjson;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -464,9 +466,10 @@ public class LightRawJsonEncoderTest {
     /**
      * simulate:
      * "select a as data from EHR e[ehr_id/value='cd8abecd-9925-4313-86af-93aab4930eae']
-     *      contains COMPOSITION
-     *      a[openEHR-EHR-COMPOSITION.medication_list.v0]
-     *      where a/name/value='Medication statement list'"
+     * contains COMPOSITION
+     * a[openEHR-EHR-COMPOSITION.medication_list.v0]
+     * where a/name/value='Medication statement list'"
+     *
      * @throws IOException
      */
     @Test
@@ -474,6 +477,21 @@ public class LightRawJsonEncoderTest {
         String jsonbOrigin = new String(Files.readAllBytes(Paths.get("src/test/resources/samples/INSTRUCTION_db_encoded.json")));
 
         Map translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("data");
+
+        assertNotNull(translated);
+    }
+
+    @Test
+    public void testCR139_2() throws IOException {
+        String jsonbOrigin = new String(Files.readAllBytes(Paths.get("src/test/resources/samples/CR139_2.json")));
+
+        Map translated = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap("data");
+
+//        String expectedContent = new String(Files.readAllBytes(Paths.get("src/test/resources/samples/CR139_2_RAWJSON.json"))).replaceAll("\n", "").replaceAll("\t", "").replaceAll("\r", "");
+//
+//        String outRawJson = new GsonBuilder().setPrettyPrinting().create().toJson(translated.get("composition")).replaceAll("\n", "").replaceAll("\t", "").replaceAll("\r","");
+//
+//        assertEquals(expectedContent, outRawJson);
 
         assertNotNull(translated);
     }

@@ -327,28 +327,37 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         return DSL.field(DSL.decode().when(field.equal("UTC"),"Z").otherwise(field));
     }
 
-    private Field<?> prettyDateTime(Field<Timestamp> dateTime){
-        return DSL.field("to_char(" + dateTime + ",'YYYY-MM-DD\"T\"HH24:MI:SS')");
+    private Field<?> prettyDateTime(Field<Timestamp> dateTime, Field<String> timeZone){
+        return DSL.field("to_char(" + dateTimeOffsetTimezone(dateTime, timeZone) + ",'YYYY-MM-DD\"T\"HH24:MI:SS')");
+    }
+
+    //sql expression adjusting the date with the timezone. Ignore literals and null timezone
+    private Field<?> dateTimeOffsetTimezone(Field<Timestamp> dateTime, Field<String> timeZone) {
+        return DSL.field("(" + dateTime + "::timestamptz AT TIME ZONE 'UTC'" +
+                " + (case when left("+timeZone+",1)='+'" +
+                " then \"interval\"(" + timeZone + ")" +
+                " else \"interval\"('+00:00')" +
+                " end))");
     }
 
     private Field<?> contextStartTime(UUID compositionId,boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(prettyDateTime(EVENT_CONTEXT.START_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.START_TIME_TZID))
+            Field<?> select = DSL.field(prettyDateTime(EVENT_CONTEXT.START_TIME, EVENT_CONTEXT.START_TIME_TZID) + "||" + tzNoZulu(EVENT_CONTEXT.START_TIME_TZID))
                     .as(aliasStr == null ? columnAlias : aliasStr);
             return select;
         }
         else
-            return DSL.field(prettyDateTime(EVENT_CONTEXT.START_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.START_TIME_TZID));
+            return DSL.field(prettyDateTime(EVENT_CONTEXT.START_TIME, EVENT_CONTEXT.START_TIME_TZID) + "||" + tzNoZulu(EVENT_CONTEXT.START_TIME_TZID));
     }
 
     private Field<?> contextEndTime(UUID compositionId, boolean alias, String aliasStr){
         if (alias) {
-            Field<?> select = DSL.field(prettyDateTime(EVENT_CONTEXT.END_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.END_TIME_TZID))
+            Field<?> select = DSL.field(prettyDateTime(EVENT_CONTEXT.END_TIME, EVENT_CONTEXT.END_TIME_TZID) + "||" + tzNoZulu(EVENT_CONTEXT.END_TIME_TZID))
                     .as(aliasStr == null ? columnAlias:aliasStr);
             return select;
         }
         else
-            return DSL.field(prettyDateTime(EVENT_CONTEXT.END_TIME) + "||" + tzNoZulu(EVENT_CONTEXT.END_TIME_TZID));
+            return DSL.field(prettyDateTime(EVENT_CONTEXT.END_TIME, EVENT_CONTEXT.START_TIME_TZID) + "||" + tzNoZulu(EVENT_CONTEXT.END_TIME_TZID));
     }
 
     private Field<?> contextLocation(UUID compositionId, boolean alias, String aliasStr){
@@ -440,7 +449,7 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         if (useFromEntry()) {
             joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("{0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
                 return DSL.field(ehrRecordTable.field(ehrRecordTable.field(EHR_.ID.getName())));
@@ -448,14 +457,14 @@ public class CompositionAttributeQuery extends ObjectQuery implements I_QueryImp
         else if (!containsEhrStatus()) {
             joinEhr = true;
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("{0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
                 return DSL.field(ehrRecordTable.field(EHR_.ID.getName()));
         }
         else {
             if (alias) {
-                Field<?> select = DSL.field("DISTINCT {0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
+                Field<?> select = DSL.field("{0}", ehrRecordTable.field(EHR_.ID.getName())).as(aliasStr == null ? columnAlias : aliasStr);
                 return select;
             } else
                 return DSL.field(ehrRecordTable.field(EHR_.ID.getName()));

@@ -55,13 +55,16 @@ public class LightRawJsonEncoder {
             jsonbOrigin = jsonbOrigin.trim().substring(1, jsonbOrigin.length()-1);
         }
         Map<String, Object> fromDB = new CompositionMap(gsondb.create().fromJson(jsonbOrigin, Map.class)).restructure();
-        Map<String, Object> fromDB2 = gsondb.create().fromJson(jsonbOrigin, Map.class);
+//        Map<String, Object> fromDB2 = gsondb.create().fromJson(jsonbOrigin, Map.class);
 
         GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance(I_DvTypeAdapter.AdapterType.DBJSON2RAWJSON);
 //        GsonBuilder gsonRaw = EncodeUtil.getGsonBuilderInstance();
         String raw = gsonRaw.create().toJson(fromDB);
         GsonBuilder gsonBuilder = EncodeUtil.getGsonBuilderInstance();
         Map retmap = gsonBuilder.create().fromJson(raw, Map.class);
+
+        //DEBUG
+//        String rawRepresented = new GsonBuilder().setPrettyPrinting().create().toJson(retmap);
 
         return retmap;
     }

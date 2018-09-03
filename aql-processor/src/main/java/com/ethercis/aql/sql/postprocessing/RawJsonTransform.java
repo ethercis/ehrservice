@@ -24,6 +24,8 @@ import com.ethercis.aql.sql.binding.JsonbBlockDef;
 import com.ethercis.ehr.encode.rawjson.LightRawJsonEncoder;
 import com.ethercis.ehr.encode.rawjson.RawJsonEncoder;
 import com.ethercis.ehr.knowledge.I_KnowledgeCache;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -89,6 +91,7 @@ public class RawJsonTransform implements I_RawJsonTransform {
             try {
                 Map rawJson = new LightRawJsonEncoder(jsonbOrigin).encodeContentAsMap(I_SelectBinder.DATA);
                 //debugging
+//                String raw = new GsonBuilder().setPrettyPrinting().create().toJson(rawJson);
 //                if (jsonbOrigin.contains("@class"))
 //                    System.out.print("Hum...");
                 //add the composition uuid
