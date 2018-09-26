@@ -89,7 +89,7 @@ public class QueryEngineTest {
             introspectCache = new IntrospectCache(context, knowledge).load().synchronize();
 
         } catch (Exception e) {
-            fail("could not initialize intropection meta data cache, please check your configuration");
+            fail("could not initialize intropection meta data cache, please check your configuration, exception:"+e);
         }
     }
 
@@ -1707,6 +1707,27 @@ public class QueryEngineTest {
         String query =
                 "select distinct e/ehr_id/value\n" +
                 "from EHR e\n"
+                ;
+        ;
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+    @Test
+    public void test_CR153() throws Exception {
+        String query =
+                "select\n" +
+                        "    c/uid/value as uid,\n" +
+                        "    c/composer/name as author,\n" +
+                        "    c/context/start_time/value as date_created\n" +
+                        "    from EHR e \n" +
+                        "    contains COMPOSITION c[openEHR-EHR-COMPOSITION.service_tracker.v0]\n" +
+                        "    contains (ACTION w[openEHR-EHR-ACTION.service-wellness.v1])\n" +
+                        "     where w/description[at0001]/items[at0025]/value/value ilike '2018-09-%'\n" +
+                        "     ORDER BY date_created DESCENDING"
                 ;
         ;
 

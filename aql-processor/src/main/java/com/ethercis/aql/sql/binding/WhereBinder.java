@@ -149,7 +149,7 @@ public class WhereBinder {
             if (className.equals("COMPOSITION")) {
                 field = compositionAttributeQuery.whereField(templateId, comp_id, identifier, variableDefinition);
             } else {
-                field = jsonbEntryQuery.makeField(templateId, comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.SELECT);
+                field = jsonbEntryQuery.makeField(templateId, comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.WHERE);
             }
             if (field == null)
                 return null;
