@@ -280,23 +280,25 @@ public class JsonbEntryQuery extends ObjectQuery implements I_QueryImpl {
             itemPathArray.addAll(jqueryPath(PATH_PART.IDENTIFIER_PATH_PART, path, "0"));
         itemPathArray.addAll(jqueryPath(PATH_PART.VARIABLE_PATH_PART, variableDefinition.getPath(), "0"));
 
-        try {
-            String[] ignoreIterativeOnRegexp;
-            if (System.getenv(ENV_AQL_ARRAY_IGNORE_NODE) != null) {
-                ignoreIterativeOnRegexp = System.getenv(ENV_AQL_ARRAY_IGNORE_NODE).split(",");
-            } else
-                ignoreIterativeOnRegexp = new String[]{"^/content.*", "^/events.*"};
+        if (clause.equals(Clause.SELECT)) {
+            try {
+                String[] ignoreIterativeOnRegexp;
+                if (System.getenv(ENV_AQL_ARRAY_IGNORE_NODE) != null) {
+                    ignoreIterativeOnRegexp = System.getenv(ENV_AQL_ARRAY_IGNORE_NODE).split(",");
+                } else
+                    ignoreIterativeOnRegexp = new String[]{"^/content.*", "^/events.*"};
 
-            int depth = 1;
-            if (System.getenv(ENV_AQL_ARRAY_DEPTH) != null) {
-                depth = Integer.parseInt(System.getenv(ENV_AQL_ARRAY_DEPTH));
+                int depth = 1;
+                if (System.getenv(ENV_AQL_ARRAY_DEPTH) != null) {
+                    depth = Integer.parseInt(System.getenv(ENV_AQL_ARRAY_DEPTH));
+                }
+
+                IterativeNode iterativeNode = new IterativeNode(templateId, introspectCache, Arrays.asList(ignoreIterativeOnRegexp), depth);
+                Integer[] pos = iterativeNode.iterativeAt(itemPathArray);
+                itemPathArray = iterativeNode.clipInIterativeMarker(itemPathArray, pos);
+            } catch (Exception e) {
+                ;
             }
-
-            IterativeNode iterativeNode = new IterativeNode(templateId, introspectCache, Arrays.asList(ignoreIterativeOnRegexp), depth);
-            Integer[] pos = iterativeNode.iterativeAt(itemPathArray);
-            itemPathArray = iterativeNode.clipInIterativeMarker(itemPathArray, pos);
-        } catch (Exception e) {
-            ;
         }
 
         resolveArrayIndex(itemPathArray);

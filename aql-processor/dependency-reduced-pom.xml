@@ -204,6 +204,16 @@
       <artifactId>openehr-aom</artifactId>
       <version>1.0.14-ec1-SNAPSHOT</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>openehr-rm-core</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>openehr-rm-domain</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>openehr</groupId>
@@ -215,6 +225,14 @@
           <artifactId>jdom</artifactId>
           <groupId>jdom</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>log4j</artifactId>
+          <groupId>log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>openehr-rm-core</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -224,7 +242,39 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
+          <artifactId>xml-beans</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>adl-parser</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jsr173_api</artifactId>
+          <groupId>javax.xml.bind</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>measure-serv</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>adl-serializer</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-io</artifactId>
+          <groupId>commons-io</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>openehr-rm-domain</artifactId>
+          <groupId>openehr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>log4j</artifactId>
+          <groupId>log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>openehr-rm-core</artifactId>
           <groupId>openehr</groupId>
         </exclusion>
       </exclusions>
@@ -240,6 +290,12 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.21</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <reporting>
