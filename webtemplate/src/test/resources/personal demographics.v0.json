@@ -1,0 +1,183 @@
+{
+  "uid": "b2ace514-ab0d-4acc-a0b5-53898c801c66",
+  "languages": [
+    "en"
+  ],
+  "concept": "personal demographics.v0",
+  "tree": {
+    "min": 1,
+    "max": 1,
+    "children": [
+      {
+        "min": 0,
+        "aql_path": "/items",
+        "max": 1,
+        "name": "Sex",
+        "description": "Biological sex of the individual.",
+        "id": "sex",
+        "category": "ELEMENT",
+        "type": "DV_CODED_TEXT",
+        "constraints": [
+          {
+            "aql_path": "/items[at0017]/value",
+            "mandatory_attributes": [
+              {
+                "name": "DefiningCode",
+                "attribute": "defining_code",
+                "id": "defining_code",
+                "type": "CODE_PHRASE"
+              },
+              {
+                "name": "Value",
+                "attribute": "value",
+                "id": "value",
+                "type": "STRING"
+              }
+            ],
+            "constraint": {
+              "defining_code": [
+                {
+                  "code_string": "at0020",
+                  "terminology": "local",
+                  "description": "Sex of individual is male.",
+                  "value": "Male"
+                },
+                {
+                  "code_string": "at0021",
+                  "terminology": "local",
+                  "description": "Sex of individual is female.",
+                  "value": "Female"
+                },
+                {
+                  "code_string": "at0022",
+                  "terminology": "local",
+                  "description": "Sex of individual is not able to be determined.",
+                  "value": "Indeterminate"
+                }
+              ],
+              "occurrence": {
+                "min": 1,
+                "max_op": "\u003c\u003d",
+                "min_op": "\u003e\u003d",
+                "max": 1
+              }
+            },
+            "attribute_name": "value",
+            "type": "DV_CODED_TEXT"
+          }
+        ],
+        "node_id": "at0017"
+      },
+      {
+        "min": 0,
+        "aql_path": "/items",
+        "max": 1,
+        "name": "Identifier",
+        "description": "Identifier of individual.",
+        "id": "identifier",
+        "category": "ELEMENT",
+        "type": "DV_TEXT",
+        "constraints": [
+          {
+            "aql_path": "/items[at0016]/value",
+            "mandatory_attributes": [
+              {
+                "name": "Value",
+                "attribute": "value",
+                "id": "value",
+                "type": "STRING"
+              }
+            ],
+            "attribute_name": "value",
+            "constraint": {
+              "occurrence": {
+                "min": 1,
+                "max_op": "\u003c\u003d",
+                "min_op": "\u003e\u003d",
+                "max": 1
+              }
+            },
+            "type": "DV_TEXT"
+          }
+        ],
+        "node_id": "at0016"
+      },
+      {
+        "min": 0,
+        "aql_path": "/items",
+        "max": 1,
+        "name": "Relationship to subject",
+        "description": "The relationship of this individual to the subject e.g. family member, informal carer.",
+        "id": "relationship_to_subject",
+        "category": "ELEMENT",
+        "type": "DV_TEXT",
+        "constraints": [
+          {
+            "aql_path": "/items[at0008]/value",
+            "mandatory_attributes": [
+              {
+                "name": "Value",
+                "attribute": "value",
+                "id": "value",
+                "type": "STRING"
+              }
+            ],
+            "attribute_name": "value",
+            "constraint": {
+              "occurrence": {
+                "min": 1,
+                "max_op": "\u003c\u003d",
+                "min_op": "\u003e\u003d",
+                "max": 1
+              }
+            },
+            "type": "DV_TEXT"
+          }
+        ],
+        "node_id": "at0008"
+      },
+      {
+        "min": 0,
+        "aql_path": "/items",
+        "max": 1,
+        "name": "Date of Birth",
+        "description": "Individual\u0027s date of birth.",
+        "id": "date_of_birth",
+        "category": "ELEMENT",
+        "type": "DV_DATE_TIME",
+        "constraints": [
+          {
+            "aql_path": "/items[at0007]/value",
+            "mandatory_attributes": [
+              {
+                "name": "Value",
+                "attribute": "value",
+                "id": "value",
+                "type": "STRING"
+              }
+            ],
+            "attribute_name": "value",
+            "constraint": {
+              "occurrence": {
+                "min": 1,
+                "max_op": "\u003c\u003d",
+                "min_op": "\u003e\u003d",
+                "max": 1
+              }
+            },
+            "type": "DV_DATE_TIME"
+          }
+        ],
+        "node_id": "at0007"
+      }
+    ],
+    "name": "Individual\u0027s personal demographics",
+    "description": "Personal demographics including name(s) , addresse(s) and telecommunication contact details.",
+    "id": "individual\u0027s_personal_demographics",
+    "type": "CLUSTER",
+    "category": "DATA_STRUCTURE",
+    "node_id": "openEHR-EHR-CLUSTER.individual_personal.v1"
+  },
+  "template_id": "personal demographics.v0",
+  "default_language": "en"
+}

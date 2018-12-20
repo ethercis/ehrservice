@@ -10,7 +10,7 @@
     "children": [
       {
         "min": 0,
-        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]",
+        "aql_path": "/content",
         "max": -1,
         "children": [
           {
@@ -5307,7 +5307,7 @@
                                 {
                                   "code_string": "at0021",
                                   "terminology": "local",
-                                  "description": "The subject’s name as it is to be used for reporting, when used with a specific identifier.",
+                                  "description": "The subjectâ€™s name as it is to be used for reporting, when used with a specific identifier.",
                                   "value": "Reporting name"
                                 }
                               ],

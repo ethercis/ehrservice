@@ -57,7 +57,7 @@ public class OptVisitorTest extends TestCase {
 
     public void testTraverseAny() throws Exception {
 
-        String expectedJson = new String(Files.readAllBytes(Paths.get("src/test/resources/RIPPLE-Conformance Test Introspected.json")));
+        String expectedJson = new String(Files.readAllBytes(Paths.get("src/test/resources/RIPPLE-Conformance Test Introspected.json")), "UTF-8");
 
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Allergies List.v0");
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Problem List.v1");
@@ -66,7 +66,8 @@ public class OptVisitorTest extends TestCase {
 
         assertNotNull(map);
 
-        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
+        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""),
+                toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
     }
 
     public void testTraverseWithDvParsable() throws Exception {
@@ -76,12 +77,26 @@ public class OptVisitorTest extends TestCase {
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Allergies List.v0");
 //        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE)knowledge.retrieveTemplate("IDCR Problem List.v1");
         OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE) knowledge.retrieveTemplate("IDCR - Transfer of Care Summary TEST.v1");
+
         Map map = new OptVisitor().traverse(operationaltemplate);
 
         assertNotNull(map);
 
 //        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
     }
+
+    public void testTraverseNonComposition() throws Exception {
+
+        String expectedJson = new String(Files.readAllBytes(Paths.get("src/test/resources/personal demographics.v0.json")));
+
+        OPERATIONALTEMPLATE operationaltemplate = (OPERATIONALTEMPLATE) knowledge.retrieveTemplate("personal demographics.v0");
+        Map map = new OptVisitor().traverse(operationaltemplate);
+
+//        assertNotNull(map);
+
+        assertEquals(expectedJson.replaceAll("\\n", "").replaceAll("\\r", ""), toJson(map).replaceAll("\\n", "").replaceAll("\\r", ""));
+    }
+
 
     String toJson(Map<String, Object> map) {
         GsonBuilder builder = new GsonBuilder();
