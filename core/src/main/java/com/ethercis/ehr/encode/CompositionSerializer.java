@@ -483,7 +483,9 @@ public class CompositionSerializer implements I_CompositionSerializer {
     public Map<String, Object> processItem(Locatable locatable) throws Exception {
         ctree = newPathMap();
 
-        if (locatable instanceof Item)
+        if (locatable instanceof Cluster)
+			putObject(locatable, ctree, getNodeTag(TAG_OTHER_CONTEXT, locatable, ctree), traverse((Cluster)locatable, TAG_ITEMS));
+		else if (locatable instanceof Item)
             putObject(locatable, ctree, getNodeTag(TAG_OTHER_CONTEXT, locatable, ctree), traverse((Item)locatable, TAG_ITEMS));
         else if (locatable instanceof ItemStructure)
             putObject(locatable, ctree, getNodeTag(TAG_OTHER_CONTEXT, locatable, ctree), traverse((ItemStructure)locatable, TAG_ITEMS));
@@ -497,7 +499,9 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	public Map<String, Object> processItem(String tag, Locatable locatable) throws Exception {
 		ctree = newPathMap();
 
-		if (locatable instanceof Item)
+		if (locatable instanceof Cluster)
+			putObject(locatable, ctree, tag, traverse((Cluster)locatable, TAG_ITEMS));
+		else if (locatable instanceof Item)
 //			putObject(ctree, getNodeTag(tag, locatable, ctree.getClass()), traverse((Item)locatable, TAG_ITEMS));
 			putObject(locatable, ctree, tag, traverse((Item)locatable, TAG_ITEMS));
 		else if (locatable instanceof ItemStructure)
@@ -1235,6 +1239,9 @@ public class CompositionSerializer implements I_CompositionSerializer {
 				for (Item clusterItem : cluster.getItems()) {
 //					compactEntry(clusterItem, ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree), traverse(clusterItem, TAG_ITEMS));
 //					putObject(ltree, getNodeTag(TAG_ITEMS, clusterItem, ltree), traverse(clusterItem, TAG_ITEMS));
+//					if (clusterItem instanceof ElementWrapper){
+//						clusterItem = ((ElementWrapper)clusterItem).getAdaptedElement();
+//					}
 					Object clusterItems = traverse(clusterItem, TAG_ITEMS);
 					if (clusterItems != null) {
 						if (clusterItems instanceof Map && ((Map)clusterItems).containsKey(TAG_VALUE)) {

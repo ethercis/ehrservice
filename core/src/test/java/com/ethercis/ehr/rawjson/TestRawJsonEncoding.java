@@ -18,6 +18,8 @@
 package com.ethercis.ehr.rawjson;
 
 import com.ethercis.ehr.building.I_ContentBuilder;
+import com.ethercis.ehr.building.util.CompositionAttributesHelper;
+import com.ethercis.ehr.building.util.ContextHelper;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
@@ -35,7 +37,11 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.Composition;
+import org.openehr.rm.composition.EventContext;
+import org.openehr.rm.datastructure.itemstructure.ItemStructure;
+import org.openehr.rm.support.identification.ObjectVersionID;
 
 import java.io.FileReader;
 import java.util.*;
@@ -230,6 +236,44 @@ public class TestRawJsonEncoding {
 
         RawJsonEncoder rawJsonEncoder = new RawJsonEncoder(knowledge);
         String stringMap = rawJsonEncoder.encode(templateId, fragmentDBEncoded, path);
+
+        assertNotNull(stringMap);
+        System.out.print(stringMap);
+
+    }
+
+    @Test
+    public void testSerializer_other_details() throws Exception {
+        String templateId = "personal demographics.v0";
+
+        //create a sample composition for this template
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, templateId);
+
+        Object generated = contentBuilder.generate();
+
+        if (generated instanceof Composition) {
+            ItemStructure other_context;
+            if (((Composition) generated).getContext() != null) {
+                other_context = ((Composition) generated).getContext().getOtherContext();
+            } else
+                other_context = null;
+
+            EventContext context = ContextHelper.createDummyContext();
+            if (other_context != null)
+                context.setOtherContext(other_context);
+
+            PartyIdentified partyIdentified = CompositionAttributesHelper.createComposer("Composer", "ETHERCIS", "1234-5678");
+
+            ((Composition) generated).setContext(context);
+            ((Composition) generated).setComposer(partyIdentified);
+            ((Composition) generated).setUid(new ObjectVersionID(UUID.randomUUID() + "::example.ethercis.com::1"));
+        }
+
+        assertNotNull(generated);
+
+        //encode it as a RAW json
+        I_CompositionSerializer rawCompositionSerializer = I_CompositionSerializer.getInstance(CompositionSerializer.WalkerOutputMode.RAW, true);
+        String stringMap = rawCompositionSerializer.dbEncode("fragment", (Locatable)generated);
 
         assertNotNull(stringMap);
         System.out.print(stringMap);

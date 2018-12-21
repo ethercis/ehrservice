@@ -12,6 +12,7 @@
         <version>2.19</version>
         <configuration>
           <skipTests>false</skipTests>
+          <argLine>-Duser.timezone=+07:00</argLine>
         </configuration>
       </plugin>
       <plugin>

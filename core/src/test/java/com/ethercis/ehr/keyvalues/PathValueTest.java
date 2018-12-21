@@ -18,6 +18,7 @@ import com.google.gson.GsonBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.basic.DvBoolean;
@@ -651,5 +652,20 @@ public class PathValueTest {
         System.out.println(jsonString);
     }
 
+    @Test
+    public void test_non_composition() throws Exception {
+        String templateId = "personal demographics.v0";
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
+        Locatable locatable = contentBuilder.generate();
 
+        assertNotNull(locatable);
+
+//        PathValue pathValue = new PathValue(contentBuilder, knowledge, templateId, new Properties());
+
+        Map<String, String> testRetMap = new EcisFlattener().render(locatable);
+        String jsonString = gson.toJson(testRetMap);
+        System.out.println(jsonString);
+    }
 }
