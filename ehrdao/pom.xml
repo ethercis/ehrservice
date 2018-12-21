@@ -42,7 +42,7 @@
                     <excludes>
                         <exclude>**/MigrateEntryTest.java</exclude>
                     </excludes>
-                    <skipTests>false</skipTests>
+                    <skipTests>true</skipTests>
                     <systemPropertyVariables>
                         <test.db.host>localhost</test.db.host>
                         <test.db.port>5432</test.db.port>
@@ -115,6 +115,7 @@
                             <exclude>ethercis:ecis-knowledge-cache</exclude>
                             <exclude>ethercis:ecis-meta-data-cache</exclude>
                             <exclude>ethercis:ecis-opt-introspect</exclude>
+                            <exclude>ethercis:ecis-webtemplate</exclude>
                             <exclude>org.openehr:*</exclude>
                             <exclude>openEHR:*</exclude>
                             <exclude>junit:junit</exclude>
