@@ -659,6 +659,7 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
         selectQuery.addJoin(composerRef,composerRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class).eq(compositionRef.field(COMPOSITION.COMPOSER.getName(), UUID.class)));
         selectQuery.addJoin(composerId, JoinType.LEFT_OUTER_JOIN, composerId.field(IDENTIFIER.PARTY.getName(), UUID.class).eq(composerRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class)));
         selectQuery.addJoin(eventContextRef,eventContextRef.field(EVENT_CONTEXT.COMPOSITION_ID.getName(), UUID.class).eq(ENTRY.COMPOSITION_ID));
+        selectQuery.addJoin(feederAuditRef,feederAuditRef.field(FEEDER_AUDIT.COMPOSITION_ID.getName(), UUID.class).eq(ENTRY.COMPOSITION_ID));
         selectQuery.addJoin(facilityRef, JoinType.LEFT_OUTER_JOIN, facilityRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.FACILITY.getName(), UUID.class)));
         selectQuery.addJoin(facilityId, JoinType.LEFT_OUTER_JOIN, facilityId.field(IDENTIFIER.PARTY.getName(), UUID.class).eq(facilityRef.field(PARTY_IDENTIFIED.ID.getName(), UUID.class)));
         selectQuery.addJoin(participationRef, JoinType.LEFT_OUTER_JOIN, participationRef.field(PARTICIPATION.EVENT_CONTEXT.getName(), UUID.class).eq(eventContextRef.field(EVENT_CONTEXT.ID.getName(), UUID.class)));

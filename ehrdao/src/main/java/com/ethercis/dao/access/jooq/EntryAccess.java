@@ -255,6 +255,8 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         values.put(SystemValue.COMPOSER, I_PartyIdentifiedAccess.retrievePartyIdentified(domainAccess, compositionAccess.getComposerId()));
         I_ContextAccess contextAccess = I_ContextAccess.retrieveInstance(domainAccess, compositionAccess.getContextId());
         values.put(SystemValue.CONTEXT, contextAccess.mapRmEventContext());
+        I_FeederAuditAccess feederAuditAccess = I_FeederAuditAccess.retrieveInstance(domainAccess, compositionAccess.getContextId());
+        values.put(SystemValue.FEEDER_AUDIT, feederAuditAccess.mapRmFeederAudit());
         values.put(SystemValue.LANGUAGE, I_RmBinding.makeLanguageCodePhrase(compositionAccess.getLanguageCode()));
         String territory2letters = domainAccess.getContext().fetchOne(TERRITORY, TERRITORY.CODE.eq(compositionAccess.getTerritoryCode())).getTwoletter();
         values.put(SystemValue.TERRITORY, I_RmBinding.makeTerritoryCodePhrase(territory2letters));

@@ -23,10 +23,14 @@ import com.ethercis.dao.access.util.ContributionDef;
 import com.ethercis.ehr.encode.wrappers.terminolology.TerminologyServiceWrapper;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
+import org.openehr.rm.common.archetyped.FeederAuditDetails;
+import org.openehr.rm.common.archetyped.FeederAudit;
 import org.openehr.rm.common.generic.Participation;
 import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.composition.EventContext;
 import org.openehr.rm.datatypes.basic.DvIdentifier;
+import org.openehr.rm.datatypes.encapsulated.DvEncapsulated;
+import org.openehr.rm.datatypes.encapsulated.DvParsable;
 import org.openehr.rm.datatypes.quantity.DvInterval;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.DvCodedText;
@@ -135,6 +139,5 @@ public class TestHelper {
         participations.add(participation);
         return new org.openehr.rm.composition.EventContext(healthcareFacility, new DvDateTime(timenow.toString()), null, participations, "TEST LAB", concept, null, terminologyService);
     }
-
 
 }
