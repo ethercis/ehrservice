@@ -24,6 +24,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <user.deploy>../../ethercis-deploy</user.deploy>
+        <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
         <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
     </properties>
     <build>
@@ -152,29 +153,24 @@
     <!--</repositories>-->
     <dependencies>
         <dependency>
-            <groupId>org.openehr</groupId>
-            <artifactId>openEHR.v1.OperationalTemplate</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openehr</groupId>
-            <artifactId>openEHR.v1.Template</artifactId>
-            <version>1.0.1</version>
+            <groupId>openehr</groupId>
+            <artifactId>xml-beans</artifactId>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>openehr-rm-core</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>openehr-rm-domain</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>adl-parser</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>

@@ -24,6 +24,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <user.deploy>../../ethercis-deploy</user.deploy>
+        <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
         <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
     </properties>
     <build>
@@ -164,44 +165,39 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.openehr</groupId>
-            <artifactId>openEHR.v1.OperationalTemplate</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openehr</groupId>
-            <artifactId>openEHR.v1.Template</artifactId>
-            <version>1.0.1</version>
+            <groupId>openehr</groupId>
+            <artifactId>xml-beans</artifactId>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>openehr-rm-core</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>openehr-rm-domain</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>xml-binding</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>rm-builder</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>oet-parser</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
             <artifactId>openehr-aom</artifactId>
-            <version>1.0.14-ec1-SNAPSHOT</version>
+            <version>${java-ref-library}</version>
         </dependency>
         <dependency>
             <groupId>com.cedarsoftware</groupId>
@@ -315,11 +311,31 @@
             <groupId>org.openehr</groupId>
             <artifactId>thinkehr-framework-jsonlib</artifactId>
             <version>2.3.0-JL32</version>
+            <systemPath>${basedir}/../libraries/thinkehr-framework-jsonlib-2.3.0-JL32/lib/thinkehr-framework-jsonlib-2.3.0-JL32.jar</systemPath>
+            <scope>system</scope>
         </dependency>
         <dependency>
             <groupId>ethercis</groupId>
             <artifactId>ecis-knowledge-cache</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0.1</version>
+            <scope>test</scope>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>commons-collections</groupId>-->
