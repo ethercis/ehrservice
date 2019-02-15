@@ -87,6 +87,9 @@ public class ElementCounter {
         else if (locatable instanceof Composition) {
 //            count(((Composition)locatable).getContent());
         }
+        else if (locatable instanceof AdminEntry) {
+            count(((AdminEntry) locatable).getData());
+        }
         else
             throw new IllegalArgumentException("Unhandled data type:"+locatable);
     }

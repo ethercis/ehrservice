@@ -2,7 +2,7 @@ package com.ethercis.ehr.encode.wrappers.json.writer.translator_db2raw;
 
 import com.ethercis.ehr.encode.wrappers.json.I_DvTypeAdapter;
 import com.google.gson.stream.JsonWriter;
-import jdk.nashorn.internal.ir.debug.JSONWriter;
+
 
 import java.io.IOException;
 

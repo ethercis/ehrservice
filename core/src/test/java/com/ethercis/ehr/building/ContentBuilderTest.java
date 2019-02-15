@@ -930,6 +930,24 @@ public class ContentBuilderTest extends TestCase {
     }
 
     @Test
+    public void testFlatJsonCR157() throws Exception {
+        String templateId = "RESPECT_form_2-v0";
+
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+
+        //get a flat json test file
+        FileReader fileReader = new FileReader(resourcePath+"/flat_json_input/RESPECT_form_2-v0.flat.json");
+
+        Map map = FlatJsonUtil.inputStream2Map(fileReader);
+
+        Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
+
+        assertNotNull(lastComposition);
+
+    }
+
+    @Test
     public void testGenerateOtherContext() throws Exception {
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "Ripple Dashboard Cache.v1");
 
