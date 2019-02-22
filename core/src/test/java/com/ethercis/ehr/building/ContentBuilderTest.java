@@ -955,4 +955,27 @@ public class ContentBuilderTest extends TestCase {
 
         assertNotNull(generated);
      }
+
+    @Test
+    public void testImportXMLNullFlavor() throws Exception {
+
+        String documentPath = resourcePath+"/samples/composition_null_flavor_cr_159.xml";
+        InputStream is = new FileInputStream(new File(documentPath));
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "hospitalization_oceanehr");
+        //pre-warm the composition cache
+        content.setLenient(true); //disable validation
+        content.generateNewComposition();
+
+        Composition composition = content.importCanonicalXML(is);
+        assertNotNull(composition);
+
+        content.setTemplateId(composition.getArchetypeDetails().getTemplateId().getValue());
+        content.setEntryData(composition);
+        String serialized = content.getEntry();
+
+        Composition newComposition = content.buildCompositionFromJson(serialized);
+
+        assertNotNull(newComposition);
+
+    }
 }

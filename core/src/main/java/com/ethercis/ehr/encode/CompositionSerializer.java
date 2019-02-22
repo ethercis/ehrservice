@@ -99,6 +99,8 @@ public class CompositionSerializer implements I_CompositionSerializer {
 	public static final String TAG_ACTIVITIES="/activities";
 	public static final String TAG_ACTIVITY="/activity";
 	public static final String TAG_VALUE="/value";
+	public static final String TAG_NULL_FLAVOUR="/null_flavour";
+	public static final String TAG_FEEDER_AUDIT="/feeder_audit";
 	public static final String TAG_EVENTS="/events";
 	public static final String TAG_ORIGIN="/origin";
 	public static final String TAG_SUMMARY="/summary";
@@ -1156,29 +1158,24 @@ public class CompositionSerializer implements I_CompositionSerializer {
     protected Map<String, Object> setElementAttributesMap(Element element) throws Exception {
         Map<String, Object>ltree = newPathMap();
 
-        if (element != null && element.getValue() != null && !element.getValue().toString().isEmpty()){
-            log.debug(itemStack.pathStackDump()+"="+ element.getValue());
-            Map<String, Object> valuemap = newPathMap();
-            //VBeanUtil.setValueMap(valuemap, element.getValue());
-            putObject(element, valuemap, TAG_NAME, mapName(element.getName()));
+        if (element != null) {
+        	if (element.getValue() != null && !element.getValue().toString().isEmpty()) {
+				log.debug(itemStack.pathStackDump() + "=" + element.getValue());
+				Map<String, Object> valuemap = newPathMap();
+				putObject(element, valuemap, TAG_NAME, mapName(element.getName()));
 
-//			if (element.getName() instanceof DvCodedText) {
-//				DvCodedText dvCodedText = (DvCodedText)element.getName();
-//				if (dvCodedText.getDefiningCode() != null)
-//					putObject(element, valuemap, TAG_DEFINING_CODE, dvCodedText.getDefiningCode());
-//			}
+				putObject(element, valuemap, TAG_CLASS, getCompositeClassName(element.getValue()));
+				putObject(element, valuemap, TAG_VALUE, element.getValue());
+				encodePathItem(valuemap, null);
 
-			putObject(element, valuemap, TAG_CLASS, getCompositeClassName(element.getValue()));
-//            putObject(valuemap, TAG_CLASS, element.getValue().getClass().getSimpleName());
-            //assign the actual object to the value (instead of its field equivalent...)
-            putObject(element, valuemap, TAG_VALUE, element.getValue());
-//
-            encodePathItem(valuemap, null);
-//            if (tag_mode == WalkerOutputMode.PATH) {
-//                putObject(valuemap, TAG_PATH, elementStack.pathStackDump());
-//            }
-
-            ltree.put(TAG_VALUE, valuemap);
+				ltree.put(TAG_VALUE, valuemap);
+			}
+        	else if (element.getNullFlavour() != null){
+				Map<String, Object> valuemap = newPathMap();
+				putObject(element, valuemap, TAG_NULL_FLAVOUR, element.getNullFlavour());
+				encodePathItem(valuemap, null);
+				ltree.put(TAG_VALUE, valuemap);
+			}
         }
         else
             throw new IllegalArgumentException("Invalid element detected in map");

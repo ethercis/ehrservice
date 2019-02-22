@@ -19,6 +19,7 @@ package com.ethercis.ehr.building;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.ehr.encode.EncodeUtil;
 import com.ethercis.ehr.encode.I_CompositionSerializer;
+import com.ethercis.ehr.encode.wrappers.DvCodedTextVBean;
 import com.ethercis.ehr.encode.wrappers.constraints.ConstraintUtils;
 import com.ethercis.ehr.encode.wrappers.element.ElementWrapper;
 import com.ethercis.ehr.keyvalues.I_PathValue;
@@ -274,7 +275,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             if (object == null) {
                 if (definition.containsKey(CompositionSerializer.TAG_VALUE))
                     object = definition.get(CompositionSerializer.TAG_VALUE);
-                else
+//                else if (definition.containsKey(CompositionSerializer.TAG_NULL_FLAVOUR)) {
+//                    object = definition.get(CompositionSerializer.TAG_NULL_FLAVOUR);
+//                }
+                else if (!definition.containsKey(CompositionSerializer.TAG_NULL_FLAVOUR))
                     continue; //no assignment
             }
 
@@ -313,8 +317,18 @@ public abstract class ContentBuilder implements I_ContentBuilder{
             }
 
             if (itemAtPath instanceof ElementWrapper) {
-                assignElementWrapper((ElementWrapper) itemAtPath, object, path);
-                setItemAttributes(((ElementWrapper) itemAtPath).getAdaptedElement(), definition);
+                ElementWrapper elementWrapper = (ElementWrapper) itemAtPath;
+                if (object != null)
+                    assignElementWrapper(elementWrapper, object, path);
+                setItemAttributes(elementWrapper.getAdaptedElement(), definition);
+                if (!elementWrapper.dirtyBitSet() && definition.containsKey(CompositionSerializer.TAG_NULL_FLAVOUR))
+                    elementWrapper.setDirtyBit(true);
+
+                // some house cleaning (if a null_flavour has been passed, but no value)
+                if (object == null){
+                    elementWrapper.setWrappedValue(null);
+                    elementWrapper.getAdaptedElement().setValue(null);
+                }
 //                constraintUtils.validateItem(path, itemAtPath);
             }
             else if (itemAtPath instanceof Activity){
@@ -938,6 +952,10 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                 item.setName((DvText)name);
 //            else
 //                throw new IllegalArgumentException("Could not handle name value of type:"+name);
+        }
+        if (definition.containsKey(CompositionSerializer.TAG_NULL_FLAVOUR)){
+            DvCodedText nullFlavour = (DvCodedText) definition.get(CompositionSerializer.TAG_NULL_FLAVOUR);
+            item.set("/null_flavour", nullFlavour);
         }
     }
 
