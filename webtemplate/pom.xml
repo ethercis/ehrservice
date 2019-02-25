@@ -24,6 +24,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <user.deploy>../../ethercis-deploy</user.deploy>
         <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
     </properties>
     <!--<repositories>-->
