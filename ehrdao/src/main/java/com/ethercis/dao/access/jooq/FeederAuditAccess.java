@@ -333,11 +333,17 @@ public class FeederAuditAccess extends DataAccess implements I_FeederAuditAccess
     @Override
     public FeederAudit mapRmFeederAudit() {
 
-        return new FeederAudit(retrieveOriginatingSystemAudit(feederAuditRecord.getOriginatingSystemAudit()),
-                retrieveOriginatingSystemItemIds(feederAuditRecord.getId()),
-                retrieveFeederSystemAuditRecord(feederAuditRecord.getFeederSystemAudit()),
-                retrieveFeederSystemItemIds(feederAuditRecord.getId()),
-                new DvParsable(new String(feederAuditRecord.getOriginalContent()), "BLOB"));
+        try {
+            return new FeederAudit(retrieveOriginatingSystemAudit(feederAuditRecord.getOriginatingSystemAudit()),
+                    retrieveOriginatingSystemItemIds(feederAuditRecord.getId()),
+                    retrieveFeederSystemAuditRecord(feederAuditRecord.getFeederSystemAudit()),
+                    retrieveFeederSystemItemIds(feederAuditRecord.getId()),
+                    new DvParsable(new String(feederAuditRecord.getOriginalContent()), "BLOB"));
+        }
+        catch (Exception e){
+           //empty
+           return null;
+        }
     }
 
 

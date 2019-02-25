@@ -91,7 +91,7 @@ public class ElementCounter {
             count(((AdminEntry) locatable).getData());
         }
         else
-            throw new IllegalArgumentException("Unhandled data type:"+locatable);
+            throw new IllegalArgumentException("Unhandled data type:"+locatable+ ", class:"+locatable.getClass().getCanonicalName());
     }
 
     public Integer getCount() {

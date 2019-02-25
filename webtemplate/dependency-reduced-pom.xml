@@ -136,19 +136,11 @@
           <artifactId>jooq-pg</artifactId>
           <groupId>ethercis</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>ecis-validation</artifactId>
+          <groupId>ethercis</groupId>
+        </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.OperationalTemplate</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.Template</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>openehr</groupId>
@@ -156,14 +148,6 @@
       <version>1.0.14-ec1-SNAPSHOT</version>
       <scope>test</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>xml-beans</artifactId>
-          <groupId>openehr</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jsr173_api</artifactId>
-          <groupId>javax.xml.bind</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>adl-serializer</artifactId>
           <groupId>openehr</groupId>
@@ -176,8 +160,10 @@
     </dependency>
   </dependencies>
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <user.deploy>../../ethercis-deploy</user.deploy>
   </properties>
 </project>
 
