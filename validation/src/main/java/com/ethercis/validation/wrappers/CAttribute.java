@@ -21,6 +21,7 @@ import com.ethercis.validation.Utils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.xmlbeans.SchemaType;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
@@ -63,8 +64,12 @@ public class CAttribute extends CConstraint  implements I_CArchetypeConstraintVa
         if (!isAttributeResolved && value == null) {
             //check for a function
             value = getFunctionValue(aValue, attribute.getRmAttributeName());
-            if (!isAttributeResolved)
-                ValidationException.raise(path, "The following attribute:" + attribute.getRmAttributeName() + " is expected in object:" + aValue, "ATTR01");
+            if (!isAttributeResolved) {
+                //check for null flavour
+                isSetNullFlavour(aValue);
+                if (!isAttributeResolved)
+                    ValidationException.raise(path, "The following attribute:" + attribute.getRmAttributeName() + " is expected in object:" + aValue, "ATTR01");
+            }
         }
 
         if (value == null){
@@ -130,6 +135,15 @@ public class CAttribute extends CConstraint  implements I_CArchetypeConstraintVa
             isAttributeResolved = false;
         }
         return value;
+    }
+
+    private void isSetNullFlavour(Object obj) {
+        Class rmClass = obj.getClass();
+        if (rmClass == Element.class){
+            Element element = (Element)obj;
+            if (((Element) obj).getNullFlavour() != null)
+                isAttributeResolved = true;
+        }
     }
 
     private Object getEnumValue(Object obj) {

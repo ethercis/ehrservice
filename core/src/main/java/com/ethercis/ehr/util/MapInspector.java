@@ -338,12 +338,15 @@ public class MapInspector {
                 }
                 //check for a null flavour
                 if (map.containsKey(CompositionSerializer.TAG_NULL_FLAVOUR)) {
-                    Map<String, Object> submap = (Map<String, Object>) map.get(CompositionSerializer.TAG_NULL_FLAVOUR);
-                    submap.put(CompositionSerializer.TAG_CLASS, "DvCodedText");
-                    Map<String, Object> valueMap = new HashMap<>();
-                    valueMap.put(CompositionSerializer.TAG_VALUE, submap);
-                    DvCodedText nullFlavour = DvCodedTextVBean.getInstance(valueMap);
-                    map.put(CompositionSerializer.TAG_NULL_FLAVOUR, nullFlavour);
+                    Object nullFlavour = map.get(CompositionSerializer.TAG_NULL_FLAVOUR);
+                    if (nullFlavour instanceof Map) {
+                        Map<String, Object> submap = (Map<String, Object>) nullFlavour;
+                        submap.put(CompositionSerializer.TAG_CLASS, "DvCodedText");
+                        Map<String, Object> valueMap = new HashMap<>();
+                        valueMap.put(CompositionSerializer.TAG_VALUE, submap);
+                        nullFlavour = DvCodedTextVBean.getInstance(valueMap);
+                        map.put(CompositionSerializer.TAG_NULL_FLAVOUR, nullFlavour);
+                    }
                 }
                 stack.push(map);
                 return;
