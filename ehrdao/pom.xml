@@ -25,6 +25,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <user.deploy>../../ethercis-deploy</user.deploy>
         <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
+        <org.jooq.version>3.11.9</org.jooq.version>
         <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
     </properties>
     <!--<repositories>-->
@@ -109,7 +110,7 @@
                         <excludes>
                             <exclude>ethercis:ecis-core</exclude>
                             <!--<exclude>ethercis:ecis-ehrdao</exclude>-->
-                            <exclude>ethercis:jooq-pg</exclude>
+                            <!--<exclude>ethercis:jooq-pg</exclude>-->
                             <exclude>ethercis:aql-processor</exclude>
                             <exclude>ethercis:ecis-transform</exclude>
                             <exclude>ethercis:ecis-validation</exclude>
@@ -206,7 +207,7 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>3.10.5</version>
+            <version>${org.jooq.version}</version>
         </dependency>
         <dependency>
             <groupId>ethercis</groupId>

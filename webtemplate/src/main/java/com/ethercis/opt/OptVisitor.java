@@ -414,8 +414,11 @@ public class OptVisitor extends RmBinding {
             } else if ("/context".equalsIgnoreCase(path)) {
                 return handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef, attrName, path);
             }
-            if (!((CCOMPLEXOBJECT) cobj).getNodeId().isEmpty()) {
+            if (((CCOMPLEXOBJECT) cobj).getNodeId() != null && !((CCOMPLEXOBJECT) cobj).getNodeId().isEmpty()) {
                 path = path + "[" + ((CCOMPLEXOBJECT) cobj).getNodeId() + "]";
+            }
+            else if (((CCOMPLEXOBJECT) cobj).getNodeId() == null){
+                log.debug("null nodeid for cobj");
             }
             log.debug("CONTEXT path=" + path);
             return handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef, attrName, path);

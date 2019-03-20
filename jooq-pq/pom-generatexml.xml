@@ -59,19 +59,14 @@
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
           </dependency>
-          <!--<dependency>-->
-          <!--<groupId>com.sun.xml.bind</groupId>-->
-          <!--<artifactId>jaxb-impl</artifactId>-->
-          <!--<version>2.3.1</version>-->
-          <!--</dependency>-->
-          <!--<dependency>-->
-          <!--<groupId>com.sun.xml.bind</groupId>-->
-          <!--<artifactId>jaxb-core</artifactId>-->
-          <!--<version>2.3.0.1</version>-->
-          <!--</dependency>-->
           <dependency>
             <groupId>org.jooq</groupId>
-            <artifactId>jooq</artifactId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${org.jooq.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
             <version>${org.jooq.version}</version>
           </dependency>
         </dependencies>
@@ -80,6 +75,7 @@
              The configuration format is the same as for the standalone code generator -->
         <configuration>
           <!-- Configure the database connection here -->
+          <includePluginDependencies>true</includePluginDependencies>
           <jdbc>
             <driver>org.postgresql.Driver</driver>
             <url>jdbc:postgresql://localhost:5432/ethercis</url>
@@ -87,6 +83,7 @@
             <password>postgres</password>
           </jdbc>
           <generator>
+            <name>org.jooq.codegen.XMLGenerator</name>
             <database>
               <!-- The database dialect fromBinder jooq-meta. Available dialects are named
                   org.util.[database].[database]Database. Known values are: org.jooq.util.ase.ASEDatabase
@@ -115,69 +112,20 @@
                   several schemata -->
               <inputSchema>ehr</inputSchema>
             </database>
-            <generate>
-              <!-- Generation flags: See advanced configuration properties -->
-            </generate>
-            <target>
-              <!-- The destination package of your generated classes (within the destination
-                  directory) jOOQ may append the schema name to this package if generating
-                  multiple schemas, e.g. org.jooq.your.packagename.schema1 org.jooq.your.packagename.schema2 -->
-              <packageName>com.ethercis.jooq.pg</packageName>
-              <!-- The destination directory of your generated classes -->
-              <!--<directory>./build/generated-src/main/</directory>-->
-              <directory>target/generated-sources/</directory>
-            </target>
           </generator>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.3</version>
-        <executions>
-          <execution>
-            <id>generate-sources-flag</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <echo>GENERATE SOURCES IS EXECUTING</echo>
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <!-- Use this to deploy the shade JAR into a deployment directory -->
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>install-jar</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.version}</version>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${user.deploy}</outputDirectory>
-              <stripVersion>false</stripVersion>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
     <!-- https://mvnrepository.com/artifact/org.jooq/jooq-codegen-maven -->
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq-codegen</artifactId>
+      <version>${org.jooq.version}</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>jooq-codegen-maven</artifactId>
@@ -198,11 +146,6 @@
       <artifactId>postgresql</artifactId>
       <version>${org.postgres.jdbc.version}</version>
     </dependency>
-    <!--<dependency>-->
-    <!--<groupId>javax.xml.bind</groupId>-->
-    <!--<artifactId>jaxb-api</artifactId>-->
-    <!--<version>2.4.0-b180830.0359</version>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
@@ -215,31 +158,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <!--DON'T GENERATE PROJECT INFO REPORT-->
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.0.0</version>
-        <reportSets>
-          <reportSet>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </reportSet>
-          <reportSet>
-            <reports>
-              <report>index</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.19.1</version>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>

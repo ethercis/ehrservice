@@ -83,7 +83,6 @@
           <artifactSet>
             <excludes>
               <exclude>ethercis:ecis-core</exclude>
-              <exclude>ethercis:jooq-pg</exclude>
               <exclude>ethercis:aql-processor</exclude>
               <exclude>ethercis:ecis-transform</exclude>
               <exclude>ethercis:ecis-validation</exclude>
@@ -140,24 +139,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.OperationalTemplate</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.Template</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>ethercis</groupId>
-      <artifactId>jooq-pg</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>ethercis</groupId>
       <artifactId>aql-processor</artifactId>
       <version>1.3.0-SNAPSHOT</version>
@@ -201,10 +182,12 @@
     </plugins>
   </reporting>
   <properties>
-    <user.deploy>../../ethercis-deploy</user.deploy>
+    <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
     <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
-    <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <org.jooq.version>3.11.9</org.jooq.version>
+    <user.deploy>../../ethercis-deploy</user.deploy>
   </properties>
 </project>
 

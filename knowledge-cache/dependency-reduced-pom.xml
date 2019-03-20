@@ -164,10 +164,11 @@
     </plugins>
   </reporting>
   <properties>
-    <user.deploy>../../ethercis-deploy</user.deploy>
+    <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
     <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
-    <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <user.deploy>../../ethercis-deploy</user.deploy>
   </properties>
 </project>
 
