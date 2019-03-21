@@ -11,7 +11,7 @@
     <properties>
         <flyway.version>5.2.4</flyway.version>
         <postgres.driver.version>9.1-901-1.jdbc4</postgres.driver.version>
-        <database.url>jdbc:postgresql://127.0.0.1:5432/ethercis</database.url>
+        <database.url>jdbc:postgresql://127.0.0.1:5432/ethercis/ehr</database.url>
         <database.user>postgres</database.user>
         <database.password>postgres</database.password>
     </properties>
