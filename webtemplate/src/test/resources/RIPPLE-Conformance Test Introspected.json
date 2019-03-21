@@ -10,7 +10,7 @@
     "children": [
       {
         "min": 0,
-        "aql_path": "/content[openEHR-EHR-SECTION.adhoc.v1]",
+        "aql_path": "/content",
         "max": -1,
         "children": [
           {
@@ -2308,7 +2308,7 @@
                     "max": 1,
                     "name": "Protocol - definition",
                     "description": "All archetypes of the OBSERVATION class can contain a PROTOCOL model which records information on how the information was gathered or measured, and any other information that is not required for safe clinical interpretation of the core Data. Datatypes are identical to those explained in the Data model, above.",
-                    "id": "protocol___definition",
+                    "id": "protocol_definition",
                     "category": "ELEMENT",
                     "node_id": "at0037"
                   }
@@ -3016,7 +3016,7 @@
                                 "max": 1,
                                 "name": "URI - resource identifier",
                                 "description": "URI datatypes allow for recording of relationships from this data to data recorded elsewhere.  These links can be within the same EHR, or external eg to a  URL.",
-                                "id": "uri___resource_identifier",
+                                "id": "uri_resource_identifier",
                                 "category": "ELEMENT",
                                 "type": "DV_URI",
                                 "constraints": [
@@ -5307,7 +5307,7 @@
                                 {
                                   "code_string": "at0021",
                                   "terminology": "local",
-                                  "description": "The subject’s name as it is to be used for reporting, when used with a specific identifier.",
+                                  "description": "The subjectâ€™s name as it is to be used for reporting, when used with a specific identifier.",
                                   "value": "Reporting name"
                                 }
                               ],

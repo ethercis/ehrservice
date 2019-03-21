@@ -272,16 +272,24 @@ public class OptVisitor extends RmBinding {
 
                     for (COBJECT cobj : children) {
                         try {
+                            //this allows the recursion to other children
+                            Map cobjectMap = handleCObject(opt, cobj, termDef, attrName, pathloop);
 
-                            Object attrValue = handleCObject(opt, cobj, termDef, attrName, pathloop);
 //                            log.debug("attrName=" + attrName + ": attrValue=" + attrValue);
-
+                            if (cobjectMap != null && path.equals("")) {
+                                //although an item tree is an attribute, the node id should be specified (ex. data, protocol etc.)
+                                if (cobj.getRmTypeName().equals(Constants.ITEM_TREE) && !pathloop.endsWith("]")){
+                                    pathloop = pathloop + "["+cobj.getNodeId()+"]";
+                                }
+                                cobjectMap.put(Constants.AQL_PATH, pathloop);
+                                childrenList.add(cobjectMap);
+                            }
                         } catch (Exception e) {
                             log.error("Cannot create attribute name " + attrName + " on path " + pathloop, e);
 
                         }
                     }
-                    log.debug("valueMap.put " + attr.getRmAttributeName());
+//                    log.debug("valueMap.put " + attr.getRmAttributeName());
 //					constrainMapper.addToCardinalityList(path+"/"+attr.getRmAttributeName(), cma);
                 }
             }
@@ -329,14 +337,16 @@ public class OptVisitor extends RmBinding {
             if ("COMPOSITION".matches(rmTypeName)) {
                 //check if children contains a context, if not add one
                 boolean hasContext = false;
-                for (Map<String, Object> child : (List<Map<String, Object>>) nodeMap.get(Constants.CHILDREN)) {
-                    if (child.containsKey(Constants.CONTEXT)) {
-                        hasContext = true;
+                if (nodeMap != null) {
+                    for (Map<String, Object> child : (List<Map<String, Object>>) nodeMap.get(Constants.CHILDREN)) {
+                        if (child.containsKey(Constants.CONTEXT)) {
+                            hasContext = true;
+                        }
                     }
-                }
 
-                if (!hasContext) {
-                    ((List<Map<String, Object>>) nodeMap.get(Constants.CHILDREN)).add(new EventContextAttributes().toMap());
+                    if (!hasContext) {
+                        ((List<Map<String, Object>>) nodeMap.get(Constants.CHILDREN)).add(new EventContextAttributes().toMap());
+                    }
                 }
             }
             childrenNodeMap = structural.trim();
@@ -404,8 +414,11 @@ public class OptVisitor extends RmBinding {
             } else if ("/context".equalsIgnoreCase(path)) {
                 return handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef, attrName, path);
             }
-            if (!((CCOMPLEXOBJECT) cobj).getNodeId().isEmpty()) {
+            if (((CCOMPLEXOBJECT) cobj).getNodeId() != null && !((CCOMPLEXOBJECT) cobj).getNodeId().isEmpty()) {
                 path = path + "[" + ((CCOMPLEXOBJECT) cobj).getNodeId() + "]";
+            }
+            else if (((CCOMPLEXOBJECT) cobj).getNodeId() == null){
+                log.debug("null nodeid for cobj");
             }
             log.debug("CONTEXT path=" + path);
             return handleComplexObject(opt, (CCOMPLEXOBJECT) cobj, termDef, attrName, path);

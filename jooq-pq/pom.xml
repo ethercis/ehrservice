@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>ethercis</groupId>
   <artifactId>jooq-pg</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.3.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>jooq-pq</name>
@@ -15,6 +15,8 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <user.deploy>../../ethercis-deploy</user.deploy>
+    <org.jooq.version>3.11.9</org.jooq.version>
+    <org.postgres.jdbc.version>42.2.5</org.postgres.jdbc.version>
     <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
   </properties>
 
@@ -33,7 +35,7 @@
                    Import the others manually from your distribution -->
         <groupId>org.jooq</groupId>
         <artifactId>jooq-codegen-maven</artifactId>
-        <version>3.10.0</version>
+        <version>${org.jooq.version}</version>
 
         <!-- The plugin should hook into the generate goal -->
         <executions>
@@ -50,7 +52,27 @@
           <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.4.1212</version>
+            <version>${org.postgres.jdbc.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+          </dependency>
+          <!--<dependency>-->
+          <!--<groupId>com.sun.xml.bind</groupId>-->
+          <!--<artifactId>jaxb-impl</artifactId>-->
+          <!--<version>2.3.1</version>-->
+          <!--</dependency>-->
+          <!--<dependency>-->
+          <!--<groupId>com.sun.xml.bind</groupId>-->
+          <!--<artifactId>jaxb-core</artifactId>-->
+          <!--<version>2.3.0.1</version>-->
+          <!--</dependency>-->
+          <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${org.jooq.version}</version>
           </dependency>
         </dependencies>
 
@@ -77,7 +99,7 @@
                   implementation here, if your database is currently not supported or if you
                   wish to read the database schema fromBinder a file, such as a Hibernate .hbm.xml
                   file -->
-              <name>org.jooq.util.postgres.PostgresDatabase</name>
+              <name>org.jooq.meta.postgres.PostgresDatabase</name>
               <!-- All elements that are generated fromBinder your schema (A Java regular
                   expression. Use the pipe to separate several expressions) Watch out for case-sensitivity.
                   Depending on your database, this might be important! You can storeComposition case-insensitive
@@ -159,9 +181,33 @@
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>jooq-codegen-maven</artifactId>
-      <version>3.10.0</version>
+      <version>${org.jooq.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq</artifactId>
+      <version>${org.jooq.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq-meta</artifactId>
+      <version>${org.jooq.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${org.postgres.jdbc.version}</version>
+    </dependency>
+    <!--<dependency>-->
+    <!--<groupId>javax.xml.bind</groupId>-->
+    <!--<artifactId>jaxb-api</artifactId>-->
+    <!--<version>2.4.0-b180830.0359</version>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.2</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -175,7 +221,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.9</version>
+        <version>3.0.0</version>
         <reportSets>
           <reportSet>
             <configuration>

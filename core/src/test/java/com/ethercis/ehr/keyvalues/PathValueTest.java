@@ -18,6 +18,7 @@ import com.google.gson.GsonBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.composition.Composition;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.basic.DvBoolean;
@@ -296,7 +297,7 @@ public class PathValueTest {
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/COLNEC Care Plan.v1.post2.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.put.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/e8fe7d12-c1e7-46af-b9af-7a28be5a3bcf.put.json");
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/RIPPLE_minimal_referral.v0.kv.json");
+        FileReader fileReader = new FileReader("src/test/resources/ecisflat/RIPPLE_minimal_referral.v0.kv.json");
 
         Map<String, Object> valuePairs = FlatJsonUtil.inputStream2Map(fileReader);
         Composition composition = pathValue.assign(valuePairs);
@@ -651,5 +652,20 @@ public class PathValueTest {
         System.out.println(jsonString);
     }
 
+    @Test
+    public void test_non_composition() throws Exception {
+        String templateId = "personal demographics.v0";
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(knowledge, templateId);
+        Locatable locatable = contentBuilder.generate();
 
+        assertNotNull(locatable);
+
+//        PathValue pathValue = new PathValue(contentBuilder, knowledge, templateId, new Properties());
+
+        Map<String, String> testRetMap = new EcisFlattener().render(locatable);
+        String jsonString = gson.toJson(testRetMap);
+        System.out.println(jsonString);
+    }
 }

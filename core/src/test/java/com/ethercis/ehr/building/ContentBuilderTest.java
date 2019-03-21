@@ -730,8 +730,8 @@ public class ContentBuilderTest extends TestCase {
 
     @Test
     public void testThinkEhrLib3() throws Exception {
-        String templateId = "IDCR - Laboratory Order.v0";
-//        String templateId = "LCR Medication List.v0";
+//        String templateId = "IDCR - Laboratory Order.v0";
+        String templateId = "LCR Medication List.v0";
 //        String templateId = "IDCR - Immunisation summary.v0";
 //        String templateId = "IDCR Problem List.v1";
 //        String templateId = "IDCR - Relevant contacts.v0";
@@ -742,8 +742,8 @@ public class ContentBuilderTest extends TestCase {
         I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
 
         //get a flat json test file
-        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
-//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/LCR_Medication_List.v0.flat.json");
+//        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR-LabReportRAW1_FLATJSON_JOSH2.json");
+        FileReader fileReader = new FileReader("src/test/resources/flat_json_input/LCR_Medication_List.v0.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR Problem List.v1.FLAT.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/samples/IDCR_adverse_reaction_listv1.flat.json");
 //        FileReader fileReader = new FileReader("/Development/Dropbox/eCIS_Development/test/IDCR - Immunisation summary.v0.flat.json");
@@ -930,6 +930,24 @@ public class ContentBuilderTest extends TestCase {
     }
 
     @Test
+    public void testFlatJsonCR157() throws Exception {
+        String templateId = "RESPECT_form_2-v0";
+
+//        Logger.getRootLogger().setLevel(Level.DEBUG);
+        I_FlatJsonCompositionConverter jsonCompositionConverter = FlatJsonCompositionConverter.getInstance(knowledge);
+
+        //get a flat json test file
+        FileReader fileReader = new FileReader(resourcePath+"/flat_json_input/RESPECT_form_2-v0.flat.json");
+
+        Map map = FlatJsonUtil.inputStream2Map(fileReader);
+
+        Composition lastComposition = jsonCompositionConverter.toComposition(templateId, map);
+
+        assertNotNull(lastComposition);
+
+    }
+
+    @Test
     public void testGenerateOtherContext() throws Exception {
         I_ContentBuilder contentBuilder = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "Ripple Dashboard Cache.v1");
 
@@ -937,4 +955,27 @@ public class ContentBuilderTest extends TestCase {
 
         assertNotNull(generated);
      }
+
+    @Test
+    public void testImportXMLNullFlavor() throws Exception {
+
+        String documentPath = resourcePath+"/samples/composition_null_flavor_cr_159.xml";
+        InputStream is = new FileInputStream(new File(documentPath));
+        I_ContentBuilder content = I_ContentBuilder.getInstance(null, I_ContentBuilder.OPT, knowledge, "hospitalization_oceanehr");
+        //pre-warm the composition cache
+        content.setLenient(true); //disable validation
+        content.generateNewComposition();
+
+        Composition composition = content.importCanonicalXML(is);
+        assertNotNull(composition);
+
+        content.setTemplateId(composition.getArchetypeDetails().getTemplateId().getValue());
+        content.setEntryData(composition);
+        String serialized = content.getEntry();
+
+        Composition newComposition = content.buildCompositionFromJson(serialized);
+
+        assertNotNull(newComposition);
+
+    }
 }

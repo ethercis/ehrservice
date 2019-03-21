@@ -4,7 +4,7 @@
   <groupId>ethercis</groupId>
   <artifactId>ecis-ehrdao</artifactId>
   <name>Data Access Layer to RM</name>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.3.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -14,7 +14,7 @@
           <excludes>
             <exclude>**/MigrateEntryTest.java</exclude>
           </excludes>
-          <skipTests>false</skipTests>
+          <skipTests>true</skipTests>
           <systemPropertyVariables>
             <test.db.host>localhost</test.db.host>
             <test.db.port>5432</test.db.port>
@@ -83,12 +83,13 @@
           <artifactSet>
             <excludes>
               <exclude>ethercis:ecis-core</exclude>
-              <exclude>ethercis:jooq-pg</exclude>
               <exclude>ethercis:aql-processor</exclude>
               <exclude>ethercis:ecis-transform</exclude>
               <exclude>ethercis:ecis-validation</exclude>
               <exclude>ethercis:ecis-knowledge-cache</exclude>
               <exclude>ethercis:ecis-meta-data-cache</exclude>
+              <exclude>ethercis:ecis-opt-introspect</exclude>
+              <exclude>ethercis:ecis-webtemplate</exclude>
               <exclude>org.openehr:*</exclude>
               <exclude>openEHR:*</exclude>
               <exclude>junit:junit</exclude>
@@ -128,37 +129,25 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-core</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>thinkehr-framework-jsonlib</artifactId>
+          <groupId>org.openehr</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-transform</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.OperationalTemplate</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.Template</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>ethercis</groupId>
-      <artifactId>jooq-pg</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>aql-processor</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -199,10 +188,12 @@
     </plugins>
   </reporting>
   <properties>
-    <user.deploy>../../ethercis-deploy</user.deploy>
+    <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
     <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
-    <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <org.jooq.version>3.11.9</org.jooq.version>
+    <user.deploy>../../ethercis-deploy</user.deploy>
   </properties>
 </project>
 

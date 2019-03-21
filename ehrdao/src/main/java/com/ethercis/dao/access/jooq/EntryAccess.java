@@ -139,6 +139,17 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 
         entryRecord = context.newRecord(ENTRY);
 
+        //resolve template uuid from template table
+        UUID template_uuid = null;
+        try {
+            template_uuid = context.select(TEMPLATE.UID).from(TEMPLATE).where(TEMPLATE.TEMPLATE_ID.eq(templateId)).fetchOne().value1();
+        } catch (Exception e){
+            log.warn("template UUID could not be resolver, entry will be stored without referential integrity ["+ templateId + "]");
+        }
+
+        if (template_uuid != null)
+            entryRecord.setTemplateUuid(template_uuid);
+
         entryRecord.setTemplateId(templateId);
         entryRecord.setSequence(sequence);
         entryRecord.setCompositionId(compositionId);
@@ -244,6 +255,8 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
         values.put(SystemValue.COMPOSER, I_PartyIdentifiedAccess.retrievePartyIdentified(domainAccess, compositionAccess.getComposerId()));
         I_ContextAccess contextAccess = I_ContextAccess.retrieveInstance(domainAccess, compositionAccess.getContextId());
         values.put(SystemValue.CONTEXT, contextAccess.mapRmEventContext());
+        I_FeederAuditAccess feederAuditAccess = I_FeederAuditAccess.retrieveInstance(domainAccess, compositionAccess.getContextId());
+        values.put(SystemValue.FEEDER_AUDIT, feederAuditAccess.mapRmFeederAudit());
         values.put(SystemValue.LANGUAGE, I_RmBinding.makeLanguageCodePhrase(compositionAccess.getLanguageCode()));
         String territory2letters = domainAccess.getContext().fetchOne(TERRITORY, TERRITORY.CODE.eq(compositionAccess.getTerritoryCode())).getTwoletter();
         values.put(SystemValue.TERRITORY, I_RmBinding.makeTerritoryCodePhrase(territory2letters));
@@ -544,6 +557,11 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
     @Override
     public UUID getCompositionId() {
         return entryRecord.getCompositionId();
+    }
+
+    @Override
+    public UUID getTemplateUuid() {
+        return entryRecord.getTemplateUuid();
     }
 
     @Override

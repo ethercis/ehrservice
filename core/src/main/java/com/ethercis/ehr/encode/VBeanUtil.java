@@ -266,6 +266,10 @@ public class VBeanUtil {
 	}
 
     public static DataValueConstraints getConstraintInstance(RMBuilder builder, Object obj) throws Exception {
+
+		if (obj == null)
+			return null;
+
         if (!(obj instanceof DataValue))
             throw new Exception("invalid object");
 

@@ -13,6 +13,9 @@ import org.jooq.impl.DSL;
 import org.nustaq.serialization.FSTConfiguration;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -177,9 +180,21 @@ public class IntrospectCache implements I_IntrospectCache {
 
         int result = 0;
 
+        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+        byte[] opt;
+        try {
+            opt = Files.readAllBytes(Paths.get(definitions.get(knowledge.PATH)));
+        }
+        catch (Exception e){
+            log.error("File could not be read, could not compute MD5 for opt:"+knowledge.TEMPLATE_ID+"file:"+knowledge.PATH);
+            opt = new String().getBytes();
+        }
+
         if (context.fetchExists(TEMPLATE, TEMPLATE.UID.eq(templateUid))) {
             //update introspect and parsed opt if required
             log.info("Updating template DB entry:" + definitions.get(knowledge.TEMPLATE_ID));
+
             //check if introspect and parsed_opt are empty first
             Result<TemplateRecord> templateRecords = context.selectFrom(TEMPLATE).where(TEMPLATE.UID.eq(templateUid)).fetch();
 
@@ -213,13 +228,15 @@ public class IntrospectCache implements I_IntrospectCache {
                     TEMPLATE.CONCEPT,
                     TEMPLATE.INTROSPECT,
                     TEMPLATE.PARSED_OPT,
-                    TEMPLATE.VISITOR)
+                    TEMPLATE.VISITOR,
+                    TEMPLATE.MD5)
                     .values(DSL.val(templateUid),
                             DSL.val(definitions.get(knowledge.TEMPLATE_ID)),
                             DSL.val(definitions.get(knowledge.CONCEPT)),
                             DSL.field(DSL.val(new MapJson(map).toJson()) + "::jsonb"),
                             DSL.val(serializer.asByteArray(operationaltemplate)),
-                            DSL.val(serializer.asByteArray(visitor.getJsonPathVisitor())))
+                            DSL.val(serializer.asByteArray(visitor.getJsonPathVisitor())),
+                            DSL.val(messageDigest.digest(opt)))
                     .execute();
 
             if (result == 0) {
@@ -374,5 +391,11 @@ public class IntrospectCache implements I_IntrospectCache {
         }
 
         return retlist;
+    }
+
+    @Override
+    public I_IntrospectCache setKnowledge(I_KnowledgeCache knowledge){
+        this.knowledge = knowledge;
+        return this;
     }
 }

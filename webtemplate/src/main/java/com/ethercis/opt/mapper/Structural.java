@@ -72,8 +72,8 @@ public class Structural {
         if (!path.isEmpty())
             map.put(Constants.AQL_PATH, path);
         else {
-            if (!"COMPOSITION".equals(rmTypeName))
-                return null; //do not add mandatory attribute without a corresponding path
+//            if (!"COMPOSITION".equals(rmTypeName))
+//                return null; //do not add mandatory attribute without a corresponding path
         }
 
         if (!validationMap.isEmpty())

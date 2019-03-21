@@ -23,14 +23,13 @@ import com.ethercis.aql.sql.binding.I_JoinBinder;
 import com.ethercis.aql.sql.queryImpl.value_field.NodePredicate;
 import com.ethercis.ehr.encode.CompositionSerializer;
 import com.ethercis.opt.query.I_IntrospectCache;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jooq.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
-
-import org.jooq.util.derby.sys.Sys;
 import org.openehr.rm.common.archetyped.Locatable;
 
 import java.util.*;

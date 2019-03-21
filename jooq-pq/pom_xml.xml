@@ -1,0 +1,241 @@
+<!--
+WARNING: THIS GENERATOR IS NOT *YET* WORKING!
+This is due to a limitation of the class generator process that emulates the actual DB with H2
+The issue is that PostgreSQL datatypes such as ENUMS are not supported, hence the resulting
+classes (f.e. CONTRIBUTION) only have a USER_DEFINED datatype which cannot be further used
+A work around is evaluated.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ethercis</groupId>
+  <artifactId>jooq-pg</artifactId>
+  <version>1.3.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>jooq-pq</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <user.deploy>../../ethercis-deploy</user.deploy>
+    <org.jooq.version>3.11.9</org.jooq.version>
+    <org.postgres.jdbc.version>42.2.5</org.postgres.jdbc.version>
+    <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
+  </properties>
+
+
+  <build>
+    <plugins>
+      <plugin>
+
+        <!-- Specify the maven code generator plugin -->
+        <!-- Use org.jooq            for the Open Source Edition
+                 org.jooq.pro        for commercial editions,
+                 org.jooq.pro-java-6 for commercial editions with Java 6 support,
+                 org.jooq.trial      for the free trial edition
+
+             Note: Only the Open Source Edition is hosted on Maven Central.
+                   Import the others manually from your distribution -->
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-codegen-maven</artifactId>
+        <version>${org.jooq.version}</version>
+
+        <!-- The plugin should hook into the generate goal -->
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <!-- Manage the plugin's dependency. In this example, we'll use a PostgreSQL database -->
+        <dependencies>
+          <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${org.postgres.jdbc.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+          </dependency>
+          <!--<dependency>-->
+            <!--<groupId>com.sun.xml.bind</groupId>-->
+            <!--<artifactId>jaxb-impl</artifactId>-->
+            <!--<version>2.3.1</version>-->
+          <!--</dependency>-->
+          <!--<dependency>-->
+            <!--<groupId>com.sun.xml.bind</groupId>-->
+            <!--<artifactId>jaxb-core</artifactId>-->
+            <!--<version>2.3.0.1</version>-->
+          <!--</dependency>-->
+          <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${org.jooq.version}</version>
+          </dependency>
+        </dependencies>
+
+        <!-- Specify the plugin configuration.
+             The configuration format is the same as for the standalone code generator -->
+        <configuration>
+          <!-- Configure the database connection here -->
+          <jdbc>
+            <driver>org.postgresql.Driver</driver>
+            <url>jdbc:postgresql://localhost:5432/ethercis</url>
+            <user>postgres</user>
+            <password>postgres</password>
+          </jdbc>
+          <generator>
+            <database>
+              <name>org.jooq.meta.xml.XMLDatabase</name>
+              <properties>
+                <property>
+                  <key>dialect</key>
+                  <value>POSTGRESQL</value>
+                </property>
+                <property>
+                  <key>xml-file</key>
+                  <value>${basedir}/information_schema.xml</value>
+                </property>
+              </properties>
+              <includes></includes>
+              <excludes></excludes>
+              <inputSchema>ehr</inputSchema>
+            </database>
+            <generate>
+              <!-- Generation flags: See advanced configuration properties -->
+            </generate>
+            <target>
+              <!-- The destination package of your generated classes (within the destination
+                  directory) jOOQ may append the schema name to this package if generating
+                  multiple schemas, e.g. org.jooq.your.packagename.schema1 org.jooq.your.packagename.schema2 -->
+              <packageName>com.ethercis.jooq.pg</packageName>
+              <!-- The destination directory of your generated classes -->
+              <!--<directory>./build/generated-src/main/</directory>-->
+              <directory>target/generated-sources/</directory>
+            </target>
+          </generator>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.3</version>
+        <executions>
+          <execution>
+            <id>generate-sources-flag</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <echo>GENERATE SOURCES IS EXECUTING</echo>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- Use this to deploy the shade JAR into a deployment directory -->
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>install-jar</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${user.deploy}</outputDirectory>
+              <stripVersion>false</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.jooq/jooq-codegen-maven -->
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq-codegen-maven</artifactId>
+      <version>${org.jooq.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq</artifactId>
+      <version>${org.jooq.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq-meta</artifactId>
+      <version>${org.jooq.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${org.postgres.jdbc.version}</version>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>javax.xml.bind</groupId>-->
+      <!--<artifactId>jaxb-api</artifactId>-->
+      <!--<version>2.4.0-b180830.0359</version>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <!--DON'T GENERATE PROJECT INFO REPORT-->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.0.0</version>
+        <reportSets>
+          <reportSet>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </reportSet>
+          <reportSet>
+            <reports>
+              <report>index</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.19.1</version>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>

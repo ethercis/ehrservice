@@ -4,14 +4,15 @@
   <groupId>ethercis</groupId>
   <artifactId>ecis-core</artifactId>
   <name>Core EHR RM Handling</name>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.3.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.19</version>
         <configuration>
-          <skipTests>false</skipTests>
+          <skipTests>true</skipTests>
+          <argLine>-Duser.timezone=+07:00</argLine>
         </configuration>
       </plugin>
       <plugin>
@@ -37,7 +38,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.2.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -117,7 +118,7 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-knowledge-cache</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>
@@ -129,7 +130,7 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-validation</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>
@@ -143,18 +144,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.OperationalTemplate</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.Template</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
@@ -164,7 +153,8 @@
       <groupId>org.openehr</groupId>
       <artifactId>thinkehr-framework-jsonlib</artifactId>
       <version>2.3.0-JL32</version>
-      <scope>compile</scope>
+      <scope>system</scope>
+      <systemPath>${basedir}/../libraries/thinkehr-framework-jsonlib-2.3.0-JL32/lib/thinkehr-framework-jsonlib-2.3.0-JL32.jar</systemPath>
     </dependency>
   </dependencies>
   <reporting>
@@ -192,10 +182,10 @@
     </plugins>
   </reporting>
   <properties>
-    <user.deploy>../../ethercis-deploy</user.deploy>
+    <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
     <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
-    <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <user.deploy>../../ethercis-deploy</user.deploy>
   </properties>
 </project>
-

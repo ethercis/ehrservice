@@ -35,6 +35,7 @@ import org.openehr.rm.common.generic.PartyIdentified;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.support.identification.ObjectID;
 
 import java.io.Reader;
@@ -331,8 +332,22 @@ public class MapInspector {
             String key = node.getKey();
             Object value = node.getValue();
 
-            if (map.size() == ENCODED_ELEMENT_MAP_SIZE && map.containsKey(CompositionSerializer.TAG_CLASS)) { //encoded element
-                generateObject(map);
+            if ((map.size() >= ENCODED_ELEMENT_MAP_SIZE && map.containsKey(CompositionSerializer.TAG_CLASS))||map.containsKey(CompositionSerializer.TAG_NULL_FLAVOUR)) { //encoded element
+                if (map.containsKey(CompositionSerializer.TAG_VALUE)) {
+                    generateObject(map);
+                }
+                //check for a null flavour
+                if (map.containsKey(CompositionSerializer.TAG_NULL_FLAVOUR)) {
+                    Object nullFlavour = map.get(CompositionSerializer.TAG_NULL_FLAVOUR);
+                    if (nullFlavour instanceof Map) {
+                        Map<String, Object> submap = (Map<String, Object>) nullFlavour;
+                        submap.put(CompositionSerializer.TAG_CLASS, "DvCodedText");
+                        Map<String, Object> valueMap = new HashMap<>();
+                        valueMap.put(CompositionSerializer.TAG_VALUE, submap);
+                        nullFlavour = DvCodedTextVBean.getInstance(valueMap);
+                        map.put(CompositionSerializer.TAG_NULL_FLAVOUR, nullFlavour);
+                    }
+                }
                 stack.push(map);
                 return;
             }
@@ -347,25 +362,6 @@ public class MapInspector {
                 }
 //                continue;
             }
-//            else if (key.equals(CompositionSerializer.TAG_CLASS)) { //new map object, trigger to add a new entry on stack
-//                //if there is a value as string don't create an instance
-////                if (map.containsKey(VBeanUtil.TAG_VALUE_AS_STRING))
-////                    continue;
-//
-//                if (!(stack.isEmpty())){ //build object for the preceding class...
-//                    Map<String, Object> current = stack.getFirst();
-//                    log.debug("Building object for class " + current.get(CompositionSerializer.TAG_CLASS));
-//                    generateObject(current);
-//                }
-//
-////                Map<String, Object> objectAttributes = new HashMap<>();
-////                objectAttributes.put(key, value);
-////                stack.push(objectAttributes);
-//            }
-////            else if (key.equals(CompositionSerializer.TAG_PATH)) {
-////                addObjectAttributesOnStack(key, value);
-////            }
-
 
             if (!new NodeAttribute(key).isMetaData() && value instanceof String) {
                 //try to get a path for this key/value pair
@@ -394,12 +390,7 @@ public class MapInspector {
                     log.debug(key + "=" + value);
                 }
             }
-//            else if (key.equals(CompositionSerializer.TAG_VALUE)){ //simplest case, pass the whole /value map
-//                Map<String, Object> valueMap = new HashMap<>();
-//                valueMap.put(CompositionSerializer.TAG_VALUE, value);
-//                generateObject(valueMap);
-//                stack.push(valueMap);
-//            }
+
             else if (value instanceof Map) {
                 if (key.equals(CompositionSerializer.TAG_VALUE)) { //a map of values...
                     Map<String, Object> valueMap = ((Map) value);
@@ -438,7 +429,8 @@ public class MapInspector {
 //                    //remove the /value entry if any
 //                    if (current.containsKey(CompWalker.TAG_VALUE))
 //                        current.remove(CompWalker.TAG_VALUE);
-                } else {
+                }
+                else {
                     if (((Map) value).containsKey(CompositionSerializer.TAG_CLASS) && !isStructural((String) ((Map) value).get(CompositionSerializer.TAG_CLASS))) {
                         generateObject((Map<String, Object>) value);
                         stack.push((Map<String, Object>) value);

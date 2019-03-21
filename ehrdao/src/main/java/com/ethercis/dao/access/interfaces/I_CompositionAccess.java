@@ -50,6 +50,7 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
     String PERFORMER_JOIN = "performer_ref";
     String TERRITORY_JOIN = "territory_ref";
     String CONCEPT_JOIN = "concept_ref";
+    String FEEDER_AUDIT_JOIN = "feeder_audit_ref";
 
     String F_VERSION = "version";
     String F_COMPOSITION_ID = "composition_id";
@@ -71,6 +72,9 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
     String F_CONTEXT_END_TIME = "context_end_time";
     String F_CONTEXT_END_TIME_TZID = "context_end_time_tzid";
     String F_CONTEXT_LOCATION = "context_location";
+    String F_FEEDER_AUDIT_ORIGINATING_SYSTEM_AUDIT = "feeder_audit_originating_system_audit";
+    String F_FEEDER_AUDIT_ORIGINAL_CONTENT = "feeder_audit_original_content";
+    String F_FEEDER_AUDIT_FEEDER_SYSTEM_AUDIT = "feeder_system_audit";
     String F_CONTEXT_OTHER_CONTEXT = "context_other_context";
     String F_FACILITY_NAME = "facility_name";
     String F_FACILITY_REF_VALUE = "facility_ref_value";
@@ -106,6 +110,7 @@ public interface I_CompositionAccess extends I_SimpleCRUD<I_CompositionAccess, U
     Table<PartyIdentifiedRecord> performerRef = PARTY_IDENTIFIED.as(PERFORMER_JOIN);
     Table<TerritoryRecord> territoryRef = TERRITORY.as(TERRITORY_JOIN);
     Table<ConceptRecord> conceptRef = CONCEPT.as(CONCEPT_JOIN);
+    Table<FeederAuditRecord> feederAuditRef = FEEDER_AUDIT.as(FEEDER_AUDIT_JOIN);
 
     /**
      * Get a new Composition Access Instance

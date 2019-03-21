@@ -59,6 +59,15 @@ public interface I_DomainAccess {
     String KEY_SET_MAX_PREPARED_STATEMENTS = "set_max_prepared_statements";
     String KEY_INTROSPECT_CACHE = "introspect";
 
+    //added to deal with postgresql jdbc 42.2.2 (https://github.com/pgjdbc/pgjdbc)
+    //as of v1.3 jdbc parameters can be passed prefixed with 'pgjdbc.' f.e. 'pgjdbc.ssl="true"'
+    String KEY_PGJDBC_PREFIX = "pgjdbc";
+    String[] pgjdbc_booleanArg = {"ssl", "allowEncodingChanges", "logUnclosedConnections", "tcpKeepAlive", "readOnly", "disableColumnSanitiser", "loadBalanceHosts", "reWriteBatchedInserts"};
+    String[] pgjdbc_integerArg = {"sendBufferSize", "recvBufferSize", "prepareThreshold", "preparedStatementCacheQueries",
+            "preparedStatementCacheSizeMiB", "defaultRowFetchSize", "loginTimeout", "connectTimeout",
+            "socketTimeout", "hostRecheckSeconds"};
+
+
     /**
      * get jOOQ SQL dialect
      * @return SQLDialect

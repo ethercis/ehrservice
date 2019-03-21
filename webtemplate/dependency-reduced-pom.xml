@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ethercis</groupId>
   <artifactId>ecis-webtemplate</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.3.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -119,13 +119,19 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-core</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>thinkehr-framework-jsonlib</artifactId>
+          <groupId>org.openehr</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-knowledge-cache</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -143,18 +149,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.OperationalTemplate</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openehr</groupId>
-      <artifactId>openEHR.v1.Template</artifactId>
-      <version>1.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>openehr</groupId>
       <artifactId>oet-parser</artifactId>
       <version>1.0.14-ec1-SNAPSHOT</version>
@@ -168,8 +162,10 @@
     </dependency>
   </dependencies>
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <user.deploy>../../ethercis-deploy</user.deploy>
   </properties>
 </project>
 

@@ -416,7 +416,7 @@ public class QueryEngineTest {
     }
 
     //TODO: check join statement
-//    @Test
+    @Test
     public void testQryOtherDetails2() throws Exception {
         String query = "select " +
                 "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.person_anoymised_parent.v0]/items[at0012]/value/value as date," +
@@ -961,7 +961,7 @@ public class QueryEngineTest {
         System.out.print(records);
     }
 
-
+//TODO: should not come as an escaped string...
     @Test
     public void testQryFragmentRaw() throws Exception {
         String query = "select  " +
@@ -1730,6 +1730,20 @@ public class QueryEngineTest {
                         "     ORDER BY date_created DESCENDING"
                 ;
         ;
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
+        @Test
+    public void testQryOtherDetails3() throws Exception {
+        String query = "select\n" +
+                "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.individual_personal.v1]/items[at0017]/value/value as sex,\n" +
+                "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.individual_personal.v1]/items[at0016]/value/value as identifier,\n" +
+                "e/ehr_status/other_details/items[at0001]/items[openEHR-EHR-CLUSTER.individual_personal.v1]/items[at0008]/value/value as birth_date\n" +
+                "from EHR e[ehr_id/value='d713c200-ca0a-46e2-af9b-b7112f88b1c7'] ";
 
         records = queryEngine.perform(query);
         assertNotNull(records);

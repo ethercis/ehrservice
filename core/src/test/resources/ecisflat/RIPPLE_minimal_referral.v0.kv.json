@@ -1,0 +1,21 @@
+{
+    "/composer|name": "c4h_ripple_osi",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/description[at0001]/items[at0011]": "CST1",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/description[at0001]/items[at0026]": "2015-02-10T10:00:00.000Z::2015-02-10T11:00:00.000Z",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/ism_transition/careflow_step|name": "Order referral",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/ism_transition/careflow_step|value": "local::at0002|Referral requested|",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/ism_transition/current_state|name": "Order referral",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/ism_transition/current_state|value": "openehr::526|planned|",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/protocol[at0015]/items[openEHR-EHR-CLUSTER.address.v1]/items[at0001]/items[at0002]|name": "Location",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/protocol[at0015]/items[openEHR-EHR-CLUSTER.address.v1]/items[at0001]/items[at0002]|value": "Leeds General",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/protocol[at0015]/items[openEHR-EHR-CLUSTER.address.v1]/items[at0001]/items[at0006]|name": "Address Type",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/protocol[at0015]/items[openEHR-EHR-CLUSTER.address.v1]/items[at0001]/items[at0006]|value": "local::at0013|Business|",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/time|name": "Schedule appointment",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-ACTION.referral_uk.v1,'Schedule appointment']/time|value": "2015-11-02T12:29:37.261Z",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/action_archetype_id|name": "action_archetype_id",
+    "/content[openEHR-EHR-SECTION.referral_details_rcp.v1]/items[openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/action_archetype_id|value": "/.*/",
+    "/context/setting": "openehr::238|other care|",
+    "/context/start_time": "2015-11-02T17:44:19.711Z",
+    "/language": "en",
+    "/territory": "GB"
+}

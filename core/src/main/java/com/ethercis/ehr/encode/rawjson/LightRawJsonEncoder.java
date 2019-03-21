@@ -64,7 +64,7 @@ public class LightRawJsonEncoder {
         Map retmap = gsonBuilder.create().fromJson(raw, Map.class);
 
         //DEBUG
-        String rawRepresented = new GsonBuilder().setPrettyPrinting().create().toJson(retmap);
+//        String rawRepresented = new GsonBuilder().setPrettyPrinting().create().toJson(retmap);
 
         return retmap;
     }

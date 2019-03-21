@@ -81,4 +81,84 @@ public class DataAccessTest {
         assertTrue(result.isNotEmpty());
     }
 
+    //use the new JDBC properties convention to setup a connection
+    @Test
+    public void setupPgJdbc42Access() throws Exception {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(I_DomainAccess.KEY_KNOWLEDGE, knowledge);
+        properties.put(I_DomainAccess.KEY_DIALECT, "POSTGRES");
+        properties.put(I_DomainAccess.KEY_URL, "jdbc:postgresql://" + System.getProperty("test.db.host") + ":" + System.getProperty("test.db.port") + "/" + System.getProperty("test.db.name"));
+//        properties.put(I_DomainAccess.KEY_CONNECTION_MODE, I_DomainAccess.DBCP2_POOL);
+        //https://github.com/pgjdbc/pgjdbc
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".user", System.getProperty("test.db.user"));
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".password", System.getProperty("test.db.password"));
+
+        try {
+            testDomainAccess = new DummyDataAccess(properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        context = testDomainAccess.getContext();
+
+        //try a query
+        Result result = context.fetch("SELECT 1");
+        assertEquals("1", result.getValue(0, "?column?").toString());
+    }
+
+    @Test
+    public void setupDBCP2_pgJdbc42Access() throws Exception {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(I_DomainAccess.KEY_KNOWLEDGE, knowledge);
+        properties.put(I_DomainAccess.KEY_DIALECT, "POSTGRES");
+        properties.put(I_DomainAccess.KEY_URL, "jdbc:postgresql://" + System.getProperty("test.db.host") + ":" + System.getProperty("test.db.port") + "/" + System.getProperty("test.db.name"));
+        properties.put(I_DomainAccess.KEY_CONNECTION_MODE, I_DomainAccess.DBCP2_POOL);
+        //https://github.com/pgjdbc/pgjdbc
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".user", System.getProperty("test.db.user"));
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+".password", System.getProperty("test.db.password"));
+
+        try {
+            testDomainAccess = new DummyDataAccess(properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        context = testDomainAccess.getContext();
+
+        //try a query with this pool
+        Result result = context.fetch("SELECT 1");
+        assertEquals("1", result.getValue(0, "?column?").toString());
+    }
+
+    //====================  SSL test =================================================
+    // Pls make sure the DB server is configured to accept SSL connection
+    // https://www.postgresql.org/docs/10/static/ssl-tcp.html
+    // skip this test if your server doesn't accept SSL connection
+    //================================================================================
+//    @Test
+    public void SSL_PgJdbc42Access() throws Exception {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(I_DomainAccess.KEY_KNOWLEDGE, knowledge);
+        properties.put(I_DomainAccess.KEY_DIALECT, "POSTGRES");
+        properties.put(I_DomainAccess.KEY_URL, "jdbc:postgresql://" + System.getProperty("test.db.host") + ":" + System.getProperty("test.db.port") + "/" + System.getProperty("test.db.name"));
+//        properties.put(I_DomainAccess.KEY_CONNECTION_MODE, I_DomainAccess.DBCP2_POOL);
+        //https://github.com/pgjdbc/pgjdbc
+//        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+"user", System.getProperty("test.db.user"));
+//        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+"password", System.getProperty("test.db.password"));
+        properties.put(I_DomainAccess.KEY_PGJDBC_PREFIX+"ssl", "true");
+
+
+        try {
+            testDomainAccess = new DummyDataAccess(properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        context = testDomainAccess.getContext();
+
+        //try a query
+        Result result = context.fetch("SELECT 1");
+        assertEquals("1", result.getValue(0, "?column?").toString());
+    }
+
 }
