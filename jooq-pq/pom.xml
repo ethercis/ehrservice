@@ -15,7 +15,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <user.deploy>../../ethercis-deploy</user.deploy>
-    <org.jooq.version>3.11.9</org.jooq.version>
+    <org.jooq.version>3.10.8</org.jooq.version>
     <org.postgres.jdbc.version>42.2.5</org.postgres.jdbc.version>
     <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
   </properties>
@@ -72,7 +72,7 @@
           <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>${org.jooq.version}</version>
+            <version>3.10.8</version>
           </dependency>
         </dependencies>
 
@@ -99,7 +99,7 @@
                   implementation here, if your database is currently not supported or if you
                   wish to read the database schema fromBinder a file, such as a Hibernate .hbm.xml
                   file -->
-              <name>org.jooq.meta.postgres.PostgresDatabase</name>
+              <name>org.jooq.util.postgres.PostgresDatabase</name>
               <!-- All elements that are generated fromBinder your schema (A Java regular
                   expression. Use the pipe to separate several expressions) Watch out for case-sensitivity.
                   Depending on your database, this might be important! You can storeComposition case-insensitive
@@ -181,17 +181,17 @@
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>jooq-codegen-maven</artifactId>
-      <version>${org.jooq.version}</version>
+      <version>3.10.8</version>
     </dependency>
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>jooq</artifactId>
-      <version>${org.jooq.version}</version>
+      <version>3.10.8</version>
     </dependency>
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>jooq-meta</artifactId>
-      <version>${org.jooq.version}</version>
+      <version>3.10.8</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>

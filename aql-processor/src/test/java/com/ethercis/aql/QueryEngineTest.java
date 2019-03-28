@@ -1751,4 +1751,27 @@ public class QueryEngineTest {
         System.out.print(records);
     }
 
+    @Test
+    public void testCR174() throws Exception {
+        String query = "select\n" +
+                "a/uid/value as uid,\n" +
+                "a/composer/name as author,\n" +
+                "a/context/start_time/value as date_created,\n" +
+                "    a_a/data[at0001]/items[at0007]/items[at0002]/value/value as Issue1_name,\n" +
+                "    a_a/data[at0001]/items[at0007]/items[at0008]/value/value as Issue1_detail,\n" +
+                "    a_a/data[at0001]/items[at0013]/items[at0014]/value/value as Issue2_name,\n" +
+                "    a_a/data[at0001]/items[at0013]/items[at0015]/value/value as Issue2_detail,\n" +
+                "    a_a/data[at0001]/items[at0016]/items[at0017]/value/value as Issue3_name,\n" +
+                "    a_a/data[at0001]/items[at0016]/items[at0018]/value/value as Issue3_detail\n" +
+                "from EHR e[ehr_id/value='39ede406-25e0-4783-87e5-7575922527f0']\n" +
+                "contains COMPOSITION a [openEHR-EHR-COMPOSITION.report.v1]\n" +
+                "contains EVALUATION a_a[openEHR-EHR-EVALUATION.top_issues.v0]\n" +
+                "where a/name/value='Top issues'";
+
+        records = queryEngine.perform(query);
+        assertNotNull(records);
+        assertFalse(records.isEmpty());
+        System.out.print(records);
+    }
+
 }

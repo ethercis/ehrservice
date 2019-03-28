@@ -25,7 +25,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <user.deploy>../../ethercis-deploy</user.deploy>
         <java-ref-library>1.0.14-ec1-SNAPSHOT</java-ref-library>
-        <org.jooq.version>3.11.9</org.jooq.version>
+        <org.jooq.version>3.10.8</org.jooq.version>
         <user.localDirectoryPath>${user.home}/.m2/repository</user.localDirectoryPath>
     </properties>
     <!--<repositories>-->

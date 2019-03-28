@@ -243,11 +243,11 @@
             <artifactId>ecis-meta-data-cache</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq</artifactId>
-            <version>3.10.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.jooq</groupId>-->
+            <!--<artifactId>jooq</artifactId>-->
+            <!--<version>3.10.0</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
