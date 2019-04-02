@@ -88,7 +88,6 @@ public class FlatJsonHandler implements I_FlatJsonHandler, I_CompositionMetaData
     @Override
     public Boolean update(I_DomainAccess access, UUID compositionId, String content, UUID committerId, UUID systemId, String description) throws Exception {
         boolean changed = false;
-        boolean changedContext = false;
 
         UUID contextId = compositionAccess.getContextId();
         Timestamp updateTransactionTime = new Timestamp(DateTime.now().getMillis());
@@ -112,11 +111,10 @@ public class FlatJsonHandler implements I_FlatJsonHandler, I_CompositionMetaData
             changed = true;
             EventContext eventContext = newComposition.getContext();
             contextAccess.setRecordFields(contextId, eventContext);
-            changedContext = true;
         }
-
-        if (changedContext)
-            contextAccess.update(updateTransactionTime);
+//
+//        if (changedContext)
+//            contextAccess.update(updateTransactionTime);
 
         if (changed) {
             return compositionAccess.update(updateTransactionTime, committerId, systemId, null, I_ConceptAccess.ContributionChangeType.modification, description, true);

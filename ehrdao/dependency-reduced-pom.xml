@@ -131,6 +131,12 @@
       <artifactId>ecis-core</artifactId>
       <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>thinkehr-framework-jsonlib</artifactId>
+          <groupId>org.openehr</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>ethercis</groupId>

@@ -203,10 +203,15 @@
       <!--<artifactId>jaxb-api</artifactId>-->
       <!--<version>2.4.0-b180830.0359</version>-->
     <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.glassfish.jaxb</groupId>-->
+      <!--<artifactId>jaxb-runtime</artifactId>-->
+      <!--<version>2.3.2</version>-->
+    <!--</dependency>-->
     <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>2.3.2</version>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.4.0-b180830.0438</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

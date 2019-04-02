@@ -70,6 +70,10 @@ public class FilterOutNil {
         else if (xmlObj instanceof SECTION){
             return  filter((SECTION) xmlObj);
         }
+        else if (xmlObj instanceof ADMINENTRY){
+            return filter((ADMINENTRY) xmlObj);
+
+        }
         else if (xmlObj instanceof COMPOSITION){
             return filter((COMPOSITION) xmlObj);
 
@@ -247,6 +251,30 @@ public class FilterOutNil {
             observation.unsetUid();
         }
         return observation;
+    }
+
+    public static ADMINENTRY filter(ADMINENTRY adminentry){
+        //check if it contains any data
+
+        if (adminentry.getData().isNil()){
+            return null;
+        }
+        if (adminentry.isSetWorkFlowId() && adminentry.getWorkFlowId().isNil()){
+            adminentry.unsetWorkFlowId();
+        }
+        if (adminentry.isSetArchetypeDetails() && adminentry.getArchetypeDetails().isNil()){
+            adminentry.unsetArchetypeDetails();
+        }
+        if (adminentry.isSetProvider() && adminentry.getProvider().isNil()){
+            adminentry.unsetProvider();
+        }
+        if (adminentry.isSetFeederAudit() && adminentry.getFeederAudit().isNil()){
+            adminentry.unsetFeederAudit();
+        }
+        if (adminentry.isSetUid() && adminentry.getUid().isNil()){
+            adminentry.unsetUid();
+        }
+        return adminentry;
     }
 
     public static POINTEVENT filter(POINTEVENT pointevent){
