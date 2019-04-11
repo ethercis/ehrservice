@@ -929,6 +929,11 @@ public abstract class ContentBuilder implements I_ContentBuilder{
                     composition.setContext((EventContext)systemValue.getValue());
                     composition.getContext().setOtherContext(other_context);
                     break;
+                case FEEDER_AUDIT:
+                    if (systemValue.getValue() != null){
+                        //TODO: set feeder audit value if any
+                    }
+                    break;
                 default:
                     throw new IllegalArgumentException("Could not handle composition attribute:"+systemValue.getKey());
             }

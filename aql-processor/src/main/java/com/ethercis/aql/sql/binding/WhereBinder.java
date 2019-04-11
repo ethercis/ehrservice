@@ -145,11 +145,20 @@ public class WhereBinder {
         if (className == null)
             throw new IllegalArgumentException("Could not bind identifier in WHERE clause:'" + identifier + "'");
         Field<?> field;
-        if (forceSQL) {
-            if (className.equals("COMPOSITION")) {
-                field = compositionAttributeQuery.whereField(templateId, comp_id, identifier, variableDefinition);
-            } else {
-                field = jsonbEntryQuery.makeField(templateId, comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.WHERE);
+        if (forceSQL || Boolean.parseBoolean(System.getProperty("server.aql.force_sql", "false"))) { //was:forceSQL
+            switch(className) {
+                case "COMPOSITION":
+                    field = compositionAttributeQuery.whereField(templateId, comp_id, identifier, variableDefinition);
+                    break;
+
+                case "EHR":
+                    field = compositionAttributeQuery.whereField(templateId, comp_id, identifier, variableDefinition);
+                    break;
+
+                default:
+                    field = jsonbEntryQuery.makeField(templateId, comp_id, identifier, variableDefinition, false, I_QueryImpl.Clause.WHERE);
+                    break;
+
             }
             if (field == null)
                 return null;

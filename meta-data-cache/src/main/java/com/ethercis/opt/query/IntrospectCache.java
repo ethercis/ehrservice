@@ -285,7 +285,7 @@ public class IntrospectCache implements I_IntrospectCache {
                                         jsonPathVisitorMap.put(uid, visitor);
 
                                 } catch (Exception e) {
-                                    throw new IllegalArgumentException("Invalid visitor");
+                                    throw new IllegalArgumentException("Invalid visitor for template uuid="+uid+" ("+record.getTemplateId()+")");
                                 }
                             }
                         }
