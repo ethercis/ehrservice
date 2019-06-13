@@ -117,7 +117,8 @@ public class FlatJsonHandler implements I_FlatJsonHandler, I_CompositionMetaData
 //            contextAccess.update(updateTransactionTime);
 
         if (changed) {
-            return compositionAccess.update(updateTransactionTime, committerId, systemId, null, I_ConceptAccess.ContributionChangeType.modification, description, true);
+            contextAccess.update(updateTransactionTime); //update systematically when using FLAT
+            return compositionAccess.update(updateTransactionTime, committerId, systemId, null, I_ConceptAccess.ContributionChangeType.modification, description, false);
         }
 
         return true; //nothing to do...

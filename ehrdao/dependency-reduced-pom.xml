@@ -83,6 +83,7 @@
           <artifactSet>
             <excludes>
               <exclude>ethercis:ecis-core</exclude>
+              <exclude>ethercis:jooq-pg</exclude>
               <exclude>ethercis:aql-processor</exclude>
               <exclude>ethercis:ecis-transform</exclude>
               <exclude>ethercis:ecis-validation</exclude>
@@ -141,6 +142,12 @@
     <dependency>
       <groupId>ethercis</groupId>
       <artifactId>ecis-transform</artifactId>
+      <version>1.3.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>ethercis</groupId>
+      <artifactId>jooq-pg</artifactId>
       <version>1.3.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
