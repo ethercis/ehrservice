@@ -234,7 +234,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
                 retval = resultSet.getString(1);
             }
 
-            connection.close();
+            releaseConnection(connection);
 
             if (retval == null)
                 throw new IllegalArgumentException("Could not store Ehr Status");
@@ -338,7 +338,7 @@ public class EhrAccess extends DataAccess implements  I_EhrAccess {
 //            result |= statusRecord.update() > 0;
             result |= updateStatement.execute();
 
-            connection.close();
+            releaseConnection(connection);
         }
 
         if (force || ehrRecord.changed()){

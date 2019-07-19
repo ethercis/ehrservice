@@ -83,6 +83,11 @@ public interface I_DomainAccess {
     Connection getConnection();
 
     /**
+     * have JOOQ release the DB connection
+     */
+    void releaseConnection(Connection connection);
+
+    /**
      * get the jOOQ DSL context to perform DB queries
      * @return DSLContext
      * @see org.jooq.DSLContext
