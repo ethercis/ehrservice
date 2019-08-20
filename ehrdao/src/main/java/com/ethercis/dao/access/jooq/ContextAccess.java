@@ -231,7 +231,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
             );
         }
 
-        connection.close();
+        releaseConnection(connection);
 
         if (uuid != null)
             return uuid;
@@ -341,7 +341,7 @@ public class ContextAccess extends DataAccess implements I_ContextAccess {
 
         Boolean result = updateStatement.execute();
 
-        connection.close();
+        releaseConnection(connection);
 
         return result;
 //        return eventContextRecord.update() > 0;

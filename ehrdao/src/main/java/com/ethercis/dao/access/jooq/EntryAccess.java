@@ -506,7 +506,7 @@ public class EntryAccess extends DataAccess implements I_EntryAccess {
 
         Boolean result =  updateStatement.execute();
 
-        connection.close();
+        releaseConnection(connection);
 
         return result;
     }

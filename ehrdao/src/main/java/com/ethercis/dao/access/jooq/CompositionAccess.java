@@ -546,7 +546,7 @@ public class CompositionAccess extends DataAccess implements I_CompositionAccess
 
         }
 
-//        connection.close();
+        domainAccess.releaseConnection(connection);
 
         return compositionHistoryAccess;
     }
