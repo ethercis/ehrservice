@@ -285,7 +285,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.6.2</version>
+            <version>2.17.1</version>
         </dependency>
         <!--NEEDED BY 3RD PARTY APIS THAT USE LOG4J V1-->
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-1.2-api -->
